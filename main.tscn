@@ -65,7 +65,7 @@ shape = SubResource("CapsuleShape2D_player")
 
 [node name="Camera2D" type="Camera2D" parent="World/Actors/Player"]
 position = Vector2(0, -44)
-zoom = Vector2(0.84, 0.84)
+zoom = Vector2(0.42, 0.42)
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 limit_left = 0

@@ -14,6 +14,7 @@ func _run() -> void:
 	var player: CharacterBody2D = scene.get_node("World/Actors/Player")
 	var grass: Area2D = scene.get_node("World/InteractivePlants/EastGrass")
 	var status: Label = scene.get_node("HUD/TopBar/Margin/Row/ConcealmentLabel")
+	var action: Label = scene.get_node("HUD/TopBar/Margin/Row/ActionLabel")
 
 	player.global_position = grass.global_position
 	await physics_frame
@@ -42,5 +43,40 @@ func _run() -> void:
 		quit(1)
 		return
 
-	print("SMOKE_OK: 3/4 scene, local concealment and remote invisibility")
+	Input.action_press("player_run")
+	Input.action_press("ui_right")
+	await physics_frame
+	if action.text != "动作：奔跑":
+		_fail("Run state did not activate")
+		return
+	Input.action_release("ui_right")
+	Input.action_release("player_run")
+
+	Input.action_press("player_crouch")
+	await physics_frame
+	if action.text != "动作：蹲伏":
+		_fail("Crouch state did not activate")
+		return
+	Input.action_release("player_crouch")
+
+	Input.action_press("player_crawl")
+	await physics_frame
+	if action.text != "动作：爬行":
+		_fail("Crawl state did not activate")
+		return
+	Input.action_release("player_crawl")
+
+	Input.action_press("player_jump")
+	await physics_frame
+	if action.text != "动作：跳跃":
+		_fail("Jump state did not activate")
+		return
+	Input.action_release("player_jump")
+
+	print("SMOKE_OK: concealment plus run, jump, crouch and crawl states")
 	quit()
+
+
+func _fail(message: String) -> void:
+	push_error(message)
+	quit(1)

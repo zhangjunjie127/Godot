@@ -113,6 +113,10 @@ text = "原始时代 · 第 1 日"
 layout_mode = 2
 text = "青岚平原"
 
+[node name="ActionLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
+layout_mode = 2
+text = "动作：站立"
+
 [node name="Spacer" type="Control" parent="HUD/TopBar/Margin/Row"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2

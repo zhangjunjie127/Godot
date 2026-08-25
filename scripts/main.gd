@@ -2,12 +2,15 @@ extends Node2D
 
 @onready var player: CharacterBody2D = $World/Actors/Player
 @onready var area_label: Label = $HUD/TopBar/Margin/Row/AreaLabel
+@onready var action_label: Label = $HUD/TopBar/Margin/Row/ActionLabel
 @onready var concealment_label: Label = $HUD/TopBar/Margin/Row/ConcealmentLabel
 
 
 func _ready() -> void:
 	player.concealment_changed.connect(_on_concealment_changed)
+	player.movement_state_changed.connect(_on_movement_state_changed)
 	_on_concealment_changed(false)
+	_on_movement_state_changed("站立")
 
 
 func _process(_delta: float) -> void:
@@ -20,6 +23,10 @@ func _on_concealment_changed(is_concealed: bool) -> void:
 		"font_color",
 		Color(0.65, 1.0, 0.62) if is_concealed else Color.WHITE
 	)
+
+
+func _on_movement_state_changed(state_label: String) -> void:
+	action_label.text = "动作：" + state_label
 
 
 func _get_area_name(position: Vector2) -> String:

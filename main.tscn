@@ -1,6 +1,120 @@
-[gd_scene format=3]
+[gd_scene load_steps=7 format=3]
 
-[node name="OurGame" type="Node2D"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
+[ext_resource type="Script" path="res://scripts/grass_patch.gd" id="3_grass"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="4_player"]
+[ext_resource type="Texture2D" path="res://assets/characters/player_male.png" id="5_player_texture"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
+radius = 9.0
+height = 24.0
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Foundation" type="Node2D" parent="World"]
+z_index = -20
+script = ExtResource("2_world")
+
+[node name="DecorativeVegetation" type="Node2D" parent="World"]
+z_index = -10
+
+[node name="InteractivePlants" type="Node2D" parent="World"]
+
+[node name="WestGrass" type="Area2D" parent="World/InteractivePlants"]
+position = Vector2(900, 1070)
+z_index = 6
+script = ExtResource("3_grass")
+patch_size = Vector2(210, 104)
+
+[node name="EastGrass" type="Area2D" parent="World/InteractivePlants"]
+position = Vector2(1210, 1150)
+z_index = 6
+script = ExtResource("3_grass")
+patch_size = Vector2(176, 112)
+
+[node name="SouthGrass" type="Area2D" parent="World/InteractivePlants"]
+position = Vector2(1040, 1370)
+z_index = 6
+script = ExtResource("3_grass")
+patch_size = Vector2(250, 120)
+
+[node name="Actors" type="Node2D" parent="World"]
+
+[node name="Player" type="CharacterBody2D" parent="World/Actors"]
+position = Vector2(1030, 1190)
+z_index = 5
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("4_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/Actors/Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+texture = ExtResource("5_player_texture")
+scale = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Actors/Player"]
+position = Vector2(0, -10)
+shape = SubResource("CapsuleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="World/Actors/Player"]
+position = Vector2(0, -16)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = 0
+limit_top = 0
+limit_right = 6144
+limit_bottom = 6144
+
+[node name="Buildings" type="Node2D" parent="World"]
+
+[node name="ForegroundOcclusion" type="Node2D" parent="World"]
+z_index = 20
+
+[node name="GameplayMetadata" type="Node" parent="World"]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="TopBar" type="ColorRect" parent="HUD"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 32.0
+grow_horizontal = 2
+color = Color(0.047, 0.125, 0.09, 0.9)
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="HUD/TopBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Row" type="HBoxContainer" parent="HUD/TopBar/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="EraLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
+layout_mode = 2
+text = "原始时代 · 第 1 日"
+
+[node name="AreaLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
+layout_mode = 2
+text = "青岚平原"
+
+[node name="Spacer" type="Control" parent="HUD/TopBar/Margin/Row"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConcealmentLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
+layout_mode = 2
+text = "状态：可见"

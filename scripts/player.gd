@@ -4,10 +4,16 @@ signal concealment_changed(is_concealed: bool)
 
 @export var move_speed := 170.0
 @export var world_size := Vector2(6144.0, 6144.0)
+@export var is_local_player := true
 
 @onready var sprite: Sprite2D = $Sprite2D
 
 var _cover_sources: Dictionary = {}
+var _is_concealed := false
+
+
+func _ready() -> void:
+	queue_redraw()
 
 
 func _physics_process(_delta: float) -> void:
@@ -27,20 +33,36 @@ func _physics_process(_delta: float) -> void:
 
 func enter_cover(source: Node) -> void:
 	_cover_sources[source.get_instance_id()] = true
-	_set_concealed(true)
+	set_concealed(true)
 
 
 func exit_cover(source: Node) -> void:
 	_cover_sources.erase(source.get_instance_id())
-	_set_concealed(not _cover_sources.is_empty())
+	set_concealed(not _cover_sources.is_empty())
 
 
-func _set_concealed(value: bool) -> void:
-	var alpha := 0.58 if value else 1.0
-	if is_equal_approx(sprite.self_modulate.a, alpha):
+func set_concealed(value: bool) -> void:
+	if _is_concealed == value:
 		return
-	sprite.self_modulate = Color(1.0, 1.0, 1.0, alpha)
+	_is_concealed = value
+	_apply_concealment_visual()
 	concealment_changed.emit(value)
+
+
+func set_local_player(value: bool) -> void:
+	is_local_player = value
+	_apply_concealment_visual()
+
+
+func _apply_concealment_visual() -> void:
+	visible = is_local_player or not _is_concealed
+	sprite.self_modulate = Color(1.0, 1.0, 1.0, 0.58 if _is_concealed else 1.0)
+
+
+func _draw() -> void:
+	draw_set_transform(Vector2(3.0, -1.0), 0.0, Vector2(1.0, 0.34))
+	draw_circle(Vector2.ZERO, 15.0, Color(0.08, 0.16, 0.10, 0.28))
+	draw_set_transform(Vector2.ZERO)
 
 
 func _update_sprite(direction: Vector2) -> void:

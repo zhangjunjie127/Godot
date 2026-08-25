@@ -22,6 +22,17 @@ func _run() -> void:
 		push_error("Player did not enter concealment")
 		quit(1)
 		return
+	if not player.visible:
+		push_error("Local player must remain visible while concealed")
+		quit(1)
+		return
+
+	player.set_local_player(false)
+	if player.visible:
+		push_error("Remote player must not render while concealed")
+		quit(1)
+		return
+	player.set_local_player(true)
 
 	player.global_position = Vector2(2000.0, 2000.0)
 	await physics_frame
@@ -31,5 +42,5 @@ func _run() -> void:
 		quit(1)
 		return
 
-	print("SMOKE_OK: movement scene, grass concealment and HUD state")
+	print("SMOKE_OK: 3/4 scene, local concealment and remote invisibility")
 	quit()

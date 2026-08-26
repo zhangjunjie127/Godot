@@ -1,0 +1,12 @@
+{
+  "reference": "assets/maps/spawn/spawn_pixel_foundation_2048.png",
+  "target": "match foundation hue family and reduce independent-prop saturation",
+  "saturationFactors": {
+    "tree": 0.65,
+    "tallGrass": 0.60,
+    "berryBush": 0.62,
+    "fallenLog": 0.80,
+    "campfire": 0.90,
+    "rockCluster": 1.00
+  }
+}

@@ -18,11 +18,11 @@ func _run() -> void:
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
 	var camera: Camera2D = player.get_node("Camera2D")
-	if player.world_size != Vector2(1024.0, 1024.0):
-		_fail("Map content scale did not update the playable world size")
+	if player.world_size != Vector2(2048.0, 2048.0):
+		_fail("Expanded map did not load its 2048 world size")
 		return
-	if camera.zoom.x < 0.625:
-		_fail("Camera did not compensate for the scaled map bounds")
+	if camera.zoom.x < 0.546:
+		_fail("Camera zoom changed unexpectedly")
 		return
 	if foundation.get_child_count() != 4:
 		_fail("Spawn foundation did not load four runtime chunks")
@@ -30,8 +30,29 @@ func _run() -> void:
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
 		return
-	if scene.get_node_or_null("World/DepthSorted/TreeNorthWest") == null:
-		_fail("Separate map props did not load")
+	if scene.get_node_or_null("World/DepthSorted/TreeNorthWest1") == null:
+		_fail("Separate pixel map props did not load")
+		return
+
+	var river_query := PhysicsPointQueryParameters2D.new()
+	river_query.position = Vector2(700.0, 1040.0)
+	river_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(river_query).is_empty():
+		_fail("River collision did not block a deep-water point")
+		return
+
+	var bridge_query := PhysicsPointQueryParameters2D.new()
+	bridge_query.position = Vector2(990.0, 1180.0)
+	bridge_query.collision_mask = 2
+	if not scene.get_world_2d().direct_space_state.intersect_point(bridge_query).is_empty():
+		_fail("Central river crossing was blocked")
+		return
+
+	var mountain_query := PhysicsPointQueryParameters2D.new()
+	mountain_query.position = Vector2(400.0, 100.0)
+	mountain_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(mountain_query).is_empty():
+		_fail("Mountain collision did not block the ridge")
 		return
 
 	player.global_position = grass.global_position

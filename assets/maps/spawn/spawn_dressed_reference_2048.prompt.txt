@@ -1,8 +1,0 @@
-Use case: stylized-concept
-Asset type: in-world dressed reference mockup for a layered 2D Godot map
-Input image: use the exact visible 2048x2048 foundation map immediately above as the fixed visual reference.
-Primary request: create a dressed-reference version of exactly the same wilderness spawn map by adding props only.
-Preserve exactly: square framing, 3/4 top-down camera, all terrain colors and textures, every path shape and branch, the turquoise stream and crossing, cliff and terrace boundaries, all clear anchor pads, every map edge, and the overall lighting. Do not crop, zoom, rotate, repaint, move, widen, narrow, or redesign any foundation feature.
-Add these natural runtime prop candidates in the same fresh hand-painted pixel-inspired style: rounded leafy trees clustered mainly near outer edges; a few small rock clusters beside terrace edges; exactly three readable patches of tall concealing grass on separate open pads; one fallen log away from the main path; two small berry-bush groups; one modest primitive stone-ring campfire/rest point near the central-upper clearing. Keep all major paths open and keep the stream crossing unobstructed.
-Composition: sparse, gameplay-readable placement with open walking space around the center and path junctions. Trees and tall props should have clear bases suitable for y-sorting. Tall grass patches must be visibly distinct from flat ground grass.
-Constraints: no houses, huts, cabins, buildings, fences, gates, windmills, crops, characters, animals, enemies, items, UI, labels, arrows, circles, outlines, text, captions, grid, watermark, or annotated planning marks. This is a natural in-world mockup, not a diagram. Do not add more than the six listed prop types.

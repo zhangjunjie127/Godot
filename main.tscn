@@ -85,7 +85,7 @@ text = "原始时代 · 第 1 日"
 
 [node name="AreaLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2
-text = "青岚岔路"
+text = "青岚台地"
 
 [node name="ActionLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2

@@ -71,7 +71,7 @@ func _add_chunks(chunks: Array) -> void:
 		sprite.centered = false
 		sprite.position = _scaled_point(data.get("position", [0, 0]))
 		sprite.scale = Vector2.ONE * _content_scale
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		foundation.add_child(sprite)
 
 
@@ -95,7 +95,7 @@ func _add_props(props: Array) -> void:
 		sprite.scale = rendered_size / texture.get_size()
 		sprite.position = Vector2(0.0, -rendered_size.y * 0.5)
 		sprite.flip_h = bool(data.get("flipH", false))
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		prop.add_child(sprite)
 
 		var collision_data: Dictionary = data.get("collision", {})
@@ -129,21 +129,29 @@ func _add_world_blockers(blockers: Array) -> void:
 
 
 func _add_collision_shape(parent: CollisionObject2D, data: Dictionary) -> void:
+	var shape_type := String(data.get("type", "rect"))
+	if shape_type == "polygon":
+		var polygon := CollisionPolygon2D.new()
+		polygon.position = _scaled_point(data.get("offset", [0, 0]))
+		var points := PackedVector2Array()
+		for value: Variant in data.get("points", []):
+			points.append(_scaled_point(value))
+		polygon.polygon = points
+		parent.add_child(polygon)
+		return
+
 	var collision := CollisionShape2D.new()
 	collision.position = _scaled_point(data.get("offset", [0, 0]))
-	var shape_type := String(data.get("type", "rect"))
 	match shape_type:
 		"circle":
 			var circle := CircleShape2D.new()
 			circle.radius = float(data.get("radius", 16.0)) * _content_scale
 			collision.shape = circle
-		"polygon":
-			var polygon := ConvexPolygonShape2D.new()
-			var points := PackedVector2Array()
-			for value: Variant in data.get("points", []):
-				points.append(_scaled_point(value))
-			polygon.points = points
-			collision.shape = polygon
+		"segment":
+			var segment := SegmentShape2D.new()
+			segment.a = _scaled_point(data.get("a", [0, 0]))
+			segment.b = _scaled_point(data.get("b", [0, 0]))
+			collision.shape = segment
 		_:
 			var rectangle := RectangleShape2D.new()
 			rectangle.size = _scaled_point(data.get("size", [32, 32]))

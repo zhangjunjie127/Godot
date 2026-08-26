@@ -116,10 +116,11 @@ z_index = 20
 layer = 100
 
 [node name="PlayerStatus" type="PanelContainer" parent="HUD"]
-offset_left = 14.0
-offset_top = 44.0
-offset_right = 326.0
-offset_bottom = 132.0
+offset_left = 8.0
+offset_top = 36.0
+offset_right = 320.0
+offset_bottom = 124.0
+scale = Vector2(0.4, 0.4)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_player_status")
 

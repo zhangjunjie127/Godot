@@ -19,6 +19,7 @@ func _run() -> void:
 	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
 	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
 	var stamina_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel")
+	var player_status: PanelContainer = scene.get_node("HUD/PlayerStatus")
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
 	var camera: Camera2D = player.get_node("Camera2D")
@@ -36,6 +37,9 @@ func _run() -> void:
 		return
 	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100":
 		_fail("Player status HUD did not initialize")
+		return
+	if player_status.scale != Vector2(0.4, 0.4) or player_status.position != Vector2(8.0, 36.0):
+		_fail("Player status HUD size or top-left placement changed")
 		return
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
 		_fail("Interactive vegetation did not load")

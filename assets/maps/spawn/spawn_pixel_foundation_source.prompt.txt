@@ -1,8 +1,0 @@
-Use case: precise-object-edit
-Asset type: foundation-only 2D Godot game map
-Input image: the visible 2048x2048 pixel-art wilderness foundation immediately above is the edit target.
-Primary request: keep the canvas square and keep the playable map extent unchanged, but reduce the visual scale of the entire foundation terrain by 50 percent so the world reads much larger relative to the player. Show roughly twice as many smaller terrain forms and finer repeated details within the same canvas.
-Preserve: the same polished crisp pixel-art language, 3/4 top-down perspective, lowered saturation, yellow-green grass, warm ochre paths, turquoise river, northern mountain ridge, terraced highlands, central spawn crossroads, river entering west-middle and exiting southeast, central stone crossing and southeast crossing, open connected routes, and foundation-only layering.
-Scale change: mountain peaks, terrace cells, cliff segments, path widths, river width, steps, exposed-ground pads, stone patterns, flower clusters and grass texture marks should each read about half their current visual size. Do not simply crop, zoom, blur, or reduce the output resolution. Recompose more smaller terrain features into the same full map area.
-Gameplay constraints: keep the central crossing and southeast crossing obvious and passable; keep the broad river non-walkable elsewhere; maintain clear ramps through cliffs and open routes to north, east, west and south.
-Do not include: trees, bushes, tall grass props, logs, campfire, buildings, houses, fences, signs, characters, animals, UI, labels, text, watermark, smooth painterly rendering, blur, or neon saturation.

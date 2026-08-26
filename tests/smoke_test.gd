@@ -30,29 +30,36 @@ func _run() -> void:
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
 		return
-	if scene.get_node_or_null("World/DepthSorted/TreeNorthWest1") == null:
-		_fail("Separate pixel map props did not load")
+	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
+		_fail("Interactive vegetation did not load")
 		return
 
-	var river_query := PhysicsPointQueryParameters2D.new()
-	river_query.position = Vector2(700.0, 1040.0)
-	river_query.collision_mask = 2
-	if scene.get_world_2d().direct_space_state.intersect_point(river_query).is_empty():
-		_fail("River collision did not block a deep-water point")
+	var lake_query := PhysicsPointQueryParameters2D.new()
+	lake_query.position = Vector2(600.0, 1600.0)
+	lake_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(lake_query).is_empty():
+		_fail("Lake collision did not block a deep-water point")
 		return
 
-	var bridge_query := PhysicsPointQueryParameters2D.new()
-	bridge_query.position = Vector2(990.0, 1180.0)
-	bridge_query.collision_mask = 2
-	if not scene.get_world_2d().direct_space_state.intersect_point(bridge_query).is_empty():
+	var ford_query := PhysicsPointQueryParameters2D.new()
+	ford_query.position = Vector2(1040.0, 1210.0)
+	ford_query.collision_mask = 2
+	if not scene.get_world_2d().direct_space_state.intersect_point(ford_query).is_empty():
 		_fail("Central river crossing was blocked")
 		return
 
 	var mountain_query := PhysicsPointQueryParameters2D.new()
-	mountain_query.position = Vector2(400.0, 100.0)
+	mountain_query.position = Vector2(500.0, 200.0)
 	mountain_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(mountain_query).is_empty():
 		_fail("Mountain collision did not block the ridge")
+		return
+
+	var crater_query := PhysicsPointQueryParameters2D.new()
+	crater_query.position = Vector2(1460.0, 600.0)
+	crater_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(crater_query).is_empty():
+		_fail("Desert crater collision did not load")
 		return
 
 	player.global_position = grass.global_position

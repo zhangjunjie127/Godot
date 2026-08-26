@@ -1,91 +1,207 @@
 {
+  "mapMode": "scene_mode",
+  "visualModel": "layered_raster",
+  "artStyle": "hand_painted",
   "contentScale": 1.0,
-  "mapSize": { "width": 2048, "height": 2048 },
-  "fullWorldTarget": { "width": 6144, "height": 6144 },
-  "chunkSize": { "width": 1024, "height": 1024 },
-  "spawn": { "x": 1010, "y": 1000 },
+  "mapSize": {
+    "width": 2048,
+    "height": 2048
+  },
+  "spawn": {
+    "x": 1420,
+    "y": 1200
+  },
   "chunks": [
-    { "id": "chunk_0_0", "image": "assets/maps/spawn/spawn_pixel_chunk_0_0.png", "position": [0, 0] },
-    { "id": "chunk_1_0", "image": "assets/maps/spawn/spawn_pixel_chunk_1_0.png", "position": [1024, 0] },
-    { "id": "chunk_0_1", "image": "assets/maps/spawn/spawn_pixel_chunk_0_1.png", "position": [0, 1024] },
-    { "id": "chunk_1_1", "image": "assets/maps/spawn/spawn_pixel_chunk_1_1.png", "position": [1024, 1024] }
+    {
+      "id": "chunk_0_0",
+      "image": "assets/maps/spawn/spawn_reference_chunk_0_0.png",
+      "position": [0, 0]
+    },
+    {
+      "id": "chunk_1_0",
+      "image": "assets/maps/spawn/spawn_reference_chunk_1_0.png",
+      "position": [1024, 0]
+    },
+    {
+      "id": "chunk_0_1",
+      "image": "assets/maps/spawn/spawn_reference_chunk_0_1.png",
+      "position": [0, 1024]
+    },
+    {
+      "id": "chunk_1_1",
+      "image": "assets/maps/spawn/spawn_reference_chunk_1_1.png",
+      "position": [1024, 1024]
+    }
   ],
-  "props": [
-    { "id": "tree_north_west_1", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 150, "y": 340, "w": 72, "h": 72, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_north_west_2", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 300, "y": 250, "w": 66, "h": 66, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_north_west_3", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 470, "y": 390, "w": 70, "h": 70, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_north_1", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 710, "y": 270, "w": 64, "h": 64, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_north_2", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1240, "y": 250, "w": 70, "h": 70, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_north_3", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1480, "y": 210, "w": 64, "h": 64, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_north_east", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1860, "y": 360, "w": 72, "h": 72, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_west_1", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 130, "y": 620, "w": 68, "h": 68, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_west_2", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 190, "y": 930, "w": 72, "h": 72, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_west_3", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 130, "y": 1250, "w": 66, "h": 66, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_west_4", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 180, "y": 1550, "w": 70, "h": 70, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_west_5", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 280, "y": 1850, "w": 64, "h": 64, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_east_1", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1900, "y": 680, "w": 68, "h": 68, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_east_2", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1830, "y": 920, "w": 72, "h": 72, "flipH": true, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_east_3", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1900, "y": 1210, "w": 66, "h": 66, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_east_4", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1870, "y": 1510, "w": 70, "h": 70, "flipH": true, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_east_5", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1800, "y": 1830, "w": 64, "h": 64, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_inner_west", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 620, "y": 650, "w": 68, "h": 68, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_inner_north_east", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1320, "y": 520, "w": 72, "h": 72, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_inner_east", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1530, "y": 760, "w": 66, "h": 66, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_inner_south_west", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 650, "y": 1360, "w": 70, "h": 70, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "tree_inner_south", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1060, "y": 1780, "w": 68, "h": 68, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "tree_inner_south_east", "image": "assets/maps/spawn/props/pixel-tree/prop-muted.png", "x": 1480, "y": 1460, "w": 72, "h": 72, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "fallen_log", "image": "assets/maps/spawn/props/pixel-fallen-log/prop-muted.png", "x": 600, "y": 820, "w": 72, "h": 72, "rotation": -8, "collision": { "type": "rect", "size": [50, 14], "offset": [0, -12] } },
-    { "id": "campfire", "image": "assets/maps/spawn/props/pixel-campfire/prop-muted.png", "x": 1650, "y": 1220, "w": 40, "h": 28, "collision": { "type": "circle", "radius": 11, "offset": [0, -5] } },
-    { "id": "berry_bush_north", "image": "assets/maps/spawn/props/pixel-berry-bush/prop-muted.png", "x": 1480, "y": 720, "w": 36, "h": 29, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "berry_bush_south", "image": "assets/maps/spawn/props/pixel-berry-bush/prop-muted.png", "x": 650, "y": 1430, "w": 34, "h": 28, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "rocks_north_west", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 430, "y": 310, "w": 34, "h": 26, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_north", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 890, "y": 300, "w": 32, "h": 24, "flipH": true, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_north_east", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 1590, "y": 360, "w": 34, "h": 26, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_west", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 350, "y": 740, "w": 30, "h": 23, "flipH": true, "collision": { "type": "circle", "radius": 7, "offset": [0, -4] } },
-    { "id": "rocks_center", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 1180, "y": 760, "w": 32, "h": 24, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_east", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 1760, "y": 1050, "w": 34, "h": 26, "flipH": true, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_south_west", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 420, "y": 1710, "w": 32, "h": 24, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } },
-    { "id": "rocks_south_east", "image": "assets/maps/spawn/props/pixel-rock-cluster/prop.png", "x": 1570, "y": 1780, "w": 34, "h": 26, "flipH": true, "collision": { "type": "circle", "radius": 8, "offset": [0, -4] } }
-  ],
+  "props": [],
   "grass": [
-    { "id": "west_grass", "image": "assets/maps/spawn/props/pixel-tall-grass/prop-muted.png", "x": 680, "y": 540, "w": 74, "h": 54 },
-    { "id": "east_grass", "image": "assets/maps/spawn/props/pixel-tall-grass/prop-muted.png", "x": 1550, "y": 540, "w": 70, "h": 51 },
-    { "id": "mid_grass", "image": "assets/maps/spawn/props/pixel-tall-grass/prop-muted.png", "x": 1480, "y": 1000, "w": 72, "h": 52 },
-    { "id": "south_grass", "image": "assets/maps/spawn/props/pixel-tall-grass/prop-muted.png", "x": 690, "y": 1600, "w": 76, "h": 55 }
+    {
+      "id": "west_grass",
+      "image": "assets/maps/props/vegetation/plants/plant_green_broadleaf.png",
+      "x": 480,
+      "y": 760,
+      "w": 96,
+      "h": 74
+    },
+    {
+      "id": "north_grass",
+      "image": "assets/maps/props/vegetation/plants/plant_yellow_blade.png",
+      "x": 760,
+      "y": 480,
+      "w": 90,
+      "h": 72
+    },
+    {
+      "id": "east_grass",
+      "image": "assets/maps/props/vegetation/plants/plant_blue_broadleaf.png",
+      "x": 1450,
+      "y": 1080,
+      "w": 96,
+      "h": 72
+    },
+    {
+      "id": "south_east_grass",
+      "image": "assets/maps/props/vegetation/plants/plant_green_broadleaf.png",
+      "x": 1580,
+      "y": 1340,
+      "w": 94,
+      "h": 72
+    }
   ],
   "blockers": [
-    { "id": "mountain_north_west", "type": "polygon", "points": [[0, 0], [970, 0], [970, 175], [900, 220], [820, 175], [720, 230], [620, 190], [520, 250], [410, 180], [310, 265], [210, 220], [120, 330], [0, 365]] },
-    { "id": "mountain_north_east", "type": "polygon", "points": [[1060, 0], [1660, 0], [1620, 150], [1530, 215], [1430, 170], [1330, 225], [1230, 180], [1130, 230], [1060, 185]] },
-    { "id": "mountain_west_mid", "type": "polygon", "points": [[0, 250], [170, 260], [250, 420], [200, 585], [100, 720], [0, 700]] },
-    { "id": "mountain_west_lower", "type": "polygon", "points": [[0, 900], [120, 900], [205, 1070], [180, 1240], [80, 1390], [0, 1370]] },
-    { "id": "mountain_west_south", "type": "polygon", "points": [[0, 1450], [125, 1460], [190, 1600], [120, 1760], [0, 1810]] },
-    { "id": "mountain_east_upper", "type": "polygon", "points": [[1880, 245], [2048, 180], [2048, 780], [1940, 750], [1870, 610]] },
-    { "id": "river_west_1", "type": "polygon", "points": [[0, 745], [250, 835], [540, 955], [520, 1045], [225, 945], [0, 850]] },
-    { "id": "river_west_2", "type": "polygon", "points": [[520, 955], [900, 1080], [950, 1135], [930, 1215], [520, 1045]] },
-    { "id": "river_middle", "type": "polygon", "points": [[1035, 1180], [1180, 1300], [1300, 1435], [1240, 1495], [1100, 1390], [990, 1230]] },
-    { "id": "river_east", "type": "polygon", "points": [[1400, 1535], [1550, 1660], [2048, 1870], [2048, 2000], [1520, 1780], [1360, 1610]] },
-    { "id": "cliff_upper_left_1", "type": "segment", "a": [250, 420], "b": [470, 495] },
-    { "id": "cliff_upper_left_2", "type": "segment", "a": [530, 500], "b": [820, 550] },
-    { "id": "cliff_upper_center_left", "type": "segment", "a": [820, 360], "b": [955, 390] },
-    { "id": "cliff_upper_center_right", "type": "segment", "a": [1065, 390], "b": [1300, 325] },
-    { "id": "cliff_upper_right", "type": "segment", "a": [1300, 325], "b": [1510, 300] },
-    { "id": "cliff_mid_left_1", "type": "segment", "a": [285, 650], "b": [555, 620] },
-    { "id": "cliff_mid_left_2", "type": "segment", "a": [610, 620], "b": [820, 665] },
-    { "id": "cliff_mid_right_1", "type": "segment", "a": [1110, 565], "b": [1360, 525] },
-    { "id": "cliff_mid_right_2", "type": "segment", "a": [1360, 525], "b": [1535, 605] },
-    { "id": "cliff_mid_right_3", "type": "segment", "a": [1540, 640], "b": [1500, 760] },
-    { "id": "cliff_right_mid", "type": "segment", "a": [1510, 825], "b": [1820, 830] },
-    { "id": "cliff_lower_left", "type": "segment", "a": [250, 1240], "b": [650, 1220] },
-    { "id": "cliff_lower_center_left", "type": "segment", "a": [300, 1500], "b": [710, 1445] },
-    { "id": "cliff_lower_center_right", "type": "segment", "a": [1240, 1300], "b": [1570, 1285] },
-    { "id": "cliff_lower_right", "type": "segment", "a": [1430, 1600], "b": [1830, 1660] },
-    { "id": "cliff_bottom_left", "type": "segment", "a": [270, 1840], "b": [700, 1790] }
+    {
+      "id": "mountain_north_west",
+      "type": "polygon",
+      "points": [[0, 0], [1050, 0], [1030, 250], [970, 290], [920, 350], [850, 335], [790, 375], [720, 345], [650, 375], [575, 350], [515, 380], [445, 350], [365, 410], [295, 405], [245, 465], [185, 445], [145, 530], [80, 555], [0, 630]]
+    },
+    {
+      "id": "mountain_north_east",
+      "type": "polygon",
+      "points": [[1000, 0], [2048, 0], [2048, 570], [1960, 565], [1900, 525], [1830, 505], [1770, 455], [1700, 430], [1635, 380], [1560, 355], [1495, 385], [1420, 395], [1350, 365], [1270, 390], [1190, 400], [1115, 435], [1040, 405], [1000, 345]]
+    },
+    {
+      "id": "mountain_west_wall",
+      "type": "polygon",
+      "points": [[0, 520], [165, 500], [235, 555], [285, 650], [250, 735], [205, 820], [150, 900], [105, 1025], [0, 1065]]
+    },
+    {
+      "id": "mountain_east_wall",
+      "type": "polygon",
+      "points": [[1890, 490], [2048, 470], [2048, 1390], [1995, 1375], [1950, 1310], [1900, 1240], [1875, 1160], [1885, 1075], [1845, 995], [1860, 910], [1825, 825], [1845, 735], [1815, 660], [1840, 575]]
+    },
+    {
+      "id": "mountain_south_east",
+      "type": "polygon",
+      "points": [[1810, 1250], [1900, 1235], [2048, 1320], [2048, 2048], [1290, 2048], [1325, 1960], [1420, 1910], [1510, 1840], [1590, 1775], [1640, 1685], [1710, 1605], [1760, 1500], [1785, 1390]]
+    },
+    {
+      "id": "lake_deep_water",
+      "type": "polygon",
+      "points": [[0, 1110], [130, 1070], [270, 1065], [355, 1130], [390, 1230], [455, 1315], [565, 1375], [700, 1415], [825, 1415], [925, 1370], [1015, 1405], [1110, 1470], [1250, 1495], [1390, 1475], [1480, 1535], [1470, 1635], [1380, 1695], [1260, 1730], [1180, 1785], [1110, 1870], [1000, 1925], [865, 1915], [760, 1960], [610, 1950], [500, 1900], [410, 1830], [300, 1815], [205, 1760], [115, 1785], [0, 1735]]
+    },
+    {
+      "id": "river_head",
+      "type": "polygon",
+      "points": [[835, 315], [885, 320], [905, 365], [885, 405], [905, 445], [880, 470], [840, 440], [850, 395]]
+    },
+    {
+      "id": "river_upper",
+      "type": "polygon",
+      "points": [[905, 475], [950, 480], [970, 530], [1025, 560], [1050, 630], [1095, 675], [1135, 735], [1145, 815], [1090, 820], [1080, 755], [1040, 710], [1005, 650], [995, 595], [950, 555], [915, 525]]
+    },
+    {
+      "id": "river_middle",
+      "type": "polygon",
+      "points": [[1090, 800], [1150, 815], [1145, 890], [1115, 970], [1105, 1050], [1075, 1135], [1020, 1130], [1035, 1050], [1050, 970], [1080, 900]]
+    },
+    {
+      "id": "river_before_ford",
+      "type": "polygon",
+      "points": [[1020, 1115], [1085, 1120], [1080, 1175], [1060, 1190], [1010, 1180]]
+    },
+    {
+      "id": "river_after_ford",
+      "type": "polygon",
+      "points": [[1010, 1240], [1080, 1240], [1085, 1300], [1120, 1355], [1150, 1405], [1110, 1445], [1060, 1400], [1020, 1325]]
+    },
+    {
+      "id": "desert_crater",
+      "type": "circle",
+      "radius": 115,
+      "offset": [1460, 600]
+    },
+    {
+      "id": "west_upper_cliff",
+      "type": "segment",
+      "a": [170, 850],
+      "b": [420, 845]
+    },
+    {
+      "id": "central_mesa_front",
+      "type": "segment",
+      "a": [560, 845],
+      "b": [925, 920]
+    },
+    {
+      "id": "central_mesa_east_front",
+      "type": "segment",
+      "a": [925, 920],
+      "b": [1010, 835]
+    },
+    {
+      "id": "west_lower_cliff",
+      "type": "segment",
+      "a": [340, 1215],
+      "b": [775, 1325]
+    },
+    {
+      "id": "east_cave_mesa_front",
+      "type": "segment",
+      "a": [1280, 1080],
+      "b": [1730, 1175]
+    },
+    {
+      "id": "south_east_mesa_front",
+      "type": "segment",
+      "a": [1450, 1450],
+      "b": [1780, 1535]
+    }
   ],
   "zones": [
-    { "id": "spawn_zone", "type": "spawn", "x": 1010, "y": 1000, "radius": 72 },
-    { "id": "camp_rest_zone", "type": "rest", "x": 1650, "y": 1220, "radius": 90 },
-    { "id": "central_crossing", "type": "crossing", "x": 995, "y": 1180, "radius": 70 },
-    { "id": "south_east_crossing", "type": "crossing", "x": 1360, "y": 1530, "radius": 60 },
-    { "id": "north_highlands", "type": "highland", "x": 1030, "y": 260, "radius": 180 }
+    {
+      "id": "spawn_zone",
+      "type": "spawn",
+      "x": 1420,
+      "y": 1200,
+      "radius": 72
+    },
+    {
+      "id": "central_ford",
+      "type": "crossing",
+      "x": 1040,
+      "y": 1210,
+      "radius": 54
+    },
+    {
+      "id": "north_shallows",
+      "type": "crossing",
+      "x": 895,
+      "y": 455,
+      "radius": 36
+    },
+    {
+      "id": "desert_crater_zone",
+      "type": "landmark",
+      "x": 1460,
+      "y": 600,
+      "radius": 150
+    },
+    {
+      "id": "south_coast_cave",
+      "type": "landmark",
+      "x": 1500,
+      "y": 1580,
+      "radius": 100
+    }
   ]
 }

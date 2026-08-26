@@ -71,7 +71,7 @@ func _add_chunks(chunks: Array) -> void:
 		sprite.centered = false
 		sprite.position = _scaled_point(data.get("position", [0, 0]))
 		sprite.scale = Vector2.ONE * _content_scale
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		foundation.add_child(sprite)
 
 
@@ -95,7 +95,7 @@ func _add_props(props: Array) -> void:
 		sprite.scale = rendered_size / texture.get_size()
 		sprite.position = Vector2(0.0, -rendered_size.y * 0.5)
 		sprite.flip_h = bool(data.get("flipH", false))
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		prop.add_child(sprite)
 
 		var collision_data: Dictionary = data.get("collision", {})

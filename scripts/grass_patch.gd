@@ -24,7 +24,7 @@ func _ready() -> void:
 		sprite.texture = patch_texture
 		sprite.scale = Vector2.ONE * scale_factor
 		sprite.position = Vector2(0.0, -float(patch_texture.get_height()) * scale_factor * 0.5)
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		add_child(sprite)
 
 	body_entered.connect(_on_body_entered)

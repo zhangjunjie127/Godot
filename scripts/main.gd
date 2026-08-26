@@ -30,10 +30,12 @@ func _on_movement_state_changed(state_label: String) -> void:
 
 
 func _get_area_name(position: Vector2) -> String:
-	if position.y < 420.0:
-		return "北部山岭"
-	if position.y > 1220.0 and position.x < 1024.0:
-		return "溪谷西岸"
-	if position.y > 1220.0:
-		return "溪谷东岸"
-	return "青岚台地"
+	if position.y < 500.0:
+		return "北部巨像山脉"
+	if position.x > 1200.0 and position.y < 950.0:
+		return "东部荒漠"
+	if position.y > 1450.0:
+		return "南部碧湾"
+	if position.x < 950.0:
+		return "西部台地"
+	return "中央河谷"

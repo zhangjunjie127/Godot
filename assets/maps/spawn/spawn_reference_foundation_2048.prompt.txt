@@ -1,0 +1,1 @@
+Runtime normalization of spawn_reference_foundation_source.png to a 2048 x 2048 square using high-quality Lanczos resampling. No creative changes were made after image generation; composition, colors, landmarks, and full-bleed extension are preserved.

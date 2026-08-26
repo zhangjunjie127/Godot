@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vdytiemr60ql"
-path="res://.godot/imported/spawn_pixel_chunk_1_0.png-8d7000830bb4c0d4a47fca55504b96c5.ctex"
+uid="uid://cuj2jxwl20e4v"
+path="res://.godot/imported/spawn_reference_chunk_0_1.png-066e7e9e4b5ef893a5be8c5ec37d10bf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/spawn/spawn_pixel_chunk_1_0.png"
-dest_files=["res://.godot/imported/spawn_pixel_chunk_1_0.png-8d7000830bb4c0d4a47fca55504b96c5.ctex"]
+source_file="res://assets/maps/spawn/spawn_reference_chunk_0_1.png"
+dest_files=["res://.godot/imported/spawn_reference_chunk_0_1.png-066e7e9e4b5ef893a5be8c5ec37d10bf.ctex"]
 
 [params]
 

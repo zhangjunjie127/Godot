@@ -1,1 +1,10 @@
-Edit the supplied reference map into a full-bleed square 3/4 top-down hand-painted fantasy game map. Fill only the white or blank exterior areas by naturally extending the existing terrain. Preserve the original composition, perspective, line quality, lighting, color palette, saturation, and all major landmarks: the northern mountain ranges, giant reclining stone statue, eastern desert crater, winding central turquoise river, southern lake and coastline, layered grassy mesas, caves, paths, ford stones, waterfalls, and rocky perimeter. Do not redesign, recolor, crop, remove, move, or replace those landmarks. Do not add buildings, houses, characters, creatures, trees, UI, labels, text, borders, or blank margins. The result must be a seamless full-bleed game map with no white pixels or empty corners.
+Use case: style-transfer
+Asset type: final high-resolution 2D Godot foundation map
+Input image: edit the simplified map shown immediately above.
+Primary request: simplify it one more level while preserving the exact composition, topology, perspective, landmark positions, paths, river, lake, caves, statue, crater, plateaus, crossings and coastline.
+Target style: clean non-realistic graphic game map made from broad flat color blocks and crisp vector-like raster edges.
+Specific change: reduce mountain and cliff detail substantially. Merge small isolated rock peaks into larger simple mountain silhouettes where possible. Each mountain or cliff surface should use only a base color, one shadow plane and one highlight plane. Remove most facet lines, tiny stones, cracks, speckles, grass marks and surface noise. Keep paths and shorelines clean and readable.
+Color: preserve the fresh green, warm sand, gray-brown rock and turquoise water palette, but use fewer shades and no muddy mixed colors.
+Sharpness: high-definition, hard clean terrain edges, no blur, no soft focus, no painterly brush texture.
+Constraints: full-bleed square; no new objects or landmarks; no trees, buildings, characters, creatures, UI, labels, text, border or white areas; do not crop or alter navigable layout.
+Avoid: realism, painterly rendering, micro-texture, excessive mountain facets, noisy gradients, haze, blur and over-detailing.

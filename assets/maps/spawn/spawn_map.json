@@ -1,7 +1,7 @@
 {
   "mapMode": "scene_mode",
   "visualModel": "layered_raster",
-  "artStyle": "hand_painted",
+  "artStyle": "stylized_flat",
   "contentScale": 1.0,
   "mapSize": {
     "width": 2048,

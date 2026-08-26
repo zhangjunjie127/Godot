@@ -22,6 +22,7 @@ func _run() -> void:
 	var player_status: PanelContainer = scene.get_node("HUD/PlayerStatus")
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
+	var depth_sorted: Node2D = scene.get_node("World/DepthSorted")
 	var camera: Camera2D = player.get_node("Camera2D")
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
@@ -43,6 +44,13 @@ func _run() -> void:
 		return
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
 		_fail("Interactive vegetation did not load")
+		return
+	var vegetation_count := 0
+	for child: Node in depth_sorted.get_children():
+		if child.name.begins_with("Vegetation"):
+			vegetation_count += 1
+	if vegetation_count != 33:
+		_fail("All 33 vegetation assets did not load")
 		return
 
 	var lake_query := PhysicsPointQueryParameters2D.new()

@@ -10,15 +10,18 @@ const BLOCKER_LAYER := 2
 @onready var metadata_root: Node = $GameplayMetadata
 @onready var player: CharacterBody2D = $DepthSorted/Player
 
+var _content_scale := 1.0
+
 
 func _ready() -> void:
 	var manifest := _read_manifest()
 	if manifest.is_empty():
 		return
 
+	_content_scale = float(manifest.get("contentScale", 1.0))
 	var map_size := _map_size(manifest)
 	player.world_size = map_size
-	player.global_position = _point(manifest.get("spawn", {}))
+	player.global_position = _scaled_point(manifest.get("spawn", {}))
 	_apply_camera_limits(map_size)
 	_add_chunks(manifest.get("chunks", []))
 	_add_props(manifest.get("props", []))
@@ -41,7 +44,7 @@ func _read_manifest() -> Dictionary:
 
 func _map_size(manifest: Dictionary) -> Vector2:
 	var value: Dictionary = manifest.get("mapSize", {})
-	return Vector2(float(value.get("width", 2048.0)), float(value.get("height", 2048.0)))
+	return Vector2(float(value.get("width", 2048.0)), float(value.get("height", 2048.0))) * _content_scale
 
 
 func _apply_camera_limits(map_size: Vector2) -> void:
@@ -50,6 +53,10 @@ func _apply_camera_limits(map_size: Vector2) -> void:
 	camera.limit_top = 0
 	camera.limit_right = int(map_size.x)
 	camera.limit_bottom = int(map_size.y)
+	var viewport_size := get_viewport_rect().size
+	var minimum_zoom := maxf(viewport_size.x / map_size.x, viewport_size.y / map_size.y)
+	var zoom_value := maxf(camera.zoom.x, minimum_zoom)
+	camera.zoom = Vector2.ONE * zoom_value
 
 
 func _add_chunks(chunks: Array) -> void:
@@ -62,7 +69,8 @@ func _add_chunks(chunks: Array) -> void:
 		sprite.name = String(data.get("id", "Chunk")).to_pascal_case()
 		sprite.texture = texture
 		sprite.centered = false
-		sprite.position = _point(data.get("position", [0, 0]))
+		sprite.position = _scaled_point(data.get("position", [0, 0]))
+		sprite.scale = Vector2.ONE * _content_scale
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		foundation.add_child(sprite)
 
@@ -76,11 +84,11 @@ func _add_props(props: Array) -> void:
 
 		var prop := Node2D.new()
 		prop.name = String(data.get("id", "Prop")).to_pascal_case()
-		prop.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0)))
+		prop.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale
 		prop.rotation_degrees = float(data.get("rotation", 0.0))
 		depth_sorted.add_child(prop)
 
-		var rendered_size := Vector2(float(data.get("w", texture.get_width())), float(data.get("h", texture.get_height())))
+		var rendered_size := Vector2(float(data.get("w", texture.get_width())), float(data.get("h", texture.get_height()))) * _content_scale
 		var sprite := Sprite2D.new()
 		sprite.name = "Sprite2D"
 		sprite.texture = texture
@@ -104,8 +112,8 @@ func _add_grass_patches(patches: Array) -> void:
 	for data: Dictionary in patches:
 		var grass := GRASS_PATCH_SCRIPT.new() as Area2D
 		grass.name = String(data.get("id", "Grass")).to_pascal_case()
-		grass.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0)))
-		grass.set("patch_size", Vector2(float(data.get("w", 240.0)), float(data.get("h", 180.0))))
+		grass.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale
+		grass.set("patch_size", Vector2(float(data.get("w", 240.0)), float(data.get("h", 180.0))) * _content_scale)
 		grass.set("patch_texture", load(_resource_path(String(data.get("image", "")))) as Texture2D)
 		depth_sorted.add_child(grass)
 
@@ -122,23 +130,23 @@ func _add_world_blockers(blockers: Array) -> void:
 
 func _add_collision_shape(parent: CollisionObject2D, data: Dictionary) -> void:
 	var collision := CollisionShape2D.new()
-	collision.position = _point(data.get("offset", [0, 0]))
+	collision.position = _scaled_point(data.get("offset", [0, 0]))
 	var shape_type := String(data.get("type", "rect"))
 	match shape_type:
 		"circle":
 			var circle := CircleShape2D.new()
-			circle.radius = float(data.get("radius", 16.0))
+			circle.radius = float(data.get("radius", 16.0)) * _content_scale
 			collision.shape = circle
 		"polygon":
 			var polygon := ConvexPolygonShape2D.new()
 			var points := PackedVector2Array()
 			for value: Variant in data.get("points", []):
-				points.append(_point(value))
+				points.append(_scaled_point(value))
 			polygon.points = points
 			collision.shape = polygon
 		_:
 			var rectangle := RectangleShape2D.new()
-			rectangle.size = _point(data.get("size", [32, 32]))
+			rectangle.size = _scaled_point(data.get("size", [32, 32]))
 			collision.shape = rectangle
 	parent.add_child(collision)
 
@@ -147,9 +155,9 @@ func _add_zone_markers(zones: Array) -> void:
 	for data: Dictionary in zones:
 		var marker := Marker2D.new()
 		marker.name = String(data.get("id", "Zone")).to_pascal_case()
-		marker.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0)))
+		marker.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale
 		marker.set_meta("zone_type", String(data.get("type", "")))
-		marker.set_meta("radius", float(data.get("radius", 0.0)))
+		marker.set_meta("radius", float(data.get("radius", 0.0)) * _content_scale)
 		metadata_root.add_child(marker)
 
 
@@ -164,3 +172,7 @@ func _point(value: Variant) -> Vector2:
 	if value is Array and value.size() >= 2:
 		return Vector2(float(value[0]), float(value[1]))
 	return Vector2.ZERO
+
+
+func _scaled_point(value: Variant) -> Vector2:
+	return _point(value) * _content_scale

@@ -17,6 +17,13 @@ func _run() -> void:
 	var action: Label = scene.get_node("HUD/TopBar/Margin/Row/ActionLabel")
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
+	var camera: Camera2D = player.get_node("Camera2D")
+	if player.world_size != Vector2(1024.0, 1024.0):
+		_fail("Map content scale did not update the playable world size")
+		return
+	if camera.zoom.x < 0.625:
+		_fail("Camera did not compensate for the scaled map bounds")
+		return
 	if foundation.get_child_count() != 4:
 		_fail("Spawn foundation did not load four runtime chunks")
 		return

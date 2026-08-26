@@ -2,6 +2,8 @@ extends CharacterBody2D
 
 signal concealment_changed(is_concealed: bool)
 signal movement_state_changed(state_label: String)
+signal health_changed(current: float, maximum: float)
+signal stamina_changed(current: float, maximum: float)
 
 const STATE_IDLE := "站立"
 const STATE_WALK := "行走"
@@ -18,6 +20,11 @@ const STATE_CRAWL := "爬行"
 @export var jump_duration := 0.55
 @export var world_size := Vector2(2048.0, 2048.0)
 @export var is_local_player := true
+@export var max_health := 100.0
+@export var max_stamina := 100.0
+@export var stamina_drain_per_second := 28.0
+@export var stamina_recovery_per_second := 20.0
+@export_range(0.0, 1.0) var stamina_resume_ratio := 0.2
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -28,9 +35,14 @@ var _jump_elapsed := 0.0
 var _jump_offset := 0.0
 var _jump_was_pressed := false
 var _movement_state := STATE_IDLE
+var _is_exhausted := false
+var health := 100.0
+var stamina := 100.0
 
 
 func _ready() -> void:
+	health = max_health
+	stamina = max_stamina
 	_ensure_action("player_run", KEY_SHIFT)
 	_ensure_action("player_jump", KEY_SPACE)
 	_ensure_action("player_crouch", KEY_C)
@@ -55,7 +67,9 @@ func _physics_process(delta: float) -> void:
 
 	var crawling := Input.is_action_pressed("player_crawl") and not _is_jumping
 	var crouching := Input.is_action_pressed("player_crouch") and not crawling and not _is_jumping
-	var running := Input.is_action_pressed("player_run") and direction.length_squared() > 0.0 and not crouching and not crawling
+	var wants_to_run := Input.is_action_pressed("player_run") and direction.length_squared() > 0.0 and not crouching and not crawling
+	var running := wants_to_run and not _is_exhausted
+	_update_stamina(delta, running)
 	var speed := move_speed
 	if crawling:
 		speed = crawl_speed
@@ -97,6 +111,22 @@ func set_local_player(value: bool) -> void:
 	_apply_concealment_visual()
 
 
+func set_health(value: float) -> void:
+	var next_value := clampf(value, 0.0, max_health)
+	if is_equal_approx(health, next_value):
+		return
+	health = next_value
+	health_changed.emit(health, max_health)
+
+
+func take_damage(amount: float) -> void:
+	set_health(health - maxf(amount, 0.0))
+
+
+func restore_health(amount: float) -> void:
+	set_health(health + maxf(amount, 0.0))
+
+
 func _apply_concealment_visual() -> void:
 	visible = is_local_player or not _is_concealed
 	sprite.self_modulate = Color(1.0, 1.0, 1.0, 0.58 if _is_concealed else 1.0)
@@ -136,6 +166,19 @@ func _update_jump(delta: float) -> void:
 	if progress >= 1.0:
 		_is_jumping = false
 		_jump_offset = 0.0
+
+
+func _update_stamina(delta: float, running: bool) -> void:
+	var change := -stamina_drain_per_second if running else stamina_recovery_per_second
+	var next_value := clampf(stamina + change * delta, 0.0, max_stamina)
+	if not is_equal_approx(stamina, next_value):
+		stamina = next_value
+		stamina_changed.emit(stamina, max_stamina)
+
+	if stamina <= 0.0:
+		_is_exhausted = true
+	elif _is_exhausted and stamina >= max_stamina * stamina_resume_ratio:
+		_is_exhausted = false
 
 
 func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool, crawling: bool) -> String:

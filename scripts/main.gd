@@ -4,13 +4,21 @@ extends Node2D
 @onready var area_label: Label = $HUD/TopBar/Margin/Row/AreaLabel
 @onready var action_label: Label = $HUD/TopBar/Margin/Row/ActionLabel
 @onready var concealment_label: Label = $HUD/TopBar/Margin/Row/ConcealmentLabel
+@onready var health_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar
+@onready var health_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel
+@onready var stamina_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar
+@onready var stamina_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel
 
 
 func _ready() -> void:
 	player.concealment_changed.connect(_on_concealment_changed)
 	player.movement_state_changed.connect(_on_movement_state_changed)
+	player.health_changed.connect(_on_health_changed)
+	player.stamina_changed.connect(_on_stamina_changed)
 	_on_concealment_changed(false)
 	_on_movement_state_changed("站立")
+	_on_health_changed(player.health, player.max_health)
+	_on_stamina_changed(player.stamina, player.max_stamina)
 
 
 func _process(_delta: float) -> void:
@@ -27,6 +35,18 @@ func _on_concealment_changed(is_concealed: bool) -> void:
 
 func _on_movement_state_changed(state_label: String) -> void:
 	action_label.text = "动作：" + state_label
+
+
+func _on_health_changed(current: float, maximum: float) -> void:
+	health_bar.max_value = maximum
+	health_bar.value = current
+	health_label.text = "生命 %d / %d" % [roundi(current), roundi(maximum)]
+
+
+func _on_stamina_changed(current: float, maximum: float) -> void:
+	stamina_bar.max_value = maximum
+	stamina_bar.value = current
+	stamina_label.text = "体力 %d / %d" % [roundi(current), roundi(maximum)]
 
 
 func _get_area_name(position: Vector2) -> String:

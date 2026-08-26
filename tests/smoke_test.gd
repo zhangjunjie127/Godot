@@ -15,6 +15,10 @@ func _run() -> void:
 	var grass: Area2D = scene.get_node("World/DepthSorted/EastGrass")
 	var status: Label = scene.get_node("HUD/TopBar/Margin/Row/ConcealmentLabel")
 	var action: Label = scene.get_node("HUD/TopBar/Margin/Row/ActionLabel")
+	var health_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar")
+	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
+	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
+	var stamina_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel")
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
 	var camera: Camera2D = player.get_node("Camera2D")
@@ -29,6 +33,9 @@ func _run() -> void:
 		return
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
+		return
+	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100":
+		_fail("Player status HUD did not initialize")
 		return
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
 		_fail("Interactive vegetation did not load")
@@ -92,13 +99,24 @@ func _run() -> void:
 	Input.action_press("player_run")
 	Input.action_press("ui_right")
 	await physics_frame
+	await physics_frame
 	if action.text != "动作：奔跑":
 		_fail("Run state did not activate")
+		return
+	if stamina_bar.value >= stamina_bar.max_value:
+		_fail("Running did not consume stamina")
 		return
 	Input.action_release("ui_right")
 	Input.action_release("player_run")
 
+	player.take_damage(25.0)
+	await process_frame
+	if not is_equal_approx(health_bar.value, 75.0) or health_label.text != "生命 75 / 100":
+		_fail("Health HUD did not track player damage")
+		return
+
 	Input.action_press("player_crouch")
+	await physics_frame
 	await physics_frame
 	if action.text != "动作：蹲伏":
 		_fail("Crouch state did not activate")
@@ -107,6 +125,7 @@ func _run() -> void:
 
 	Input.action_press("player_crawl")
 	await physics_frame
+	await physics_frame
 	if action.text != "动作：爬行":
 		_fail("Crawl state did not activate")
 		return
@@ -114,12 +133,13 @@ func _run() -> void:
 
 	Input.action_press("player_jump")
 	await physics_frame
+	await physics_frame
 	if action.text != "动作：跳跃":
 		_fail("Jump state did not activate")
 		return
 	Input.action_release("player_jump")
 
-	print("SMOKE_OK: concealment plus run, jump, crouch and crawl states")
+	print("SMOKE_OK: player status HUD, stamina, concealment and movement states")
 	quit()
 
 

@@ -1,10 +1,10 @@
-Use case: style-transfer
-Asset type: final high-resolution 2D Godot foundation map
-Input image: edit the simplified map shown immediately above.
-Primary request: simplify it one more level while preserving the exact composition, topology, perspective, landmark positions, paths, river, lake, caves, statue, crater, plateaus, crossings and coastline.
-Target style: clean non-realistic graphic game map made from broad flat color blocks and crisp vector-like raster edges.
-Specific change: reduce mountain and cliff detail substantially. Merge small isolated rock peaks into larger simple mountain silhouettes where possible. Each mountain or cliff surface should use only a base color, one shadow plane and one highlight plane. Remove most facet lines, tiny stones, cracks, speckles, grass marks and surface noise. Keep paths and shorelines clean and readable.
-Color: preserve the fresh green, warm sand, gray-brown rock and turquoise water palette, but use fewer shades and no muddy mixed colors.
-Sharpness: high-definition, hard clean terrain edges, no blur, no soft focus, no painterly brush texture.
-Constraints: full-bleed square; no new objects or landmarks; no trees, buildings, characters, creatures, UI, labels, text, border or white areas; do not crop or alter navigable layout.
-Avoid: realism, painterly rendering, micro-texture, excessive mountain facets, noisy gradients, haze, blur and over-detailing.
+Use case: precise-object-edit
+Asset type: full-bleed playable 2D Godot map foundation
+Input image: the supplied reference image is the edit target.
+Primary request: fill only the white exterior around the existing map so the square canvas becomes a continuous game map. Extend the nearest existing muted olive grass, restrained rocky mountains, turquoise water, sandy shoreline and low cliffs naturally to the canvas edges.
+Strict invariants: preserve the existing non-white map's 3/4 perspective, composition, silhouette, mountain ranges, giant stone statue, desert crater, paths, plateaus, caves, river course, waterfalls, coast, lake, colors, lighting, soft stylized rendering and detail density. Do not redesign, recolor, crop, zoom or move landmarks.
+Detail rule: keep the newly filled exterior sparse and quiet, using broad terrain areas and only enough rock or cliff forms to connect the edge naturally.
+Constraints: no white, blank, transparent or framed area; no trees, houses, buildings, characters, creatures, UI, labels, text, borders or new landmarks.
+Avoid: photorealism, extra micro-texture, busy decoration, added paths, added caves, added statues, added craters, dramatic recoloring, blur, haze and over-detailing.
+
+Postprocess: the original reference's non-white map area was composited back over the generated outpaint with a slightly eroded soft mask. This removes the original white anti-aliased halo while preserving the reference interior and using generated pixels only for the missing exterior.

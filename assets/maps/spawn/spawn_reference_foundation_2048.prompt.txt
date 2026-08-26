@@ -1,1 +1,1 @@
-Runtime normalization of the accepted simplified source to 2048 x 2048 with Lanczos resampling and a restrained edge-preserving unsharp pass. The map is then split into four 1024 x 1024 runtime chunks without creative changes.
+Runtime normalization of the accepted 1254 x 1254 full-bleed composite to 2048 x 2048 using high-quality Lanczos resampling. The result is split into four 1024 x 1024 runtime chunks without additional creative changes.

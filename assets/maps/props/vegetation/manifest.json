@@ -1,0 +1,934 @@
+{
+  "source": "assets/maps/props/vegetation/_source/vegetation_sheet.png",
+  "source_size": {
+    "width": 1560,
+    "height": 1602
+  },
+  "canvas_bbox": {
+    "x": 197,
+    "y": 191,
+    "width": 1148,
+    "height": 1216
+  },
+  "grid": {
+    "rows": 8,
+    "columns": 6
+  },
+  "background_removed": "only edge-connected RGB values 0-12 converted to transparent",
+  "outline_policy": "original white outline preserved",
+  "anchor_policy": "bottom_center",
+  "items": [
+    {
+      "id": "tree_jungle_vines",
+      "category": "trees",
+      "row": 0,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/trees/tree_jungle_vines.png",
+      "source_bbox": {
+        "x": 199,
+        "y": 194,
+        "width": 156,
+        "height": 178
+      },
+      "size": {
+        "width": 168,
+        "height": 190
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_broadleaf_cluster",
+      "category": "trees",
+      "row": 0,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/trees/tree_broadleaf_cluster.png",
+      "source_bbox": {
+        "x": 417,
+        "y": 202,
+        "width": 136,
+        "height": 161
+      },
+      "size": {
+        "width": 148,
+        "height": 173
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_tropical_palm_large",
+      "category": "trees",
+      "row": 0,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/trees/tree_tropical_palm_large.png",
+      "source_bbox": {
+        "x": 601,
+        "y": 202,
+        "width": 156,
+        "height": 170
+      },
+      "size": {
+        "width": 168,
+        "height": 182
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_ancient_canopy",
+      "category": "trees",
+      "row": 0,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/trees/tree_ancient_canopy.png",
+      "source_bbox": {
+        "x": 799,
+        "y": 194,
+        "width": 156,
+        "height": 178
+      },
+      "size": {
+        "width": 168,
+        "height": 190
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_giant_leaf",
+      "category": "trees",
+      "row": 0,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/trees/tree_giant_leaf.png",
+      "source_bbox": {
+        "x": 1007,
+        "y": 211,
+        "width": 154,
+        "height": 153
+      },
+      "size": {
+        "width": 166,
+        "height": 165
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_conifer",
+      "category": "trees",
+      "row": 0,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/trees/tree_conifer.png",
+      "source_bbox": {
+        "x": 1215,
+        "y": 194,
+        "width": 108,
+        "height": 175
+      },
+      "size": {
+        "width": 120,
+        "height": 187
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_palm_small",
+      "category": "trees",
+      "row": 1,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/trees/tree_palm_small.png",
+      "source_bbox": {
+        "x": 200,
+        "y": 402,
+        "width": 146,
+        "height": 169
+      },
+      "size": {
+        "width": 158,
+        "height": 181
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_layered_canopy",
+      "category": "trees",
+      "row": 1,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/trees/tree_layered_canopy.png",
+      "source_bbox": {
+        "x": 399,
+        "y": 406,
+        "width": 146,
+        "height": 171
+      },
+      "size": {
+        "width": 158,
+        "height": 183
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_baobab",
+      "category": "trees",
+      "row": 1,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/trees/tree_baobab.png",
+      "source_bbox": {
+        "x": 597,
+        "y": 407,
+        "width": 158,
+        "height": 170
+      },
+      "size": {
+        "width": 170,
+        "height": 182
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_banana",
+      "category": "trees",
+      "row": 1,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/trees/tree_banana.png",
+      "source_bbox": {
+        "x": 801,
+        "y": 402,
+        "width": 154,
+        "height": 174
+      },
+      "size": {
+        "width": 166,
+        "height": 186
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_cone_crown",
+      "category": "trees",
+      "row": 1,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/trees/tree_cone_crown.png",
+      "source_bbox": {
+        "x": 1010,
+        "y": 411,
+        "width": 138,
+        "height": 162
+      },
+      "size": {
+        "width": 150,
+        "height": 174
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "tree_twisted_vine",
+      "category": "trees",
+      "row": 1,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/trees/tree_twisted_vine.png",
+      "source_bbox": {
+        "x": 1201,
+        "y": 402,
+        "width": 143,
+        "height": 175
+      },
+      "size": {
+        "width": 155,
+        "height": 187
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_tree_tall",
+      "category": "deadwood",
+      "row": 2,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_tree_tall.png",
+      "source_bbox": {
+        "x": 228,
+        "y": 607,
+        "width": 116,
+        "height": 134
+      },
+      "size": {
+        "width": 128,
+        "height": 146
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_tree_bent",
+      "category": "deadwood",
+      "row": 2,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_tree_bent.png",
+      "source_bbox": {
+        "x": 419,
+        "y": 610,
+        "width": 116,
+        "height": 127
+      },
+      "size": {
+        "width": 128,
+        "height": 139
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_hollow_stump",
+      "category": "deadwood",
+      "row": 2,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_hollow_stump.png",
+      "source_bbox": {
+        "x": 615,
+        "y": 615,
+        "width": 122,
+        "height": 123
+      },
+      "size": {
+        "width": 134,
+        "height": 135
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_bone_root",
+      "category": "deadwood",
+      "row": 2,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_bone_root.png",
+      "source_bbox": {
+        "x": 802,
+        "y": 607,
+        "width": 124,
+        "height": 123
+      },
+      "size": {
+        "width": 136,
+        "height": 135
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_fallen_log",
+      "category": "deadwood",
+      "row": 2,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_fallen_log.png",
+      "source_bbox": {
+        "x": 995,
+        "y": 618,
+        "width": 166,
+        "height": 115
+      },
+      "size": {
+        "width": 178,
+        "height": 127
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "deadwood_stump_cluster",
+      "category": "deadwood",
+      "row": 2,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/deadwood/deadwood_stump_cluster.png",
+      "source_bbox": {
+        "x": 1227,
+        "y": 613,
+        "width": 89,
+        "height": 120
+      },
+      "size": {
+        "width": 101,
+        "height": 132
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_rounded_boulder",
+      "category": "rocks",
+      "row": 3,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/rocks/rock_rounded_boulder.png",
+      "source_bbox": {
+        "x": 231,
+        "y": 767,
+        "width": 112,
+        "height": 97
+      },
+      "size": {
+        "width": 124,
+        "height": 109
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_pointed_boulder",
+      "category": "rocks",
+      "row": 3,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/rocks/rock_pointed_boulder.png",
+      "source_bbox": {
+        "x": 420,
+        "y": 763,
+        "width": 99,
+        "height": 104
+      },
+      "size": {
+        "width": 111,
+        "height": 116
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_layered_slab",
+      "category": "rocks",
+      "row": 3,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/rocks/rock_layered_slab.png",
+      "source_bbox": {
+        "x": 603,
+        "y": 774,
+        "width": 140,
+        "height": 93
+      },
+      "size": {
+        "width": 152,
+        "height": 105
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_mossy_boulder",
+      "category": "rocks",
+      "row": 3,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/rocks/rock_mossy_boulder.png",
+      "source_bbox": {
+        "x": 816,
+        "y": 769,
+        "width": 118,
+        "height": 96
+      },
+      "size": {
+        "width": 130,
+        "height": 108
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_stone_pillar",
+      "category": "rocks",
+      "row": 3,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/rocks/rock_stone_pillar.png",
+      "source_bbox": {
+        "x": 1030,
+        "y": 763,
+        "width": 98,
+        "height": 104
+      },
+      "size": {
+        "width": 110,
+        "height": 116
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "rock_spiral_stone",
+      "category": "rocks",
+      "row": 3,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/rocks/rock_spiral_stone.png",
+      "source_bbox": {
+        "x": 1214,
+        "y": 769,
+        "width": 118,
+        "height": 97
+      },
+      "size": {
+        "width": 130,
+        "height": 109
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_red_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_red_cluster.png",
+      "source_bbox": {
+        "x": 234,
+        "y": 891,
+        "width": 105,
+        "height": 103
+      },
+      "size": {
+        "width": 117,
+        "height": 115
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_purple_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_purple_cluster.png",
+      "source_bbox": {
+        "x": 425,
+        "y": 894,
+        "width": 108,
+        "height": 99
+      },
+      "size": {
+        "width": 120,
+        "height": 111
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_orange_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_orange_cluster.png",
+      "source_bbox": {
+        "x": 627,
+        "y": 892,
+        "width": 91,
+        "height": 102
+      },
+      "size": {
+        "width": 103,
+        "height": 114
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_shelf_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_shelf_cluster.png",
+      "source_bbox": {
+        "x": 812,
+        "y": 900,
+        "width": 120,
+        "height": 91
+      },
+      "size": {
+        "width": 132,
+        "height": 103
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_blue_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_blue_cluster.png",
+      "source_bbox": {
+        "x": 1025,
+        "y": 891,
+        "width": 89,
+        "height": 103
+      },
+      "size": {
+        "width": 101,
+        "height": 115
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "mushroom_violet_cluster",
+      "category": "mushrooms",
+      "row": 4,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/mushrooms/mushroom_violet_cluster.png",
+      "source_bbox": {
+        "x": 1219,
+        "y": 891,
+        "width": 114,
+        "height": 103
+      },
+      "size": {
+        "width": 126,
+        "height": 115
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_yellow_blade",
+      "category": "plants",
+      "row": 5,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/plants/plant_yellow_blade.png",
+      "source_bbox": {
+        "x": 222,
+        "y": 1024,
+        "width": 123,
+        "height": 97
+      },
+      "size": {
+        "width": 135,
+        "height": 109
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_green_broadleaf",
+      "category": "plants",
+      "row": 5,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/plants/plant_green_broadleaf.png",
+      "source_bbox": {
+        "x": 407,
+        "y": 1024,
+        "width": 135,
+        "height": 100
+      },
+      "size": {
+        "width": 147,
+        "height": 112
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_cattails",
+      "category": "plants",
+      "row": 5,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/plants/plant_cattails.png",
+      "source_bbox": {
+        "x": 623,
+        "y": 1024,
+        "width": 111,
+        "height": 97
+      },
+      "size": {
+        "width": 123,
+        "height": 109
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_blue_broadleaf",
+      "category": "plants",
+      "row": 5,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/plants/plant_blue_broadleaf.png",
+      "source_bbox": {
+        "x": 802,
+        "y": 1024,
+        "width": 137,
+        "height": 99
+      },
+      "size": {
+        "width": 149,
+        "height": 111
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_red_flowers",
+      "category": "plants",
+      "row": 5,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/plants/plant_red_flowers.png",
+      "source_bbox": {
+        "x": 997,
+        "y": 1024,
+        "width": 115,
+        "height": 99
+      },
+      "size": {
+        "width": 127,
+        "height": 111
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "plant_white_flowers",
+      "category": "plants",
+      "row": 5,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/plants/plant_white_flowers.png",
+      "source_bbox": {
+        "x": 1194,
+        "y": 1026,
+        "width": 122,
+        "height": 98
+      },
+      "size": {
+        "width": 134,
+        "height": 110
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "campfire_stone_ring",
+      "category": "camp",
+      "row": 6,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/camp/campfire_stone_ring.png",
+      "source_bbox": {
+        "x": 219,
+        "y": 1158,
+        "width": 120,
+        "height": 94
+      },
+      "size": {
+        "width": 132,
+        "height": 106
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "camp_log_pile",
+      "category": "camp",
+      "row": 6,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/camp/camp_log_pile.png",
+      "source_bbox": {
+        "x": 408,
+        "y": 1162,
+        "width": 116,
+        "height": 91
+      },
+      "size": {
+        "width": 128,
+        "height": 103
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "structure_wooden_plank_platform",
+      "category": "structures",
+      "row": 6,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/structures/structure_wooden_plank_platform.png",
+      "source_bbox": {
+        "x": 582,
+        "y": 1164,
+        "width": 172,
+        "height": 94
+      },
+      "size": {
+        "width": 184,
+        "height": 106
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "ruin_broken_stone_pipe",
+      "category": "ruins",
+      "row": 6,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/ruins/ruin_broken_stone_pipe.png",
+      "source_bbox": {
+        "x": 792,
+        "y": 1158,
+        "width": 142,
+        "height": 100
+      },
+      "size": {
+        "width": 154,
+        "height": 112
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "ruin_mossy_stone_ring",
+      "category": "ruins",
+      "row": 6,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/ruins/ruin_mossy_stone_ring.png",
+      "source_bbox": {
+        "x": 978,
+        "y": 1168,
+        "width": 136,
+        "height": 92
+      },
+      "size": {
+        "width": 148,
+        "height": 104
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "ruin_crashed_aircraft",
+      "category": "ruins",
+      "row": 6,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/ruins/ruin_crashed_aircraft.png",
+      "source_bbox": {
+        "x": 1156,
+        "y": 1158,
+        "width": 187,
+        "height": 102
+      },
+      "size": {
+        "width": 199,
+        "height": 114
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "hazard_carnivorous_plant",
+      "category": "hazards",
+      "row": 7,
+      "column": 0,
+      "file": "assets/maps/props/vegetation/hazards/hazard_carnivorous_plant.png",
+      "source_bbox": {
+        "x": 230,
+        "y": 1284,
+        "width": 107,
+        "height": 122
+      },
+      "size": {
+        "width": 119,
+        "height": 134
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "hazard_ground_vines",
+      "category": "hazards",
+      "row": 7,
+      "column": 1,
+      "file": "assets/maps/props/vegetation/hazards/hazard_ground_vines.png",
+      "source_bbox": {
+        "x": 376,
+        "y": 1293,
+        "width": 140,
+        "height": 109
+      },
+      "size": {
+        "width": 152,
+        "height": 121
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "hazard_thorny_vine",
+      "category": "hazards",
+      "row": 7,
+      "column": 2,
+      "file": "assets/maps/props/vegetation/hazards/hazard_thorny_vine.png",
+      "source_bbox": {
+        "x": 551,
+        "y": 1284,
+        "width": 132,
+        "height": 122
+      },
+      "size": {
+        "width": 144,
+        "height": 134
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "ruin_stone_gate",
+      "category": "ruins",
+      "row": 7,
+      "column": 3,
+      "file": "assets/maps/props/vegetation/ruins/ruin_stone_gate.png",
+      "source_bbox": {
+        "x": 756,
+        "y": 1284,
+        "width": 143,
+        "height": 122
+      },
+      "size": {
+        "width": 155,
+        "height": 134
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "ruin_stone_platform",
+      "category": "ruins",
+      "row": 7,
+      "column": 4,
+      "file": "assets/maps/props/vegetation/ruins/ruin_stone_platform.png",
+      "source_bbox": {
+        "x": 932,
+        "y": 1327,
+        "width": 136,
+        "height": 79
+      },
+      "size": {
+        "width": 148,
+        "height": 91
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    },
+    {
+      "id": "bones_large_skeleton",
+      "category": "bones",
+      "row": 7,
+      "column": 5,
+      "file": "assets/maps/props/vegetation/bones/bones_large_skeleton.png",
+      "source_bbox": {
+        "x": 1099,
+        "y": 1309,
+        "width": 242,
+        "height": 96
+      },
+      "size": {
+        "width": 254,
+        "height": 108
+      },
+      "anchor": "bottom_center",
+      "transparent_padding": 6
+    }
+  ]
+}

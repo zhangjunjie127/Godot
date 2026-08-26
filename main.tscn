@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
-[ext_resource type="Script" path="res://scripts/grass_patch.gd" id="3_grass"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="4_player"]
-[ext_resource type="Texture2D" path="res://assets/characters/player_male.png" id="5_player_texture"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/characters/player_male.png" id="4_player_texture"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -14,66 +13,41 @@ height = 24.0
 script = ExtResource("1_main")
 
 [node name="World" type="Node2D" parent="."]
+script = ExtResource("2_world")
 
 [node name="Foundation" type="Node2D" parent="World"]
 z_index = -20
-script = ExtResource("2_world")
 
-[node name="DecorativeVegetation" type="Node2D" parent="World"]
-z_index = -10
-script = ExtResource("2_world")
-details_only = true
+[node name="Collision" type="Node2D" parent="World"]
 
-[node name="InteractivePlants" type="Node2D" parent="World"]
+[node name="DepthSorted" type="Node2D" parent="World"]
+y_sort_enabled = true
 
-[node name="WestGrass" type="Area2D" parent="World/InteractivePlants"]
-position = Vector2(900, 1070)
-z_index = 6
-script = ExtResource("3_grass")
-patch_size = Vector2(210, 104)
-
-[node name="EastGrass" type="Area2D" parent="World/InteractivePlants"]
-position = Vector2(1210, 1150)
-z_index = 6
-script = ExtResource("3_grass")
-patch_size = Vector2(176, 112)
-
-[node name="SouthGrass" type="Area2D" parent="World/InteractivePlants"]
-position = Vector2(1040, 1370)
-z_index = 6
-script = ExtResource("3_grass")
-patch_size = Vector2(250, 120)
-
-[node name="Actors" type="Node2D" parent="World"]
-
-[node name="Player" type="CharacterBody2D" parent="World/Actors"]
-position = Vector2(1030, 1190)
-z_index = 5
+[node name="Player" type="CharacterBody2D" parent="World/DepthSorted"]
+position = Vector2(1024, 900)
 collision_layer = 1
-collision_mask = 0
-script = ExtResource("4_player")
+collision_mask = 2
+script = ExtResource("3_player")
 
-[node name="Sprite2D" type="Sprite2D" parent="World/Actors/Player"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player"]
 texture_filter = 1
 position = Vector2(0, -32)
-texture = ExtResource("5_player_texture")
+texture = ExtResource("4_player_texture")
 scale = Vector2(0.5, 0.5)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Actors/Player"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/Player"]
 position = Vector2(0, -10)
 shape = SubResource("CapsuleShape2D_player")
 
-[node name="Camera2D" type="Camera2D" parent="World/Actors/Player"]
+[node name="Camera2D" type="Camera2D" parent="World/DepthSorted/Player"]
 position = Vector2(0, -44)
 zoom = Vector2(0.546, 0.546)
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 limit_left = 0
 limit_top = 0
-limit_right = 6144
-limit_bottom = 6144
-
-[node name="Buildings" type="Node2D" parent="World"]
+limit_right = 2048
+limit_bottom = 2048
 
 [node name="ForegroundOcclusion" type="Node2D" parent="World"]
 z_index = 20
@@ -111,7 +85,7 @@ text = "原始时代 · 第 1 日"
 
 [node name="AreaLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2
-text = "青岚平原"
+text = "青岚岔路"
 
 [node name="ActionLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2

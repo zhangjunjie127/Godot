@@ -11,10 +11,21 @@ func _run() -> void:
 	root.add_child(scene)
 	await physics_frame
 
-	var player: CharacterBody2D = scene.get_node("World/Actors/Player")
-	var grass: Area2D = scene.get_node("World/InteractivePlants/EastGrass")
+	var player: CharacterBody2D = scene.get_node("World/DepthSorted/Player")
+	var grass: Area2D = scene.get_node("World/DepthSorted/EastGrass")
 	var status: Label = scene.get_node("HUD/TopBar/Margin/Row/ConcealmentLabel")
 	var action: Label = scene.get_node("HUD/TopBar/Margin/Row/ActionLabel")
+	var foundation: Node2D = scene.get_node("World/Foundation")
+	var blockers: Node2D = scene.get_node("World/Collision")
+	if foundation.get_child_count() != 4:
+		_fail("Spawn foundation did not load four runtime chunks")
+		return
+	if blockers.get_child_count() < 2:
+		_fail("Spawn map collision blockers did not load")
+		return
+	if scene.get_node_or_null("World/DepthSorted/TreeNorthWest") == null:
+		_fail("Separate map props did not load")
+		return
 
 	player.global_position = grass.global_position
 	await physics_frame

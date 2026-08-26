@@ -1,0 +1,183 @@
+{
+  "input": "assets\\maps\\spawn\\props\\raw\\spawn_compact_props_2x2_alpha.png",
+  "rows": 2,
+  "cols": 2,
+  "threshold": 100,
+  "edge_threshold": 150,
+  "component_mode": "largest",
+  "component_padding": 8,
+  "min_component_area": 200,
+  "edge_touch_margin": 0,
+  "accepted": [
+    {
+      "index": 0,
+      "label": "rock-cluster",
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 41281,
+      "selected_component_bbox": [
+        155,
+        285,
+        477,
+        503
+      ],
+      "crop_bbox": [
+        155,
+        285,
+        477,
+        503
+      ],
+      "padded_crop_bbox": [
+        147,
+        277,
+        485,
+        511
+      ],
+      "edge_touch": false,
+      "output_size": [
+        338,
+        234
+      ],
+      "status": "accepted",
+      "image": "assets\\maps\\spawn\\props\\rock-cluster\\prop.png"
+    },
+    {
+      "index": 1,
+      "label": "tall-grass",
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        627,
+        0,
+        1254,
+        627
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 109020,
+      "selected_component_bbox": [
+        31,
+        194,
+        491,
+        538
+      ],
+      "crop_bbox": [
+        31,
+        194,
+        491,
+        538
+      ],
+      "padded_crop_bbox": [
+        23,
+        186,
+        499,
+        546
+      ],
+      "edge_touch": false,
+      "output_size": [
+        476,
+        360
+      ],
+      "status": "accepted",
+      "image": "assets\\maps\\spawn\\props\\tall-grass\\prop.png"
+    },
+    {
+      "index": 2,
+      "label": "berry-bush",
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        627,
+        627,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 74278,
+      "selected_component_bbox": [
+        138,
+        106,
+        507,
+        403
+      ],
+      "crop_bbox": [
+        138,
+        106,
+        507,
+        403
+      ],
+      "padded_crop_bbox": [
+        130,
+        98,
+        515,
+        411
+      ],
+      "edge_touch": false,
+      "output_size": [
+        385,
+        313
+      ],
+      "status": "accepted",
+      "image": "assets\\maps\\spawn\\props\\berry-bush\\prop.png"
+    },
+    {
+      "index": 3,
+      "label": "campfire",
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        627,
+        627,
+        1254,
+        1254
+      ],
+      "component_mode": "largest",
+      "component_count": 1,
+      "selected_component_area": 66336,
+      "selected_component_bbox": [
+        72,
+        160,
+        451,
+        404
+      ],
+      "crop_bbox": [
+        72,
+        160,
+        451,
+        404
+      ],
+      "padded_crop_bbox": [
+        64,
+        152,
+        459,
+        412
+      ],
+      "edge_touch": false,
+      "output_size": [
+        395,
+        260
+      ],
+      "status": "accepted",
+      "image": "assets\\maps\\spawn\\props\\campfire\\prop.png"
+    }
+  ],
+  "rejected": [],
+  "edge_touch_props": []
+}

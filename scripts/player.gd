@@ -16,7 +16,7 @@ const STATE_CRAWL := "爬行"
 @export var crawl_speed := 46.0
 @export var jump_height := 30.0
 @export var jump_duration := 0.55
-@export var world_size := Vector2(6144.0, 6144.0)
+@export var world_size := Vector2(2048.0, 2048.0)
 @export var is_local_player := true
 
 @onready var sprite: Sprite2D = $Sprite2D

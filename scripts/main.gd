@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var player: CharacterBody2D = $World/Actors/Player
+@onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var area_label: Label = $HUD/TopBar/Margin/Row/AreaLabel
 @onready var action_label: Label = $HUD/TopBar/Margin/Row/ActionLabel
 @onready var concealment_label: Label = $HUD/TopBar/Margin/Row/ConcealmentLabel
@@ -30,10 +30,10 @@ func _on_movement_state_changed(state_label: String) -> void:
 
 
 func _get_area_name(position: Vector2) -> String:
-	if position.x >= 4920.0:
-		return "近海"
-	if position.x >= 4540.0:
-		return "东海岸"
-	if position.x < 1280.0 and position.y < 900.0:
+	if position.y < 520.0:
 		return "北部林地"
-	return "青岚平原"
+	if position.y > 1420.0 and position.x < 960.0:
+		return "溪谷西岸"
+	if position.y > 1420.0:
+		return "溪谷东岸"
+	return "青岚岔路"

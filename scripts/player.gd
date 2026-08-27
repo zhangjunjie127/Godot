@@ -10,7 +10,14 @@ const STATE_WALK := "行走"
 const STATE_RUN := "奔跑"
 const STATE_JUMP := "跳跃"
 const STATE_CROUCH := "蹲伏"
+const STATE_PRONE := "趴下"
 const STATE_CRAWL := "爬行"
+
+const WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
+const CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
+const PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_male_prone_idle/sheet-transparent.png")
+const CRAWL_TEXTURE := preload("res://assets/characters/player_male_crawl/sheet-transparent.png")
+const JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/sheet-transparent.png")
 
 @export var move_speed := 170.0
 @export var run_speed := 280.0
@@ -36,7 +43,8 @@ var _jump_offset := 0.0
 var _jump_was_pressed := false
 var _movement_state := STATE_IDLE
 var _is_exhausted := false
-var _walk_animation_elapsed := 0.0
+var _animation_elapsed := 0.0
+var _active_animation := ""
 var _facing_row := 0
 var health := 100.0
 var stamina := 100.0
@@ -136,7 +144,7 @@ func _apply_concealment_visual() -> void:
 
 func _draw() -> void:
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
-	var shadow_width := 1.35 if _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
+	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
 	draw_set_transform(Vector2(3.0, -1.0), 0.0, Vector2(shadow_width * jump_scale, 0.34 * jump_scale))
 	draw_circle(Vector2.ZERO, 15.0, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
@@ -187,7 +195,7 @@ func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool,
 	if _is_jumping:
 		return STATE_JUMP
 	if crawling:
-		return STATE_CRAWL
+		return STATE_CRAWL if direction.length_squared() > 0.0 else STATE_PRONE
 	if crouching:
 		return STATE_CROUCH
 	if direction.length_squared() == 0.0:
@@ -206,34 +214,72 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 	var moving := direction.length_squared() > 0.0
 	if moving:
 		_facing_row = _direction_row(direction)
-		_walk_animation_elapsed += delta
+
+	var animation := _animation_name(moving)
+	if animation != _active_animation:
+		_active_animation = animation
+		_animation_elapsed = 0.0
 	else:
-		_walk_animation_elapsed = 0.0
-	var frame_duration := 0.09 if _movement_state == STATE_RUN else 0.14
-	var frame_column := floori(_walk_animation_elapsed / frame_duration) % 4 if moving else 0
+		_animation_elapsed += delta
+
+	var frame_column := _animation_frame(animation, moving)
+	sprite.texture = _animation_texture(animation)
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
-	var time := Time.get_ticks_msec()
 	var sprite_position := Vector2(0.0, -32.0 - _jump_offset)
 	var sprite_scale := Vector2(0.44, 0.44)
 	match _movement_state:
-		STATE_WALK:
-			sprite_position.y += sin(time * 0.018) * 1.5
-		STATE_RUN:
-			sprite_position.y += sin(time * 0.029) * 2.6
-			sprite_scale = Vector2(0.46, 0.42)
-		STATE_JUMP:
-			var stretch := 1.0 + (_jump_offset / maxf(jump_height, 0.01)) * 0.08
-			sprite_scale = Vector2(0.44 / stretch, 0.44 * stretch)
 		STATE_CROUCH:
-			sprite_position.y = -24.0 + (sin(time * 0.014) * 0.6 if moving else 0.0)
-			sprite_scale = Vector2(0.46, 0.34)
-		STATE_CRAWL:
-			sprite_position.y = -16.0 + (sin(time * 0.018) * 0.4 if moving else 0.0)
-			sprite_scale = Vector2(0.55, 0.23)
+			sprite_position.y = -29.0
+		STATE_PRONE, STATE_CRAWL:
+			sprite_position.y = -22.0
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale
+
+
+func _animation_name(moving: bool) -> String:
+	match _movement_state:
+		STATE_CROUCH:
+			return "crouch_move" if moving else "crouch_idle"
+		STATE_PRONE:
+			return "prone_idle"
+		STATE_CRAWL:
+			return "crawl_move"
+		STATE_JUMP:
+			return "jump"
+		STATE_RUN:
+			return "run"
+		STATE_WALK:
+			return "walk"
+		_:
+			return "idle"
+
+
+func _animation_texture(animation: String) -> Texture2D:
+	match animation:
+		"crouch_idle", "crouch_move":
+			return CROUCH_TEXTURE
+		"prone_idle":
+			return PRONE_IDLE_TEXTURE
+		"crawl_move":
+			return CRAWL_TEXTURE
+		"jump":
+			return JUMP_TEXTURE
+		_:
+			return WALK_TEXTURE
+
+
+func _animation_frame(animation: String, moving: bool) -> int:
+	if animation == "jump":
+		var progress := clampf(_jump_elapsed / maxf(jump_duration, 0.01), 0.0, 0.999)
+		return mini(floori(progress * 4.0), 3)
+	if animation == "prone_idle":
+		return floori(_animation_elapsed / 0.24) % 4
+	if not moving:
+		return 0
+	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
+	return floori(_animation_elapsed / frame_duration) % 4
 
 
 func _direction_row(direction: Vector2) -> int:

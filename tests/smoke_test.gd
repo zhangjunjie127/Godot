@@ -203,21 +203,52 @@ func _run() -> void:
 	if action.text != "蹲伏":
 		_fail("Crouch state did not activate")
 		return
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crouch/sheet-transparent.png":
+		_fail("Crouch state did not use its animation sheet")
+		return
+	if player_sprite.scale != Vector2(0.44, 0.44):
+		_fail("Crouch animation fell back to sprite squashing")
+		return
 	Input.action_release("player_crouch")
 
 	Input.action_press("player_crawl")
-	await physics_frame
-	await physics_frame
-	if action.text != "爬行":
-		_fail("Crawl state did not activate")
+	for _frame: int in range(18):
+		await physics_frame
+	if action.text != "趴下":
+		_fail("Prone state did not activate")
 		return
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_prone_idle/sheet-transparent.png":
+		_fail("Stationary prone state did not use its idle animation")
+		return
+	if player_sprite.frame_coords.x == 0:
+		_fail("Prone idle animation did not advance")
+		return
+	Input.action_press("ui_right")
+	for _frame: int in range(12):
+		await physics_frame
+	if action.text != "爬行":
+		_fail("Prone movement did not enter the crawl state")
+		return
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crawl/sheet-transparent.png":
+		_fail("Moving prone state did not use its crawl animation")
+		return
+	if player_sprite.frame_coords.x == 0:
+		_fail("Crawl animation did not advance")
+		return
+	Input.action_release("ui_right")
 	Input.action_release("player_crawl")
 
 	Input.action_press("player_jump")
-	await physics_frame
-	await physics_frame
+	for _frame: int in range(10):
+		await physics_frame
 	if action.text != "跳跃":
 		_fail("Jump state did not activate")
+		return
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_jump/sheet-transparent.png":
+		_fail("Jump state did not use its animation sheet")
+		return
+	if player_sprite.frame_coords.x == 0:
+		_fail("Jump animation did not advance")
 		return
 	Input.action_release("player_jump")
 
@@ -251,7 +282,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: movement directions, 15/5/10 clock, HUD, minimap, backpack and era skill tree")
+	print("SMOKE_OK: full player action animations, 15/5/10 clock, HUD, minimap, backpack and era skill tree")
 	quit()
 
 

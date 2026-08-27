@@ -3,13 +3,17 @@ extends Control
 const CLOUD_TEXTURE := preload("res://assets/weather/clouds/sheet-transparent.png")
 const CELL_SIZE := 192
 const CLOUD_COUNT := 4
+const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
 @export var weather_path: NodePath
+@export var day_night_cycle_path: NodePath
 @export var random_seed := 20260827
 
 var current_weather := "下雨"
 var clouds: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
+
+@onready var day_night_cycle = get_node_or_null(day_night_cycle_path)
 
 
 func _ready() -> void:
@@ -44,8 +48,8 @@ func advance_clouds(seconds: float) -> void:
 		if position.x < -float(CELL_SIZE) * float(cloud["scale"]):
 			position.x = viewport_size.x + _rng.randf_range(20.0, 180.0)
 			position.y = _rng.randf_range(10.0, viewport_size.y * 0.58)
-			cloud["cell"] = _rng.randi_range(0, 8)
-		cloud["position"] = position
+			cloud["cell"] = _random_cloud_cell()
+			cloud["position"] = position
 	queue_redraw()
 
 
@@ -63,8 +67,8 @@ func _populate_clouds() -> void:
 				_rng.randf_range(10.0, viewport_size.y * 0.58)
 			),
 			"speed": _rng.randf_range(5.0, 12.0),
-			"scale": _rng.randf_range(0.28, 0.48),
-			"cell": _rng.randi_range(0, 8),
+			"scale": _rng.randf_range(0.34, 0.54),
+			"cell": _random_cloud_cell(),
 		})
 	queue_redraw()
 
@@ -72,6 +76,7 @@ func _populate_clouds() -> void:
 func _draw() -> void:
 	if not visible:
 		return
+	var tint := get_cloud_tint()
 	for cloud: Dictionary in clouds:
 		var cell := int(cloud["cell"])
 		var source := Rect2(Vector2(cell % 3, floori(float(cell) / 3.0)) * CELL_SIZE, Vector2.ONE * CELL_SIZE)
@@ -80,8 +85,18 @@ func _draw() -> void:
 			CLOUD_TEXTURE,
 			Rect2((cloud["position"] as Vector2) - draw_size * 0.5, draw_size),
 			source,
-			Color(1.0, 1.0, 1.0, 0.70)
+			Color(tint.r, tint.g, tint.b, 0.70)
 		)
+
+
+func get_cloud_tint() -> Color:
+	if day_night_cycle != null and day_night_cycle.environment != null:
+		return day_night_cycle.environment.color
+	return Color.WHITE
+
+
+func _random_cloud_cell() -> int:
+	return BLOCK_CLOUD_CELLS[_rng.randi_range(0, BLOCK_CLOUD_CELLS.size() - 1)]
 
 
 func _effect_size() -> Vector2:

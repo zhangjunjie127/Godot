@@ -355,6 +355,8 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 		STATE_IDLE:
 			if _idle_elapsed >= seated_idle_delay and not torch_equipped:
 				sprite_position.y = -22.0
+	if moving and _facing_row == 0 and (_movement_state == STATE_WALK or _movement_state == STATE_RUN):
+		sprite_position.y += 4.0
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale

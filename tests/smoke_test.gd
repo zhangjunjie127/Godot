@@ -59,6 +59,7 @@ func _run() -> void:
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
 	var world_info: PanelContainer = scene.get_node("HUD/WorldInfo")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
+	var map_name_label: Label = scene.get_node("HUD/MinimapPanel/Margin/Minimap/AreaLabel")
 	var minimap_panel: PanelContainer = scene.get_node("HUD/MinimapPanel")
 	var forecast_popup: PanelContainer = scene.get_node("HUD/ForecastPopup")
 	var forecast_label: Label = scene.get_node("HUD/ForecastPopup/Margin/ForecastLabel")
@@ -121,8 +122,12 @@ func _run() -> void:
 		if control.scale != Vector2(0.5, 0.5):
 			_fail("UI root was not scaled to 50%: " + String(path))
 			return
-	if world_info.position.y <= minimap_panel.position.y:
-		_fail("Era, day and area panel was not moved below the minimap")
+	var minimap_visible_bottom := minimap_panel.global_position.y + minimap_panel.size.y * minimap_panel.get_global_transform().get_scale().y
+	if not is_equal_approx(world_info.global_position.y, minimap_visible_bottom):
+		_fail("Era and day panel is not tight against the minimap border")
+		return
+	if map_name_label.text != "西部台地" or map_name_label.get_parent() != minimap:
+		_fail("West Plateau map name was not placed inside the minimap")
 		return
 	if not forecast_popup.visible or not forecast_label.text.contains("未来 1 日") or weather.get_forecast(2).size() != 2:
 		_fail("Two-day scheduled weather forecast did not initialize")
@@ -176,6 +181,9 @@ func _run() -> void:
 		longest_screen_trail = maxf(longest_screen_trail, float(drop["trail_length"]))
 	if largest_screen_drop > 2.9 or longest_screen_trail < 12.0:
 		_fail("Screen droplets were not halved or did not gain sliding trails")
+		return
+	if screen_rain.TRAIL_DIRECTION_Y >= 0.0:
+		_fail("Screen droplet trails do not point upward")
 		return
 	weather.start_weather_event("晴朗", "半天")
 	weather.advance_visual_seconds(1.0)
@@ -351,6 +359,10 @@ func _run() -> void:
 	if cloud_layer.get_active_cloud_count() != 4:
 		_fail("Clear weather did not show randomized clouds")
 		return
+	for cloud: Dictionary in cloud_layer.clouds:
+		if not cloud_layer.BLOCK_CLOUD_CELLS.has(int(cloud["cell"])):
+			_fail("Thin cloud frames were not removed")
+			return
 	cloud_layer.set_weather("下雨")
 	if cloud_layer.get_active_cloud_count() != 0:
 		_fail("Cloud layer remained active outside clear weather")
@@ -403,11 +415,17 @@ func _run() -> void:
 	if not _icon_is_ready(phase_icon, "夜晚"):
 		_fail("Night icon did not update beside the minimap")
 		return
-	if day_night_tint.color.r >= 0.2 or not night_vision.visible or not player.torch_equipped:
+	if not is_equal_approx(day_night_tint.color.r, 0.07) or not night_vision.visible or not player.torch_equipped:
 		_fail("Night did not become nearly black or auto-equip the backpack torch")
+		return
+	if night_vision.NO_TORCH_RADIUS != 41.0 or night_vision.TORCH_RADIUS != 82.0:
+		_fail("Torch and no-torch visibility ranges were not halved")
 		return
 	if night_vision.get_visibility_radius(true) != night_vision.get_visibility_radius(false) * 2.0:
 		_fail("Torch night visibility radius is not exactly double")
+		return
+	if float(night_vision.material.get_shader_parameter("softness_px")) < 50.0:
+		_fail("Torch visibility transition is too narrow")
 		return
 	await physics_frame
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_torch_hold/sheet-transparent.png":
@@ -432,6 +450,9 @@ func _run() -> void:
 	await process_frame
 	if not _icon_is_ready(phase_icon, "黄昏"):
 		_fail("Dusk icon did not update beside the minimap")
+		return
+	if not cloud_layer.get_cloud_tint().is_equal_approx(day_night_tint.color):
+		_fail("Dusk and night tint did not affect the cloud layer")
 		return
 	day_night_cycle.set_game_time(1, 7.0)
 	await process_frame
@@ -517,6 +538,13 @@ func _run() -> void:
 		_fail("Player left-facing animation is reversed")
 		return
 	Input.action_release("ui_left")
+	Input.action_press("ui_down")
+	await physics_frame
+	await physics_frame
+	if player_sprite.frame_coords.y != 0 or player_sprite.position.y != -28.0:
+		_fail("Down-facing movement does not overlap the character with its shadow")
+		return
+	Input.action_release("ui_down")
 
 	player.set_health(60.0)
 	await process_frame
@@ -666,6 +694,9 @@ func _run() -> void:
 	scene._toggle_world_map()
 	if not world_map_overlay.visible or inventory_overlay.visible or skill_overlay.visible or world_map.player != player:
 		_fail("M world map did not open with the player marker")
+		return
+	if not world_map.world_mode or world_map.get_board_count() != 9:
+		_fail("M world map is not composed of nine map boards surrounded by ocean")
 		return
 	scene._toggle_world_map()
 

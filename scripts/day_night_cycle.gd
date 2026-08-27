@@ -7,7 +7,7 @@ signal day_changed(day: int)
 const DAY_START_HOUR := 6.0
 const DUSK_START_HOUR := 18.0
 const NIGHT_START_HOUR := 21.0
-const NIGHT_COLOR := Color(0.10, 0.12, 0.18, 1.0)
+const NIGHT_COLOR := Color(0.07, 0.084, 0.126, 1.0)
 const DAY_COLOR := Color.WHITE
 const DUSK_COLOR := Color(0.88, 0.69, 0.58, 1.0)
 

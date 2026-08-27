@@ -36,7 +36,6 @@ const PHASE_ICON_CELLS := {
 @onready var weather = $Weather/Effect
 @onready var night_vision = $NightVision/Mask
 @onready var era_day_label: Label = $HUD/WorldInfo/Margin/Row/Details/EraDayLabel
-@onready var area_label: Label = $HUD/WorldInfo/Margin/Row/Details/AreaLabel
 @onready var health_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar
 @onready var health_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel
 @onready var stamina_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar
@@ -108,9 +107,6 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var area_name := _get_area_name(player.global_position)
-	if area_label.text != area_name:
-		area_label.text = area_name
 	if _forecast_visible_seconds > 0.0:
 		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
 		forecast_popup.visible = _forecast_visible_seconds > 0.0
@@ -425,15 +421,3 @@ func _ensure_action(action: StringName, key: Key) -> void:
 	event.keycode = key
 	event.physical_keycode = key
 	InputMap.action_add_event(action, event)
-
-
-func _get_area_name(position: Vector2) -> String:
-	if position.y < 500.0:
-		return "北部巨像山脉"
-	if position.x > 1200.0 and position.y < 950.0:
-		return "东部荒漠"
-	if position.y > 1450.0:
-		return "南部碧湾"
-	if position.x < 950.0:
-		return "西部台地"
-	return "中央河谷"

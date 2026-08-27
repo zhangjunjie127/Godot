@@ -1,5 +1,7 @@
 extends Control
 
+const TRAIL_DIRECTION_Y := -1.0
+
 @export var random_seed := 20260827
 
 var intensity := 0.0
@@ -72,8 +74,8 @@ func _draw() -> void:
 		if bool(drop["trail"]):
 			var trail_length := float(drop["trail_length"])
 			for segment: int in range(3):
-				var start_y := radius + trail_length * float(segment) / 3.0
-				var end_y := radius + trail_length * float(segment + 1) / 3.0
+				var start_y := TRAIL_DIRECTION_Y * (radius + trail_length * float(segment) / 3.0)
+				var end_y := TRAIL_DIRECTION_Y * (radius + trail_length * float(segment + 1) / 3.0)
 				draw_line(
 					position + Vector2(0.0, start_y),
 					position + Vector2(0.0, end_y),

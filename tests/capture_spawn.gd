@@ -64,6 +64,8 @@ func _capture() -> void:
 		"crawl":
 			Input.action_press("player_crawl")
 			Input.action_press("ui_right")
+		"walk_down":
+			Input.action_press("ui_down")
 		"jump":
 			Input.action_press("player_jump")
 		"pickup":
@@ -80,7 +82,7 @@ func _capture() -> void:
 	var output_dir := ProjectSettings.globalize_path("res://tests/output")
 	DirAccess.make_dir_recursive_absolute(output_dir)
 	var image := root.get_viewport().get_texture().get_image()
-	var suffix := "night" if capture_hour < 5.0 or capture_hour >= 21.0 else "day"
+	var suffix := "night" if capture_hour < 6.0 or capture_hour >= 21.0 else "dusk" if capture_hour >= 18.0 else "day"
 	if not capture_panel.is_empty():
 		suffix += "_" + capture_panel
 	if not capture_state.is_empty():

@@ -13,12 +13,14 @@ func _run() -> void:
 
 	var player: CharacterBody2D = scene.get_node("World/DepthSorted/Player")
 	var grass: Area2D = scene.get_node("World/DepthSorted/EastGrass")
-	var status: Label = scene.get_node("HUD/StatusTray/Margin/Row/ConcealmentLabel")
-	var action: Label = scene.get_node("HUD/StatusTray/Margin/Row/ActionLabel")
 	var health_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar")
 	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
 	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
 	var stamina_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel")
+	var condition_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon")
+	var action_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon")
+	var visibility_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon")
+	var phase_icon: TextureRect = scene.get_node("HUD/PhasePanel/Margin/PhaseIcon")
 	var player_status: PanelContainer = scene.get_node("HUD/PlayerStatus")
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
@@ -34,7 +36,8 @@ func _run() -> void:
 	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
 	var inventory_grid: GridContainer = scene.get_node("HUD/InventoryOverlay/InventoryPanel/Margin/Content/InventoryGrid")
 	var skill_overlay: Control = scene.get_node("HUD/SkillOverlay")
-	var skill_tree_row: HBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow")
+	var skill_branches: VBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/Branches")
+	var ritual_row: HBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/RitualRow")
 	var day_night_tint: CanvasModulate = scene.get_node("World/DayNightTint")
 	var camera: Camera2D = player.get_node("Camera2D")
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
@@ -53,8 +56,24 @@ func _run() -> void:
 	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100":
 		_fail("Player status HUD did not initialize")
 		return
-	if player_status.scale != Vector2.ONE or player_status.position != Vector2(8.0, 8.0):
+	if player_status.scale != Vector2(0.5, 0.5) or player_status.position != Vector2(8.0, 8.0):
 		_fail("Player status HUD size or top-left placement changed")
+		return
+	for path: NodePath in [
+		"HUD/PlayerStatus",
+		"HUD/WorldInfo",
+		"HUD/PhasePanel",
+		"HUD/MinimapPanel",
+		"HUD/BottomActions",
+		"HUD/InventoryOverlay/InventoryPanel",
+		"HUD/SkillOverlay/SkillPanel",
+	]:
+		var control: Control = scene.get_node(path)
+		if control.scale != Vector2(0.5, 0.5):
+			_fail("UI root was not scaled to 50%: " + String(path))
+			return
+	if not _icon_is_ready(action_icon, "站立") or not _icon_is_ready(condition_icon, "开心") or not _icon_is_ready(visibility_icon, "公开可见"):
+		_fail("Player HUD status icons did not initialize")
 		return
 	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
 		_fail("Minimap did not bind to the local player")
@@ -65,8 +84,15 @@ func _run() -> void:
 	if inventory_grid.get_child_count() != 20:
 		_fail("Backpack UI did not render all slots")
 		return
-	if skill_tree_row.get_child_count() != 11 or scene.skill_tree.skill_points != 5:
-		_fail("Horizontal skill tree did not initialize")
+	if skill_branches.get_child_count() != 3 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
+		_fail("Three-branch skill tree did not initialize")
+		return
+	for branch_row: HBoxContainer in skill_branches.get_children():
+		if branch_row.get_child_count() != 8:
+			_fail("Skill branch did not render four illuminated nodes")
+			return
+	if scene.skill_tree.get_total_skill_count() != 12:
+		_fail("Skill tree does not contain 12 branch skills")
 		return
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
 		_fail("Interactive vegetation did not load")
@@ -103,8 +129,21 @@ func _run() -> void:
 	if era_label.text != "原始时代 · 第 2 日" or time_label.text != "21:00" or phase_label.text != "夜晚":
 		_fail("Day/night clock did not update the HUD")
 		return
+	if not _icon_is_ready(phase_icon, "夜晚"):
+		_fail("Night icon did not update beside the minimap")
+		return
 	if day_night_tint.color.r >= 0.7:
 		_fail("Night environment tint did not darken the world")
+		return
+	day_night_cycle.set_game_time(1, 7.0)
+	await process_frame
+	if not _icon_is_ready(phase_icon, "白天"):
+		_fail("Day icon did not update beside the minimap")
+		return
+	day_night_cycle.set_game_time(1, 19.0)
+	await process_frame
+	if not _icon_is_ready(phase_icon, "黄昏"):
+		_fail("Dusk icon did not update beside the minimap")
 		return
 	day_night_cycle.set_game_time(1, 7.0)
 	await process_frame
@@ -140,9 +179,9 @@ func _run() -> void:
 	player.global_position = grass.global_position
 	for _frame: int in range(8):
 		await physics_frame
-		if status.text == "草丛隐蔽":
+		if visibility_icon.tooltip_text == "草丛隐蔽":
 			break
-	if status.text != "草丛隐蔽":
+	if not _icon_is_ready(visibility_icon, "草丛隐蔽"):
 		push_error("Player did not enter concealment")
 		quit(1)
 		return
@@ -161,9 +200,9 @@ func _run() -> void:
 	player.global_position = Vector2(2000.0, 2000.0)
 	for _frame: int in range(8):
 		await physics_frame
-		if status.text == "公开可见":
+		if visibility_icon.tooltip_text == "公开可见":
 			break
-	if status.text != "公开可见":
+	if not _icon_is_ready(visibility_icon, "公开可见"):
 		push_error("Player did not leave concealment")
 		quit(1)
 		return
@@ -172,7 +211,7 @@ func _run() -> void:
 	Input.action_press("ui_right")
 	for _frame: int in range(8):
 		await physics_frame
-	if action.text != "奔跑":
+	if not _icon_is_ready(action_icon, "奔跑"):
 		_fail("Run state did not activate")
 		return
 	if player_sprite.frame_coords.y != 1 or player_sprite.frame_coords.x == 0:
@@ -191,16 +230,31 @@ func _run() -> void:
 		return
 	Input.action_release("ui_left")
 
-	player.take_damage(25.0)
+	player.set_health(60.0)
 	await process_frame
-	if not is_equal_approx(health_bar.value, 75.0) or health_label.text != "生命 75 / 100":
+	if not is_equal_approx(health_bar.value, 60.0) or health_label.text != "生命 60 / 100" or not _icon_is_ready(condition_icon, "不开心"):
 		_fail("Health HUD did not track player damage")
+		return
+	player.set_health(30.0)
+	await process_frame
+	if not _icon_is_ready(condition_icon, "生病"):
+		_fail("Sick health state did not activate")
+		return
+	player.set_health(10.0)
+	await process_frame
+	if not _icon_is_ready(condition_icon, "濒死"):
+		_fail("Dying health state did not activate")
+		return
+	player.set_health(100.0)
+	await process_frame
+	if not _icon_is_ready(condition_icon, "开心"):
+		_fail("Happy health state did not recover")
 		return
 
 	Input.action_press("player_crouch")
 	await physics_frame
 	await physics_frame
-	if action.text != "蹲伏":
+	if not _icon_is_ready(action_icon, "蹲伏"):
 		_fail("Crouch state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crouch/sheet-transparent.png":
@@ -214,7 +268,7 @@ func _run() -> void:
 	Input.action_press("player_crawl")
 	for _frame: int in range(18):
 		await physics_frame
-	if action.text != "趴下":
+	if not _icon_is_ready(action_icon, "趴下"):
 		_fail("Prone state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_prone_idle/sheet-transparent.png":
@@ -226,7 +280,7 @@ func _run() -> void:
 	Input.action_press("ui_right")
 	for _frame: int in range(12):
 		await physics_frame
-	if action.text != "爬行":
+	if not _icon_is_ready(action_icon, "爬行"):
 		_fail("Prone movement did not enter the crawl state")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crawl/sheet-transparent.png":
@@ -241,7 +295,7 @@ func _run() -> void:
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
-	if action.text != "跳跃":
+	if not _icon_is_ready(action_icon, "跳跃"):
 		_fail("Jump state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_jump/sheet-transparent.png":
@@ -267,10 +321,12 @@ func _run() -> void:
 		_fail("Skill tree toggle did not open the correct panel")
 		return
 
-	for skill_id: String in ["survival", "gathering", "building", "hunting", "defense"]:
-		if not scene.skill_tree.unlock_skill(skill_id):
-			_fail("Skill chain could not unlock: " + skill_id)
-			return
+	for branch: Dictionary in scene.skill_tree.BRANCHES:
+		for skill: Dictionary in branch["skills"]:
+			var skill_id := String(skill["id"])
+			if not scene.skill_tree.unlock_skill(skill_id):
+				_fail("Skill branch could not unlock: " + skill_id)
+				return
 	if scene.skill_tree.skill_points != 0 or not scene.skill_tree.is_ritual_ready():
 		_fail("Ritual did not activate after all skills were filled")
 		return
@@ -282,10 +338,14 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: full player action animations, 15/5/10 clock, HUD, minimap, backpack and era skill tree")
+	print("SMOKE_OK: 50% UI, status icons, health conditions, 15/5/10 clock, minimap, backpack and branched skill tree")
 	quit()
 
 
 func _fail(message: String) -> void:
 	push_error(message)
 	quit(1)
+
+
+func _icon_is_ready(icon: TextureRect, tooltip: String) -> bool:
+	return icon.texture is AtlasTexture and icon.tooltip_text == tooltip

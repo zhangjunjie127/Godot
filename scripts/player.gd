@@ -4,6 +4,7 @@ signal concealment_changed(is_concealed: bool)
 signal movement_state_changed(state_label: String)
 signal health_changed(current: float, maximum: float)
 signal stamina_changed(current: float, maximum: float)
+signal health_condition_changed(condition: String)
 
 const STATE_IDLE := "站立"
 const STATE_WALK := "行走"
@@ -12,6 +13,11 @@ const STATE_JUMP := "跳跃"
 const STATE_CROUCH := "蹲伏"
 const STATE_PRONE := "趴下"
 const STATE_CRAWL := "爬行"
+
+const CONDITION_HAPPY := "开心"
+const CONDITION_UNHAPPY := "不开心"
+const CONDITION_SICK := "生病"
+const CONDITION_DYING := "濒死"
 
 const WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
@@ -48,11 +54,13 @@ var _active_animation := ""
 var _facing_row := 0
 var health := 100.0
 var stamina := 100.0
+var health_condition := CONDITION_HAPPY
 
 
 func _ready() -> void:
 	health = max_health
 	stamina = max_stamina
+	health_condition = _condition_for_health(health)
 	_ensure_action("player_run", KEY_SHIFT)
 	_ensure_action("player_jump", KEY_SPACE)
 	_ensure_action("player_crouch", KEY_C)
@@ -127,6 +135,10 @@ func set_health(value: float) -> void:
 		return
 	health = next_value
 	health_changed.emit(health, max_health)
+	var next_condition := _condition_for_health(health)
+	if next_condition != health_condition:
+		health_condition = next_condition
+		health_condition_changed.emit(health_condition)
 
 
 func take_damage(amount: float) -> void:
@@ -135,6 +147,17 @@ func take_damage(amount: float) -> void:
 
 func restore_health(amount: float) -> void:
 	set_health(health + maxf(amount, 0.0))
+
+
+func _condition_for_health(value: float) -> String:
+	var ratio := value / maxf(max_health, 1.0)
+	if ratio >= 0.75:
+		return CONDITION_HAPPY
+	if ratio >= 0.45:
+		return CONDITION_UNHAPPY
+	if ratio >= 0.15:
+		return CONDITION_SICK
+	return CONDITION_DYING
 
 
 func _apply_concealment_visual() -> void:

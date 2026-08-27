@@ -17,6 +17,8 @@ func _run() -> void:
 	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
 	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
 	var stamina_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel")
+	var hunger_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerBar")
+	var hunger_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerLabel")
 	var condition_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon")
 	var action_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon")
 	var visibility_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon")
@@ -29,9 +31,8 @@ func _run() -> void:
 	var wild_boar: CharacterBody2D = scene.get_node("World/DepthSorted/WildBoar")
 	var boar_sprite: Sprite2D = wild_boar.get_node("Sprite2D")
 	var day_night_cycle = scene.get_node("DayNightCycle")
+	var weather = scene.get_node("Weather/Effect")
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
-	var time_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/TimeLabel")
-	var phase_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/PhaseLabel")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
 	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
 	var inventory_grid: GridContainer = scene.get_node("HUD/InventoryOverlay/InventoryPanel/Margin/Content/InventoryGrid")
@@ -41,6 +42,7 @@ func _run() -> void:
 	var day_night_tint: CanvasModulate = scene.get_node("World/DayNightTint")
 	var camera: Camera2D = player.get_node("Camera2D")
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
+	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
 		return
@@ -53,8 +55,11 @@ func _run() -> void:
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
 		return
-	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100":
+	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100" or hunger_label.text != "饥饿 100 / 100":
 		_fail("Player status HUD did not initialize")
+		return
+	if scene.get_node_or_null("HUD/WorldInfo/Margin/Row/TimeLabel") != null or scene.get_node_or_null("HUD/WorldInfo/Margin/Row/PhaseLabel") != null:
+		_fail("Time or phase text was not removed from the HUD")
 		return
 	if player_status.scale != Vector2(0.5, 0.5) or player_status.position != Vector2(8.0, 8.0):
 		_fail("Player status HUD size or top-left placement changed")
@@ -74,6 +79,26 @@ func _run() -> void:
 			return
 	if not _icon_is_ready(action_icon, "站立") or not _icon_is_ready(condition_icon, "开心") or not _icon_is_ready(visibility_icon, "公开可见"):
 		_fail("Player HUD status icons did not initialize")
+		return
+	if action_icon.custom_minimum_size != Vector2(32.0, 32.0) or condition_icon.custom_minimum_size != Vector2(32.0, 32.0) or visibility_icon.custom_minimum_size != Vector2(32.0, 32.0):
+		_fail("Player status icons were not enlarged")
+		return
+	if phase_icon.custom_minimum_size != Vector2(32.0, 32.0):
+		_fail("Day phase icon was not enlarged inside its fixed panel")
+		return
+	if (action_icon.texture as AtlasTexture).region.size != Vector2(48.0, 48.0) or (phase_icon.texture as AtlasTexture).region.size != Vector2(40.0, 40.0):
+		_fail("Transparent icon padding was not cropped for readability")
+		return
+	if weather.current_weather != "下雨":
+		_fail("Rain weather did not initialize")
+		return
+	weather.set_weather("寒冬")
+	if weather.current_weather != "寒冬":
+		_fail("Winter weather could not activate")
+		return
+	weather.advance_real_seconds(weather.weather_duration_seconds)
+	if weather.current_weather != "晴朗":
+		_fail("Weather cycle did not advance")
 		return
 	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
 		_fail("Minimap did not bind to the local player")
@@ -126,7 +151,7 @@ func _run() -> void:
 
 	day_night_cycle.set_game_time(2, 21.0)
 	await process_frame
-	if era_label.text != "原始时代 · 第 2 日" or time_label.text != "21:00" or phase_label.text != "夜晚":
+	if era_label.text != "原始时代 · 第 2 日":
 		_fail("Day/night clock did not update the HUD")
 		return
 	if not _icon_is_ready(phase_icon, "夜晚"):
@@ -251,6 +276,18 @@ func _run() -> void:
 		_fail("Happy health state did not recover")
 		return
 
+	player.set_hunger(50.0)
+	var hunger_fill := hunger_bar.get_theme_stylebox("fill") as StyleBoxFlat
+	if not is_equal_approx(hunger_bar.value, 50.0) or hunger_label.text != "饥饿 50 / 100" or hunger_fill.bg_color.r <= hunger_fill.bg_color.g:
+		_fail("Hunger meter did not reach its yellow midpoint")
+		return
+	player.set_hunger(10.0)
+	hunger_fill = hunger_bar.get_theme_stylebox("fill") as StyleBoxFlat
+	if hunger_fill.bg_color.r <= hunger_fill.bg_color.g * 2.0:
+		_fail("Low hunger did not turn the meter red")
+		return
+	player.set_hunger(100.0)
+
 	Input.action_press("player_crouch")
 	await physics_frame
 	await physics_frame
@@ -338,7 +375,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: 50% UI, status icons, health conditions, 15/5/10 clock, minimap, backpack and branched skill tree")
+	print("SMOKE_OK: enlarged icons, hunger meter, rain/winter weather, 15/5/10 cycle, minimap, backpack and branched skill tree")
 	quit()
 
 

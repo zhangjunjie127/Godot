@@ -29,13 +29,13 @@ const PHASE_ICON_CELLS := {
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var day_night_cycle = $DayNightCycle
 @onready var era_day_label: Label = $HUD/WorldInfo/Margin/Row/Details/EraDayLabel
-@onready var time_label: Label = $HUD/WorldInfo/Margin/Row/TimeLabel
-@onready var phase_label: Label = $HUD/WorldInfo/Margin/Row/PhaseLabel
 @onready var area_label: Label = $HUD/WorldInfo/Margin/Row/Details/AreaLabel
 @onready var health_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar
 @onready var health_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel
 @onready var stamina_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar
 @onready var stamina_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel
+@onready var hunger_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerBar
+@onready var hunger_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerLabel
 @onready var condition_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon
 @onready var action_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon
 @onready var visibility_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon
@@ -61,6 +61,7 @@ func _ready() -> void:
 	player.health_changed.connect(_on_health_changed)
 	player.health_condition_changed.connect(_on_health_condition_changed)
 	player.stamina_changed.connect(_on_stamina_changed)
+	player.hunger_changed.connect(_on_hunger_changed)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_refresh_inventory)
 	skill_tree.tree_changed.connect(_refresh_skill_tree)
@@ -76,6 +77,7 @@ func _ready() -> void:
 	_on_health_changed(player.health, player.max_health)
 	_on_health_condition_changed(player.health_condition)
 	_on_stamina_changed(player.stamina, player.max_stamina)
+	_on_hunger_changed(player.hunger, player.max_hunger)
 	_on_time_changed(
 		day_night_cycle.current_day,
 		floori(day_night_cycle.current_hour),
@@ -105,17 +107,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_concealment_changed(is_concealed: bool) -> void:
-	_set_atlas_icon(visibility_icon, Vector2i(0, 3) if is_concealed else Vector2i(3, 2))
+	_set_atlas_icon(visibility_icon, Vector2i(0, 3) if is_concealed else Vector2i(3, 2), 48)
 	visibility_icon.tooltip_text = "草丛隐蔽" if is_concealed else "公开可见"
 
 
 func _on_movement_state_changed(state_label: String) -> void:
-	_set_atlas_icon(action_icon, ACTION_ICON_CELLS.get(state_label, Vector2i.ZERO))
+	_set_atlas_icon(action_icon, ACTION_ICON_CELLS.get(state_label, Vector2i.ZERO), 48)
 	action_icon.tooltip_text = state_label
 
 
 func _on_health_condition_changed(condition: String) -> void:
-	_set_atlas_icon(condition_icon, CONDITION_ICON_CELLS.get(condition, Vector2i(3, 1)))
+	_set_atlas_icon(condition_icon, CONDITION_ICON_CELLS.get(condition, Vector2i(3, 1)), 48)
 	condition_icon.tooltip_text = condition
 
 
@@ -131,18 +133,25 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 	stamina_label.text = "体力 %d / %d" % [roundi(current), roundi(maximum)]
 
 
-func _on_time_changed(day: int, hour: int, minute: int, phase: String) -> void:
+func _on_hunger_changed(current: float, maximum: float) -> void:
+	hunger_bar.max_value = maximum
+	hunger_bar.value = current
+	hunger_label.text = "饥饿 %d / %d" % [roundi(current), roundi(maximum)]
+	var ratio := current / maxf(maximum, 1.0)
+	var green := Color(0.22, 0.78, 0.24)
+	var yellow := Color(0.94, 0.72, 0.12)
+	var red := Color(0.88, 0.16, 0.11)
+	var fill_color := yellow.lerp(green, (ratio - 0.5) * 2.0) if ratio >= 0.5 else red.lerp(yellow, ratio * 2.0)
+	var fill_style := StyleBoxFlat.new()
+	fill_style.bg_color = fill_color
+	fill_style.set_corner_radius_all(4)
+	hunger_bar.add_theme_stylebox_override("fill", fill_style)
+
+
+func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void:
 	era_day_label.text = "%s · 第 %d 日" % [skill_tree.current_era, day]
-	time_label.text = "%02d:%02d" % [hour, minute]
-	phase_label.text = phase
-	_set_atlas_icon(phase_icon, PHASE_ICON_CELLS.get(phase, Vector2i(1, 3)))
+	_set_atlas_icon(phase_icon, PHASE_ICON_CELLS.get(phase, Vector2i(1, 3)), 40)
 	phase_icon.tooltip_text = phase
-	var phase_color := Color(0.98, 0.86, 0.34)
-	if phase == "黄昏":
-		phase_color = Color(1.0, 0.62, 0.31)
-	elif phase == "夜晚":
-		phase_color = Color(0.66, 0.78, 1.0)
-	phase_label.add_theme_color_override("font_color", phase_color)
 
 
 func _on_era_changed(_era_name: String) -> void:
@@ -283,10 +292,11 @@ func _branch_color(branch_id: String) -> Color:
 			return Color(0.48, 0.82, 0.42)
 
 
-func _set_atlas_icon(target: TextureRect, cell: Vector2i) -> void:
+func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICON_CELL_SIZE) -> void:
 	var texture := AtlasTexture.new()
 	texture.atlas = STATUS_ICON_ATLAS
-	texture.region = Rect2(Vector2(cell * ICON_CELL_SIZE), Vector2.ONE * ICON_CELL_SIZE)
+	var inset := float(ICON_CELL_SIZE - region_size) * 0.5
+	texture.region = Rect2(Vector2(cell * ICON_CELL_SIZE) + Vector2.ONE * inset, Vector2.ONE * region_size)
 	target.texture = texture
 
 

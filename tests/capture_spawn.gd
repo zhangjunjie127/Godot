@@ -12,6 +12,7 @@ func _capture() -> void:
 	var capture_hour := 7.0
 	var capture_panel := ""
 	var capture_state := ""
+	var capture_weather := "下雨"
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--hour="):
 			capture_hour = float(argument.trim_prefix("--hour="))
@@ -19,9 +20,14 @@ func _capture() -> void:
 			capture_panel = argument.trim_prefix("--panel=")
 		elif argument.begins_with("--state="):
 			capture_state = argument.trim_prefix("--state=")
+		elif argument.begins_with("--weather="):
+			capture_weather = argument.trim_prefix("--weather=")
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	day_night_cycle.set_game_time(1, capture_hour)
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
+	var weather = scene.get_node("Weather/Effect")
+	weather.set_weather(capture_weather)
+	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	if capture_panel == "inventory":
 		scene._toggle_inventory()
 	elif capture_panel == "skills":
@@ -48,6 +54,8 @@ func _capture() -> void:
 		suffix += "_" + capture_panel
 	if not capture_state.is_empty():
 		suffix += "_" + capture_state
+	if not capture_weather.is_empty():
+		suffix += "_" + capture_weather
 	var output_path := output_dir.path_join("spawn_gameplay_" + suffix + ".png")
 	var error := image.save_png(output_path)
 	if error != OK:

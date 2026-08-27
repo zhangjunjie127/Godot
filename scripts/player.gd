@@ -4,6 +4,7 @@ signal concealment_changed(is_concealed: bool)
 signal movement_state_changed(state_label: String)
 signal health_changed(current: float, maximum: float)
 signal stamina_changed(current: float, maximum: float)
+signal hunger_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 
 const STATE_IDLE := "站立"
@@ -35,8 +36,10 @@ const JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/sheet-tr
 @export var is_local_player := true
 @export var max_health := 100.0
 @export var max_stamina := 100.0
+@export var max_hunger := 100.0
 @export var stamina_drain_per_second := 28.0
 @export var stamina_recovery_per_second := 20.0
+@export var hunger_drain_per_second := 0.12
 @export_range(0.0, 1.0) var stamina_resume_ratio := 0.2
 
 @onready var sprite: Sprite2D = $Sprite2D
@@ -54,12 +57,14 @@ var _active_animation := ""
 var _facing_row := 0
 var health := 100.0
 var stamina := 100.0
+var hunger := 100.0
 var health_condition := CONDITION_HAPPY
 
 
 func _ready() -> void:
 	health = max_health
 	stamina = max_stamina
+	hunger = max_hunger
 	health_condition = _condition_for_health(health)
 	_ensure_action("player_run", KEY_SHIFT)
 	_ensure_action("player_jump", KEY_SPACE)
@@ -88,6 +93,7 @@ func _physics_process(delta: float) -> void:
 	var wants_to_run := Input.is_action_pressed("player_run") and direction.length_squared() > 0.0 and not crouching and not crawling
 	var running := wants_to_run and not _is_exhausted
 	_update_stamina(delta, running)
+	_update_hunger(delta)
 	var speed := move_speed
 	if crawling:
 		speed = crawl_speed
@@ -147,6 +153,18 @@ func take_damage(amount: float) -> void:
 
 func restore_health(amount: float) -> void:
 	set_health(health + maxf(amount, 0.0))
+
+
+func set_hunger(value: float) -> void:
+	var next_value := clampf(value, 0.0, max_hunger)
+	if is_equal_approx(hunger, next_value):
+		return
+	hunger = next_value
+	hunger_changed.emit(hunger, max_hunger)
+
+
+func eat(amount: float) -> void:
+	set_hunger(hunger + maxf(amount, 0.0))
 
 
 func _condition_for_health(value: float) -> String:
@@ -212,6 +230,10 @@ func _update_stamina(delta: float, running: bool) -> void:
 		_is_exhausted = true
 	elif _is_exhausted and stamina >= max_stamina * stamina_resume_ratio:
 		_is_exhausted = false
+
+
+func _update_hunger(delta: float) -> void:
+	set_hunger(hunger - hunger_drain_per_second * delta)
 
 
 func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool, crawling: bool) -> String:

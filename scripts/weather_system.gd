@@ -9,6 +9,16 @@ const WEATHER_RAIN := "下雨"
 const WEATHER_SNOW := "下雪"
 const WEATHER_TYPES := [WEATHER_CLEAR, WEATHER_RAIN, WEATHER_SNOW]
 
+const RAIN_LIGHT := "小雨"
+const RAIN_MEDIUM := "中雨"
+const RAIN_HEAVY := "大雨"
+const RAIN_LEVELS := [RAIN_LIGHT, RAIN_MEDIUM, RAIN_HEAVY]
+const RAIN_DENSITIES := {
+	RAIN_LIGHT: 0.30,
+	RAIN_MEDIUM: 0.60,
+	RAIN_HEAVY: 1.0,
+}
+
 const DURATION_HALF_DAY := "半天"
 const DURATION_FULL_DAY := "一天"
 const DURATION_SPECIAL := "特殊事件"
@@ -16,15 +26,20 @@ const GAME_MINUTES_PER_DAY := 1440
 
 @export_enum("晴朗", "下雨", "下雪") var start_weather := WEATHER_RAIN
 @export_enum("半天", "一天") var start_duration_mode := DURATION_HALF_DAY
+@export_enum("小雨", "中雨", "大雨") var start_rain_level := RAIN_MEDIUM
+@export_range(0.5, 8.0, 0.1) var rain_fade_seconds := 3.0
 @export var day_night_cycle_path: NodePath
 @export var ground_effects_path: NodePath
 @export var wetness_overlay_path: NodePath
+@export var screen_rain_effect_path: NodePath
 @export var random_seed := 0
 
 var current_weather := WEATHER_RAIN
 var current_duration_mode := DURATION_HALF_DAY
+var current_rain_level := RAIN_MEDIUM
 var event_duration_days := 0.5
 var remaining_game_minutes := 720
+var visual_rain_density := 0.0
 
 var _rng := RandomNumberGenerator.new()
 var _last_calendar_minute := -1
@@ -32,6 +47,8 @@ var _rain_particles: Array[Dictionary] = []
 var _snow_particles: Array[Dictionary] = []
 var _ground_effects: Node
 var _wetness_overlay: CanvasItem
+var _screen_rain_effect: Node
+var _target_rain_density := 0.0
 
 
 func _ready() -> void:
@@ -42,6 +59,8 @@ func _ready() -> void:
 		_rng.seed = random_seed
 	_ground_effects = get_node_or_null(ground_effects_path)
 	_wetness_overlay = get_node_or_null(wetness_overlay_path) as CanvasItem
+	_screen_rain_effect = get_node_or_null(screen_rain_effect_path)
+	current_rain_level = start_rain_level if start_rain_level in RAIN_LEVELS else RAIN_MEDIUM
 	resized.connect(_reset_particles)
 	_reset_particles()
 	start_weather_event(_normalize_weather(start_weather), start_duration_mode)
@@ -55,13 +74,20 @@ func _process(delta: float) -> void:
 	advance_visual_seconds(delta)
 
 
-func start_weather_event(weather: String, duration_mode: String) -> bool:
+func start_weather_event(weather: String, duration_mode: String, rain_level: String = "") -> bool:
 	weather = _normalize_weather(weather)
 	if weather not in WEATHER_TYPES:
 		return false
 	if duration_mode not in [DURATION_HALF_DAY, DURATION_FULL_DAY, DURATION_SPECIAL]:
 		return false
 
+	if weather == WEATHER_RAIN:
+		if not rain_level.is_empty():
+			if rain_level not in RAIN_LEVELS:
+				return false
+			current_rain_level = rain_level
+		elif current_rain_level not in RAIN_LEVELS:
+			current_rain_level = RAIN_MEDIUM
 	current_weather = weather
 	current_duration_mode = duration_mode
 	if duration_mode == DURATION_SPECIAL:
@@ -79,11 +105,21 @@ func start_weather_event(weather: String, duration_mode: String) -> bool:
 
 
 func trigger_special_weather(weather: String) -> bool:
-	return start_weather_event(weather, DURATION_SPECIAL)
+	weather = _normalize_weather(weather)
+	return start_weather_event(weather, DURATION_SPECIAL, RAIN_HEAVY if weather == WEATHER_RAIN else "")
 
 
 func set_weather(weather: String) -> void:
 	start_weather_event(weather, DURATION_HALF_DAY)
+
+
+func set_rain_level(level: String) -> bool:
+	if level not in RAIN_LEVELS:
+		return false
+	current_rain_level = level
+	if current_weather == WEATHER_RAIN:
+		_target_rain_density = float(RAIN_DENSITIES[level])
+	return true
 
 
 func advance_game_minutes(minutes: int) -> void:
@@ -98,8 +134,10 @@ func advance_game_minutes(minutes: int) -> void:
 
 func advance_visual_seconds(seconds: float) -> void:
 	var delta := maxf(seconds, 0.0)
-	if current_weather == WEATHER_RAIN:
-		_update_rain(delta)
+	visual_rain_density = move_toward(visual_rain_density, _target_rain_density, delta / maxf(rain_fade_seconds, 0.1))
+	_sync_rain_visual_layers()
+	if visual_rain_density > 0.001:
+		_update_rain(delta, get_active_rain_particle_count())
 	elif current_weather == WEATHER_SNOW:
 		_update_snow(delta)
 	queue_redraw()
@@ -111,7 +149,7 @@ func _finish_current_event() -> void:
 	if finished_weather == WEATHER_CLEAR:
 		var next_weather: String = WEATHER_RAIN if _rng.randi_range(0, 1) == 0 else WEATHER_SNOW
 		var next_duration: String = DURATION_HALF_DAY if _rng.randi_range(0, 1) == 0 else DURATION_FULL_DAY
-		start_weather_event(next_weather, next_duration)
+		start_weather_event(next_weather, next_duration, _random_rain_level() if next_weather == WEATHER_RAIN else "")
 	else:
 		start_weather_event(WEATHER_CLEAR, DURATION_HALF_DAY)
 
@@ -126,7 +164,7 @@ func _on_time_changed(day: int, hour: int, minute: int, _phase: String) -> void:
 func _reset_particles() -> void:
 	_rain_particles.clear()
 	_snow_particles.clear()
-	for _index: int in range(96):
+	for _index: int in range(150):
 		_rain_particles.append(_new_rain_particle(false))
 	for _index: int in range(72):
 		_snow_particles.append(_new_snow_particle(false))
@@ -145,9 +183,9 @@ func _new_rain_particle(spawn_above: bool) -> Dictionary:
 		"velocity": Vector2(_rng.randf_range(-120.0, -55.0), speed),
 		"impact_y": _rng.randf_range(impact_min, viewport_size.y + 12.0),
 		"splash": _rng.randf() < 0.55,
-		"length": _rng.randf_range(8.0, 20.0),
-		"alpha": _rng.randf_range(0.28, 0.72),
-		"width": _rng.randf_range(0.7, 1.35),
+		"length": _rng.randf_range(5.0, 12.0),
+		"alpha": _rng.randf_range(0.20, 0.55),
+		"width": _rng.randf_range(0.45, 0.9),
 	}
 
 
@@ -167,9 +205,10 @@ func _new_snow_particle(spawn_above: bool) -> Dictionary:
 	}
 
 
-func _update_rain(delta: float) -> void:
+func _update_rain(delta: float, active_count: int) -> void:
 	var viewport_size := _effect_size()
-	for particle: Dictionary in _rain_particles:
+	for index: int in range(active_count):
+		var particle: Dictionary = _rain_particles[index]
 		var position: Vector2 = particle["position"]
 		position += (particle["velocity"] as Vector2) * delta
 		if position.y >= float(particle["impact_y"]):
@@ -197,15 +236,16 @@ func _update_snow(delta: float) -> void:
 
 
 func _draw() -> void:
-	if current_weather == WEATHER_RAIN:
+	if visual_rain_density > 0.001:
 		_draw_rain()
 	elif current_weather == WEATHER_SNOW:
 		_draw_snow()
 
 
 func _draw_rain() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.10, 0.17, 0.24, 0.12))
-	for particle: Dictionary in _rain_particles:
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.10, 0.17, 0.24, 0.04 + visual_rain_density * 0.07))
+	for index: int in range(get_active_rain_particle_count()):
+		var particle: Dictionary = _rain_particles[index]
 		var head: Vector2 = particle["position"]
 		var velocity: Vector2 = particle["velocity"]
 		var tail := head - velocity.normalized() * float(particle["length"])
@@ -227,11 +267,8 @@ func _effect_size() -> Vector2:
 
 
 func _apply_weather_visuals() -> void:
-	var is_raining := current_weather == WEATHER_RAIN
-	if _wetness_overlay != null:
-		_wetness_overlay.visible = is_raining
-	if _ground_effects != null and _ground_effects.has_method("set_raining"):
-		_ground_effects.set_raining(is_raining)
+	_target_rain_density = float(RAIN_DENSITIES[current_rain_level]) if current_weather == WEATHER_RAIN else 0.0
+	_sync_rain_visual_layers()
 
 
 func _spawn_ground_impact(screen_position: Vector2) -> void:
@@ -239,6 +276,25 @@ func _spawn_ground_impact(screen_position: Vector2) -> void:
 		return
 	var world_position := get_viewport().get_canvas_transform().affine_inverse() * screen_position
 	_ground_effects.spawn_impact(world_position)
+
+
+func get_active_rain_particle_count() -> int:
+	return clampi(roundi(_rain_particles.size() * visual_rain_density), 0, _rain_particles.size())
+
+
+func _sync_rain_visual_layers() -> void:
+	var wet_strength := clampf(visual_rain_density * 1.8, 0.0, 1.0)
+	if _wetness_overlay != null:
+		_wetness_overlay.visible = wet_strength > 0.001
+		_wetness_overlay.modulate.a = wet_strength
+	if _ground_effects != null and _ground_effects.has_method("set_rain_strength"):
+		_ground_effects.set_rain_strength(wet_strength)
+	if _screen_rain_effect != null and _screen_rain_effect.has_method("set_intensity"):
+		_screen_rain_effect.set_intensity(visual_rain_density)
+
+
+func _random_rain_level() -> String:
+	return RAIN_LEVELS[_rng.randi_range(0, RAIN_LEVELS.size() - 1)]
 
 
 func _normalize_weather(weather: String) -> String:

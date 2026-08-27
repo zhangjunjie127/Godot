@@ -13,6 +13,7 @@ func _capture() -> void:
 	var capture_panel := ""
 	var capture_state := ""
 	var capture_weather := "下雨"
+	var capture_rain_level := "中雨"
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--hour="):
 			capture_hour = float(argument.trim_prefix("--hour="))
@@ -22,11 +23,16 @@ func _capture() -> void:
 			capture_state = argument.trim_prefix("--state=")
 		elif argument.begins_with("--weather="):
 			capture_weather = argument.trim_prefix("--weather=")
+		elif argument.begins_with("--rain-level="):
+			capture_rain_level = argument.trim_prefix("--rain-level=")
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	day_night_cycle.set_game_time(1, capture_hour)
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
 	var weather = scene.get_node("Weather/Effect")
 	weather.set_weather(capture_weather)
+	if capture_weather == "下雨":
+		weather.set_rain_level(capture_rain_level)
+		weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if capture_panel == "inventory":
 		scene._toggle_inventory()
 	elif capture_panel == "skills":
@@ -41,7 +47,7 @@ func _capture() -> void:
 			Input.action_press("ui_right")
 		"jump":
 			Input.action_press("player_jump")
-	var capture_frames := 24 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
+	var capture_frames := 60 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
 	for _frame: int in range(capture_frames):
 		await physics_frame
 	await RenderingServer.frame_post_draw
@@ -56,6 +62,8 @@ func _capture() -> void:
 		suffix += "_" + capture_state
 	if not capture_weather.is_empty():
 		suffix += "_" + capture_weather
+	if capture_weather == "下雨":
+		suffix += "_" + capture_rain_level
 	var output_path := output_dir.path_join("spawn_gameplay_" + suffix + ".png")
 	var error := image.save_png(output_path)
 	if error != OK:

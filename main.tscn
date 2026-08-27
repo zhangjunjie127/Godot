@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="10_minimap_texture"]
 [ext_resource type="Script" path="res://scripts/weather_system.gd" id="11_weather"]
 [ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="12_weather_ground"]
+[ext_resource type="Script" path="res://scripts/rain_screen_effect.gd" id="13_screen_rain"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -271,6 +272,7 @@ script = ExtResource("11_weather")
 day_night_cycle_path = NodePath("../../DayNightCycle")
 ground_effects_path = NodePath("../../World/WeatherGround")
 wetness_overlay_path = NodePath("../Wetness")
+screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 100
@@ -748,6 +750,19 @@ theme_override_constants/separation = 5
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 alignment = 1
+
+[node name="ScreenWeather" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="Drops" type="Control" parent="ScreenWeather"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("13_screen_rain")
 
 [node name="DayNightCycle" type="Node" parent="."]
 script = ExtResource("6_day_night")

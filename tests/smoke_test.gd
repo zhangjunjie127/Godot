@@ -38,6 +38,7 @@ func _run() -> void:
 	var weather = scene.get_node("Weather/Effect")
 	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
 	var weather_ground = scene.get_node("World/WeatherGround")
+	var screen_rain = scene.get_node("ScreenWeather/Drops")
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
 	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
@@ -49,6 +50,7 @@ func _run() -> void:
 	var camera: Camera2D = player.get_node("Camera2D")
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
 	weather.process_mode = Node.PROCESS_MODE_DISABLED
+	screen_rain.process_mode = Node.PROCESS_MODE_DISABLED
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
 		return
@@ -105,9 +107,53 @@ func _run() -> void:
 	if weather.current_weather != "下雨":
 		_fail("Rain weather did not initialize")
 		return
+	weather.advance_visual_seconds(1.0)
+	if weather.visual_rain_density <= 0.0 or weather.visual_rain_density >= 0.60:
+		_fail("Rain did not fade in gradually")
+		return
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if not wetness_overlay.visible or not weather_ground.raining or weather_ground._puddles.size() != 20:
 		_fail("Rain did not enable wet terrain and puddles")
 		return
+	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 90:
+		_fail("Medium rain density did not initialize")
+		return
+	weather.set_rain_level("小雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var light_rain_count: int = weather.get_active_rain_particle_count()
+	weather.set_rain_level("中雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var medium_rain_count: int = weather.get_active_rain_particle_count()
+	weather.set_rain_level("大雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var heavy_rain_count: int = weather.get_active_rain_particle_count()
+	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 150):
+		_fail("Light, medium and heavy rain densities are not distinct")
+		return
+	screen_rain.advance_effects(1.0)
+	if screen_rain._drops.is_empty():
+		_fail("Heavy rain did not create droplets on the screen")
+		return
+	weather.start_weather_event("晴朗", "半天")
+	weather.advance_visual_seconds(1.0)
+	if weather.visual_rain_density <= 0.0 or not wetness_overlay.visible:
+		_fail("Rain stopped abruptly instead of fading out")
+		return
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or weather_ground.raining:
+		_fail("Rain fade-out did not finish cleanly")
+		return
+	screen_rain.advance_effects(0.2)
+	if screen_rain._drops.is_empty():
+		_fail("Screen droplets vanished abruptly when rain ended")
+		return
+	screen_rain.advance_effects(6.0)
+	if not screen_rain._drops.is_empty():
+		_fail("Screen droplets did not fade away")
+		return
+	weather.start_weather_event("下雨", "半天", "中雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	weather_ground.advance_effects(2.0)
 	var initial_impact_count: int = weather_ground._impacts.size()
 	weather_ground.spawn_impact(player.global_position)
 	if weather_ground._impacts.size() != initial_impact_count + 1:
@@ -117,7 +163,7 @@ func _run() -> void:
 	if not weather_ground._impacts.is_empty():
 		_fail("Rain ripple did not expire cleanly")
 		return
-	weather.start_weather_event("下雨", "半天")
+	weather.start_weather_event("下雨", "半天", "中雨")
 	if weather.current_duration_mode != "半天" or weather.remaining_game_minutes != 720:
 		_fail("Half-day rain duration is incorrect")
 		return
@@ -133,6 +179,7 @@ func _run() -> void:
 	if weather.current_duration_mode != "一天" or weather.remaining_game_minutes != 1440:
 		_fail("Full-day snow duration is incorrect")
 		return
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if wetness_overlay.visible or weather_ground.raining:
 		_fail("Rain wetness remained active during snow")
 		return
@@ -149,7 +196,8 @@ func _run() -> void:
 		if weather.event_duration_days < 3 or weather.event_duration_days > 10:
 			_fail("Special weather duration escaped the 3-10 day range")
 			return
-	weather.start_weather_event("下雨", "半天")
+	weather.start_weather_event("下雨", "半天", "中雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if not wetness_overlay.visible or not weather_ground.raining:
 		_fail("Rain wetness did not reactivate")
 		return
@@ -165,6 +213,8 @@ func _run() -> void:
 		return
 	var rain_speeds: Dictionary = {}
 	var rain_lengths: Dictionary = {}
+	var maximum_rain_length := 0.0
+	var maximum_rain_width := 0.0
 	for particle: Dictionary in weather._rain_particles:
 		var velocity: Vector2 = particle["velocity"]
 		if velocity.x >= 0.0 or velocity.y <= 0.0:
@@ -172,8 +222,13 @@ func _run() -> void:
 			return
 		rain_speeds[roundi(velocity.length())] = true
 		rain_lengths[roundi(float(particle["length"]))] = true
+		maximum_rain_length = maxf(maximum_rain_length, float(particle["length"]))
+		maximum_rain_width = maxf(maximum_rain_width, float(particle["width"]))
 	if rain_speeds.size() < 6 or rain_lengths.size() < 5:
 		_fail("Rain particles still look mechanically uniform")
+		return
+	if maximum_rain_length > 12.0 or maximum_rain_width > 0.9:
+		_fail("Falling rain streaks are still too large")
 		return
 	var sampled_rain_motion := false
 	for particle: Dictionary in weather._rain_particles:
@@ -469,7 +524,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: natural rain/snow, half-day/full-day/special weather, hunger, HUD, minimap and branched skill tree")
+	print("SMOKE_OK: light/medium/heavy rain, smooth fades, screen droplets, weather durations, hunger and HUD")
 	quit()
 
 

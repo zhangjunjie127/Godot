@@ -11,6 +11,7 @@ const PUDDLE_POSITIONS := [
 @export var random_seed := 20260827
 
 var raining := false
+var rain_strength := 0.0
 var _puddles: Array[Dictionary] = []
 var _impacts: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
@@ -28,7 +29,12 @@ func _ready() -> void:
 
 
 func set_raining(value: bool) -> void:
-	raining = value
+	set_rain_strength(1.0 if value else 0.0)
+
+
+func set_rain_strength(value: float) -> void:
+	rain_strength = clampf(value, 0.0, 1.0)
+	raining = rain_strength > 0.01
 	set_process(raining or not _impacts.is_empty())
 	queue_redraw()
 
@@ -70,9 +76,9 @@ func _draw() -> void:
 func _draw_puddles() -> void:
 	for puddle: Dictionary in _puddles:
 		draw_set_transform(puddle["position"], float(puddle["rotation"]), puddle["size"])
-		draw_circle(Vector2.ZERO, 1.0, Color(0.08, 0.20, 0.24, 0.13))
-		draw_circle(Vector2(-0.08, -0.14), 0.70, Color(0.48, 0.68, 0.73, 0.09))
-		draw_arc(Vector2.ZERO, 0.84, PI * 1.08, PI * 1.78, 12, Color(0.70, 0.90, 0.94, 0.38), 0.06, true)
+		draw_circle(Vector2.ZERO, 1.0, Color(0.08, 0.20, 0.24, 0.13 * rain_strength))
+		draw_circle(Vector2(-0.08, -0.14), 0.70, Color(0.48, 0.68, 0.73, 0.09 * rain_strength))
+		draw_arc(Vector2.ZERO, 0.84, PI * 1.08, PI * 1.78, 12, Color(0.70, 0.90, 0.94, 0.38 * rain_strength), 0.06, true)
 	draw_set_transform(Vector2.ZERO)
 
 

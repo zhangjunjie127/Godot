@@ -6,14 +6,13 @@ func _initialize() -> void:
 
 
 func _capture() -> void:
-	var packed_scene := load("res://main.tscn") as PackedScene
-	var scene := packed_scene.instantiate()
-	root.add_child(scene)
 	var capture_hour := 7.0
 	var capture_panel := ""
 	var capture_state := ""
 	var capture_weather := "下雨"
 	var capture_rain_level := "中雨"
+	var capture_snow_level := "中雪"
+	var capture_gender := "male"
 	var capture_torch := true
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--hour="):
@@ -26,8 +25,16 @@ func _capture() -> void:
 			capture_weather = argument.trim_prefix("--weather=")
 		elif argument.begins_with("--rain-level="):
 			capture_rain_level = argument.trim_prefix("--rain-level=")
+		elif argument.begins_with("--snow-level="):
+			capture_snow_level = argument.trim_prefix("--snow-level=")
+		elif argument.begins_with("--gender="):
+			capture_gender = argument.trim_prefix("--gender=")
 		elif argument == "--no-torch":
 			capture_torch = false
+	root.get_node("GameSession").select_gender(capture_gender)
+	var packed_scene := load("res://main.tscn") as PackedScene
+	var scene := packed_scene.instantiate()
+	root.add_child(scene)
 	if not capture_torch:
 		scene.inventory.remove_item("torch", 1)
 	var day_night_cycle = scene.get_node("DayNightCycle")
@@ -37,6 +44,9 @@ func _capture() -> void:
 	weather.set_weather(capture_weather)
 	if capture_weather == "下雨":
 		weather.set_rain_level(capture_rain_level)
+		weather.advance_visual_seconds(weather.rain_fade_seconds)
+	elif capture_weather == "下雪":
+		weather.set_snow_level(capture_snow_level)
 		weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if capture_panel == "inventory":
 		scene._toggle_inventory()
@@ -58,10 +68,14 @@ func _capture() -> void:
 			Input.action_press("player_jump")
 		"pickup":
 			Input.action_press("player_pickup")
+		"idle_relaxed":
+			scene.player._idle_elapsed = 1.0
+		"idle_sit":
+			scene.player.seated_idle_delay = 0.0
 	var capture_frames := 60 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
 	for _frame: int in range(capture_frames):
 		await physics_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw(false)
 
 	var output_dir := ProjectSettings.globalize_path("res://tests/output")
 	DirAccess.make_dir_recursive_absolute(output_dir)
@@ -77,6 +91,9 @@ func _capture() -> void:
 		suffix += "_" + capture_weather
 	if capture_weather == "下雨":
 		suffix += "_" + capture_rain_level
+	elif capture_weather == "下雪":
+		suffix += "_" + capture_snow_level
+	suffix += "_" + capture_gender
 	var output_path := output_dir.path_join("spawn_gameplay_" + suffix + ".png")
 	var error := image.save_png(output_path)
 	if error != OK:

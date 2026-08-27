@@ -4,6 +4,10 @@ const InventoryDataScript = preload("res://scripts/inventory.gd")
 const EraSkillTreeScript = preload("res://scripts/skill_tree.gd")
 const STATUS_ICON_ATLAS := preload("res://assets/ui/status_icons/sheet-transparent.png")
 const PICKUP_ACTION_ATLAS := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
+const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
+const FEMALE_PORTRAIT := preload("res://assets/characters/player_female.png")
+const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
+const STONE_AXE_ICON := preload("res://assets/items/stone_axe/icon.png")
 const ICON_CELL_SIZE := 64
 
 const ACTION_ICON_CELLS := {
@@ -39,6 +43,7 @@ const PHASE_ICON_CELLS := {
 @onready var stamina_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel
 @onready var hunger_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerBar
 @onready var hunger_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerLabel
+@onready var portrait: TextureRect = $HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait
 @onready var condition_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon
 @onready var action_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon
 @onready var visibility_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon
@@ -71,6 +76,7 @@ func _ready() -> void:
 	player.health_condition_changed.connect(_on_health_condition_changed)
 	player.stamina_changed.connect(_on_stamina_changed)
 	player.hunger_changed.connect(_on_hunger_changed)
+	player.gender_changed.connect(_on_gender_changed)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_on_inventory_changed)
 	skill_tree.tree_changed.connect(_refresh_skill_tree)
@@ -90,6 +96,7 @@ func _ready() -> void:
 	_on_health_condition_changed(player.health_condition)
 	_on_stamina_changed(player.stamina, player.max_stamina)
 	_on_hunger_changed(player.hunger, player.max_hunger)
+	_on_gender_changed(player.gender)
 	_on_time_changed(
 		day_night_cycle.current_day,
 		floori(day_night_cycle.current_hour),
@@ -174,6 +181,10 @@ func _on_hunger_changed(current: float, maximum: float) -> void:
 	hunger_bar.add_theme_stylebox_override("fill", fill_style)
 
 
+func _on_gender_changed(gender: String) -> void:
+	portrait.texture = FEMALE_PORTRAIT if gender == "female" else MALE_PORTRAIT
+
+
 func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void:
 	era_day_label.text = "%s · 第 %d 日" % [skill_tree.current_era, day]
 	_set_atlas_icon(phase_icon, PHASE_ICON_CELLS.get(phase, Vector2i(1, 3)), 40)
@@ -242,6 +253,8 @@ func _show_weather_forecast(forecast: Array) -> void:
 		var weather_name := String(entry["weather"])
 		if weather_name == "下雨":
 			weather_name = String(entry.get("rain_level", "中雨"))
+		elif weather_name == "下雪":
+			weather_name = String(entry.get("snow_level", "中雪"))
 		lines.append("未来 %d 日  %s" % [int(entry["day_offset"]), weather_name])
 	forecast_label.text = "\n".join(lines)
 	forecast_popup.visible = true
@@ -270,7 +283,10 @@ func _refresh_inventory() -> void:
 			button.add_theme_color_override("font_color", Color(0.43, 0.49, 0.40))
 		else:
 			used_slots += 1
-			button.text = "%s\nx%d" % [String(slot["name"]), int(slot["count"])]
+			button.icon = _item_icon(String(slot["id"]))
+			button.expand_icon = true
+			button.add_theme_constant_override("icon_max_width", 24)
+			button.text = "x%d" % int(slot["count"])
 			button.tooltip_text = "%s  %d/%d" % [String(slot["name"]), int(slot["count"]), int(slot["max_stack"])]
 		inventory_grid.add_child(button)
 	inventory_capacity_label.text = "容量  %d / %d" % [used_slots, inventory.slots.size()]
@@ -369,6 +385,17 @@ func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICO
 	var inset := float(ICON_CELL_SIZE - region_size) * 0.5
 	texture.region = Rect2(Vector2(cell * ICON_CELL_SIZE) + Vector2.ONE * inset, Vector2.ONE * region_size)
 	target.texture = texture
+
+
+func _item_icon(item_id: String) -> Texture2D:
+	if item_id == "stone_axe":
+		return STONE_AXE_ICON
+	if item_id == "torch":
+		var texture := AtlasTexture.new()
+		texture.atlas = TORCH_ICON_ATLAS
+		texture.region = Rect2(0.0, 0.0, 128.0, 128.0)
+		return texture
+	return null
 
 
 func _on_skill_pressed(skill_id: String) -> void:

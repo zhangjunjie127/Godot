@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3]
+[gd_scene load_steps=38 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://scripts/rain_screen_effect.gd" id="13_screen_rain"]
 [ext_resource type="Script" path="res://scripts/cloud_layer.gd" id="14_cloud_layer"]
 [ext_resource type="Script" path="res://scripts/night_vision.gd" id="15_night_vision"]
+[ext_resource type="Script" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -198,6 +199,10 @@ z_index = -20
 z_index = -5
 script = ExtResource("12_weather_ground")
 
+[node name="SnowWorld" type="Node2D" parent="World"]
+z_index = 30
+script = ExtResource("16_snow_world")
+
 [node name="Collision" type="Node2D" parent="World"]
 
 [node name="DepthSorted" type="Node2D" parent="World"]
@@ -295,6 +300,7 @@ day_night_cycle_path = NodePath("../../DayNightCycle")
 ground_effects_path = NodePath("../../World/WeatherGround")
 wetness_overlay_path = NodePath("../Wetness")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
+snow_world_effect_path = NodePath("../../World/SnowWorld")
 
 [node name="NightVision" type="CanvasLayer" parent="."]
 layer = 80

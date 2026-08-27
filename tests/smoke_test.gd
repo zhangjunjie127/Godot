@@ -6,6 +6,20 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var menu_scene := (load("res://start_menu.tscn") as PackedScene).instantiate()
+	root.add_child(menu_scene)
+	await process_frame
+	if menu_scene.get_node("Title").text != "我要上天Ascension" or not menu_scene.get_node("StartButton").visible:
+		_fail("Title screen or Start Game button did not initialize")
+		return
+	menu_scene._show_gender_selection()
+	if not menu_scene.get_node("GenderPanel").visible or menu_scene.get_node("StartButton").visible:
+		_fail("Start Game did not open gender selection")
+		return
+	menu_scene.queue_free()
+	await process_frame
+	root.get_node("GameSession").select_gender("male")
+
 	var packed_scene := load("res://main.tscn") as PackedScene
 	var scene: Node = packed_scene.instantiate()
 	root.add_child(scene)
@@ -38,6 +52,7 @@ func _run() -> void:
 	var weather = scene.get_node("Weather/Effect")
 	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
 	var weather_ground = scene.get_node("World/WeatherGround")
+	var snow_world = scene.get_node("World/SnowWorld")
 	var screen_rain = scene.get_node("ScreenWeather/Drops")
 	var cloud_layer = scene.get_node("Clouds/Field")
 	var night_vision = scene.get_node("NightVision/Mask")
@@ -62,6 +77,9 @@ func _run() -> void:
 	cloud_layer.process_mode = Node.PROCESS_MODE_DISABLED
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
+		return
+	if player.move_speed != 85.0 or player.run_speed != 140.0 or player.crouch_speed != 41.0 or player.crawl_speed != 23.0:
+		_fail("Player movement speeds were not reduced by 50 percent")
 		return
 	if camera.zoom.x < 0.546:
 		_fail("Camera zoom changed unexpectedly")
@@ -200,13 +218,38 @@ func _run() -> void:
 	if weather.current_weather != "晴朗":
 		_fail("Half-day rain did not end after 720 game minutes")
 		return
-	weather.start_weather_event("下雪", "一天")
+	weather.start_weather_event("下雪", "一天", "中雪")
 	if weather.current_duration_mode != "一天" or weather.remaining_game_minutes != 1440:
 		_fail("Full-day snow duration is incorrect")
+		return
+	weather.advance_visual_seconds(1.0)
+	if weather.visual_snow_density <= 0.0 or weather.visual_snow_density >= 0.60:
+		_fail("Snow did not fade in gradually")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	if wetness_overlay.visible or weather_ground.raining:
 		_fail("Rain wetness remained active during snow")
+		return
+	if weather.current_snow_level != "中雪" or weather.get_active_snow_particle_count() != 108:
+		_fail("Medium snow density did not initialize")
+		return
+	weather.set_snow_level("小雪")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var light_snow_count: int = weather.get_active_snow_particle_count()
+	weather.set_snow_level("中雪")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var medium_snow_count: int = weather.get_active_snow_particle_count()
+	weather.set_snow_level("大雪")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var heavy_snow_count: int = weather.get_active_snow_particle_count()
+	if not (light_snow_count < medium_snow_count and medium_snow_count < heavy_snow_count and heavy_snow_count == 180):
+		_fail("Light, medium and heavy snow densities are not distinct")
+		return
+	var snow_position_before: Vector2 = snow_world.get_particle_world_position(0)
+	player.global_position += Vector2(240.0, 120.0)
+	await process_frame
+	if snow_world.get_particle_world_position(0) != snow_position_before:
+		_fail("World-space snow followed the player or camera")
 		return
 	weather.advance_game_minutes(1439)
 	if weather.current_weather != "下雪":
@@ -216,10 +259,23 @@ func _run() -> void:
 	if weather.current_weather != "晴朗":
 		_fail("Full-day snow did not end after 1440 game minutes")
 		return
+	weather.advance_visual_seconds(1.0)
+	if weather.visual_snow_density <= 0.0:
+		_fail("Snow stopped abruptly instead of fading out")
+		return
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	if weather.visual_snow_density != 0.0 or weather.get_active_snow_particle_count() != 0:
+		_fail("Snow fade-out did not finish cleanly")
+		return
 	for _sample: int in range(40):
 		weather.trigger_special_weather("下雨")
 		if weather.event_duration_days < 3 or weather.event_duration_days > 10:
 			_fail("Special weather duration escaped the 3-10 day range")
+			return
+	for _sample: int in range(40):
+		weather.trigger_special_weather("下雪")
+		if weather.event_duration_days < 3 or weather.event_duration_days > 10 or weather.current_snow_level != "大雪":
+			_fail("Special snow did not reuse the 3-10 day heavy-weather logic")
 			return
 	weather.start_weather_event("下雨", "半天", "中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
@@ -279,6 +335,11 @@ func _run() -> void:
 		return
 	if inventory_grid.get_child_count() != 20:
 		_fail("Backpack UI did not render all slots")
+		return
+	var stone_axe_button := inventory_grid.get_child(0) as Button
+	var torch_button := inventory_grid.get_child(1) as Button
+	if stone_axe_button.icon == null or torch_button.icon == null or stone_axe_button.tooltip_text.find("石斧") < 0 or torch_button.tooltip_text.find("火把") < 0:
+		_fail("Stone axe or torch inventory icon did not render")
 		return
 	if skill_branches.get_child_count() != 3 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
 		_fail("Three-branch skill tree did not initialize")
@@ -557,6 +618,36 @@ func _run() -> void:
 		_fail("Jump animation did not advance")
 		return
 	Input.action_release("player_jump")
+	for _frame: int in range(40):
+		await physics_frame
+	player._idle_elapsed = 0.5
+	player._active_animation = ""
+	await physics_frame
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(0.44, 0.44):
+		_fail("Relaxed standing breathing animation or shared character scale did not activate")
+		return
+	player._idle_elapsed = player.seated_idle_delay + 0.1
+	player._active_animation = ""
+	await physics_frame
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_sit/sheet-transparent.png" or player_sprite.scale != Vector2(0.44, 0.44):
+		_fail("Seated breathing animation or shared character scale did not activate")
+		return
+	player.set_gender("female")
+	player._idle_elapsed = 0.5
+	await physics_frame
+	var portrait: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait")
+	if player_sprite.texture.resource_path != "res://assets/characters/player_female_idle_relaxed/sheet-transparent.png" or portrait.texture.resource_path != "res://assets/characters/player_female.png":
+		_fail("Female selection did not switch the character animation and portrait")
+		return
+	Input.action_press("ui_right")
+	await physics_frame
+	await physics_frame
+	if player_sprite.texture.resource_path != "res://assets/characters/player_female_walk/sheet-transparent.png":
+		_fail("Female gameplay movement did not use the female animation set")
+		return
+	Input.action_release("ui_right")
+	player.set_gender("male")
+	await physics_frame
 
 	if scene.inventory.add_item("plant_fiber", "植物纤维", 120, 99) != 120:
 		_fail("Backpack could not stack items")
@@ -595,7 +686,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: forecast, clouds, torch night vision, pickup, world map, skill ritual and weather effects")
+	print("SMOKE_OK: title, gender, idle, item icons, world snow, forecast and gameplay systems")
 	quit()
 
 

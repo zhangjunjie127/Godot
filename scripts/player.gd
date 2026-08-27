@@ -7,6 +7,7 @@ signal stamina_changed(current: float, maximum: float)
 signal hunger_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 signal torch_equipped_changed(is_equipped: bool)
+signal gender_changed(gender: String)
 
 const STATE_IDLE := "站立"
 const STATE_WALK := "行走"
@@ -22,18 +23,34 @@ const CONDITION_UNHAPPY := "不开心"
 const CONDITION_SICK := "生病"
 const CONDITION_DYING := "濒死"
 
-const WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
-const CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
-const PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_male_prone_idle/sheet-transparent.png")
-const CRAWL_TEXTURE := preload("res://assets/characters/player_male_crawl/sheet-transparent.png")
-const JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/sheet-transparent.png")
-const TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_torch_hold/sheet-transparent.png")
-const PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
+const GENDER_MALE := "male"
+const GENDER_FEMALE := "female"
+const CHARACTER_SCALE := Vector2(0.44, 0.44)
 
-@export var move_speed := 170.0
-@export var run_speed := 280.0
-@export var crouch_speed := 82.0
-@export var crawl_speed := 46.0
+const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
+const MALE_CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
+const MALE_PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_male_prone_idle/sheet-transparent.png")
+const MALE_CRAWL_TEXTURE := preload("res://assets/characters/player_male_crawl/sheet-transparent.png")
+const MALE_JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/sheet-transparent.png")
+const MALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_torch_hold/sheet-transparent.png")
+const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
+const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
+const MALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_male_idle_sit/sheet-transparent.png")
+
+const FEMALE_WALK_TEXTURE := preload("res://assets/characters/player_female_walk/sheet-transparent.png")
+const FEMALE_CROUCH_TEXTURE := preload("res://assets/characters/player_female_crouch/sheet-transparent.png")
+const FEMALE_PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_female_prone_idle/sheet-transparent.png")
+const FEMALE_CRAWL_TEXTURE := preload("res://assets/characters/player_female_crawl/sheet-transparent.png")
+const FEMALE_JUMP_TEXTURE := preload("res://assets/characters/player_female_jump/sheet-transparent.png")
+const FEMALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_female_torch_hold/sheet-transparent.png")
+const FEMALE_PICKUP_TEXTURE := preload("res://assets/characters/player_female_pickup/sheet-transparent.png")
+const FEMALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_female_idle_relaxed/sheet-transparent.png")
+const FEMALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_female_idle_sit/sheet-transparent.png")
+
+@export var move_speed := 85.0
+@export var run_speed := 140.0
+@export var crouch_speed := 41.0
+@export var crawl_speed := 23.0
 @export var jump_height := 30.0
 @export var jump_duration := 0.55
 @export var world_size := Vector2(2048.0, 2048.0)
@@ -45,6 +62,7 @@ const PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/shee
 @export var stamina_recovery_per_second := 20.0
 @export var hunger_drain_per_second := 0.12
 @export_range(0.0, 1.0) var stamina_resume_ratio := 0.2
+@export var seated_idle_delay := 8.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -61,7 +79,9 @@ var _active_animation := ""
 var _facing_row := 0
 var _is_picking_up := false
 var _pickup_elapsed := 0.0
+var _idle_elapsed := 0.0
 var torch_equipped := false
+var gender := GENDER_MALE
 var health := 100.0
 var stamina := 100.0
 var hunger := 100.0
@@ -78,6 +98,9 @@ func _ready() -> void:
 	_ensure_action("player_crouch", KEY_C)
 	_ensure_action("player_crawl", KEY_Z)
 	_ensure_action("player_pickup", KEY_F)
+	var session := get_node_or_null("/root/GameSession")
+	if session != null:
+		set_gender(String(session.selected_gender))
 	queue_redraw()
 
 
@@ -122,6 +145,7 @@ func _physics_process(delta: float) -> void:
 
 	var state := _resolve_movement_state(direction, running, crouching, crawling)
 	_set_movement_state(state)
+	_idle_elapsed = _idle_elapsed + delta if state == STATE_IDLE else 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()
 
@@ -155,6 +179,15 @@ func set_torch_equipped(value: bool) -> void:
 	torch_equipped = value
 	_active_animation = ""
 	torch_equipped_changed.emit(value)
+
+
+func set_gender(value: String) -> void:
+	var next_gender := GENDER_FEMALE if value == GENDER_FEMALE else GENDER_MALE
+	if gender == next_gender:
+		return
+	gender = next_gender
+	_active_animation = ""
+	gender_changed.emit(gender)
 
 
 func start_pickup() -> void:
@@ -313,12 +346,15 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
 	var sprite_position := Vector2(0.0, -32.0 - _jump_offset)
-	var sprite_scale := Vector2(0.44, 0.44)
+	var sprite_scale := CHARACTER_SCALE
 	match _movement_state:
 		STATE_CROUCH:
 			sprite_position.y = -29.0
 		STATE_PRONE, STATE_CRAWL:
 			sprite_position.y = -22.0
+		STATE_IDLE:
+			if _idle_elapsed >= seated_idle_delay and not torch_equipped:
+				sprite_position.y = -22.0
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale
@@ -341,25 +377,32 @@ func _animation_name(moving: bool) -> String:
 		STATE_WALK:
 			return "torch_hold" if torch_equipped else "walk"
 		_:
-			return "torch_hold" if torch_equipped else "idle"
+			if torch_equipped:
+				return "torch_hold"
+			return "idle_sit" if _idle_elapsed >= seated_idle_delay else "idle_relaxed"
 
 
 func _animation_texture(animation: String) -> Texture2D:
+	var is_female := gender == GENDER_FEMALE
 	match animation:
 		"crouch_idle", "crouch_move":
-			return CROUCH_TEXTURE
+			return FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
 		"prone_idle":
-			return PRONE_IDLE_TEXTURE
+			return FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
 		"crawl_move":
-			return CRAWL_TEXTURE
+			return FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
 		"jump":
-			return JUMP_TEXTURE
+			return FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
 		"torch_hold":
-			return TORCH_HOLD_TEXTURE
+			return FEMALE_TORCH_HOLD_TEXTURE if is_female else MALE_TORCH_HOLD_TEXTURE
 		"pickup":
-			return PICKUP_TEXTURE
+			return FEMALE_PICKUP_TEXTURE if is_female else MALE_PICKUP_TEXTURE
+		"idle_relaxed":
+			return FEMALE_IDLE_RELAXED_TEXTURE if is_female else MALE_IDLE_RELAXED_TEXTURE
+		"idle_sit":
+			return FEMALE_IDLE_SIT_TEXTURE if is_female else MALE_IDLE_SIT_TEXTURE
 		_:
-			return WALK_TEXTURE
+			return FEMALE_WALK_TEXTURE if is_female else MALE_WALK_TEXTURE
 
 
 func _animation_frame(animation: String, moving: bool) -> int:
@@ -372,6 +415,10 @@ func _animation_frame(animation: String, moving: bool) -> int:
 		return mini(floori(progress * 4.0), 3)
 	if animation == "prone_idle":
 		return floori(_animation_elapsed / 0.24) % 4
+	if animation == "idle_relaxed":
+		return floori(_animation_elapsed / 0.30) % 4
+	if animation == "idle_sit":
+		return floori(_animation_elapsed / 0.34) % 4
 	if not moving:
 		return 0
 	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14

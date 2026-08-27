@@ -36,6 +36,8 @@ func _run() -> void:
 	var boar_sprite: Sprite2D = wild_boar.get_node("Sprite2D")
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	var weather = scene.get_node("Weather/Effect")
+	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
+	var weather_ground = scene.get_node("World/WeatherGround")
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
 	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
@@ -103,6 +105,18 @@ func _run() -> void:
 	if weather.current_weather != "下雨":
 		_fail("Rain weather did not initialize")
 		return
+	if not wetness_overlay.visible or not weather_ground.raining or weather_ground._puddles.size() != 20:
+		_fail("Rain did not enable wet terrain and puddles")
+		return
+	var initial_impact_count: int = weather_ground._impacts.size()
+	weather_ground.spawn_impact(player.global_position)
+	if weather_ground._impacts.size() != initial_impact_count + 1:
+		_fail("Rain impact did not create a splash and ripple")
+		return
+	weather_ground.advance_effects(1.0)
+	if not weather_ground._impacts.is_empty():
+		_fail("Rain ripple did not expire cleanly")
+		return
 	weather.start_weather_event("下雨", "半天")
 	if weather.current_duration_mode != "半天" or weather.remaining_game_minutes != 720:
 		_fail("Half-day rain duration is incorrect")
@@ -119,6 +133,9 @@ func _run() -> void:
 	if weather.current_duration_mode != "一天" or weather.remaining_game_minutes != 1440:
 		_fail("Full-day snow duration is incorrect")
 		return
+	if wetness_overlay.visible or weather_ground.raining:
+		_fail("Rain wetness remained active during snow")
+		return
 	weather.advance_game_minutes(1439)
 	if weather.current_weather != "下雪":
 		_fail("Full-day snow ended early")
@@ -133,6 +150,19 @@ func _run() -> void:
 			_fail("Special weather duration escaped the 3-10 day range")
 			return
 	weather.start_weather_event("下雨", "半天")
+	if not wetness_overlay.visible or not weather_ground.raining:
+		_fail("Rain wetness did not reactivate")
+		return
+	weather_ground.advance_effects(2.0)
+	var impact_particle: Dictionary = weather._rain_particles[0]
+	impact_particle["position"] = Vector2(320.0, 100.0)
+	impact_particle["velocity"] = Vector2(-60.0, 400.0)
+	impact_particle["impact_y"] = 102.0
+	impact_particle["splash"] = true
+	weather.advance_visual_seconds(0.01)
+	if weather_ground._impacts.is_empty():
+		_fail("Falling rain did not trigger a ground splash")
+		return
 	var rain_speeds: Dictionary = {}
 	var rain_lengths: Dictionary = {}
 	for particle: Dictionary in weather._rain_particles:

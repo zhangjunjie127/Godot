@@ -27,7 +27,6 @@ func _capture() -> void:
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
 	var weather = scene.get_node("Weather/Effect")
 	weather.set_weather(capture_weather)
-	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	if capture_panel == "inventory":
 		scene._toggle_inventory()
 	elif capture_panel == "skills":
@@ -42,7 +41,8 @@ func _capture() -> void:
 			Input.action_press("ui_right")
 		"jump":
 			Input.action_press("player_jump")
-	for _frame: int in range(12 if not capture_state.is_empty() else 2):
+	var capture_frames := 24 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
+	for _frame: int in range(capture_frames):
 		await physics_frame
 	await RenderingServer.frame_post_draw
 

@@ -17,6 +17,8 @@ const GAME_MINUTES_PER_DAY := 1440
 @export_enum("晴朗", "下雨", "下雪") var start_weather := WEATHER_RAIN
 @export_enum("半天", "一天") var start_duration_mode := DURATION_HALF_DAY
 @export var day_night_cycle_path: NodePath
+@export var ground_effects_path: NodePath
+@export var wetness_overlay_path: NodePath
 @export var random_seed := 0
 
 var current_weather := WEATHER_RAIN
@@ -28,6 +30,8 @@ var _rng := RandomNumberGenerator.new()
 var _last_calendar_minute := -1
 var _rain_particles: Array[Dictionary] = []
 var _snow_particles: Array[Dictionary] = []
+var _ground_effects: Node
+var _wetness_overlay: CanvasItem
 
 
 func _ready() -> void:
@@ -36,6 +40,8 @@ func _ready() -> void:
 		_rng.randomize()
 	else:
 		_rng.seed = random_seed
+	_ground_effects = get_node_or_null(ground_effects_path)
+	_wetness_overlay = get_node_or_null(wetness_overlay_path) as CanvasItem
 	resized.connect(_reset_particles)
 	_reset_particles()
 	start_weather_event(_normalize_weather(start_weather), start_duration_mode)
@@ -65,6 +71,7 @@ func start_weather_event(weather: String, duration_mode: String) -> bool:
 	else:
 		event_duration_days = 0.5
 	remaining_game_minutes = roundi(event_duration_days * GAME_MINUTES_PER_DAY)
+	_apply_weather_visuals()
 	weather_changed.emit(current_weather)
 	weather_event_started.emit(current_weather, current_duration_mode, event_duration_days)
 	queue_redraw()
@@ -128,12 +135,16 @@ func _reset_particles() -> void:
 func _new_rain_particle(spawn_above: bool) -> Dictionary:
 	var viewport_size := _effect_size()
 	var speed := _rng.randf_range(320.0, 620.0)
+	var start_y := _rng.randf_range(-90.0, -8.0) if spawn_above else _rng.randf_range(-40.0, viewport_size.y)
+	var impact_min := clampf(start_y + 45.0, 24.0, viewport_size.y)
 	return {
 		"position": Vector2(
 			_rng.randf_range(0.0, viewport_size.x + 100.0),
-			_rng.randf_range(-90.0, -8.0) if spawn_above else _rng.randf_range(-40.0, viewport_size.y)
+			start_y
 		),
 		"velocity": Vector2(_rng.randf_range(-120.0, -55.0), speed),
+		"impact_y": _rng.randf_range(impact_min, viewport_size.y + 12.0),
+		"splash": _rng.randf() < 0.55,
 		"length": _rng.randf_range(8.0, 20.0),
 		"alpha": _rng.randf_range(0.28, 0.72),
 		"width": _rng.randf_range(0.7, 1.35),
@@ -161,7 +172,11 @@ func _update_rain(delta: float) -> void:
 	for particle: Dictionary in _rain_particles:
 		var position: Vector2 = particle["position"]
 		position += (particle["velocity"] as Vector2) * delta
-		if position.y > viewport_size.y + 24.0 or position.x < -30.0:
+		if position.y >= float(particle["impact_y"]):
+			if bool(particle["splash"]):
+				_spawn_ground_impact(position)
+			particle.assign(_new_rain_particle(true))
+		elif position.y > viewport_size.y + 24.0 or position.x < -30.0:
 			particle.assign(_new_rain_particle(true))
 		else:
 			particle["position"] = position
@@ -209,6 +224,21 @@ func _draw_snow() -> void:
 
 func _effect_size() -> Vector2:
 	return Vector2(maxf(size.x, 640.0), maxf(size.y, 360.0))
+
+
+func _apply_weather_visuals() -> void:
+	var is_raining := current_weather == WEATHER_RAIN
+	if _wetness_overlay != null:
+		_wetness_overlay.visible = is_raining
+	if _ground_effects != null and _ground_effects.has_method("set_raining"):
+		_ground_effects.set_raining(is_raining)
+
+
+func _spawn_ground_impact(screen_position: Vector2) -> void:
+	if _ground_effects == null or not _ground_effects.has_method("spawn_impact"):
+		return
+	var world_position := get_viewport().get_canvas_transform().affine_inverse() * screen_position
+	_ground_effects.spawn_impact(world_position)
 
 
 func _normalize_weather(weather: String) -> String:

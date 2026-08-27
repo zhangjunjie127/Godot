@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=32 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/minimap.gd" id="9_minimap"]
 [ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="10_minimap_texture"]
 [ext_resource type="Script" path="res://scripts/weather_system.gd" id="11_weather"]
+[ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="12_weather_ground"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -167,6 +168,12 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="Shader" id="Shader_weather_wetness"]
+code = "shader_type canvas_item;\n\nuniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;\n\nvoid fragment() {\n\tvec4 scene = texture(screen_texture, SCREEN_UV);\n\tfloat light = max(scene.r, max(scene.g, scene.b));\n\tvec3 wet = mix(scene.rgb, scene.rgb * vec3(0.78, 0.86, 0.92), 0.68);\n\twet += vec3(0.045, 0.065, 0.075) * smoothstep(0.52, 0.92, light);\n\tCOLOR = vec4(wet, scene.a);\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_weather_wetness"]
+shader = SubResource("Shader_weather_wetness")
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
 
@@ -177,6 +184,10 @@ script = ExtResource("2_world")
 
 [node name="Foundation" type="Node2D" parent="World"]
 z_index = -20
+
+[node name="WeatherGround" type="Node2D" parent="World"]
+z_index = -5
+script = ExtResource("12_weather_ground")
 
 [node name="Collision" type="Node2D" parent="World"]
 
@@ -237,6 +248,17 @@ z_index = 20
 [node name="Weather" type="CanvasLayer" parent="."]
 layer = 50
 
+[node name="Wetness" type="ColorRect" parent="Weather"]
+visible = false
+material = SubResource("ShaderMaterial_weather_wetness")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3
 anchors_preset = 15
@@ -247,6 +269,8 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("11_weather")
 day_night_cycle_path = NodePath("../../DayNightCycle")
+ground_effects_path = NodePath("../../World/WeatherGround")
+wetness_overlay_path = NodePath("../Wetness")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 100

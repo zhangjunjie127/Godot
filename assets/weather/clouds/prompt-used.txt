@@ -1,0 +1,3 @@
+Project-native 3x3 pixel-art cloud pack with nine distinct clean white and pale
+blue cloud silhouettes. One centered cloud per cell, minimal detail, strict
+containment, and a solid #FF00FF background.

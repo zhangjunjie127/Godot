@@ -39,18 +39,27 @@ func _run() -> void:
 	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
 	var weather_ground = scene.get_node("World/WeatherGround")
 	var screen_rain = scene.get_node("ScreenWeather/Drops")
+	var cloud_layer = scene.get_node("Clouds/Field")
+	var night_vision = scene.get_node("NightVision/Mask")
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
+	var world_info: PanelContainer = scene.get_node("HUD/WorldInfo")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
+	var minimap_panel: PanelContainer = scene.get_node("HUD/MinimapPanel")
+	var forecast_popup: PanelContainer = scene.get_node("HUD/ForecastPopup")
+	var forecast_label: Label = scene.get_node("HUD/ForecastPopup/Margin/ForecastLabel")
 	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
 	var inventory_grid: GridContainer = scene.get_node("HUD/InventoryOverlay/InventoryPanel/Margin/Content/InventoryGrid")
 	var skill_overlay: Control = scene.get_node("HUD/SkillOverlay")
-	var skill_branches: VBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/Branches")
-	var ritual_row: HBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/RitualRow")
+	var skill_branches: VBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow/Branches")
+	var ritual_row: HBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow/RitualRow")
+	var world_map_overlay: Control = scene.get_node("HUD/WorldMapOverlay")
+	var world_map = scene.get_node("HUD/WorldMapOverlay/MapPanel/Margin/Content/Map")
 	var day_night_tint: CanvasModulate = scene.get_node("World/DayNightTint")
 	var camera: Camera2D = player.get_node("Camera2D")
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
 	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	screen_rain.process_mode = Node.PROCESS_MODE_DISABLED
+	cloud_layer.process_mode = Node.PROCESS_MODE_DISABLED
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
 		return
@@ -87,11 +96,19 @@ func _run() -> void:
 		"HUD/BottomActions",
 		"HUD/InventoryOverlay/InventoryPanel",
 		"HUD/SkillOverlay/SkillPanel",
+		"HUD/ForecastPopup",
+		"HUD/WorldMapOverlay/MapPanel",
 	]:
 		var control: Control = scene.get_node(path)
 		if control.scale != Vector2(0.5, 0.5):
 			_fail("UI root was not scaled to 50%: " + String(path))
 			return
+	if world_info.position.y <= minimap_panel.position.y:
+		_fail("Era, day and area panel was not moved below the minimap")
+		return
+	if not forecast_popup.visible or not forecast_label.text.contains("未来 1 日") or weather.get_forecast(2).size() != 2:
+		_fail("Two-day scheduled weather forecast did not initialize")
+		return
 	if not _icon_is_ready(action_icon, "站立") or not _icon_is_ready(condition_icon, "开心") or not _icon_is_ready(visibility_icon, "公开可见"):
 		_fail("Player HUD status icons did not initialize")
 		return
@@ -133,6 +150,14 @@ func _run() -> void:
 	screen_rain.advance_effects(1.0)
 	if screen_rain._drops.is_empty():
 		_fail("Heavy rain did not create droplets on the screen")
+		return
+	var largest_screen_drop := 0.0
+	var longest_screen_trail := 0.0
+	for drop: Dictionary in screen_rain._drops:
+		largest_screen_drop = maxf(largest_screen_drop, float(drop["radius"]))
+		longest_screen_trail = maxf(longest_screen_trail, float(drop["trail_length"]))
+	if largest_screen_drop > 2.9 or longest_screen_trail < 12.0:
+		_fail("Screen droplets were not halved or did not gain sliding trails")
 		return
 	weather.start_weather_event("晴朗", "半天")
 	weather.advance_visual_seconds(1.0)
@@ -249,14 +274,25 @@ func _run() -> void:
 	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
 		_fail("Minimap did not bind to the local player")
 		return
-	if scene.inventory.slots.size() != 20 or scene.inventory.get_item_count("stone_axe") != 1:
-		_fail("Starter backpack did not initialize with 20 slots and a stone axe")
+	if scene.inventory.slots.size() != 20 or scene.inventory.get_item_count("stone_axe") != 1 or scene.inventory.get_item_count("torch") != 1:
+		_fail("Starter backpack did not initialize with the temporary torch")
 		return
 	if inventory_grid.get_child_count() != 20:
 		_fail("Backpack UI did not render all slots")
 		return
 	if skill_branches.get_child_count() != 3 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
 		_fail("Three-branch skill tree did not initialize")
+		return
+	if ritual_row.get_parent() != skill_branches.get_parent() or ritual_row.get_index() <= skill_branches.get_index():
+		_fail("Ascension ritual was not placed to the right of all three branches")
+		return
+	cloud_layer.set_weather("晴朗")
+	if cloud_layer.get_active_cloud_count() != 4:
+		_fail("Clear weather did not show randomized clouds")
+		return
+	cloud_layer.set_weather("下雨")
+	if cloud_layer.get_active_cloud_count() != 0:
+		_fail("Cloud layer remained active outside clear weather")
 		return
 	for branch_row: HBoxContainer in skill_branches.get_children():
 		if branch_row.get_child_count() != 8:
@@ -306,8 +342,25 @@ func _run() -> void:
 	if not _icon_is_ready(phase_icon, "夜晚"):
 		_fail("Night icon did not update beside the minimap")
 		return
-	if day_night_tint.color.r >= 0.7:
-		_fail("Night environment tint did not darken the world")
+	if day_night_tint.color.r >= 0.2 or not night_vision.visible or not player.torch_equipped:
+		_fail("Night did not become nearly black or auto-equip the backpack torch")
+		return
+	if night_vision.get_visibility_radius(true) != night_vision.get_visibility_radius(false) * 2.0:
+		_fail("Torch night visibility radius is not exactly double")
+		return
+	await physics_frame
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_torch_hold/sheet-transparent.png":
+		_fail("Night torch-holding animation did not activate")
+		return
+	scene.inventory.remove_item("torch", 1)
+	await process_frame
+	if player.torch_equipped or night_vision.current_radius != night_vision.NO_TORCH_RADIUS:
+		_fail("No-torch night visibility did not use the small radius")
+		return
+	scene.inventory.add_item("torch", "临时火把", 1, 1)
+	await process_frame
+	if not player.torch_equipped or night_vision.current_radius != night_vision.TORCH_RADIUS:
+		_fail("Torch inventory state did not restore the larger night radius")
 		return
 	day_night_cycle.set_game_time(1, 7.0)
 	await process_frame
@@ -478,6 +531,19 @@ func _run() -> void:
 	Input.action_release("ui_right")
 	Input.action_release("player_crawl")
 
+	Input.action_press("player_pickup")
+	await physics_frame
+	await physics_frame
+	if action_icon.tooltip_text != "拾取" or player_sprite.texture.resource_path != "res://assets/characters/player_male_pickup/sheet-transparent.png":
+		_fail("F did not trigger the four-direction pickup animation")
+		return
+	Input.action_release("player_pickup")
+	for _frame: int in range(50):
+		await physics_frame
+	if action_icon.tooltip_text == "拾取":
+		_fail("Pickup animation did not return to movement control")
+		return
+
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
@@ -506,6 +572,11 @@ func _run() -> void:
 	if inventory_overlay.visible or not skill_overlay.visible:
 		_fail("Skill tree toggle did not open the correct panel")
 		return
+	scene._toggle_world_map()
+	if not world_map_overlay.visible or inventory_overlay.visible or skill_overlay.visible or world_map.player != player:
+		_fail("M world map did not open with the player marker")
+		return
+	scene._toggle_world_map()
 
 	for branch: Dictionary in scene.skill_tree.BRANCHES:
 		for skill: Dictionary in branch["skills"]:
@@ -524,7 +595,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: light/medium/heavy rain, smooth fades, screen droplets, weather durations, hunger and HUD")
+	print("SMOKE_OK: forecast, clouds, torch night vision, pickup, world map, skill ritual and weather effects")
 	quit()
 
 

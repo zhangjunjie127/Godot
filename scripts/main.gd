@@ -3,6 +3,7 @@ extends Node2D
 const InventoryDataScript = preload("res://scripts/inventory.gd")
 const EraSkillTreeScript = preload("res://scripts/skill_tree.gd")
 const STATUS_ICON_ATLAS := preload("res://assets/ui/status_icons/sheet-transparent.png")
+const PICKUP_ACTION_ATLAS := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const ICON_CELL_SIZE := 64
 
 const ACTION_ICON_CELLS := {
@@ -28,6 +29,8 @@ const PHASE_ICON_CELLS := {
 
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var day_night_cycle = $DayNightCycle
+@onready var weather = $Weather/Effect
+@onready var night_vision = $NightVision/Mask
 @onready var era_day_label: Label = $HUD/WorldInfo/Margin/Row/Details/EraDayLabel
 @onready var area_label: Label = $HUD/WorldInfo/Margin/Row/Details/AreaLabel
 @onready var health_bar: ProgressBar = $HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar
@@ -46,11 +49,17 @@ const PHASE_ICON_CELLS := {
 @onready var skill_overlay: Control = $HUD/SkillOverlay
 @onready var skill_points_label: Label = $HUD/SkillOverlay/SkillPanel/Margin/Content/Header/SkillPointsLabel
 @onready var era_progress_label: Label = $HUD/SkillOverlay/SkillPanel/Margin/Content/EraProgressLabel
-@onready var skill_branches: VBoxContainer = $HUD/SkillOverlay/SkillPanel/Margin/Content/Branches
-@onready var ritual_row: HBoxContainer = $HUD/SkillOverlay/SkillPanel/Margin/Content/RitualRow
+@onready var skill_branches: VBoxContainer = $HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow/Branches
+@onready var ritual_row: HBoxContainer = $HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow/RitualRow
+@onready var forecast_popup: PanelContainer = $HUD/ForecastPopup
+@onready var forecast_label: Label = $HUD/ForecastPopup/Margin/ForecastLabel
+@onready var world_map_overlay: Control = $HUD/WorldMapOverlay
+@onready var world_map_coordinate_label: Label = $HUD/WorldMapOverlay/MapPanel/Margin/Content/CoordinateLabel
 
 var inventory
 var skill_tree
+var _forecast_visible_seconds := 0.0
+var _last_forecast_day := 0
 
 
 func _ready() -> void:
@@ -63,15 +72,18 @@ func _ready() -> void:
 	player.stamina_changed.connect(_on_stamina_changed)
 	player.hunger_changed.connect(_on_hunger_changed)
 	day_night_cycle.time_changed.connect(_on_time_changed)
-	inventory.inventory_changed.connect(_refresh_inventory)
+	inventory.inventory_changed.connect(_on_inventory_changed)
 	skill_tree.tree_changed.connect(_refresh_skill_tree)
 	skill_tree.era_changed.connect(_on_era_changed)
+	weather.forecast_changed.connect(_show_weather_forecast)
 	$HUD/BottomActions/BackpackButton.pressed.connect(_toggle_inventory)
 	$HUD/BottomActions/SkillTreeButton.pressed.connect(_toggle_skill_tree)
 	$HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header/CloseButton.pressed.connect(_hide_overlays)
 	$HUD/SkillOverlay/SkillPanel/Margin/Content/Header/CloseButton.pressed.connect(_hide_overlays)
+	$HUD/WorldMapOverlay/MapPanel/Margin/Content/Header/CloseButton.pressed.connect(_hide_overlays)
 	_ensure_action("toggle_inventory", KEY_B)
 	_ensure_action("toggle_skill_tree", KEY_K)
+	_ensure_action("toggle_world_map", KEY_M)
 	_on_concealment_changed(false)
 	_on_movement_state_changed("站立")
 	_on_health_changed(player.health, player.max_health)
@@ -88,10 +100,15 @@ func _ready() -> void:
 	_refresh_skill_tree()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var area_name := _get_area_name(player.global_position)
 	if area_label.text != area_name:
 		area_label.text = area_name
+	if _forecast_visible_seconds > 0.0:
+		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
+		forecast_popup.visible = _forecast_visible_seconds > 0.0
+	if world_map_overlay.visible:
+		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -101,7 +118,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("toggle_skill_tree"):
 		_toggle_skill_tree()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_cancel") and (inventory_overlay.visible or skill_overlay.visible):
+	elif event.is_action_pressed("toggle_world_map"):
+		_toggle_world_map()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_cancel") and (inventory_overlay.visible or skill_overlay.visible or world_map_overlay.visible):
 		_hide_overlays()
 		get_viewport().set_input_as_handled()
 
@@ -112,7 +132,13 @@ func _on_concealment_changed(is_concealed: bool) -> void:
 
 
 func _on_movement_state_changed(state_label: String) -> void:
-	_set_atlas_icon(action_icon, ACTION_ICON_CELLS.get(state_label, Vector2i.ZERO), 48)
+	if state_label == "拾取":
+		var texture := AtlasTexture.new()
+		texture.atlas = PICKUP_ACTION_ATLAS
+		texture.region = Rect2(256.0, 0.0, 128.0, 128.0)
+		action_icon.texture = texture
+	else:
+		_set_atlas_icon(action_icon, ACTION_ICON_CELLS.get(state_label, Vector2i.ZERO), 48)
 	action_icon.tooltip_text = state_label
 
 
@@ -152,6 +178,10 @@ func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void
 	era_day_label.text = "%s · 第 %d 日" % [skill_tree.current_era, day]
 	_set_atlas_icon(phase_icon, PHASE_ICON_CELLS.get(phase, Vector2i(1, 3)), 40)
 	phase_icon.tooltip_text = phase
+	_sync_night_state(phase)
+	if day != _last_forecast_day:
+		_last_forecast_day = day
+		_show_weather_forecast(weather.get_forecast(2))
 
 
 func _on_era_changed(_era_name: String) -> void:
@@ -164,15 +194,19 @@ func _on_era_changed(_era_name: String) -> void:
 
 
 func _toggle_inventory() -> void:
+	_dismiss_forecast()
 	inventory_overlay.visible = not inventory_overlay.visible
 	skill_overlay.visible = false
+	world_map_overlay.visible = false
 	if inventory_overlay.visible:
 		_refresh_inventory()
 
 
 func _toggle_skill_tree() -> void:
+	_dismiss_forecast()
 	skill_overlay.visible = not skill_overlay.visible
 	inventory_overlay.visible = false
+	world_map_overlay.visible = false
 	if skill_overlay.visible:
 		_refresh_skill_tree()
 
@@ -180,6 +214,43 @@ func _toggle_skill_tree() -> void:
 func _hide_overlays() -> void:
 	inventory_overlay.visible = false
 	skill_overlay.visible = false
+	world_map_overlay.visible = false
+
+
+func _toggle_world_map() -> void:
+	_dismiss_forecast()
+	world_map_overlay.visible = not world_map_overlay.visible
+	inventory_overlay.visible = false
+	skill_overlay.visible = false
+
+
+func _on_inventory_changed() -> void:
+	_refresh_inventory()
+	_sync_night_state(day_night_cycle.current_phase)
+
+
+func _sync_night_state(phase: String) -> void:
+	var is_night := phase == "夜晚"
+	var has_torch: bool = inventory.get_item_count("torch") > 0
+	player.set_torch_equipped(is_night and has_torch)
+	night_vision.set_night_state(is_night, has_torch)
+
+
+func _show_weather_forecast(forecast: Array) -> void:
+	var lines: Array[String] = ["天气预报"]
+	for entry: Dictionary in forecast:
+		var weather_name := String(entry["weather"])
+		if weather_name == "下雨":
+			weather_name = String(entry.get("rain_level", "中雨"))
+		lines.append("未来 %d 日  %s" % [int(entry["day_offset"]), weather_name])
+	forecast_label.text = "\n".join(lines)
+	forecast_popup.visible = true
+	_forecast_visible_seconds = 6.0
+
+
+func _dismiss_forecast() -> void:
+	forecast_popup.visible = false
+	_forecast_visible_seconds = 0.0
 
 
 func _refresh_inventory() -> void:

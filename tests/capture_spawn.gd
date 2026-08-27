@@ -14,6 +14,7 @@ func _capture() -> void:
 	var capture_state := ""
 	var capture_weather := "下雨"
 	var capture_rain_level := "中雨"
+	var capture_torch := true
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--hour="):
 			capture_hour = float(argument.trim_prefix("--hour="))
@@ -25,6 +26,10 @@ func _capture() -> void:
 			capture_weather = argument.trim_prefix("--weather=")
 		elif argument.begins_with("--rain-level="):
 			capture_rain_level = argument.trim_prefix("--rain-level=")
+		elif argument == "--no-torch":
+			capture_torch = false
+	if not capture_torch:
+		scene.inventory.remove_item("torch", 1)
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	day_night_cycle.set_game_time(1, capture_hour)
 	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
@@ -37,6 +42,10 @@ func _capture() -> void:
 		scene._toggle_inventory()
 	elif capture_panel == "skills":
 		scene._toggle_skill_tree()
+	elif capture_panel == "map":
+		scene._toggle_world_map()
+	elif capture_panel == "forecast":
+		scene._show_weather_forecast(weather.get_forecast(2))
 	match capture_state:
 		"crouch":
 			Input.action_press("player_crouch")
@@ -47,6 +56,8 @@ func _capture() -> void:
 			Input.action_press("ui_right")
 		"jump":
 			Input.action_press("player_jump")
+		"pickup":
+			Input.action_press("player_pickup")
 	var capture_frames := 60 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
 	for _frame: int in range(capture_frames):
 		await physics_frame
@@ -60,6 +71,8 @@ func _capture() -> void:
 		suffix += "_" + capture_panel
 	if not capture_state.is_empty():
 		suffix += "_" + capture_state
+	if not capture_torch:
+		suffix += "_no_torch"
 	if not capture_weather.is_empty():
 		suffix += "_" + capture_weather
 	if capture_weather == "下雨":

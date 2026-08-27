@@ -1,0 +1,4 @@
+Project-native 4x4 pixel-art sheet for the existing primitive-era male player.
+Rows face down, right, left, and up. Columns animate anticipation, bend, grasp,
+and recovery for a ground pickup. Preserve identity, scale, feet alignment, and
+cell containment on a solid #FF00FF background.

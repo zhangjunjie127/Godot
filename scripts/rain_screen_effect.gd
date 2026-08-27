@@ -49,11 +49,12 @@ func _new_drop() -> Dictionary:
 	var viewport_size := Vector2(maxf(size.x, 640.0), maxf(size.y, 360.0))
 	return {
 		"position": Vector2(_rng.randf_range(10.0, viewport_size.x - 10.0), _rng.randf_range(8.0, viewport_size.y * 0.82)),
-		"radius": _rng.randf_range(2.2, 5.8),
+		"radius": _rng.randf_range(1.1, 2.9),
 		"age": 0.0,
 		"duration": _rng.randf_range(2.5, 5.2),
-		"slide_speed": _rng.randf_range(0.5, 5.0),
-		"trail": _rng.randf() < 0.35,
+		"slide_speed": _rng.randf_range(2.0, 8.0),
+		"trail": _rng.randf() < 0.62,
+		"trail_length": _rng.randf_range(12.0, 28.0),
 	}
 
 
@@ -69,4 +70,14 @@ func _draw() -> void:
 		draw_circle(Vector2(-radius * 0.28, -radius * 0.32), maxf(radius * 0.16, 0.55), Color(0.94, 0.99, 1.0, 0.68 * fade))
 		draw_set_transform(Vector2.ZERO)
 		if bool(drop["trail"]):
-			draw_line(position + Vector2(0.0, radius), position + Vector2(0.0, radius + 7.0), Color(0.70, 0.88, 0.94, 0.18 * fade), 0.7, true)
+			var trail_length := float(drop["trail_length"])
+			for segment: int in range(3):
+				var start_y := radius + trail_length * float(segment) / 3.0
+				var end_y := radius + trail_length * float(segment + 1) / 3.0
+				draw_line(
+					position + Vector2(0.0, start_y),
+					position + Vector2(0.0, end_y),
+					Color(0.70, 0.88, 0.94, (0.20 - float(segment) * 0.05) * fade),
+					0.55,
+					true
+				)

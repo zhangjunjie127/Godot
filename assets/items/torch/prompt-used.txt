@@ -1,0 +1,3 @@
+Project-native 2x2 pixel-art handmade torch loop. Keep the wooden shaft fixed on
+one bottom anchor and animate only the compact orange-yellow flame. Solid
+#FF00FF background with strict frame containment.

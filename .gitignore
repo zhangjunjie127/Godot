@@ -2,3 +2,5 @@
 *.tmp
 *.bak
 tests/output/
+assets/generated/
+**/_source/*.import

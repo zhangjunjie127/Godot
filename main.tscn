@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://scripts/weather_system.gd" id="11_weather"]
 [ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="12_weather_ground"]
 [ext_resource type="Script" path="res://scripts/rain_screen_effect.gd" id="13_screen_rain"]
+[ext_resource type="Script" path="res://scripts/cloud_layer.gd" id="14_cloud_layer"]
+[ext_resource type="Script" path="res://scripts/night_vision.gd" id="15_night_vision"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -175,6 +177,12 @@ code = "shader_type canvas_item;\n\nuniform sampler2D screen_texture : hint_scre
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_weather_wetness"]
 shader = SubResource("Shader_weather_wetness")
 
+[sub_resource type="Shader" id="Shader_night_vision"]
+code = "shader_type canvas_item;\n\nuniform vec2 center_uv = vec2(0.5, 0.5);\nuniform vec2 viewport_size = vec2(640.0, 360.0);\nuniform float radius_px = 82.0;\nuniform float softness_px = 24.0;\n\nvoid fragment() {\n\tvec2 delta_px = (UV - center_uv) * viewport_size;\n\tfloat edge = smoothstep(radius_px - softness_px, radius_px + softness_px, length(delta_px));\n\tfloat alpha = mix(0.02, 0.99, edge);\n\tCOLOR = vec4(0.003, 0.006, 0.014, alpha);\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_night_vision"]
+shader = SubResource("Shader_night_vision")
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
 
@@ -246,6 +254,20 @@ z_index = 20
 
 [node name="GameplayMetadata" type="Node" parent="World"]
 
+[node name="Clouds" type="CanvasLayer" parent="."]
+layer = 30
+
+[node name="Field" type="Control" parent="Clouds"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("14_cloud_layer")
+weather_path = NodePath("../../Weather/Effect")
+
 [node name="Weather" type="CanvasLayer" parent="."]
 layer = 50
 
@@ -273,6 +295,22 @@ day_night_cycle_path = NodePath("../../DayNightCycle")
 ground_effects_path = NodePath("../../World/WeatherGround")
 wetness_overlay_path = NodePath("../Wetness")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
+
+[node name="NightVision" type="CanvasLayer" parent="."]
+layer = 80
+
+[node name="Mask" type="ColorRect" parent="NightVision"]
+visible = false
+material = SubResource("ShaderMaterial_night_vision")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("15_night_vision")
+player_path = NodePath("../../World/DepthSorted/Player")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 100
@@ -442,14 +480,14 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="WorldInfo" type="PanelContainer" parent="HUD"]
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -64.0
-offset_top = 8.0
-offset_right = 64.0
-offset_bottom = 62.0
-grow_horizontal = 2
-pivot_offset = Vector2(64, 0)
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -132.0
+offset_top = 140.0
+offset_right = -8.0
+offset_bottom = 194.0
+grow_horizontal = 0
+pivot_offset = Vector2(124, 0)
 scale = Vector2(0.5, 0.5)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
@@ -680,13 +718,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -306.0
+offset_left = -410.0
 offset_top = -160.0
-offset_right = 306.0
+offset_right = 410.0
 offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(306, 160)
+pivot_offset = Vector2(410, 160)
 scale = Vector2(0.5, 0.5)
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
@@ -741,15 +779,136 @@ theme_override_font_sizes/font_size = 10
 text = "原始时代 → 青铜时代"
 horizontal_alignment = 1
 
-[node name="Branches" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
+[node name="TreeRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Branches" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 
-[node name="RitualRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
-custom_minimum_size = Vector2(0, 44)
+[node name="RitualRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 alignment = 1
+
+[node name="ForecastPopup" type="PanelContainer" parent="HUD"]
+visible = false
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -190.0
+offset_top = 72.0
+offset_right = 190.0
+offset_bottom = 160.0
+grow_horizontal = 2
+pivot_offset = Vector2(190, 0)
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
+
+[node name="Margin" type="MarginContainer" parent="HUD/ForecastPopup"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="ForecastLabel" type="Label" parent="HUD/ForecastPopup/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.96, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "天气预报\n未来 1 日  晴朗\n未来 2 日  中雨"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WorldMapOverlay" type="Control" parent="HUD"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="HUD/WorldMapOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.015, 0.72)
+
+[node name="MapPanel" type="PanelContainer" parent="HUD/WorldMapOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -410.0
+offset_top = -350.0
+offset_right = 410.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(410, 350)
+scale = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="Margin" type="MarginContainer" parent="HUD/WorldMapOverlay/MapPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.93, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+text = "世界地图"
+
+[node name="Spacer" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="Button" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+custom_minimum_size = Vector2(42, 24)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+text = "关闭"
+
+[node name="Map" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+custom_minimum_size = Vector2(780, 610)
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+script = ExtResource("9_minimap")
+map_texture = ExtResource("10_minimap_texture")
+player_path = NodePath("../../../../../../World/DepthSorted/Player")
+
+[node name="CoordinateLabel" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.82, 0.65, 1)
+theme_override_font_sizes/font_size = 11
+text = "坐标  1024, 900"
+horizontal_alignment = 1
 
 [node name="ScreenWeather" type="CanvasLayer" parent="."]
 layer = 110

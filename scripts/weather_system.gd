@@ -3,6 +3,7 @@ extends Control
 signal weather_changed(weather: String)
 signal weather_event_started(weather: String, duration_mode: String, duration_days: float)
 signal weather_event_ended(weather: String)
+signal forecast_changed(forecast: Array)
 
 const WEATHER_CLEAR := "晴朗"
 const WEATHER_RAIN := "下雨"
@@ -49,6 +50,7 @@ var _ground_effects: Node
 var _wetness_overlay: CanvasItem
 var _screen_rain_effect: Node
 var _target_rain_density := 0.0
+var _forecast_queue: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -74,7 +76,7 @@ func _process(delta: float) -> void:
 	advance_visual_seconds(delta)
 
 
-func start_weather_event(weather: String, duration_mode: String, rain_level: String = "") -> bool:
+func start_weather_event(weather: String, duration_mode: String, rain_level: String = "", preserve_forecast: bool = false) -> bool:
 	weather = _normalize_weather(weather)
 	if weather not in WEATHER_TYPES:
 		return false
@@ -88,6 +90,8 @@ func start_weather_event(weather: String, duration_mode: String, rain_level: Str
 			current_rain_level = rain_level
 		elif current_rain_level not in RAIN_LEVELS:
 			current_rain_level = RAIN_MEDIUM
+	if not preserve_forecast:
+		_forecast_queue.clear()
 	current_weather = weather
 	current_duration_mode = duration_mode
 	if duration_mode == DURATION_SPECIAL:
@@ -98,8 +102,10 @@ func start_weather_event(weather: String, duration_mode: String, rain_level: Str
 		event_duration_days = 0.5
 	remaining_game_minutes = roundi(event_duration_days * GAME_MINUTES_PER_DAY)
 	_apply_weather_visuals()
+	_ensure_forecast_horizon()
 	weather_changed.emit(current_weather)
 	weather_event_started.emit(current_weather, current_duration_mode, event_duration_days)
+	forecast_changed.emit(get_forecast(2))
 	queue_redraw()
 	return true
 
@@ -146,12 +152,14 @@ func advance_visual_seconds(seconds: float) -> void:
 func _finish_current_event() -> void:
 	var finished_weather := current_weather
 	weather_event_ended.emit(finished_weather)
-	if finished_weather == WEATHER_CLEAR:
-		var next_weather: String = WEATHER_RAIN if _rng.randi_range(0, 1) == 0 else WEATHER_SNOW
-		var next_duration: String = DURATION_HALF_DAY if _rng.randi_range(0, 1) == 0 else DURATION_FULL_DAY
-		start_weather_event(next_weather, next_duration, _random_rain_level() if next_weather == WEATHER_RAIN else "")
-	else:
-		start_weather_event(WEATHER_CLEAR, DURATION_HALF_DAY)
+	_ensure_forecast_horizon()
+	var next_event: Dictionary = _forecast_queue.pop_front()
+	start_weather_event(
+		String(next_event["weather"]),
+		String(next_event["duration_mode"]),
+		String(next_event.get("rain_level", "")),
+		true
+	)
 
 
 func _on_time_changed(day: int, hour: int, minute: int, _phase: String) -> void:
@@ -282,6 +290,52 @@ func get_active_rain_particle_count() -> int:
 	return clampi(roundi(_rain_particles.size() * visual_rain_density), 0, _rain_particles.size())
 
 
+func get_forecast(days: int = 2) -> Array[Dictionary]:
+	var day_count := clampi(days, 1, 2)
+	var timeline: Array[Dictionary] = [{
+		"weather": current_weather,
+		"rain_level": current_rain_level if current_weather == WEATHER_RAIN else "",
+		"minutes": remaining_game_minutes,
+	}]
+	for event: Dictionary in _forecast_queue:
+		timeline.append({
+			"weather": String(event["weather"]),
+			"rain_level": String(event.get("rain_level", "")),
+			"minutes": int(event["minutes"]),
+		})
+
+	var result: Array[Dictionary] = []
+	for day_index: int in range(day_count):
+		var window_start := day_index * GAME_MINUTES_PER_DAY
+		var window_end := window_start + GAME_MINUTES_PER_DAY
+		var cursor := 0
+		var weather_minutes: Dictionary = {}
+		var rain_minutes: Dictionary = {}
+		for event: Dictionary in timeline:
+			var event_end := cursor + int(event["minutes"])
+			var overlap := maxi(0, mini(window_end, event_end) - maxi(window_start, cursor))
+			if overlap > 0:
+				var weather := String(event["weather"])
+				weather_minutes[weather] = int(weather_minutes.get(weather, 0)) + overlap
+				var rain_level := String(event.get("rain_level", ""))
+				if weather == WEATHER_RAIN and not rain_level.is_empty():
+					rain_minutes[rain_level] = int(rain_minutes.get(rain_level, 0)) + overlap
+			cursor = event_end
+			if cursor >= window_end:
+				break
+		var dominant_weather := _largest_bucket(weather_minutes, WEATHER_CLEAR)
+		result.append({
+			"day_offset": day_index + 1,
+			"weather": dominant_weather,
+			"rain_level": _largest_bucket(rain_minutes, RAIN_MEDIUM) if dominant_weather == WEATHER_RAIN else "",
+		})
+	return result
+
+
+func get_scheduled_events() -> Array[Dictionary]:
+	return _forecast_queue.duplicate(true)
+
+
 func _sync_rain_visual_layers() -> void:
 	var wet_strength := clampf(visual_rain_density * 1.8, 0.0, 1.0)
 	if _wetness_overlay != null:
@@ -295,6 +349,46 @@ func _sync_rain_visual_layers() -> void:
 
 func _random_rain_level() -> String:
 	return RAIN_LEVELS[_rng.randi_range(0, RAIN_LEVELS.size() - 1)]
+
+
+func _ensure_forecast_horizon() -> void:
+	var queued_minutes := 0
+	for event: Dictionary in _forecast_queue:
+		queued_minutes += int(event["minutes"])
+	var previous_weather := current_weather if _forecast_queue.is_empty() else String(_forecast_queue.back()["weather"])
+	while queued_minutes < GAME_MINUTES_PER_DAY * 2:
+		var event := _random_event_after(previous_weather)
+		_forecast_queue.append(event)
+		queued_minutes += int(event["minutes"])
+		previous_weather = String(event["weather"])
+
+
+func _random_event_after(previous_weather: String) -> Dictionary:
+	var weather := WEATHER_CLEAR
+	var duration_mode := DURATION_HALF_DAY
+	var rain_level := ""
+	if previous_weather == WEATHER_CLEAR:
+		weather = WEATHER_RAIN if _rng.randi_range(0, 1) == 0 else WEATHER_SNOW
+		duration_mode = DURATION_HALF_DAY if _rng.randi_range(0, 1) == 0 else DURATION_FULL_DAY
+		if weather == WEATHER_RAIN:
+			rain_level = _random_rain_level()
+	return {
+		"weather": weather,
+		"duration_mode": duration_mode,
+		"rain_level": rain_level,
+		"minutes": 720 if duration_mode == DURATION_HALF_DAY else 1440,
+	}
+
+
+func _largest_bucket(buckets: Dictionary, fallback: String) -> String:
+	var result := fallback
+	var largest := -1
+	for key: Variant in buckets:
+		var value := int(buckets[key])
+		if value > largest:
+			largest = value
+			result = String(key)
+	return result
 
 
 func _normalize_weather(weather: String) -> String:

@@ -1,0 +1,4 @@
+Project-native 4x4 pixel-art sheet for the existing primitive-era male player.
+Rows face down, right, left, and up. Each row is a four-frame raised-torch idle
+loop with compact animated flame, stable feet, consistent scale, and strict cell
+containment on a solid #FF00FF background.

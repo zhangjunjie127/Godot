@@ -12,6 +12,7 @@ func _init() -> void:
 	for _index: int in range(SLOT_COUNT):
 		slots.append({})
 	add_item("stone_axe", "石斧", 1, 1)
+	add_item("torch", "临时火把", 1, 1)
 
 
 func add_item(item_id: String, display_name: String, amount: int = 1, max_stack: int = 99) -> int:

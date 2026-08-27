@@ -6,6 +6,7 @@ signal health_changed(current: float, maximum: float)
 signal stamina_changed(current: float, maximum: float)
 signal hunger_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
+signal torch_equipped_changed(is_equipped: bool)
 
 const STATE_IDLE := "站立"
 const STATE_WALK := "行走"
@@ -14,6 +15,7 @@ const STATE_JUMP := "跳跃"
 const STATE_CROUCH := "蹲伏"
 const STATE_PRONE := "趴下"
 const STATE_CRAWL := "爬行"
+const STATE_PICKUP := "拾取"
 
 const CONDITION_HAPPY := "开心"
 const CONDITION_UNHAPPY := "不开心"
@@ -25,6 +27,8 @@ const CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/shee
 const PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_male_prone_idle/sheet-transparent.png")
 const CRAWL_TEXTURE := preload("res://assets/characters/player_male_crawl/sheet-transparent.png")
 const JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/sheet-transparent.png")
+const TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_torch_hold/sheet-transparent.png")
+const PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 
 @export var move_speed := 170.0
 @export var run_speed := 280.0
@@ -55,6 +59,9 @@ var _is_exhausted := false
 var _animation_elapsed := 0.0
 var _active_animation := ""
 var _facing_row := 0
+var _is_picking_up := false
+var _pickup_elapsed := 0.0
+var torch_equipped := false
 var health := 100.0
 var stamina := 100.0
 var hunger := 100.0
@@ -70,10 +77,15 @@ func _ready() -> void:
 	_ensure_action("player_jump", KEY_SPACE)
 	_ensure_action("player_crouch", KEY_C)
 	_ensure_action("player_crawl", KEY_Z)
+	_ensure_action("player_pickup", KEY_F)
 	queue_redraw()
 
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up:
+		start_pickup()
+	_update_pickup(delta)
+
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var wasd := Vector2(
 		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
@@ -81,14 +93,16 @@ func _physics_process(delta: float) -> void:
 	)
 	if wasd.length_squared() > 0.0:
 		direction = wasd.normalized()
+	if _is_picking_up:
+		direction = Vector2.ZERO
 
 	var jump_pressed := Input.is_action_pressed("player_jump")
-	if jump_pressed and not _jump_was_pressed and not _is_jumping:
+	if jump_pressed and not _jump_was_pressed and not _is_jumping and not _is_picking_up:
 		_start_jump()
 	_jump_was_pressed = jump_pressed
 	_update_jump(delta)
 
-	var crawling := Input.is_action_pressed("player_crawl") and not _is_jumping
+	var crawling := Input.is_action_pressed("player_crawl") and not _is_jumping and not _is_picking_up
 	var crouching := Input.is_action_pressed("player_crouch") and not crawling and not _is_jumping
 	var wants_to_run := Input.is_action_pressed("player_run") and direction.length_squared() > 0.0 and not crouching and not crawling
 	var running := wants_to_run and not _is_exhausted
@@ -133,6 +147,22 @@ func set_concealed(value: bool) -> void:
 func set_local_player(value: bool) -> void:
 	is_local_player = value
 	_apply_concealment_visual()
+
+
+func set_torch_equipped(value: bool) -> void:
+	if torch_equipped == value:
+		return
+	torch_equipped = value
+	_active_animation = ""
+	torch_equipped_changed.emit(value)
+
+
+func start_pickup() -> void:
+	if _is_jumping or _is_picking_up:
+		return
+	_is_picking_up = true
+	_pickup_elapsed = 0.0
+	_set_movement_state(STATE_PICKUP)
 
 
 func set_health(value: float) -> void:
@@ -219,6 +249,15 @@ func _update_jump(delta: float) -> void:
 		_jump_offset = 0.0
 
 
+func _update_pickup(delta: float) -> void:
+	if not _is_picking_up:
+		return
+	_pickup_elapsed += delta
+	if _pickup_elapsed >= 0.72:
+		_is_picking_up = false
+		_pickup_elapsed = 0.0
+
+
 func _update_stamina(delta: float, running: bool) -> void:
 	var change := -stamina_drain_per_second if running else stamina_recovery_per_second
 	var next_value := clampf(stamina + change * delta, 0.0, max_stamina)
@@ -237,6 +276,8 @@ func _update_hunger(delta: float) -> void:
 
 
 func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool, crawling: bool) -> String:
+	if _is_picking_up:
+		return STATE_PICKUP
 	if _is_jumping:
 		return STATE_JUMP
 	if crawling:
@@ -285,6 +326,8 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 
 func _animation_name(moving: bool) -> String:
 	match _movement_state:
+		STATE_PICKUP:
+			return "pickup"
 		STATE_CROUCH:
 			return "crouch_move" if moving else "crouch_idle"
 		STATE_PRONE:
@@ -294,11 +337,11 @@ func _animation_name(moving: bool) -> String:
 		STATE_JUMP:
 			return "jump"
 		STATE_RUN:
-			return "run"
+			return "torch_hold" if torch_equipped else "run"
 		STATE_WALK:
-			return "walk"
+			return "torch_hold" if torch_equipped else "walk"
 		_:
-			return "idle"
+			return "torch_hold" if torch_equipped else "idle"
 
 
 func _animation_texture(animation: String) -> Texture2D:
@@ -311,11 +354,19 @@ func _animation_texture(animation: String) -> Texture2D:
 			return CRAWL_TEXTURE
 		"jump":
 			return JUMP_TEXTURE
+		"torch_hold":
+			return TORCH_HOLD_TEXTURE
+		"pickup":
+			return PICKUP_TEXTURE
 		_:
 			return WALK_TEXTURE
 
 
 func _animation_frame(animation: String, moving: bool) -> int:
+	if animation == "pickup":
+		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * 4.0), 3)
+	if animation == "torch_hold":
+		return floori(_animation_elapsed / 0.16) % 4
 	if animation == "jump":
 		var progress := clampf(_jump_elapsed / maxf(jump_duration, 0.01), 0.0, 0.999)
 		return mini(floori(progress * 4.0), 3)

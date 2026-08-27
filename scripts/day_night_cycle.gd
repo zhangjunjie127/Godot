@@ -4,13 +4,16 @@ signal time_changed(day: int, hour: int, minute: int, phase: String)
 signal phase_changed(phase: String)
 signal day_changed(day: int)
 
-const MINUTES_PER_DAY := 1440.0
+const DAY_START_HOUR := 6.0
+const DUSK_START_HOUR := 18.0
+const NIGHT_START_HOUR := 21.0
 const NIGHT_COLOR := Color(0.52, 0.58, 0.72, 1.0)
-const DAWN_COLOR := Color(0.95, 0.80, 0.68, 1.0)
 const DAY_COLOR := Color.WHITE
 const DUSK_COLOR := Color(0.88, 0.69, 0.58, 1.0)
 
-@export_range(10.0, 3600.0, 1.0) var real_seconds_per_game_day := 120.0
+@export_range(1.0, 3600.0, 1.0) var day_duration_seconds := 900.0
+@export_range(1.0, 3600.0, 1.0) var dusk_duration_seconds := 300.0
+@export_range(1.0, 3600.0, 1.0) var night_duration_seconds := 600.0
 @export_range(0.0, 23.99, 0.25) var start_hour := 7.0
 @export var start_day := 1
 @export var environment_path: NodePath
@@ -33,7 +36,20 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	advance_minutes(delta * MINUTES_PER_DAY / maxf(real_seconds_per_game_day, 1.0))
+	advance_real_seconds(delta)
+
+
+func advance_real_seconds(seconds: float) -> void:
+	var remaining := maxf(seconds, 0.0)
+	while remaining > 0.0001:
+		var speed := _phase_game_minutes_per_real_second(current_phase)
+		var boundary_minutes := _minutes_until_phase_boundary()
+		var real_seconds_to_boundary := boundary_minutes / speed
+		var step := minf(remaining, real_seconds_to_boundary)
+		advance_minutes(step * speed)
+		remaining -= step
+		if is_equal_approx(step, real_seconds_to_boundary):
+			_snap_to_phase_boundary()
 
 
 func advance_minutes(minutes: float) -> void:
@@ -79,30 +95,58 @@ func _emit_time_changed() -> void:
 
 
 func _get_phase(hour: float) -> String:
-	if hour >= 5.0 and hour < 7.0:
-		return "清晨"
-	if hour >= 7.0 and hour < 18.0:
+	if hour >= DAY_START_HOUR and hour < DUSK_START_HOUR:
 		return "白天"
-	if hour >= 18.0 and hour < 21.0:
+	if hour >= DUSK_START_HOUR and hour < NIGHT_START_HOUR:
 		return "黄昏"
 	return "夜晚"
+
+
+func _phase_game_minutes_per_real_second(phase: String) -> float:
+	match phase:
+		"白天":
+			return (DUSK_START_HOUR - DAY_START_HOUR) * 60.0 / maxf(day_duration_seconds, 1.0)
+		"黄昏":
+			return (NIGHT_START_HOUR - DUSK_START_HOUR) * 60.0 / maxf(dusk_duration_seconds, 1.0)
+		_:
+			return (24.0 - NIGHT_START_HOUR + DAY_START_HOUR) * 60.0 / maxf(night_duration_seconds, 1.0)
+
+
+func _minutes_until_phase_boundary() -> float:
+	if current_hour >= DAY_START_HOUR and current_hour < DUSK_START_HOUR:
+		return (DUSK_START_HOUR - current_hour) * 60.0
+	if current_hour >= DUSK_START_HOUR and current_hour < NIGHT_START_HOUR:
+		return (NIGHT_START_HOUR - current_hour) * 60.0
+	if current_hour >= NIGHT_START_HOUR:
+		return (24.0 - current_hour) * 60.0
+	return (DAY_START_HOUR - current_hour) * 60.0
+
+
+func _snap_to_phase_boundary() -> void:
+	if current_hour < 0.001:
+		current_hour = 0.0
+	elif absf(current_hour - DAY_START_HOUR) < 0.001:
+		current_hour = DAY_START_HOUR
+	elif absf(current_hour - DUSK_START_HOUR) < 0.001:
+		current_hour = DUSK_START_HOUR
+	elif absf(current_hour - NIGHT_START_HOUR) < 0.001:
+		current_hour = NIGHT_START_HOUR
+	current_phase = _get_phase(current_hour)
 
 
 func _apply_environment() -> void:
 	if environment == null:
 		return
 	var hour := current_hour
-	if hour < 5.0 or hour >= 22.0:
+	if hour < 5.0 or hour >= NIGHT_START_HOUR:
 		environment.color = NIGHT_COLOR
-	elif hour < 6.0:
-		environment.color = NIGHT_COLOR.lerp(DAWN_COLOR, hour - 5.0)
-	elif hour < 7.0:
-		environment.color = DAWN_COLOR.lerp(DAY_COLOR, hour - 6.0)
-	elif hour < 18.0:
+	elif hour < DAY_START_HOUR:
+		environment.color = NIGHT_COLOR.lerp(DAY_COLOR, hour - 5.0)
+	elif hour < DUSK_START_HOUR:
 		environment.color = DAY_COLOR
 	elif hour < 19.0:
-		environment.color = DAY_COLOR.lerp(DUSK_COLOR, hour - 18.0)
-	elif hour < 21.0:
+		environment.color = DAY_COLOR.lerp(DUSK_COLOR, hour - DUSK_START_HOUR)
+	elif hour < NIGHT_START_HOUR:
 		environment.color = DUSK_COLOR.lerp(NIGHT_COLOR, (hour - 19.0) / 2.0)
 	else:
 		environment.color = NIGHT_COLOR

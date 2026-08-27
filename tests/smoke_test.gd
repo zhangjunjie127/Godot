@@ -13,8 +13,8 @@ func _run() -> void:
 
 	var player: CharacterBody2D = scene.get_node("World/DepthSorted/Player")
 	var grass: Area2D = scene.get_node("World/DepthSorted/EastGrass")
-	var status: Label = scene.get_node("HUD/TopBar/Margin/Row/ConcealmentLabel")
-	var action: Label = scene.get_node("HUD/TopBar/Margin/Row/ActionLabel")
+	var status: Label = scene.get_node("HUD/StatusTray/Margin/Row/ConcealmentLabel")
+	var action: Label = scene.get_node("HUD/StatusTray/Margin/Row/ActionLabel")
 	var health_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar")
 	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
 	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
@@ -27,10 +27,17 @@ func _run() -> void:
 	var wild_boar: CharacterBody2D = scene.get_node("World/DepthSorted/WildBoar")
 	var boar_sprite: Sprite2D = wild_boar.get_node("Sprite2D")
 	var day_night_cycle = scene.get_node("DayNightCycle")
-	var era_label: Label = scene.get_node("HUD/TopBar/Margin/Row/EraLabel")
-	var time_label: Label = scene.get_node("HUD/TopBar/Margin/Row/TimeLabel")
+	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
+	var time_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/TimeLabel")
+	var phase_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/PhaseLabel")
+	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
+	var inventory_overlay: Control = scene.get_node("HUD/InventoryOverlay")
+	var inventory_grid: GridContainer = scene.get_node("HUD/InventoryOverlay/InventoryPanel/Margin/Content/InventoryGrid")
+	var skill_overlay: Control = scene.get_node("HUD/SkillOverlay")
+	var skill_tree_row: HBoxContainer = scene.get_node("HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow")
 	var day_night_tint: CanvasModulate = scene.get_node("World/DayNightTint")
 	var camera: Camera2D = player.get_node("Camera2D")
+	day_night_cycle.process_mode = Node.PROCESS_MODE_DISABLED
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
 		return
@@ -46,8 +53,20 @@ func _run() -> void:
 	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100":
 		_fail("Player status HUD did not initialize")
 		return
-	if player_status.scale != Vector2(0.4, 0.4) or player_status.position != Vector2(8.0, 36.0):
+	if player_status.scale != Vector2.ONE or player_status.position != Vector2(8.0, 8.0):
 		_fail("Player status HUD size or top-left placement changed")
+		return
+	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
+		_fail("Minimap did not bind to the local player")
+		return
+	if scene.inventory.slots.size() != 20 or scene.inventory.get_item_count("stone_axe") != 1:
+		_fail("Starter backpack did not initialize with 20 slots and a stone axe")
+		return
+	if inventory_grid.get_child_count() != 20:
+		_fail("Backpack UI did not render all slots")
+		return
+	if skill_tree_row.get_child_count() != 11 or scene.skill_tree.skill_points != 5:
+		_fail("Horizontal skill tree did not initialize")
 		return
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
 		_fail("Interactive vegetation did not load")
@@ -65,9 +84,23 @@ func _run() -> void:
 	if boar_sprite.hframes != 4 or boar_sprite.vframes != 4:
 		_fail("Wild boar animation sheet did not load")
 		return
+	day_night_cycle.set_game_time(1, 6.0)
+	day_night_cycle.advance_real_seconds(900.0)
+	if not is_equal_approx(day_night_cycle.current_hour, 18.0) or day_night_cycle.current_phase != "黄昏":
+		_fail("Fifteen-minute daytime duration is incorrect")
+		return
+	day_night_cycle.advance_real_seconds(300.0)
+	if not is_equal_approx(day_night_cycle.current_hour, 21.0) or day_night_cycle.current_phase != "夜晚":
+		_fail("Five-minute dusk duration is incorrect")
+		return
+	day_night_cycle.advance_real_seconds(600.0)
+	if day_night_cycle.current_day != 2 or not is_equal_approx(day_night_cycle.current_hour, 6.0) or day_night_cycle.current_phase != "白天":
+		_fail("Ten-minute night duration is incorrect")
+		return
+
 	day_night_cycle.set_game_time(2, 21.0)
 	await process_frame
-	if era_label.text != "原始时代 · 第 2 日" or time_label.text != "21:00 · 夜晚":
+	if era_label.text != "原始时代 · 第 2 日" or time_label.text != "21:00" or phase_label.text != "夜晚":
 		_fail("Day/night clock did not update the HUD")
 		return
 	if day_night_tint.color.r >= 0.7:
@@ -107,9 +140,9 @@ func _run() -> void:
 	player.global_position = grass.global_position
 	for _frame: int in range(8):
 		await physics_frame
-		if status.text == "状态：草丛隐蔽":
+		if status.text == "草丛隐蔽":
 			break
-	if status.text != "状态：草丛隐蔽":
+	if status.text != "草丛隐蔽":
 		push_error("Player did not enter concealment")
 		quit(1)
 		return
@@ -128,9 +161,9 @@ func _run() -> void:
 	player.global_position = Vector2(2000.0, 2000.0)
 	for _frame: int in range(8):
 		await physics_frame
-		if status.text == "状态：可见":
+		if status.text == "公开可见":
 			break
-	if status.text != "状态：可见":
+	if status.text != "公开可见":
 		push_error("Player did not leave concealment")
 		quit(1)
 		return
@@ -139,10 +172,10 @@ func _run() -> void:
 	Input.action_press("ui_right")
 	for _frame: int in range(8):
 		await physics_frame
-	if action.text != "动作：奔跑":
+	if action.text != "奔跑":
 		_fail("Run state did not activate")
 		return
-	if player_sprite.frame_coords.y != 2 or player_sprite.frame_coords.x == 0:
+	if player_sprite.frame_coords.y != 1 or player_sprite.frame_coords.x == 0:
 		_fail("Player right-facing run animation did not advance")
 		return
 	if stamina_bar.value >= stamina_bar.max_value:
@@ -150,6 +183,13 @@ func _run() -> void:
 		return
 	Input.action_release("ui_right")
 	Input.action_release("player_run")
+	Input.action_press("ui_left")
+	await physics_frame
+	await physics_frame
+	if player_sprite.frame_coords.y != 2:
+		_fail("Player left-facing animation is reversed")
+		return
+	Input.action_release("ui_left")
 
 	player.take_damage(25.0)
 	await process_frame
@@ -160,7 +200,7 @@ func _run() -> void:
 	Input.action_press("player_crouch")
 	await physics_frame
 	await physics_frame
-	if action.text != "动作：蹲伏":
+	if action.text != "蹲伏":
 		_fail("Crouch state did not activate")
 		return
 	Input.action_release("player_crouch")
@@ -168,7 +208,7 @@ func _run() -> void:
 	Input.action_press("player_crawl")
 	await physics_frame
 	await physics_frame
-	if action.text != "动作：爬行":
+	if action.text != "爬行":
 		_fail("Crawl state did not activate")
 		return
 	Input.action_release("player_crawl")
@@ -176,12 +216,42 @@ func _run() -> void:
 	Input.action_press("player_jump")
 	await physics_frame
 	await physics_frame
-	if action.text != "动作：跳跃":
+	if action.text != "跳跃":
 		_fail("Jump state did not activate")
 		return
 	Input.action_release("player_jump")
 
-	print("SMOKE_OK: animated actors, day/night clock, HUD, stamina, concealment and movement states")
+	if scene.inventory.add_item("plant_fiber", "植物纤维", 120, 99) != 120:
+		_fail("Backpack could not stack items")
+		return
+	if scene.inventory.get_item_count("plant_fiber") != 120 or scene.inventory.remove_item("plant_fiber", 21) != 21:
+		_fail("Backpack item counts are incorrect")
+		return
+	scene._toggle_inventory()
+	if not inventory_overlay.visible or skill_overlay.visible:
+		_fail("Backpack toggle did not open the correct panel")
+		return
+	scene._toggle_skill_tree()
+	if inventory_overlay.visible or not skill_overlay.visible:
+		_fail("Skill tree toggle did not open the correct panel")
+		return
+
+	for skill_id: String in ["survival", "gathering", "building", "hunting", "defense"]:
+		if not scene.skill_tree.unlock_skill(skill_id):
+			_fail("Skill chain could not unlock: " + skill_id)
+			return
+	if scene.skill_tree.skill_points != 0 or not scene.skill_tree.is_ritual_ready():
+		_fail("Ritual did not activate after all skills were filled")
+		return
+	if not scene.skill_tree.unlock_skill("ascension_ritual") or scene.skill_tree.current_era != "青铜时代":
+		_fail("Ritual did not evolve the player to the next era")
+		return
+	await process_frame
+	if not era_label.text.begins_with("青铜时代"):
+		_fail("Era evolution did not update the HUD")
+		return
+
+	print("SMOKE_OK: movement directions, 15/5/10 clock, HUD, minimap, backpack and era skill tree")
 	quit()
 
 

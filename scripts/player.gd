@@ -238,5 +238,5 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 
 func _direction_row(direction: Vector2) -> int:
 	if absf(direction.x) > absf(direction.y):
-		return 2 if direction.x > 0.0 else 1
+		return 1 if direction.x > 0.0 else 2
 	return 0 if direction.y > 0.0 else 3

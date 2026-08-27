@@ -19,6 +19,10 @@ func _run() -> void:
 	var stamina_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaLabel")
 	var hunger_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerBar")
 	var hunger_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerLabel")
+	var portrait_frame: PanelContainer = scene.get_node("HUD/PlayerStatus/Margin/Content/PortraitFrame")
+	var health_group: Control = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup")
+	var stamina_group: Control = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup")
+	var hunger_group: Control = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup")
 	var condition_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon")
 	var action_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon")
 	var visibility_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon")
@@ -57,6 +61,13 @@ func _run() -> void:
 		return
 	if health_label.text != "生命 100 / 100" or stamina_label.text != "体力 100 / 100" or hunger_label.text != "饥饿 100 / 100":
 		_fail("Player status HUD did not initialize")
+		return
+	if health_group.size.y != 12.0 or stamina_group.size.y != 12.0 or hunger_group.size.y != 12.0:
+		_fail("Health, stamina or hunger bars were not narrowed")
+		return
+	var meter_stack_height := hunger_group.position.y + hunger_group.size.y - health_group.position.y
+	if meter_stack_height != portrait_frame.size.y or meter_stack_height != 42.0:
+		_fail("Three meter bars do not match the portrait height")
 		return
 	if scene.get_node_or_null("HUD/WorldInfo/Margin/Row/TimeLabel") != null or scene.get_node_or_null("HUD/WorldInfo/Margin/Row/PhaseLabel") != null:
 		_fail("Time or phase text was not removed from the HUD")

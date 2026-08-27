@@ -92,13 +92,63 @@ func _run() -> void:
 	if weather.current_weather != "下雨":
 		_fail("Rain weather did not initialize")
 		return
-	weather.set_weather("寒冬")
-	if weather.current_weather != "寒冬":
-		_fail("Winter weather could not activate")
+	weather.start_weather_event("下雨", "半天")
+	if weather.current_duration_mode != "半天" or weather.remaining_game_minutes != 720:
+		_fail("Half-day rain duration is incorrect")
 		return
-	weather.advance_real_seconds(weather.weather_duration_seconds)
+	weather.advance_game_minutes(719)
+	if weather.current_weather != "下雨":
+		_fail("Half-day rain ended early")
+		return
+	weather.advance_game_minutes(1)
 	if weather.current_weather != "晴朗":
-		_fail("Weather cycle did not advance")
+		_fail("Half-day rain did not end after 720 game minutes")
+		return
+	weather.start_weather_event("下雪", "一天")
+	if weather.current_duration_mode != "一天" or weather.remaining_game_minutes != 1440:
+		_fail("Full-day snow duration is incorrect")
+		return
+	weather.advance_game_minutes(1439)
+	if weather.current_weather != "下雪":
+		_fail("Full-day snow ended early")
+		return
+	weather.advance_game_minutes(1)
+	if weather.current_weather != "晴朗":
+		_fail("Full-day snow did not end after 1440 game minutes")
+		return
+	for _sample: int in range(40):
+		weather.trigger_special_weather("下雨")
+		if weather.event_duration_days < 3 or weather.event_duration_days > 10:
+			_fail("Special weather duration escaped the 3-10 day range")
+			return
+	weather.start_weather_event("下雨", "半天")
+	var rain_speeds: Dictionary = {}
+	var rain_lengths: Dictionary = {}
+	for particle: Dictionary in weather._rain_particles:
+		var velocity: Vector2 = particle["velocity"]
+		if velocity.x >= 0.0 or velocity.y <= 0.0:
+			_fail("Rain motion does not follow the visible streak direction")
+			return
+		rain_speeds[roundi(velocity.length())] = true
+		rain_lengths[roundi(float(particle["length"]))] = true
+	if rain_speeds.size() < 6 or rain_lengths.size() < 5:
+		_fail("Rain particles still look mechanically uniform")
+		return
+	var sampled_rain_motion := false
+	for particle: Dictionary in weather._rain_particles:
+		var before: Vector2 = particle["position"]
+		if before.x <= 10.0 or before.y >= 300.0:
+			continue
+		var velocity: Vector2 = particle["velocity"]
+		weather.advance_visual_seconds(0.01)
+		var actual_motion: Vector2 = (particle["position"] as Vector2) - before
+		if actual_motion.distance_to(velocity * 0.01) > 0.01:
+			_fail("Rain particle movement jumped or opposed its streak")
+			return
+		sampled_rain_motion = true
+		break
+	if not sampled_rain_motion:
+		_fail("Rain motion regression sample was unavailable")
 		return
 	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
 		_fail("Minimap did not bind to the local player")
@@ -139,6 +189,9 @@ func _run() -> void:
 	day_night_cycle.advance_real_seconds(900.0)
 	if not is_equal_approx(day_night_cycle.current_hour, 18.0) or day_night_cycle.current_phase != "黄昏":
 		_fail("Fifteen-minute daytime duration is incorrect")
+		return
+	if weather.current_weather != "晴朗":
+		_fail("Half-day weather did not follow the game calendar")
 		return
 	day_night_cycle.advance_real_seconds(300.0)
 	if not is_equal_approx(day_night_cycle.current_hour, 21.0) or day_night_cycle.current_phase != "夜晚":
@@ -375,7 +428,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: enlarged icons, hunger meter, rain/winter weather, 15/5/10 cycle, minimap, backpack and branched skill tree")
+	print("SMOKE_OK: natural rain/snow, half-day/full-day/special weather, hunger, HUD, minimap and branched skill tree")
 	quit()
 
 

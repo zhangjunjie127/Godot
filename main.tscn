@@ -246,6 +246,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("11_weather")
+day_night_cycle_path = NodePath("../../DayNightCycle")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 layer = 100

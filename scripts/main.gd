@@ -1,6 +1,9 @@
 extends Node2D
 
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
+@onready var day_night_cycle = $DayNightCycle
+@onready var era_label: Label = $HUD/TopBar/Margin/Row/EraLabel
+@onready var time_label: Label = $HUD/TopBar/Margin/Row/TimeLabel
 @onready var area_label: Label = $HUD/TopBar/Margin/Row/AreaLabel
 @onready var action_label: Label = $HUD/TopBar/Margin/Row/ActionLabel
 @onready var concealment_label: Label = $HUD/TopBar/Margin/Row/ConcealmentLabel
@@ -15,10 +18,17 @@ func _ready() -> void:
 	player.movement_state_changed.connect(_on_movement_state_changed)
 	player.health_changed.connect(_on_health_changed)
 	player.stamina_changed.connect(_on_stamina_changed)
+	day_night_cycle.time_changed.connect(_on_time_changed)
 	_on_concealment_changed(false)
 	_on_movement_state_changed("站立")
 	_on_health_changed(player.health, player.max_health)
 	_on_stamina_changed(player.stamina, player.max_stamina)
+	_on_time_changed(
+		day_night_cycle.current_day,
+		floori(day_night_cycle.current_hour),
+		floori(fposmod(day_night_cycle.current_hour, 1.0) * 60.0),
+		day_night_cycle.current_phase
+	)
 
 
 func _process(_delta: float) -> void:
@@ -47,6 +57,11 @@ func _on_stamina_changed(current: float, maximum: float) -> void:
 	stamina_bar.max_value = maximum
 	stamina_bar.value = current
 	stamina_label.text = "体力 %d / %d" % [roundi(current), roundi(maximum)]
+
+
+func _on_time_changed(day: int, hour: int, minute: int, phase: String) -> void:
+	era_label.text = "原始时代 · 第 %d 日" % day
+	time_label.text = "%02d:%02d · %s" % [hour, minute, phase]
 
 
 func _get_area_name(position: Vector2) -> String:

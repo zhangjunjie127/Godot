@@ -1,13 +1,20 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="3_player"]
 [ext_resource type="Texture2D" path="res://assets/characters/player_male.png" id="4_player_texture"]
+[ext_resource type="Texture2D" path="res://assets/characters/player_male_walk/sheet-transparent.png" id="5_player_walk"]
+[ext_resource type="Script" path="res://scripts/day_night_cycle.gd" id="6_day_night"]
+[ext_resource type="Script" path="res://scripts/wild_boar.gd" id="7_boar_script"]
+[ext_resource type="Texture2D" path="res://assets/monsters/wild_boar_walk/sheet-transparent.png" id="8_boar_walk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
 height = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boar"]
+radius = 12.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_player_portrait"]
 atlas = ExtResource("4_player_texture")
@@ -73,6 +80,8 @@ script = ExtResource("1_main")
 [node name="World" type="Node2D" parent="."]
 script = ExtResource("2_world")
 
+[node name="DayNightTint" type="CanvasModulate" parent="World"]
+
 [node name="Foundation" type="Node2D" parent="World"]
 z_index = -20
 
@@ -90,8 +99,10 @@ script = ExtResource("3_player")
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player"]
 texture_filter = 1
 position = Vector2(0, -32)
-texture = ExtResource("4_player_texture")
-scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_player_walk")
+hframes = 4
+vframes = 4
+scale = Vector2(0.44, 0.44)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/Player"]
 position = Vector2(0, -10)
@@ -106,6 +117,24 @@ limit_left = 0
 limit_top = 0
 limit_right = 2048
 limit_bottom = 2048
+
+[node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
+position = Vector2(1320, 1110)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("7_boar_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/WildBoar"]
+texture_filter = 1
+position = Vector2(0, -13)
+texture = ExtResource("8_boar_walk")
+hframes = 4
+vframes = 4
+scale = Vector2(0.36, 0.36)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/WildBoar"]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_boar")
 
 [node name="ForegroundOcclusion" type="Node2D" parent="World"]
 z_index = 20
@@ -244,6 +273,11 @@ theme_override_constants/separation = 16
 layout_mode = 2
 text = "原始时代 · 第 1 日"
 
+[node name="TimeLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+text = "07:00 · 白天"
+
 [node name="AreaLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2
 text = "中央河谷"
@@ -260,3 +294,7 @@ size_flags_horizontal = 3
 [node name="ConcealmentLabel" type="Label" parent="HUD/TopBar/Margin/Row"]
 layout_mode = 2
 text = "状态：可见"
+
+[node name="DayNightCycle" type="Node" parent="."]
+script = ExtResource("6_day_night")
+environment_path = NodePath("../World/DayNightTint")

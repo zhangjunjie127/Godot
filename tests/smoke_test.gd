@@ -23,6 +23,13 @@ func _run() -> void:
 	var foundation: Node2D = scene.get_node("World/Foundation")
 	var blockers: Node2D = scene.get_node("World/Collision")
 	var depth_sorted: Node2D = scene.get_node("World/DepthSorted")
+	var player_sprite: Sprite2D = player.get_node("Sprite2D")
+	var wild_boar: CharacterBody2D = scene.get_node("World/DepthSorted/WildBoar")
+	var boar_sprite: Sprite2D = wild_boar.get_node("Sprite2D")
+	var day_night_cycle = scene.get_node("DayNightCycle")
+	var era_label: Label = scene.get_node("HUD/TopBar/Margin/Row/EraLabel")
+	var time_label: Label = scene.get_node("HUD/TopBar/Margin/Row/TimeLabel")
+	var day_night_tint: CanvasModulate = scene.get_node("World/DayNightTint")
 	var camera: Camera2D = player.get_node("Camera2D")
 	if player.world_size != Vector2(2048.0, 2048.0):
 		_fail("Expanded map did not load its 2048 world size")
@@ -52,6 +59,22 @@ func _run() -> void:
 	if vegetation_count != 33:
 		_fail("All 33 vegetation assets did not load")
 		return
+	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
+		_fail("Player four-direction animation sheet did not load")
+		return
+	if boar_sprite.hframes != 4 or boar_sprite.vframes != 4:
+		_fail("Wild boar animation sheet did not load")
+		return
+	day_night_cycle.set_game_time(2, 21.0)
+	await process_frame
+	if era_label.text != "原始时代 · 第 2 日" or time_label.text != "21:00 · 夜晚":
+		_fail("Day/night clock did not update the HUD")
+		return
+	if day_night_tint.color.r >= 0.7:
+		_fail("Night environment tint did not darken the world")
+		return
+	day_night_cycle.set_game_time(1, 7.0)
+	await process_frame
 
 	var lake_query := PhysicsPointQueryParameters2D.new()
 	lake_query.position = Vector2(600.0, 1600.0)
@@ -82,8 +105,10 @@ func _run() -> void:
 		return
 
 	player.global_position = grass.global_position
-	await physics_frame
-	await physics_frame
+	for _frame: int in range(8):
+		await physics_frame
+		if status.text == "状态：草丛隐蔽":
+			break
 	if status.text != "状态：草丛隐蔽":
 		push_error("Player did not enter concealment")
 		quit(1)
@@ -101,8 +126,10 @@ func _run() -> void:
 	player.set_local_player(true)
 
 	player.global_position = Vector2(2000.0, 2000.0)
-	await physics_frame
-	await physics_frame
+	for _frame: int in range(8):
+		await physics_frame
+		if status.text == "状态：可见":
+			break
 	if status.text != "状态：可见":
 		push_error("Player did not leave concealment")
 		quit(1)
@@ -110,10 +137,13 @@ func _run() -> void:
 
 	Input.action_press("player_run")
 	Input.action_press("ui_right")
-	await physics_frame
-	await physics_frame
+	for _frame: int in range(8):
+		await physics_frame
 	if action.text != "动作：奔跑":
 		_fail("Run state did not activate")
+		return
+	if player_sprite.frame_coords.y != 2 or player_sprite.frame_coords.x == 0:
+		_fail("Player right-facing run animation did not advance")
 		return
 	if stamina_bar.value >= stamina_bar.max_value:
 		_fail("Running did not consume stamina")
@@ -151,7 +181,7 @@ func _run() -> void:
 		return
 	Input.action_release("player_jump")
 
-	print("SMOKE_OK: player status HUD, stamina, concealment and movement states")
+	print("SMOKE_OK: animated actors, day/night clock, HUD, stamina, concealment and movement states")
 	quit()
 
 

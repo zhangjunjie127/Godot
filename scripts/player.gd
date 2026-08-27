@@ -36,6 +36,8 @@ var _jump_offset := 0.0
 var _jump_was_pressed := false
 var _movement_state := STATE_IDLE
 var _is_exhausted := false
+var _walk_animation_elapsed := 0.0
+var _facing_row := 0
 var health := 100.0
 var stamina := 100.0
 
@@ -84,7 +86,7 @@ func _physics_process(delta: float) -> void:
 
 	var state := _resolve_movement_state(direction, running, crouching, crawling)
 	_set_movement_state(state)
-	_update_sprite(direction)
+	_update_sprite(direction, delta)
 	queue_redraw()
 
 
@@ -200,29 +202,41 @@ func _set_movement_state(value: String) -> void:
 	movement_state_changed.emit(value)
 
 
-func _update_sprite(direction: Vector2) -> void:
-	if not is_zero_approx(direction.x):
-		sprite.flip_h = direction.x < 0.0
-
+func _update_sprite(direction: Vector2, delta: float) -> void:
 	var moving := direction.length_squared() > 0.0
+	if moving:
+		_facing_row = _direction_row(direction)
+		_walk_animation_elapsed += delta
+	else:
+		_walk_animation_elapsed = 0.0
+	var frame_duration := 0.09 if _movement_state == STATE_RUN else 0.14
+	var frame_column := floori(_walk_animation_elapsed / frame_duration) % 4 if moving else 0
+	sprite.frame_coords = Vector2i(frame_column, _facing_row)
+
 	var time := Time.get_ticks_msec()
 	var sprite_position := Vector2(0.0, -32.0 - _jump_offset)
-	var sprite_scale := Vector2(0.5, 0.5)
+	var sprite_scale := Vector2(0.44, 0.44)
 	match _movement_state:
 		STATE_WALK:
 			sprite_position.y += sin(time * 0.018) * 1.5
 		STATE_RUN:
 			sprite_position.y += sin(time * 0.029) * 2.6
-			sprite_scale = Vector2(0.52, 0.48)
+			sprite_scale = Vector2(0.46, 0.42)
 		STATE_JUMP:
 			var stretch := 1.0 + (_jump_offset / maxf(jump_height, 0.01)) * 0.08
-			sprite_scale = Vector2(0.5 / stretch, 0.5 * stretch)
+			sprite_scale = Vector2(0.44 / stretch, 0.44 * stretch)
 		STATE_CROUCH:
 			sprite_position.y = -24.0 + (sin(time * 0.014) * 0.6 if moving else 0.0)
-			sprite_scale = Vector2(0.52, 0.38)
+			sprite_scale = Vector2(0.46, 0.34)
 		STATE_CRAWL:
 			sprite_position.y = -16.0 + (sin(time * 0.018) * 0.4 if moving else 0.0)
-			sprite_scale = Vector2(0.62, 0.25)
+			sprite_scale = Vector2(0.55, 0.23)
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale
+
+
+func _direction_row(direction: Vector2) -> int:
+	if absf(direction.x) > absf(direction.y):
+		return 2 if direction.x > 0.0 else 1
+	return 0 if direction.y > 0.0 else 3

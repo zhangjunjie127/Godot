@@ -1,0 +1,7 @@
+Create a production-ready 2D pixel-art animation sprite sheet for the same male primitive-era player character shown in the visible reference image immediately above. Preserve his exact identity: warm tan skin, large friendly brown eyes, tousled spiky dark-brown hair, small beard/stubble, one-shoulder brown animal-hide tunic, bare arms and legs, and the same clean modern pixel-art palette, outline weight, proportions, face, costume, and readable silhouette. View is top-down 3/4 overworld RPG, full body.
+
+Output exactly a 4 columns x 4 rows sprite sheet with 16 equal invisible cells, no borders and no separators. Row 1: walking down toward camera. Row 2: walking left. Row 3: walking right. Row 4: walking up away from camera. Within each row: frame 1 neutral contact, frame 2 left-foot stride, frame 3 neutral passing pose, frame 4 right-foot stride. Make each row a smooth seamless walk loop.
+
+Keep the same character identity, camera distance, anatomical scale, head size, body proportions, costume and pixel density in every frame. Center the body in every cell, keep a stable grounded feet line, and fit the entire body inside the central 65% of each cell with generous margin. No limb, hair, clothing, shadow, dust, weapon, or effect may cross a cell edge. No detached effects. Transparent-looking subject edges must remain crisp pixel art.
+
+Background must be 100% solid flat #FF00FF magenta across the entire sheet, with no gradient, texture, shadows on the background, boxes, labels, text, UI, watermark, or visible grid lines.

@@ -8,7 +8,7 @@ script = ExtResource("1_qmgix")
 
 [node name="MapPreview" type="Sprite2D" parent="."]
 z_index = -100
-texture_filter = 2
+texture_filter = 1
 texture = ExtResource("2_w0f15")
 centered = false
 scale = Vector2(2, 2)
@@ -102,7 +102,7 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="Polygon" type="CollisionPolygon2D" parent="CraterCenter"]
-polygon = PackedVector2Array(1430, 1320, 1510, 1240, 1660, 1210, 1780, 1270, 1820, 1370, 1760, 1460, 1630, 1500, 1500, 1460)
+polygon = PackedVector2Array(1920, 1380, 1990, 1300, 2110, 1260, 2250, 1280, 2350, 1360, 2380, 1460, 2320, 1540, 2180, 1580, 2040, 1560, 1940, 1500)
 
 [node name="CraterEast" type="StaticBody2D" parent="."]
 collision_layer = 2

@@ -85,7 +85,7 @@ func _add_chunks(chunks: Array) -> void:
 		sprite.centered = false
 		sprite.position = _scaled_point(data.get("position", [0, 0]))
 		sprite.scale = Vector2.ONE * _content_scale
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		foundation.add_child(sprite)
 
 

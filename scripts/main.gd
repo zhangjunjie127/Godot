@@ -8,7 +8,7 @@ const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
 const FEMALE_PORTRAIT := preload("res://assets/characters/player_female.png")
 const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
 const STONE_AXE_ICON := preload("res://assets/items/stone_axe/icon.png")
-const STONE_RESOURCE_ICON := preload("res://assets/maps/props/vegetation/rocks/rock_rounded_boulder.png")
+const STONE_RESOURCE_ICON := preload("res://assets/maps/props/vegetation/rocks/boulder_large.png")
 const RESOURCE_ICON_ATLAS := preload("res://assets/items/resources/sheet-transparent.png")
 const LAND_MINIMAP_TEXTURE := preload("res://assets/maps/spawn/spawn_reference_foundation_2048.png")
 const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underwater_foundation.png")
@@ -87,6 +87,7 @@ const RESOURCE_ICON_CELLS := {
 @onready var forecast_label: Label = $HUD/ForecastPopup/Margin/ForecastLabel
 @onready var world_map_overlay: Control = $HUD/WorldMapOverlay
 @onready var world_map_coordinate_label: Label = $HUD/WorldMapOverlay/MapPanel/Margin/Content/CoordinateLabel
+@onready var world_map = $HUD/WorldMapOverlay/MapPanel/Margin/Content/Map
 @onready var minimap = $HUD/MinimapPanel/Margin/Minimap
 @onready var map_name_label: Label = $HUD/MinimapPanel/Margin/Minimap/AreaLabel
 @onready var weather_layer: CanvasLayer = $Weather
@@ -102,7 +103,7 @@ var death_message_label: Label
 var _forecast_visible_seconds := 0.0
 var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
-var _land_world_size := Vector2(2048.0, 2048.0)
+var _land_world_size := Vector2(4096.0, 4096.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
 
 
@@ -110,6 +111,9 @@ func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
 	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
+	minimap.world_size = player.world_size
+	world_map.map_texture = _art(LAND_MINIMAP_TEXTURE)
+	world_map.world_size = player.world_size
 	_build_dive_status()
 	_build_death_overlay()
 	player.concealment_changed.connect(_on_concealment_changed)

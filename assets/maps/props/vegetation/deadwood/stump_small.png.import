@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://bm4o22r4g8xif"
+path="res://.godot/imported/stump_small.png-1b1bda3f5ac1227e91d65472c99f1433.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/deadwood/stump_small.png"
+dest_files=["res://.godot/imported/stump_small.png-1b1bda3f5ac1227e91d65472c99f1433.ctex"]
 
 [params]
 

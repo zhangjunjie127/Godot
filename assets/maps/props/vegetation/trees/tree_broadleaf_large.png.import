@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://bimv06sodpf2y"
+path="res://.godot/imported/tree_broadleaf_large.png-3876e2f6ffcbddf4c1e6fa629ffb5c6a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/trees/tree_broadleaf_large.png"
+dest_files=["res://.godot/imported/tree_broadleaf_large.png-3876e2f6ffcbddf4c1e6fa629ffb5c6a.ctex"]
 
 [params]
 

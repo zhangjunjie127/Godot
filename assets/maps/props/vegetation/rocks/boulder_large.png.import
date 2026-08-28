@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://divv1rhqq3suw"
+path="res://.godot/imported/boulder_large.png-363e5eeb6b5c4fb1b5c340baac351747.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/rocks/boulder_large.png"
+dest_files=["res://.godot/imported/boulder_large.png-363e5eeb6b5c4fb1b5c340baac351747.ctex"]
 
 [params]
 

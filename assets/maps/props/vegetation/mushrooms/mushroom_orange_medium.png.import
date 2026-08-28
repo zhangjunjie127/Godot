@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://c2ib8meyile6k"
+path="res://.godot/imported/mushroom_orange_medium.png-ccf273effac1fa2393a20bcf1bb1a967.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/mushrooms/mushroom_orange_medium.png"
+dest_files=["res://.godot/imported/mushroom_orange_medium.png-ccf273effac1fa2393a20bcf1bb1a967.ctex"]
 
 [params]
 

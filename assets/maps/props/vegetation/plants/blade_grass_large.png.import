@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://dxqvuioy7temk"
+path="res://.godot/imported/blade_grass_large.png-bfba5bbca17baf6e70f49aea17e758fc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/plants/blade_grass_large.png"
+dest_files=["res://.godot/imported/blade_grass_large.png-bfba5bbca17baf6e70f49aea17e758fc.ctex"]
 
 [params]
 

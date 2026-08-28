@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://b62av4nqjiwa7"
+path="res://.godot/imported/spire_large.png-b35a9bda18e4fd7ced84a13ba38b6084.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/rocks/spire_large.png"
+dest_files=["res://.godot/imported/spire_large.png-b35a9bda18e4fd7ced84a13ba38b6084.ctex"]
 
 [params]
 

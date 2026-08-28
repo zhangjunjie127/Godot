@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://cwr3kk3vmhy67"
+path="res://.godot/imported/spiral_fern_large.png-206c3e28c15bc1a80ccc1e33b89e398a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/plants/spiral_fern_large.png"
+dest_files=["res://.godot/imported/spiral_fern_large.png-206c3e28c15bc1a80ccc1e33b89e398a.ctex"]
 
 [params]
 

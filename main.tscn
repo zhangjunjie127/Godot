@@ -204,6 +204,7 @@ script = ExtResource("12_weather_ground")
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30
 script = ExtResource("16_snow_world")
+world_size = Vector2(4096, 4096)
 
 [node name="Collision" parent="World" instance=ExtResource("18_land_collision")]
 
@@ -235,8 +236,8 @@ position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 limit_left = 0
 limit_top = 0
-limit_right = 2048
-limit_bottom = 2048
+limit_right = 4096
+limit_bottom = 4096
 
 [node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
 position = Vector2(1320, 1110)
@@ -266,6 +267,7 @@ z_index = 30
 script = ExtResource("14_cloud_layer")
 weather_path = NodePath("../../Weather/Effect")
 day_night_cycle_path = NodePath("../../DayNightCycle")
+world_size = Vector2(4096, 4096)
 
 [node name="UnderwaterWorld" parent="." instance=ExtResource("17_underwater")]
 
@@ -572,6 +574,7 @@ clip_contents = true
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../World/DepthSorted/Player")
+world_size = Vector2(4096, 4096)
 
 [node name="AreaLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
 layout_mode = 1
@@ -917,6 +920,7 @@ clip_contents = true
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../../../World/DepthSorted/Player")
+world_size = Vector2(4096, 4096)
 world_mode = true
 
 [node name="CoordinateLabel" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]

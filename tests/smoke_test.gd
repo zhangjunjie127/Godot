@@ -76,8 +76,8 @@ func _run() -> void:
 	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	screen_rain.process_mode = Node.PROCESS_MODE_DISABLED
 	cloud_layer.process_mode = Node.PROCESS_MODE_DISABLED
-	if player.world_size != Vector2(2048.0, 2048.0):
-		_fail("Expanded map did not load its 2048 world size")
+	if player.world_size != Vector2(4096.0, 4096.0):
+		_fail("Replacement map did not load its 4096 world size")
 		return
 	if player.move_speed != 85.0 or player.run_speed != 140.0 or player.crouch_speed != 41.0 or player.crawl_speed != 23.0:
 		_fail("Player movement speeds were not reduced by 50 percent")
@@ -335,7 +335,7 @@ func _run() -> void:
 	if not sampled_rain_motion:
 		_fail("Rain motion regression sample was unavailable")
 		return
-	if minimap.player != player or minimap.world_size != Vector2(2048.0, 2048.0):
+	if minimap.player != player or minimap.world_size != Vector2(4096.0, 4096.0):
 		_fail("Minimap did not bind to the local player")
 		return
 	if scene.inventory.slots.size() != 20 or scene.inventory.get_item_count("stone_axe") != 1 or scene.inventory.get_item_count("torch") != 1:
@@ -379,10 +379,10 @@ func _run() -> void:
 		return
 	var vegetation_count := 0
 	for child: Node in depth_sorted.get_children():
-		if child.name.begins_with("Vegetation"):
+		if child.name.begins_with("New"):
 			vegetation_count += 1
-	if vegetation_count != 33:
-		_fail("All 33 vegetation assets did not load")
+	if vegetation_count != 69:
+		_fail("All 69 replacement vegetation props did not load")
 		return
 	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
 		_fail("Player four-direction animation sheet did not load")
@@ -457,32 +457,32 @@ func _run() -> void:
 	day_night_cycle.set_game_time(1, 7.0)
 	await process_frame
 
-	var lake_query := PhysicsPointQueryParameters2D.new()
-	lake_query.position = Vector2(600.0, 1600.0)
-	lake_query.collision_mask = 2
-	if scene.get_world_2d().direct_space_state.intersect_point(lake_query).is_empty():
-		_fail("Lake collision did not block a deep-water point")
+	var ocean_query := PhysicsPointQueryParameters2D.new()
+	ocean_query.position = Vector2(3900.0, 2300.0)
+	ocean_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(ocean_query).is_empty():
+		_fail("Ocean collision did not cover a deep-water point")
 		return
 
-	var ford_query := PhysicsPointQueryParameters2D.new()
-	ford_query.position = Vector2(1040.0, 1210.0)
-	ford_query.collision_mask = 2
-	if not scene.get_world_2d().direct_space_state.intersect_point(ford_query).is_empty():
-		_fail("Central river crossing was blocked")
+	var walkable_query := PhysicsPointQueryParameters2D.new()
+	walkable_query.position = Vector2(2450.0, 2300.0)
+	walkable_query.collision_mask = 2
+	if not scene.get_world_2d().direct_space_state.intersect_point(walkable_query).is_empty():
+		_fail("Replacement map spawn point was blocked")
 		return
 
 	var mountain_query := PhysicsPointQueryParameters2D.new()
-	mountain_query.position = Vector2(500.0, 200.0)
+	mountain_query.position = Vector2(2050.0, 400.0)
 	mountain_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(mountain_query).is_empty():
-		_fail("Mountain collision did not block the ridge")
+		_fail("Mountain collision did not block the north mesa")
 		return
 
 	var crater_query := PhysicsPointQueryParameters2D.new()
-	crater_query.position = Vector2(1460.0, 600.0)
+	crater_query.position = Vector2(1620.0, 1360.0)
 	crater_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(crater_query).is_empty():
-		_fail("Desert crater collision did not load")
+		_fail("Center crater collision did not load")
 		return
 
 	player.global_position = grass.global_position

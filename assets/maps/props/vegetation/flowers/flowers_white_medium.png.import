@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhxuhx7gig4kr"
-path="res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"
+uid="uid://byvnq5ioyts1x"
+path="res://.godot/imported/flowers_white_medium.png-1316bf4cde4e116ef3561d31aa559e0e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/maps/props/vegetation/trees/tree_palm_small.png"
-dest_files=["res://.godot/imported/tree_palm_small.png-1e826c7884d9699e01b546f53d190ff1.ctex"]
+source_file="res://assets/maps/props/vegetation/flowers/flowers_white_medium.png"
+dest_files=["res://.godot/imported/flowers_white_medium.png-1316bf4cde4e116ef3561d31aa559e0e.ctex"]
 
 [params]
 

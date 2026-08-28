@@ -26,7 +26,7 @@ func _ready() -> void:
 	if manifest.is_empty():
 		return
 	_content_scale = float(manifest.get("contentScale", 1.0))
-	_cache_water_polygons(manifest.get("blockers", []))
+	_cache_water_polygons()
 	if Engine.is_editor_hint():
 		_add_chunks(manifest.get("chunks", []))
 		_add_props(manifest.get("props", []))
@@ -41,7 +41,6 @@ func _ready() -> void:
 	_add_props(manifest.get("props", []))
 	_add_grass_patches(manifest.get("grass", []))
 	_add_resource_nodes(manifest.get("resources", []))
-	_add_world_blockers(manifest.get("blockers", []))
 	_add_zone_markers(manifest.get("zones", []))
 
 
@@ -142,16 +141,6 @@ func _add_resource_nodes(resources: Array) -> void:
 		resource_node.configure(data)
 
 
-func _add_world_blockers(blockers: Array) -> void:
-	for data: Dictionary in blockers:
-		var body := StaticBody2D.new()
-		body.name = String(data.get("id", "Blocker")).to_pascal_case()
-		body.collision_layer = BLOCKER_LAYER
-		body.collision_mask = 0
-		collision_root.add_child(body)
-		_add_collision_shape(body, data)
-
-
 func _add_collision_shape(parent: CollisionObject2D, data: Dictionary) -> void:
 	var shape_type := String(data.get("type", "rect"))
 	if shape_type == "polygon":
@@ -205,17 +194,19 @@ func is_water_position(world_position: Vector2) -> bool:
 	return false
 
 
-func _cache_water_polygons(blockers: Array) -> void:
+func _cache_water_polygons() -> void:
 	_water_polygons.clear()
-	for data: Dictionary in blockers:
-		var blocker_id := String(data.get("id", ""))
-		if String(data.get("type", "")) != "polygon" or (blocker_id != "lake_deep_water" and not blocker_id.begins_with("river_")):
+	for body: Node in collision_root.get_children():
+		if not body.is_in_group("water_collision"):
 			continue
-		var polygon := PackedVector2Array()
-		for value: Variant in data.get("points", []):
-			polygon.append(_point(value) * _content_scale)
-		if polygon.size() >= 3:
-			_water_polygons.append(polygon)
+		for child: Node in body.get_children():
+			if not child is CollisionPolygon2D:
+				continue
+			var polygon := PackedVector2Array()
+			for point: Vector2 in (child as CollisionPolygon2D).polygon:
+				polygon.append((child as CollisionPolygon2D).to_global(point))
+			if polygon.size() >= 3:
+				_water_polygons.append(polygon)
 
 
 func _point(value: Variant) -> Vector2:
@@ -237,8 +228,6 @@ func _draw() -> void:
 	var debug_scale := float(manifest.get("contentScale", 1.0))
 	var fill := Color(0.94, 0.12, 0.16, 0.24)
 	var line := Color(1.0, 0.22, 0.20, 0.92)
-	for data: Dictionary in manifest.get("blockers", []):
-		_draw_collision_debug(data, Vector2.ZERO, debug_scale, fill, line)
 	for prop_data: Dictionary in manifest.get("props", []):
 		var collision_data: Dictionary = prop_data.get("collision", {})
 		if collision_data.is_empty():

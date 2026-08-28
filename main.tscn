@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3]
+[gd_scene load_steps=40 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://scripts/night_vision.gd" id="15_night_vision"]
 [ext_resource type="Script" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
 [ext_resource type="PackedScene" path="res://underwater.tscn" id="17_underwater"]
+[ext_resource type="PackedScene" path="res://land_collision.tscn" id="18_land_collision"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -204,7 +205,7 @@ script = ExtResource("12_weather_ground")
 z_index = 30
 script = ExtResource("16_snow_world")
 
-[node name="Collision" type="Node2D" parent="World"]
+[node name="Collision" parent="World" instance=ExtResource("18_land_collision")]
 
 [node name="DepthSorted" type="Node2D" parent="World"]
 y_sort_enabled = true

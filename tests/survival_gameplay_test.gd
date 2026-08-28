@@ -120,6 +120,14 @@ func _run() -> void:
 	if underwater == null:
 		_fail("Underwater map scene is missing")
 		return
+	var land_collision := scene.get_node_or_null("World/Collision")
+	var lake_polygon := scene.get_node_or_null("World/Collision/LakeDeepWater/Polygon") as CollisionPolygon2D
+	if land_collision == null or land_collision.get_child_count() < 18 or lake_polygon == null:
+		_fail("Editable land collision scene was not loaded")
+		return
+	if not scene.get_node("World").is_water_position(Vector2(500.0, 1700.0)):
+		_fail("Surface swimming no longer follows the editable water collision polygon")
+		return
 	if scene.get_node_or_null("WaterTransition") != null:
 		_fail("The obsolete automatic water-entry transition still exists")
 		return

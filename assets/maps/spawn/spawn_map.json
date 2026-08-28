@@ -667,7 +667,7 @@
       "yield": 3
     }
   ],
-  "blockers": [
+  "legacyBlockers": [
     {
       "id": "mountain_north_west",
       "type": "polygon",

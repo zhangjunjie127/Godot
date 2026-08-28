@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/rain_visual_effect.gd" id="1_rain_visual"]
+[ext_resource type="Shader" path="res://effects/rain/rain_streak.gdshader" id="2_streak_shader"]
+[ext_resource type="AudioStream" path="res://assets/weather/rain/rain_loop.wav" id="3_rain_audio"]
+
+[node name="RainSystem" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_rain_visual")
+far_particles_path = NodePath("FarStreaks")
+near_particles_path = NodePath("NearStreaks")
+audio_player_path = NodePath("RainLoop")
+streak_shader = ExtResource("2_streak_shader")
+
+[node name="FarStreaks" type="GPUParticles2D" parent="."]
+emitting = false
+
+[node name="NearStreaks" type="GPUParticles2D" parent="."]
+emitting = false
+
+[node name="RainLoop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_rain_audio")
+volume_db = -44.0

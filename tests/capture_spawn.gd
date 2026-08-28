@@ -103,6 +103,9 @@ func _capture() -> void:
 		quit(1)
 		return
 	print("SCREENSHOT_OK: " + output_path)
+	weather.start_weather_event("晴朗", "半天")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	await process_frame
 	scene.free()
 	await process_frame
 	quit()

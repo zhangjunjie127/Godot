@@ -1,28 +1,70 @@
 extends Control
 
-const MAX_PARTICLES := 260
+const FAR_PARTICLE_COUNT := 220
+const NEAR_PARTICLE_COUNT := 110
 
 @export var random_seed := 20260828
-@export var ground_effects_path: NodePath
+@export var far_particles_path: NodePath
+@export var near_particles_path: NodePath
 @export var audio_player_path: NodePath
+@export var streak_shader: Shader
+@export_range(-0.45, -0.04, 0.01) var base_wind_x := -0.16
+@export_range(0.0, 0.18, 0.01) var gust_variation := 0.055
+@export_range(0.2, 4.0, 0.1) var gust_response := 0.85
+@export_range(1.5, 9.0, 0.1) var gust_interval_min := 3.4
+@export_range(1.5, 12.0, 0.1) var gust_interval_max := 6.8
+@export_range(200.0, 900.0, 10.0) var far_speed_min := 430.0
+@export_range(200.0, 1000.0, 10.0) var far_speed_max := 590.0
+@export_range(300.0, 1200.0, 10.0) var near_speed_min := 620.0
+@export_range(300.0, 1400.0, 10.0) var near_speed_max := 820.0
+@export_range(0.0, 0.12, 0.005) var haze_max_alpha := 0.055
+@export_range(-40.0, 0.0, 0.5) var rain_loop_max_volume_db := -8.0
 
 var intensity := 0.0
-var _particles: Array[Dictionary] = []
-var _rng := RandomNumberGenerator.new()
-var _ground_effects: Node
+var _far_particles: GPUParticles2D
+var _near_particles: GPUParticles2D
 var _rain_loop: AudioStreamPlayer
+var _rng := RandomNumberGenerator.new()
+var _wind_current := -0.16
+var _wind_target := -0.16
+var _gust_elapsed := 0.0
+var _gust_duration := 4.5
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rng.seed = random_seed
-	_ground_effects = get_node_or_null(ground_effects_path)
+	_far_particles = get_node_or_null(far_particles_path) as GPUParticles2D
+	_near_particles = get_node_or_null(near_particles_path) as GPUParticles2D
 	_rain_loop = get_node_or_null(audio_player_path) as AudioStreamPlayer
+	_wind_current = base_wind_x
+	_wind_target = base_wind_x
+	_configure_layer(
+		_far_particles,
+		FAR_PARTICLE_COUNT,
+		0.86,
+		far_speed_min,
+		far_speed_max,
+		Vector2(4.0, 12.0),
+		Color(0.62, 0.76, 0.85, 0.25),
+		0.11
+	)
+	_configure_layer(
+		_near_particles,
+		NEAR_PARTICLE_COUNT,
+		0.68,
+		near_speed_min,
+		near_speed_max,
+		Vector2(5.0, 18.0),
+		Color(0.75, 0.88, 0.94, 0.42),
+		0.14
+	)
 	_setup_audio_loop()
-	resized.connect(_reset_particles)
-	_reset_particles()
+	resized.connect(_update_viewport_coverage)
+	_update_viewport_coverage()
+	_choose_next_gust()
+	_sync_layers()
 	set_process(false)
-	visible = false
 
 
 func _exit_tree() -> void:
@@ -34,20 +76,31 @@ func _exit_tree() -> void:
 func set_intensity(value: float) -> void:
 	intensity = clampf(value, 0.0, 1.0)
 	visible = intensity > 0.001
+	_sync_layers()
 	_sync_audio()
 	queue_redraw()
 
 
 func advance_effects(seconds: float) -> void:
 	var delta := maxf(seconds, 0.0)
+	if delta > 0.0:
+		_advance_wind(delta)
 	_sync_audio()
-	if intensity > 0.001 and delta > 0.0:
-		_update_particles(delta, get_active_particle_count())
 	queue_redraw()
 
 
 func get_active_particle_count() -> int:
-	return clampi(roundi(float(_particles.size()) * intensity), 0, _particles.size())
+	var far_count := roundi(float(FAR_PARTICLE_COUNT) * pow(intensity, 1.25))
+	var near_count := roundi(float(NEAR_PARTICLE_COUNT) * pow(intensity, 1.75))
+	return far_count + near_count
+
+
+func get_layer_particle_counts() -> Vector2i:
+	return Vector2i(FAR_PARTICLE_COUNT, NEAR_PARTICLE_COUNT)
+
+
+func get_wind_vector() -> Vector2:
+	return Vector2(_wind_current, 1.0).normalized()
 
 
 func get_audio_volume_db() -> float:
@@ -58,68 +111,97 @@ func is_audio_playing() -> bool:
 	return _rain_loop != null and _rain_loop.playing
 
 
-func _reset_particles() -> void:
-	_particles.clear()
-	for _index: int in range(MAX_PARTICLES):
-		_particles.append(_new_particle(false))
-
-
-func _new_particle(spawn_above: bool) -> Dictionary:
-	var viewport_size := _effect_size()
-	var depth := _rng.randf()
-	var speed := lerpf(360.0, 720.0, depth) * _rng.randf_range(0.88, 1.12)
-	var velocity := Vector2(_rng.randf_range(-145.0, -70.0), speed)
-	var start_y := _rng.randf_range(-110.0, -8.0) if spawn_above else _rng.randf_range(-40.0, viewport_size.y)
-	var impact_min := clampf(start_y + 40.0, 18.0, viewport_size.y)
-	return {
-		"position": Vector2(_rng.randf_range(0.0, viewport_size.x + 120.0), start_y),
-		"velocity": velocity,
-		"impact_y": _rng.randf_range(impact_min, viewport_size.y + 10.0),
-		"splash": _rng.randf() < lerpf(0.34, 0.72, depth),
-		"length": _rng.randf_range(3.8, 10.5) * lerpf(0.78, 1.0, depth),
-		"alpha": _rng.randf_range(0.17, 0.48) * lerpf(0.72, 1.0, depth),
-		"width": _rng.randf_range(0.28, 0.78) * lerpf(0.82, 1.0, depth),
-		"depth": depth,
-	}
-
-
-func _update_particles(delta: float, active_count: int) -> void:
-	var viewport_size := _effect_size()
-	for index: int in range(active_count):
-		var particle: Dictionary = _particles[index]
-		var position: Vector2 = particle["position"]
-		position += (particle["velocity"] as Vector2) * delta
-		if position.y >= float(particle["impact_y"]):
-			if bool(particle["splash"]):
-				_spawn_ground_impact(position)
-			particle.assign(_new_particle(true))
-		elif position.y > viewport_size.y + 24.0 or position.x < -32.0:
-			particle.assign(_new_particle(true))
-		else:
-			particle["position"] = position
-
-
-func _spawn_ground_impact(screen_position: Vector2) -> void:
-	if _ground_effects == null or not _ground_effects.has_method("spawn_impact"):
+func _configure_layer(
+	particles: GPUParticles2D,
+	particle_count: int,
+	lifetime: float,
+	speed_min: float,
+	speed_max: float,
+	streak_size: Vector2,
+	streak_color: Color,
+	width: float
+) -> void:
+	if particles == null:
 		return
-	var world_position := get_viewport().get_canvas_transform().affine_inverse() * screen_position
-	_ground_effects.spawn_impact(world_position)
+	particles.amount = particle_count
+	particles.lifetime = lifetime
+	particles.randomness = 0.38
+	particles.local_coords = true
+	particles.interpolate = true
+	particles.emitting = false
+
+	var process_material := ParticleProcessMaterial.new()
+	process_material.particle_flag_align_y = true
+	process_material.direction = Vector3(get_wind_vector().x, get_wind_vector().y, 0.0)
+	process_material.spread = 4.5
+	process_material.initial_velocity_min = speed_min
+	process_material.initial_velocity_max = speed_max
+	process_material.gravity = Vector3.ZERO
+	process_material.scale_min = 0.78
+	process_material.scale_max = 1.22
+	process_material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	particles.process_material = process_material
+
+	var shader_material := ShaderMaterial.new()
+	shader_material.shader = streak_shader
+	shader_material.set_shader_parameter("streak_color", streak_color)
+	shader_material.set_shader_parameter("width", width)
+	shader_material.set_shader_parameter("edge_softness", 0.075)
+	var image := Image.create_empty(maxi(2, roundi(streak_size.x)), maxi(4, roundi(streak_size.y)), false, Image.FORMAT_RGBA8)
+	image.fill(Color.WHITE)
+	particles.texture = ImageTexture.create_from_image(image)
+	particles.material = shader_material
+
+
+func _update_viewport_coverage() -> void:
+	var viewport_size := _effect_size()
+	for particles: GPUParticles2D in [_far_particles, _near_particles]:
+		if particles == null:
+			continue
+		particles.position = Vector2(viewport_size.x * 0.5, -42.0)
+		particles.visibility_rect = Rect2(
+			Vector2(-viewport_size.x * 0.75, -72.0),
+			Vector2(viewport_size.x * 1.5, viewport_size.y + 190.0)
+		)
+		var process_material := particles.process_material as ParticleProcessMaterial
+		if process_material != null:
+			process_material.emission_box_extents = Vector3(viewport_size.x * 0.68, 10.0, 0.0)
+
+
+func _advance_wind(delta: float) -> void:
+	_gust_elapsed += delta
+	if _gust_elapsed >= _gust_duration:
+		_choose_next_gust()
+	var blend := 1.0 - exp(-gust_response * delta)
+	_wind_current = lerpf(_wind_current, _wind_target, blend)
+	var direction := get_wind_vector()
+	for particles: GPUParticles2D in [_far_particles, _near_particles]:
+		if particles == null:
+			continue
+		var process_material := particles.process_material as ParticleProcessMaterial
+		if process_material != null:
+			process_material.direction = Vector3(direction.x, direction.y, 0.0)
+
+
+func _choose_next_gust() -> void:
+	_gust_elapsed = 0.0
+	_gust_duration = _rng.randf_range(gust_interval_min, gust_interval_max)
+	_wind_target = clampf(base_wind_x + _rng.randf_range(-gust_variation, gust_variation), -0.48, -0.02)
+
+
+func _sync_layers() -> void:
+	if _far_particles != null:
+		_far_particles.amount_ratio = pow(intensity, 1.25)
+		_far_particles.emitting = intensity > 0.001
+	if _near_particles != null:
+		_near_particles.amount_ratio = pow(intensity, 1.75)
+		_near_particles.emitting = intensity > 0.025
 
 
 func _draw() -> void:
 	if intensity <= 0.001:
 		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.08, 0.15, 0.20, 0.018 + intensity * 0.035))
-	for index: int in range(get_active_particle_count()):
-		var particle: Dictionary = _particles[index]
-		var head: Vector2 = particle["position"]
-		var velocity: Vector2 = particle["velocity"]
-		var tail := head - velocity.normalized() * float(particle["length"])
-		var depth := float(particle["depth"])
-		var color := Color(0.64 + depth * 0.10, 0.79 + depth * 0.10, 0.90 + depth * 0.08, float(particle["alpha"]) * intensity)
-		draw_line(tail, head, color, float(particle["width"]), true)
-		if depth > 0.82:
-			draw_circle(head, 0.55, Color(0.88, 0.96, 1.0, 0.18 * intensity))
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.055, 0.095, 0.12, haze_max_alpha * intensity))
 
 
 func _effect_size() -> Vector2:
@@ -138,12 +220,9 @@ func _setup_audio_loop() -> void:
 func _sync_audio() -> void:
 	if _rain_loop == null:
 		return
-	var audible_intensity := intensity if is_visible_in_tree() else 0.0
-	if audible_intensity > 0.001:
-		_rain_loop.volume_db = lerpf(-42.0, -8.0, sqrt(audible_intensity))
-		if DisplayServer.get_name() == "headless":
-			return
-		if not _rain_loop.playing:
+	if intensity > 0.001 and is_visible_in_tree():
+		_rain_loop.volume_db = lerpf(-44.0, rain_loop_max_volume_db, sqrt(intensity))
+		if DisplayServer.get_name() != "headless" and not _rain_loop.playing:
 			_rain_loop.play()
 	elif _rain_loop.playing:
 		_rain_loop.stop()

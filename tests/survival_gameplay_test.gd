@@ -39,15 +39,19 @@ func _run() -> void:
 	clouds.set_weather("晴朗")
 	var cloud_before: Vector2 = clouds.get_cloud_world_position(0)
 	player.global_position += Vector2(260.0, 120.0)
-	for _frame: int in range(60):
-		await process_frame
+	if not clouds.is_processing():
+		_fail("Clouds are not processing independently")
+		return
+	clouds.process_mode = Node.PROCESS_MODE_DISABLED
+	clouds.advance_clouds(1.0)
 	var cloud_after: Vector2 = clouds.get_cloud_world_position(0)
 	if absf(cloud_after.y - cloud_before.y) > 8.0:
 		_fail("Clouds followed the player or camera")
 		return
 	var cloud_distance := cloud_before.x - cloud_after.x
-	if cloud_distance < 20.0:
-		_fail("Clouds moved only %.2f units during real process frames" % cloud_distance)
+	var expected_cloud_distance := float(clouds.clouds[0]["speed"])
+	if not is_equal_approx(cloud_distance, expected_cloud_distance):
+		_fail("Cloud movement did not match its independent speed")
 		return
 	var cloud_speeds: Array[float] = []
 	for cloud: Dictionary in clouds.clouds:

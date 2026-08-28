@@ -1,0 +1,50 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://effects/rain/rain_demo.gd" id="1_demo"]
+[ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="2_map"]
+[ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="3_mask"]
+[ext_resource type="Shader" path="res://effects/rain/puddle_surface.gdshader" id="4_puddle_shader"]
+[ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="5_ground"]
+[ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="6_wet_shader"]
+[ext_resource type="PackedScene" path="res://effects/rain/RainSystem.tscn" id="7_rain_system"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle"]
+shader = ExtResource("4_puddle_shader")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wet"]
+shader = ExtResource("6_wet_shader")
+
+[node name="RainDemo" type="Node2D"]
+script = ExtResource("1_demo")
+
+[node name="Foundation" type="Sprite2D" parent="."]
+texture = ExtResource("2_map")
+centered = false
+scale = Vector2(0.3125, 0.3125)
+
+[node name="PuddleSurface" type="Sprite2D" parent="."]
+z_index = 1
+material = SubResource("ShaderMaterial_puddle")
+texture = ExtResource("3_mask")
+centered = false
+scale = Vector2(0.625, 0.625)
+
+[node name="GroundEffects" type="Node2D" parent="."]
+z_index = 2
+script = ExtResource("5_ground")
+world_size = Vector2(640, 640)
+puddle_mask = ExtResource("3_mask")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(320, 180)
+
+[node name="Weather" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="WetGrade" type="ColorRect" parent="Weather"]
+material = SubResource("ShaderMaterial_wet")
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+
+[node name="RainVisuals" parent="Weather" instance=ExtResource("7_rain_system")]

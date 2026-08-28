@@ -1,25 +1,34 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear_mipmap;
 uniform float rain_intensity : hint_range(0.0, 1.0) = 0.0;
-uniform float distortion_pixels : hint_range(0.0, 2.0) = 0.85;
-uniform vec4 sky_color : source_color = vec4(0.48, 0.68, 0.78, 1.0);
+uniform float mask_cutoff : hint_range(0.0, 1.0) = 0.48;
+uniform float mask_softness : hint_range(0.001, 0.2) = 0.055;
+uniform float distortion_pixels : hint_range(0.0, 2.0) = 0.72;
+uniform float water_opacity : hint_range(0.0, 0.5) = 0.26;
+uniform float sky_reflection : hint_range(0.0, 0.35) = 0.11;
+uniform float flow_speed : hint_range(0.0, 2.0) = 0.32;
+uniform vec4 water_tint : source_color = vec4(0.37, 0.55, 0.64, 1.0);
+uniform vec4 sky_color : source_color = vec4(0.58, 0.72, 0.79, 1.0);
 
-float hash(vec2 value) {
-	return fract(sin(dot(value, vec2(127.1, 311.7))) * 43758.5453);
+varying vec2 world_position;
+
+void vertex() {
+	world_position = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
 }
 
 void fragment() {
-	float authored_mask = texture(TEXTURE, UV).r;
-	float puddle = smoothstep(0.28, 0.76, authored_mask);
-	vec2 screen_size = vec2(textureSize(screen_texture, 0));
-	float wave_x = sin(UV.y * 720.0 + TIME * 1.8 + hash(floor(UV * 90.0)) * 4.0);
-	float wave_y = cos(UV.x * 610.0 - TIME * 1.25);
-	vec2 offset = vec2(wave_x, wave_y) * distortion_pixels * rain_intensity / max(screen_size, vec2(1.0));
-	vec3 refracted = texture(screen_texture, SCREEN_UV + offset).rgb;
-	float glint = smoothstep(0.68, 0.98, sin((UV.x + UV.y) * 460.0 + TIME * 0.7) * 0.5 + 0.5);
-	vec3 wet = mix(refracted, refracted * vec3(0.76, 0.87, 0.92), 0.36);
-	wet += sky_color.rgb * (0.055 + glint * 0.045);
-	COLOR = vec4(wet, puddle * rain_intensity * 0.46);
+	float authored = texture(TEXTURE, UV).r;
+	float puddle = smoothstep(mask_cutoff - mask_softness, mask_cutoff + mask_softness, authored);
+	vec2 world_wave = world_position * vec2(0.011, 0.014);
+	float wave_x = sin(world_wave.y + TIME * flow_speed) + sin(world_wave.x * 0.63 - TIME * flow_speed * 0.72);
+	float wave_y = cos(world_wave.x * 0.82 - TIME * flow_speed * 0.58);
+	vec2 offset = vec2(wave_x, wave_y) * 0.5 * distortion_pixels * SCREEN_PIXEL_SIZE * rain_intensity;
+	vec3 refracted = textureLod(screen_texture, clamp(SCREEN_UV + offset, vec2(0.0), vec2(1.0)), 0.0).rgb;
+	vec3 wet = mix(refracted, refracted * water_tint.rgb, 0.20);
+	wet = mix(wet, sky_color.rgb, sky_reflection);
+	float sheen = smoothstep(0.72, 1.0, sin(world_wave.x + world_wave.y + TIME * 0.22) * 0.5 + 0.5);
+	wet += sky_color.rgb * sheen * 0.025;
+	COLOR = vec4(wet, puddle * water_opacity * rain_intensity);
 }

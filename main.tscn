@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3]
+[gd_scene load_steps=44 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -18,11 +18,10 @@
 [ext_resource type="Script" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
 [ext_resource type="PackedScene" path="res://underwater.tscn" id="17_underwater"]
 [ext_resource type="PackedScene" path="res://land_collision.tscn" id="18_land_collision"]
-[ext_resource type="Script" path="res://scripts/rain_visual_effect.gd" id="19_rain_visual"]
+[ext_resource type="PackedScene" path="res://effects/rain/RainSystem.tscn" id="19_rain_system"]
 [ext_resource type="Shader" path="res://effects/rain/puddle_surface.gdshader" id="20_puddle_shader"]
 [ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="21_wet_shader"]
 [ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
-[ext_resource type="AudioStream" path="res://assets/weather/rain/rain_loop.wav" id="23_rain_audio"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -300,21 +299,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="RainVisuals" type="Control" parent="Weather"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("19_rain_visual")
-ground_effects_path = NodePath("../../World/WeatherGround")
-audio_player_path = NodePath("RainLoop")
-
-[node name="RainLoop" type="AudioStreamPlayer" parent="Weather/RainVisuals"]
-stream = ExtResource("23_rain_audio")
-volume_db = -42.0
+[node name="RainVisuals" parent="Weather" instance=ExtResource("19_rain_system")]
 
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3

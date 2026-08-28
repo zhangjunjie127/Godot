@@ -42,7 +42,9 @@ func advance_clouds(seconds: float) -> void:
 	for cloud: Dictionary in clouds:
 		var sprite := cloud["sprite"] as Sprite2D
 		var position: Vector2 = sprite.position
+		var drift_phase := float(cloud["drift_phase"]) + float(cloud["drift_speed"]) * maxf(seconds, 0.0)
 		position.x -= float(cloud["speed"]) * maxf(seconds, 0.0)
+		position.y += sin(drift_phase) * float(cloud["drift_amount"]) * maxf(seconds, 0.0)
 		if position.x < -float(CELL_SIZE) * float(cloud["scale"]):
 			position.x = world_size.x + _rng.randf_range(40.0, 220.0)
 			position.y = _rng.randf_range(180.0, world_size.y * 0.72)
@@ -50,6 +52,7 @@ func advance_clouds(seconds: float) -> void:
 			sprite.frame = int(cloud["cell"])
 		sprite.position = position
 		cloud["position"] = position
+		cloud["drift_phase"] = drift_phase
 
 
 func get_active_cloud_count() -> int:
@@ -92,7 +95,10 @@ func _populate_clouds() -> void:
 		clouds.append({
 			"sprite": sprite,
 			"position": sprite.position,
-			"speed": _rng.randf_range(22.0, 40.0),
+			"speed": _rng.randf_range(26.0, 34.0),
+			"drift_speed": _rng.randf_range(0.45, 0.85),
+			"drift_amount": _rng.randf_range(1.8, 3.6),
+			"drift_phase": _rng.randf_range(0.0, TAU),
 			"scale": cloud_scale,
 			"cell": cell,
 		})

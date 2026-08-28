@@ -9,6 +9,7 @@ signal oxygen_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 signal torch_equipped_changed(is_equipped: bool)
 signal gender_changed(gender: String)
+signal died
 
 const STATE_IDLE := "站立"
 const STATE_WALK := "行走"
@@ -20,6 +21,7 @@ const STATE_CRAWL := "爬行"
 const STATE_PICKUP := "拾取"
 const STATE_SWIM := "游泳"
 const STATE_DIVE := "潜水"
+const STATE_DEAD := "死亡"
 
 const CONDITION_HAPPY := "开心"
 const CONDITION_UNHAPPY := "不开心"
@@ -39,6 +41,7 @@ const MALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_to
 const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
 const MALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_male_idle_sit/sheet-transparent.png")
+const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/sheet-transparent.png")
 
 const FEMALE_WALK_TEXTURE := preload("res://assets/characters/player_female_walk/sheet-transparent.png")
 const FEMALE_CROUCH_TEXTURE := preload("res://assets/characters/player_female_crouch/sheet-transparent.png")
@@ -49,6 +52,7 @@ const FEMALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_femal
 const FEMALE_PICKUP_TEXTURE := preload("res://assets/characters/player_female_pickup/sheet-transparent.png")
 const FEMALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_female_idle_relaxed/sheet-transparent.png")
 const FEMALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_female_idle_sit/sheet-transparent.png")
+const FEMALE_SWIM_TEXTURE := preload("res://assets/characters/player_female_swim/sheet-transparent.png")
 
 @export var move_speed := 85.0
 @export var run_speed := 140.0
@@ -97,6 +101,10 @@ var health_condition := CONDITION_HAPPY
 var water_mode := false
 var water_surface_y := 0.0
 var oxygen := 100.0
+var is_dead := false
+
+var _water_entry_active := false
+var _collision_mask_before_entry := 2
 
 
 func _ready() -> void:
@@ -117,6 +125,13 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		velocity = Vector2.ZERO
+		_set_movement_state(STATE_DEAD)
+		return
+	if _water_entry_active:
+		_physics_process_water_entry(delta)
+		return
 	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up:
 		start_pickup()
 	_update_pickup(delta)
@@ -208,16 +223,29 @@ func set_gender(value: String) -> void:
 func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	water_mode = value
 	water_surface_y = surface_y
+	collision_mask = 0 if water_mode else _collision_mask_before_entry
 	_is_jumping = false
 	_jump_offset = 0.0
 	_is_picking_up = false
 	_pickup_elapsed = 0.0
 	_active_animation = ""
 	set_torch_equipped(false)
-	if not water_mode:
+	if not water_mode and not is_dead:
 		set_oxygen(max_oxygen)
 		_set_movement_state(STATE_IDLE)
 	queue_redraw()
+
+
+func set_water_entry_active(value: bool) -> void:
+	if _water_entry_active == value:
+		return
+	_water_entry_active = value
+	if value:
+		_collision_mask_before_entry = collision_mask
+		collision_mask = 0
+	else:
+		collision_mask = _collision_mask_before_entry
+		velocity = Vector2.ZERO
 
 
 func get_movement_state() -> String:
@@ -235,6 +263,8 @@ func start_pickup() -> void:
 func set_health(value: float) -> void:
 	var next_value := clampf(value, 0.0, max_health)
 	if is_equal_approx(health, next_value):
+		if next_value <= 0.0 and not is_dead:
+			_die()
 		return
 	health = next_value
 	health_changed.emit(health, max_health)
@@ -242,6 +272,17 @@ func set_health(value: float) -> void:
 	if next_condition != health_condition:
 		health_condition = next_condition
 		health_condition_changed.emit(health_condition)
+	if health <= 0.0 and not is_dead:
+		_die()
+
+
+func _die() -> void:
+	health = 0.0
+	is_dead = true
+	velocity = Vector2.ZERO
+	_set_movement_state(STATE_DEAD)
+	sprite.self_modulate = Color(0.52, 0.72, 0.78, 1.0)
+	died.emit()
 
 
 func take_damage(amount: float) -> void:
@@ -372,10 +413,10 @@ func _physics_process_water(delta: float) -> void:
 	var speed := dive_speed if submerged else swim_speed
 	velocity = direction * speed
 	move_and_slide()
-	global_position = global_position.clamp(
-		Vector2(24.0, water_surface_y - 6.0),
-		world_size - Vector2(24.0, 28.0)
-	)
+	global_position.y = maxf(global_position.y, water_surface_y - 6.0)
+	var bubble_effect := get_parent().get_node_or_null("BubbleEffect")
+	if bubble_effect != null:
+		bubble_effect.record_swim(direction, delta)
 	_update_hunger(delta)
 	_update_stamina(delta, false)
 	set_oxygen(oxygen + (-oxygen_drain_per_second if submerged else oxygen_recovery_per_second) * delta)
@@ -384,6 +425,16 @@ func _physics_process_water(delta: float) -> void:
 
 	var state := STATE_PICKUP if _is_picking_up else STATE_DIVE if submerged else STATE_SWIM
 	_set_movement_state(state)
+	_idle_elapsed = 0.0
+	_update_sprite(direction, delta)
+	queue_redraw()
+
+
+func _physics_process_water_entry(delta: float) -> void:
+	var direction := Vector2.DOWN
+	velocity = direction * move_speed * 0.72
+	move_and_slide()
+	_set_movement_state(STATE_WALK)
 	_idle_elapsed = 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()
@@ -476,8 +527,10 @@ func _animation_texture(animation: String) -> Texture2D:
 			return FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
 		"prone_idle":
 			return FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
-		"crawl_move", "swim":
+		"crawl_move":
 			return FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
+		"swim":
+			return FEMALE_SWIM_TEXTURE if is_female else MALE_SWIM_TEXTURE
 		"jump":
 			return FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
 		"torch_hold":

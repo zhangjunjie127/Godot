@@ -14,6 +14,8 @@ const LAND_MINIMAP_TEXTURE := preload("res://assets/maps/spawn/spawn_reference_f
 const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underwater_foundation.png")
 const ICON_CELL_SIZE := 64
 const RESOURCE_ICON_CELL_SIZE := 128
+const WATER_ENTRY_SECONDS := 0.75
+const WATER_REVEAL_SECONDS := 0.55
 
 const ACTION_ICON_CELLS := {
 	"站立": Vector2i(0, 0),
@@ -25,6 +27,7 @@ const ACTION_ICON_CELLS := {
 	"爬行": Vector2i(2, 1),
 	"游泳": Vector2i(2, 1),
 	"潜水": Vector2i(3, 0),
+	"死亡": Vector2i(2, 2),
 }
 const CONDITION_ICON_CELLS := {
 	"开心": Vector2i(3, 1),
@@ -89,24 +92,30 @@ const RESOURCE_ICON_CELLS := {
 @onready var map_name_label: Label = $HUD/MinimapPanel/Margin/Minimap/AreaLabel
 @onready var weather_layer: CanvasLayer = $Weather
 @onready var screen_weather_layer: CanvasLayer = $ScreenWeather
+@onready var water_transition_overlay: ColorRect = $WaterTransition/Overlay
 
 var inventory
 var skill_tree
 var dive_status: PanelContainer
 var oxygen_bar: ProgressBar
 var oxygen_label: Label
+var death_overlay: Control
+var death_message_label: Label
 var _forecast_visible_seconds := 0.0
 var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
 var _land_world_size := Vector2(2048.0, 2048.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
 var _coast_entry_armed := true
+var _water_transition_phase := 0
+var _water_transition_elapsed := 0.0
 
 
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
 	_build_dive_status()
+	_build_death_overlay()
 	player.concealment_changed.connect(_on_concealment_changed)
 	player.movement_state_changed.connect(_on_movement_state_changed)
 	player.health_changed.connect(_on_health_changed)
@@ -115,6 +124,7 @@ func _ready() -> void:
 	player.hunger_changed.connect(_on_hunger_changed)
 	player.oxygen_changed.connect(_on_oxygen_changed)
 	player.gender_changed.connect(_on_gender_changed)
+	player.died.connect(_on_player_died)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_on_inventory_changed)
 	skill_tree.tree_changed.connect(_refresh_skill_tree)
@@ -154,8 +164,11 @@ func _process(delta: float) -> void:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 
 
-func _physics_process(_delta: float) -> void:
-	if player.water_mode:
+func _physics_process(delta: float) -> void:
+	if _water_transition_phase > 0:
+		_update_water_transition(delta)
+		return
+	if player.water_mode or player.is_dead:
 		return
 	var coast_entry := land_world.get_node("GameplayMetadata/SouthCoastCave") as Marker2D
 	var entry_radius := maxf(float(coast_entry.get_meta("radius", 100.0)), 76.0)
@@ -164,10 +177,12 @@ func _physics_process(_delta: float) -> void:
 		_coast_entry_armed = true
 	elif _coast_entry_armed:
 		_coast_entry_armed = false
-		enter_underwater()
+		_start_water_entry()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if player.is_dead:
+		return
 	if event.is_action_pressed("player_pickup"):
 		_try_interact()
 	elif event.is_action_pressed("toggle_inventory"):
@@ -474,11 +489,6 @@ func _try_interact() -> bool:
 		if player.global_position.distance_to(exit_marker.global_position) <= 76.0:
 			exit_underwater()
 			return true
-	else:
-		var coast_entry := land_world.get_node("GameplayMetadata/SouthCoastCave") as Marker2D
-		if player.global_position.distance_to(coast_entry.global_position) <= maxf(float(coast_entry.get_meta("radius", 100.0)), 76.0):
-			enter_underwater()
-			return true
 
 	var nearest: Node2D = null
 	var nearest_distance := 76.0
@@ -504,6 +514,7 @@ func _try_interact() -> bool:
 func enter_underwater() -> void:
 	if player.water_mode:
 		return
+	player.set_water_entry_active(false)
 	_land_position = player.global_position
 	_land_world_size = player.world_size
 	_land_camera_zoom = player.get_node("Camera2D").zoom
@@ -511,6 +522,7 @@ func enter_underwater() -> void:
 	player.global_position = underwater_world.ENTRY_POSITION
 	player.world_size = underwater_world.MAP_SIZE
 	player.set_water_mode(true, underwater_world.WATER_SURFACE_Y)
+	underwater_world.set_player(player)
 	_set_camera_for_map(underwater_world.MAP_SIZE, Vector2(0.72, 0.72))
 	land_world.visible = false
 	underwater_world.visible = true
@@ -526,6 +538,7 @@ func enter_underwater() -> void:
 func exit_underwater() -> void:
 	if not player.water_mode:
 		return
+	underwater_world.set_player(null)
 	player.reparent(land_world.get_node("DepthSorted"))
 	player.global_position = _land_position
 	player.world_size = _land_world_size
@@ -540,6 +553,33 @@ func exit_underwater() -> void:
 	minimap.world_size = _land_world_size
 	dive_status.visible = false
 	_sync_night_state(day_night_cycle.current_phase)
+
+
+func _start_water_entry() -> void:
+	_water_transition_phase = 1
+	_water_transition_elapsed = 0.0
+	water_transition_overlay.visible = true
+	water_transition_overlay.color.a = 0.0
+	player.set_water_entry_active(true)
+
+
+func _update_water_transition(delta: float) -> void:
+	_water_transition_elapsed += delta
+	if _water_transition_phase == 1:
+		water_transition_overlay.color.a = 0.82 * minf(_water_transition_elapsed / WATER_ENTRY_SECONDS, 1.0)
+		if _water_transition_elapsed >= WATER_ENTRY_SECONDS:
+			player.set_water_entry_active(false)
+			enter_underwater()
+			_water_transition_phase = 2
+			_water_transition_elapsed = 0.0
+		return
+
+	water_transition_overlay.color.a = 0.82 * (1.0 - minf(_water_transition_elapsed / WATER_REVEAL_SECONDS, 1.0))
+	if _water_transition_elapsed >= WATER_REVEAL_SECONDS:
+		water_transition_overlay.visible = false
+		water_transition_overlay.color.a = 0.0
+		_water_transition_phase = 0
+		_water_transition_elapsed = 0.0
 
 
 func _set_camera_for_map(map_size: Vector2, zoom: Vector2) -> void:
@@ -581,6 +621,50 @@ func _build_dive_status() -> void:
 	oxygen_bar.add_theme_stylebox_override("background", _style_box(Color(0.03, 0.18, 0.23), Color(0.12, 0.38, 0.44)))
 	oxygen_bar.add_theme_stylebox_override("fill", _style_box(Color(0.24, 0.82, 0.92), Color(0.48, 0.96, 1.0)))
 	content.add_child(oxygen_bar)
+
+
+func _build_death_overlay() -> void:
+	death_overlay = ColorRect.new()
+	death_overlay.name = "DeathOverlay"
+	death_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	death_overlay.color = Color(0.005, 0.02, 0.025, 0.84)
+	death_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	death_overlay.visible = false
+	$HUD.add_child(death_overlay)
+
+	var content := VBoxContainer.new()
+	content.set_anchors_preset(Control.PRESET_CENTER)
+	content.offset_left = -110.0
+	content.offset_top = -45.0
+	content.offset_right = 110.0
+	content.offset_bottom = 45.0
+	content.add_theme_constant_override("separation", 12)
+	death_overlay.add_child(content)
+
+	death_message_label = Label.new()
+	death_message_label.name = "Message"
+	death_message_label.text = "你溺水死亡"
+	death_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	death_message_label.add_theme_font_size_override("font_size", 22)
+	death_message_label.add_theme_color_override("font_color", Color(0.78, 0.95, 1.0))
+	content.add_child(death_message_label)
+
+	var restart_button := Button.new()
+	restart_button.text = "重新开始"
+	restart_button.custom_minimum_size = Vector2(220.0, 34.0)
+	restart_button.pressed.connect(_restart_game)
+	content.add_child(restart_button)
+
+
+func _on_player_died() -> void:
+	_dismiss_forecast()
+	_hide_overlays()
+	death_message_label.text = "你溺水死亡" if player.water_mode else "角色死亡"
+	death_overlay.visible = true
+
+
+func _restart_game() -> void:
+	get_tree().reload_current_scene()
 
 
 func _on_skill_pressed(skill_id: String) -> void:

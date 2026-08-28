@@ -1,9 +1,15 @@
+@tool
 extends Node2D
 
 const MANIFEST_PATH := "res://assets/maps/spawn/spawn_map.json"
 const GRASS_PATCH_SCRIPT := preload("res://scripts/grass_patch.gd")
 const RESOURCE_NODE_SCRIPT := preload("res://scripts/resource_node.gd")
 const BLOCKER_LAYER := 2
+
+@export var show_collision_debug := true:
+	set(value):
+		show_collision_debug = value
+		queue_redraw()
 
 @onready var foundation: Node2D = $Foundation
 @onready var collision_root: Node2D = $Collision
@@ -18,8 +24,13 @@ func _ready() -> void:
 	var manifest := _read_manifest()
 	if manifest.is_empty():
 		return
-
 	_content_scale = float(manifest.get("contentScale", 1.0))
+	if Engine.is_editor_hint():
+		_add_chunks(manifest.get("chunks", []))
+		_add_props(manifest.get("props", []))
+		queue_redraw()
+		return
+
 	var map_size := _map_size(manifest)
 	player.world_size = map_size
 	player.global_position = _scaled_point(manifest.get("spawn", {}))
@@ -195,3 +206,45 @@ func _point(value: Variant) -> Vector2:
 
 func _scaled_point(value: Variant) -> Vector2:
 	return _point(value) * _content_scale
+
+
+func _draw() -> void:
+	if not Engine.is_editor_hint() or not show_collision_debug:
+		return
+	var manifest := _read_manifest()
+	var debug_scale := float(manifest.get("contentScale", 1.0))
+	var fill := Color(0.94, 0.12, 0.16, 0.24)
+	var line := Color(1.0, 0.22, 0.20, 0.92)
+	for data: Dictionary in manifest.get("blockers", []):
+		_draw_collision_debug(data, Vector2.ZERO, debug_scale, fill, line)
+	for prop_data: Dictionary in manifest.get("props", []):
+		var collision_data: Dictionary = prop_data.get("collision", {})
+		if collision_data.is_empty():
+			continue
+		var origin := Vector2(float(prop_data.get("x", 0.0)), float(prop_data.get("y", 0.0))) * debug_scale
+		_draw_collision_debug(collision_data, origin, debug_scale, fill, line)
+
+
+func _draw_collision_debug(data: Dictionary, origin: Vector2, debug_scale: float, fill: Color, line: Color) -> void:
+	var shape_type := String(data.get("type", "rect"))
+	var offset := _point(data.get("offset", [0, 0])) * debug_scale
+	var center := origin + offset
+	if shape_type == "polygon":
+		var points := PackedVector2Array()
+		for value: Variant in data.get("points", []):
+			points.append(center + _point(value) * debug_scale)
+		if points.size() >= 3:
+			draw_colored_polygon(points, fill)
+			var outline := points.duplicate()
+			outline.append(points[0])
+			draw_polyline(outline, line, 3.0, true)
+	elif shape_type == "segment":
+		draw_line(center + _point(data.get("a", [0, 0])) * debug_scale, center + _point(data.get("b", [0, 0])) * debug_scale, line, 5.0, true)
+	elif shape_type == "circle":
+		var radius := float(data.get("radius", 16.0)) * debug_scale
+		draw_circle(center, radius, fill)
+		draw_arc(center, radius, 0.0, TAU, 32, line, 3.0, true)
+	else:
+		var size := _point(data.get("size", [32, 32])) * debug_scale
+		draw_rect(Rect2(center - size * 0.5, size), fill, true)
+		draw_rect(Rect2(center - size * 0.5, size), line, false, 3.0)

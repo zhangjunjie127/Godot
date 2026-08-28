@@ -42,12 +42,18 @@ func _run() -> void:
 	for _frame: int in range(60):
 		await process_frame
 	var cloud_after: Vector2 = clouds.get_cloud_world_position(0)
-	if not is_equal_approx(cloud_after.y, cloud_before.y):
+	if absf(cloud_after.y - cloud_before.y) > 8.0:
 		_fail("Clouds followed the player or camera")
 		return
 	var cloud_distance := cloud_before.x - cloud_after.x
 	if cloud_distance < 20.0:
 		_fail("Clouds moved only %.2f units during real process frames" % cloud_distance)
+		return
+	var cloud_speeds: Array[float] = []
+	for cloud: Dictionary in clouds.clouds:
+		cloud_speeds.append(float(cloud["speed"]))
+	if cloud_speeds.min() < 26.0 or cloud_speeds.max() > 34.0 or cloud_speeds.max() - cloud_speeds.min() < 1.0:
+		_fail("Clouds do not have close but visibly independent speeds")
 		return
 
 	var expected_items := [
@@ -123,30 +129,90 @@ func _run() -> void:
 		return
 	player.global_position = Vector2(1420.0, 1200.0)
 	Input.action_press("ui_down")
-	for _frame: int in range(360):
+	var saw_water_entry_transition := false
+	for _frame: int in range(420):
 		await physics_frame
+		saw_water_entry_transition = saw_water_entry_transition or int(scene.get("_water_transition_phase")) > 0
 		if player.water_mode:
 			break
 	Input.action_release("ui_down")
 	if not underwater.visible or not player.water_mode or player.get_parent() != underwater.get_node("DepthSorted"):
 		_fail("Walking into the south coast did not enter swimming mode")
 		return
+	if not saw_water_entry_transition or scene._land_position.y <= 1200.0:
+		_fail("Entering the sea skipped the visible walk-in transition")
+		return
 	if not is_equal_approx(player.water_surface_y, underwater.WATER_SURFACE_Y):
 		_fail("Swimming did not bind to the visible waterline")
 		return
+	if underwater.get_node("DepthSorted").modulate.is_equal_approx(Color.WHITE):
+		_fail("Underwater actors are not affected by the water color")
+		return
+	var underwater_fish := get_nodes_in_group("underwater_fish")
+	if underwater_fish.size() < 3:
+		_fail("Three animated underwater fish species were not loaded")
+		return
+	for candidate: Node in get_nodes_in_group("interactable_resource"):
+		if underwater.is_ancestor_of(candidate):
+			_fail("Underwater food resource props were not removed")
+			return
 	player.global_position = Vector2(420.0, underwater.WATER_SURFACE_Y + 120.0)
+	var swim_before: Vector2 = player.global_position
 	Input.action_press("ui_right")
-	for _frame: int in range(3):
+	for _frame: int in range(30):
 		await physics_frame
 	Input.action_release("ui_right")
+	if player.global_position.x - swim_before.x < 15.0:
+		_fail("The player did not move underwater")
+		return
 	if player.get_movement_state() != player.STATE_DIVE or player.oxygen >= player.max_oxygen:
 		_fail("Diving did not activate underwater movement and oxygen use")
+		return
+	if player.sprite.texture != load("res://assets/characters/player_male_swim/sheet-transparent.png"):
+		_fail("The dedicated swimming animation was not used")
+		return
+	player.set_gender("female")
+	await physics_frame
+	if player.sprite.texture != load("res://assets/characters/player_female_swim/sheet-transparent.png"):
+		_fail("The dedicated female swimming animation was not used")
+		return
+	player.set_gender("male")
+	var bubble_effect := underwater.get_node_or_null("DepthSorted/BubbleEffect")
+	if bubble_effect == null or bubble_effect.get_bubble_count() == 0:
+		_fail("Swimming did not create a bubble trail")
+		return
+	player.global_position = Vector2(underwater.MAP_SIZE.x - 4.0, underwater.WATER_SURFACE_Y + 120.0)
+	Input.action_press("ui_right")
+	for _frame: int in range(12):
+		await physics_frame
+	Input.action_release("ui_right")
+	if player.global_position.x <= underwater.MAP_SIZE.x:
+		_fail("The removed underwater right boundary still blocks movement")
+		return
+	player.global_position = Vector2(420.0, underwater.MAP_SIZE.y - 4.0)
+	Input.action_press("ui_down")
+	for _frame: int in range(12):
+		await physics_frame
+	Input.action_release("ui_down")
+	if player.global_position.y <= underwater.MAP_SIZE.y:
+		_fail("The removed underwater seabed boundary still blocks movement")
 		return
 	player.global_position = underwater.get_node("ExitMarker").global_position
 	scene._try_interact()
 	await physics_frame
 	if underwater.visible or player.water_mode or player.get_parent() != scene.get_node("World/DepthSorted"):
 		_fail("Underwater exit did not restore the land map")
+		return
+
+	scene.enter_underwater()
+	player.global_position = Vector2(420.0, underwater.WATER_SURFACE_Y + 120.0)
+	player.set_health(1.0)
+	player.set_oxygen(0.0)
+	for _frame: int in range(30):
+		await physics_frame
+	var death_overlay := scene.get("death_overlay") as Control
+	if not bool(player.get("is_dead")) or player.health > 0.0 or death_overlay == null or not death_overlay.visible:
+		_fail("Zero oxygen and zero health did not produce player death")
 		return
 
 	print("SURVIVAL_GAMEPLAY_OK")

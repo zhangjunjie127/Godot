@@ -1,0 +1,1 @@
+Same primitive-era male player identity as the existing walk sheet. Four-direction 4x4 swimming loop: front, right, left, back. Horizontal swimming poses, stable scale, solid #FF00FF background, no detached effects.

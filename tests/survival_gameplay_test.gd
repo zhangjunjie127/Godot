@@ -121,12 +121,15 @@ func _run() -> void:
 	if underwater.get_node_or_null("Collision/LeftWall") != null or underwater.get_node_or_null("Collision/RightWall") != null or underwater.get_node_or_null("Collision/Seabed") != null:
 		_fail("Underwater map still has wall or seabed collisions")
 		return
-	var coast_entry := scene.get_node("World/GameplayMetadata/SouthCoastCave") as Marker2D
-	player.global_position = coast_entry.global_position
-	scene._try_interact()
-	await physics_frame
+	player.global_position = Vector2(1420.0, 1200.0)
+	Input.action_press("ui_down")
+	for _frame: int in range(360):
+		await physics_frame
+		if player.water_mode:
+			break
+	Input.action_release("ui_down")
 	if not underwater.visible or not player.water_mode or player.get_parent() != underwater.get_node("DepthSorted"):
-		_fail("South coast interaction did not enter swimming mode")
+		_fail("Walking into the south coast did not enter swimming mode")
 		return
 	if not is_equal_approx(player.water_surface_y, underwater.WATER_SURFACE_Y):
 		_fail("Swimming did not bind to the visible waterline")

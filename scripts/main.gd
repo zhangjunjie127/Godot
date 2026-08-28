@@ -100,6 +100,7 @@ var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
 var _land_world_size := Vector2(2048.0, 2048.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
+var _coast_entry_armed := true
 
 
 func _ready() -> void:
@@ -151,6 +152,19 @@ func _process(delta: float) -> void:
 		forecast_popup.visible = _forecast_visible_seconds > 0.0
 	if world_map_overlay.visible:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
+
+
+func _physics_process(_delta: float) -> void:
+	if player.water_mode:
+		return
+	var coast_entry := land_world.get_node("GameplayMetadata/SouthCoastCave") as Marker2D
+	var entry_radius := maxf(float(coast_entry.get_meta("radius", 100.0)), 76.0)
+	var within_entry := player.global_position.distance_to(coast_entry.global_position) <= entry_radius
+	if not within_entry:
+		_coast_entry_armed = true
+	elif _coast_entry_armed:
+		_coast_entry_armed = false
+		enter_underwater()
 
 
 func _unhandled_input(event: InputEvent) -> void:

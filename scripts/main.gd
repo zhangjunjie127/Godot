@@ -14,8 +14,7 @@ const LAND_MINIMAP_TEXTURE := preload("res://assets/maps/spawn/spawn_reference_f
 const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underwater_foundation.png")
 const ICON_CELL_SIZE := 64
 const RESOURCE_ICON_CELL_SIZE := 128
-const WATER_ENTRY_SECONDS := 0.75
-const WATER_REVEAL_SECONDS := 0.55
+const WATER_ENTRY_PROBE_DISTANCE := 28.0
 
 const ACTION_ICON_CELLS := {
 	"站立": Vector2i(0, 0),
@@ -92,7 +91,6 @@ const RESOURCE_ICON_CELLS := {
 @onready var map_name_label: Label = $HUD/MinimapPanel/Margin/Minimap/AreaLabel
 @onready var weather_layer: CanvasLayer = $Weather
 @onready var screen_weather_layer: CanvasLayer = $ScreenWeather
-@onready var water_transition_overlay: ColorRect = $WaterTransition/Overlay
 
 var inventory
 var skill_tree
@@ -106,9 +104,6 @@ var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
 var _land_world_size := Vector2(2048.0, 2048.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
-var _coast_entry_armed := true
-var _water_transition_phase := 0
-var _water_transition_elapsed := 0.0
 
 
 func _ready() -> void:
@@ -164,20 +159,20 @@ func _process(delta: float) -> void:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 
 
-func _physics_process(delta: float) -> void:
-	if _water_transition_phase > 0:
-		_update_water_transition(delta)
-		return
+func _physics_process(_delta: float) -> void:
 	if player.water_mode or player.is_dead:
 		return
-	var coast_entry := land_world.get_node("GameplayMetadata/SouthCoastCave") as Marker2D
-	var entry_radius := maxf(float(coast_entry.get_meta("radius", 100.0)), 76.0)
-	var within_entry := player.global_position.distance_to(coast_entry.global_position) <= entry_radius
-	if not within_entry:
-		_coast_entry_armed = true
-	elif _coast_entry_armed:
-		_coast_entry_armed = false
-		_start_water_entry()
+	if player.surface_swimming and Input.is_action_just_pressed("player_jump"):
+		enter_underwater()
+		return
+	var direction: Vector2 = player.get_movement_input()
+	var current_position_is_water: bool = land_world.is_water_position(player.global_position)
+	var approaching_water: bool = direction.length_squared() > 0.0 and land_world.is_water_position(player.global_position + direction * WATER_ENTRY_PROBE_DISTANCE)
+	if player.surface_swimming:
+		if not current_position_is_water and not approaching_water:
+			player.set_surface_swimming(false)
+	elif current_position_is_water or approaching_water:
+		player.set_surface_swimming(true)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -514,10 +509,10 @@ func _try_interact() -> bool:
 func enter_underwater() -> void:
 	if player.water_mode:
 		return
-	player.set_water_entry_active(false)
 	_land_position = player.global_position
 	_land_world_size = player.world_size
 	_land_camera_zoom = player.get_node("Camera2D").zoom
+	player.set_surface_swimming(false)
 	player.reparent(underwater_world.depth_sorted)
 	player.global_position = underwater_world.ENTRY_POSITION
 	player.world_size = underwater_world.MAP_SIZE
@@ -543,6 +538,7 @@ func exit_underwater() -> void:
 	player.global_position = _land_position
 	player.world_size = _land_world_size
 	player.set_water_mode(false)
+	player.set_surface_swimming(true)
 	_set_camera_for_map(_land_world_size, _land_camera_zoom)
 	underwater_world.visible = false
 	land_world.visible = true
@@ -553,34 +549,6 @@ func exit_underwater() -> void:
 	minimap.world_size = _land_world_size
 	dive_status.visible = false
 	_sync_night_state(day_night_cycle.current_phase)
-
-
-func _start_water_entry() -> void:
-	_water_transition_phase = 1
-	_water_transition_elapsed = 0.0
-	water_transition_overlay.visible = true
-	water_transition_overlay.color.a = 0.0
-	player.set_water_entry_active(true)
-
-
-func _update_water_transition(delta: float) -> void:
-	_water_transition_elapsed += delta
-	if _water_transition_phase == 1:
-		water_transition_overlay.color.a = 0.82 * minf(_water_transition_elapsed / WATER_ENTRY_SECONDS, 1.0)
-		if _water_transition_elapsed >= WATER_ENTRY_SECONDS:
-			player.set_water_entry_active(false)
-			enter_underwater()
-			_water_transition_phase = 2
-			_water_transition_elapsed = 0.0
-		return
-
-	water_transition_overlay.color.a = 0.82 * (1.0 - minf(_water_transition_elapsed / WATER_REVEAL_SECONDS, 1.0))
-	if _water_transition_elapsed >= WATER_REVEAL_SECONDS:
-		water_transition_overlay.visible = false
-		water_transition_overlay.color.a = 0.0
-		_water_transition_phase = 0
-		_water_transition_elapsed = 0.0
-
 
 func _set_camera_for_map(map_size: Vector2, zoom: Vector2) -> void:
 	var camera := player.get_node("Camera2D") as Camera2D

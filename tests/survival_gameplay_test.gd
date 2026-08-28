@@ -120,6 +120,9 @@ func _run() -> void:
 	if underwater == null:
 		_fail("Underwater map scene is missing")
 		return
+	if scene.get_node_or_null("WaterTransition") != null:
+		_fail("The obsolete automatic water-entry transition still exists")
+		return
 	var background := underwater.get_node_or_null("Background") as Sprite2D
 	if background == null or background.texture == null or background.texture.get_width() < 1200 or background.texture.get_height() < 700:
 		_fail("Underwater map background is missing or too small")
@@ -127,23 +130,56 @@ func _run() -> void:
 	if underwater.get_node_or_null("Collision/LeftWall") != null or underwater.get_node_or_null("Collision/RightWall") != null or underwater.get_node_or_null("Collision/Seabed") != null:
 		_fail("Underwater map still has wall or seabed collisions")
 		return
+	for _frame: int in range(50):
+		await physics_frame
 	player.global_position = Vector2(1420.0, 1200.0)
+	Input.action_press("player_jump")
+	for _frame: int in range(10):
+		await physics_frame
+	Input.action_release("player_jump")
+	if player.get_movement_state() != player.STATE_JUMP or player.get("surface_swimming") == true or player.water_mode:
+		_fail("Space on land did not remain a normal jump: state=%s surface=%s underwater=%s" % [player.get_movement_state(), player.get("surface_swimming") == true, player.water_mode])
+		return
+	for _frame: int in range(40):
+		await physics_frame
 	Input.action_press("ui_down")
-	var saw_water_entry_transition := false
 	for _frame: int in range(420):
 		await physics_frame
-		saw_water_entry_transition = saw_water_entry_transition or int(scene.get("_water_transition_phase")) > 0
-		if player.water_mode:
+		if player.get("surface_swimming") == true:
 			break
 	Input.action_release("ui_down")
-	if not underwater.visible or not player.water_mode or player.get_parent() != underwater.get_node("DepthSorted"):
-		_fail("Walking into the south coast did not enter swimming mode")
+	if player.get("surface_swimming") != true:
+		_fail("Walking into water did not enter surface swimming mode")
 		return
-	if not saw_water_entry_transition or scene._land_position.y <= 1200.0:
-		_fail("Entering the sea skipped the visible walk-in transition")
+	if underwater.visible or player.water_mode or player.get_parent() != scene.get_node("World/DepthSorted"):
+		_fail("Walking into water incorrectly switched to the underwater map")
+		return
+	if player.get_movement_state() != player.STATE_SWIM or not is_equal_approx(player.oxygen, player.max_oxygen):
+		_fail("Surface swimming did not use swimming movement without oxygen drain")
+		return
+	var surface_swim_before: Vector2 = player.global_position
+	Input.action_press("ui_down")
+	for _frame: int in range(30):
+		await physics_frame
+	Input.action_release("ui_down")
+	if player.global_position.y - surface_swim_before.y < 15.0 or player.get("surface_swimming") != true:
+		_fail("The player could not swim freely on the water surface")
+		return
+	if player.sprite.texture != load("res://assets/characters/player_male_swim/sheet-transparent.png"):
+		_fail("Surface swimming did not use the dedicated swimming animation")
+		return
+	Input.action_press("player_jump")
+	await physics_frame
+	Input.action_release("player_jump")
+	await physics_frame
+	if not underwater.visible or not player.water_mode or player.get_parent() != underwater.get_node("DepthSorted"):
+		_fail("Space while surface swimming did not dive to the underwater map")
+		return
+	if player.get("surface_swimming") == true:
+		_fail("Surface swimming remained active after diving underwater")
 		return
 	if not is_equal_approx(player.water_surface_y, underwater.WATER_SURFACE_Y):
-		_fail("Swimming did not bind to the visible waterline")
+		_fail("Diving did not bind to the underwater waterline")
 		return
 	if underwater.get_node("DepthSorted").modulate.is_equal_approx(Color.WHITE):
 		_fail("Underwater actors are not affected by the water color")
@@ -200,8 +236,8 @@ func _run() -> void:
 	player.global_position = underwater.get_node("ExitMarker").global_position
 	scene._try_interact()
 	await physics_frame
-	if underwater.visible or player.water_mode or player.get_parent() != scene.get_node("World/DepthSorted"):
-		_fail("Underwater exit did not restore the land map")
+	if underwater.visible or player.water_mode or player.get_parent() != scene.get_node("World/DepthSorted") or player.get("surface_swimming") != true:
+		_fail("Underwater exit did not restore surface swimming")
 		return
 
 	scene.enter_underwater()

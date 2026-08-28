@@ -98,16 +98,17 @@ var health := 100.0
 var stamina := 100.0
 var hunger := 100.0
 var health_condition := CONDITION_HAPPY
+var surface_swimming := false
 var water_mode := false
 var water_surface_y := 0.0
 var oxygen := 100.0
 var is_dead := false
 
-var _water_entry_active := false
-var _collision_mask_before_entry := 2
+var _land_collision_mask := 2
 
 
 func _ready() -> void:
+	_land_collision_mask = collision_mask
 	health = max_health
 	stamina = max_stamina
 	hunger = max_hunger
@@ -129,23 +130,17 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_set_movement_state(STATE_DEAD)
 		return
-	if _water_entry_active:
-		_physics_process_water_entry(delta)
-		return
 	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up:
 		start_pickup()
 	_update_pickup(delta)
 	if water_mode:
 		_physics_process_water(delta)
 		return
+	if surface_swimming:
+		_physics_process_surface_swim(delta)
+		return
 
-	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var wasd := Vector2(
-		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
-		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
-	)
-	if wasd.length_squared() > 0.0:
-		direction = wasd.normalized()
+	var direction := get_movement_input()
 	if _is_picking_up:
 		direction = Vector2.ZERO
 
@@ -222,8 +217,10 @@ func set_gender(value: String) -> void:
 
 func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	water_mode = value
+	if water_mode:
+		surface_swimming = false
 	water_surface_y = surface_y
-	collision_mask = 0 if water_mode else _collision_mask_before_entry
+	collision_mask = 0 if water_mode or surface_swimming else _land_collision_mask
 	_is_jumping = false
 	_jump_offset = 0.0
 	_is_picking_up = false
@@ -236,16 +233,29 @@ func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	queue_redraw()
 
 
-func set_water_entry_active(value: bool) -> void:
-	if _water_entry_active == value:
+func set_surface_swimming(value: bool) -> void:
+	if surface_swimming == value or water_mode:
 		return
-	_water_entry_active = value
-	if value:
-		_collision_mask_before_entry = collision_mask
-		collision_mask = 0
-	else:
-		collision_mask = _collision_mask_before_entry
-		velocity = Vector2.ZERO
+	surface_swimming = value
+	collision_mask = 0 if surface_swimming else _land_collision_mask
+	_is_jumping = false
+	_jump_offset = 0.0
+	_is_picking_up = false
+	_pickup_elapsed = 0.0
+	_active_animation = ""
+	velocity = Vector2.ZERO
+	set_oxygen(max_oxygen)
+	_set_movement_state(STATE_SWIM if surface_swimming else STATE_IDLE)
+	queue_redraw()
+
+
+func get_movement_input() -> Vector2:
+	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var wasd := Vector2(
+		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
+		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
+	)
+	return wasd.normalized() if wasd.length_squared() > 0.0 else direction
 
 
 func get_movement_state() -> String:
@@ -334,6 +344,8 @@ func _draw() -> void:
 		draw_circle(Vector2(13.0, -30.0), 2.2, Color(0.72, 0.96, 1.0, 0.72))
 		draw_circle(Vector2(18.0, -39.0), 1.3, Color(0.72, 0.96, 1.0, 0.58))
 		return
+	if surface_swimming:
+		return
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
 	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
@@ -396,13 +408,7 @@ func _update_hunger(delta: float) -> void:
 
 
 func _physics_process_water(delta: float) -> void:
-	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var wasd := Vector2(
-		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
-		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
-	)
-	if wasd.length_squared() > 0.0:
-		direction = wasd.normalized()
+	var direction := get_movement_input()
 	if Input.is_action_pressed("player_jump"):
 		direction.y = -1.0
 		direction = direction.normalized()
@@ -430,11 +436,14 @@ func _physics_process_water(delta: float) -> void:
 	queue_redraw()
 
 
-func _physics_process_water_entry(delta: float) -> void:
-	var direction := Vector2.DOWN
-	velocity = direction * move_speed * 0.72
+func _physics_process_surface_swim(delta: float) -> void:
+	var direction := get_movement_input()
+	velocity = direction * swim_speed
 	move_and_slide()
-	_set_movement_state(STATE_WALK)
+	global_position = global_position.clamp(Vector2(24.0, 24.0), world_size - Vector2(24.0, 24.0))
+	_update_hunger(delta)
+	_update_stamina(delta, false)
+	_set_movement_state(STATE_SWIM)
 	_idle_elapsed = 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()

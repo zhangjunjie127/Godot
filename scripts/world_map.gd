@@ -18,6 +18,7 @@ const BLOCKER_LAYER := 2
 @onready var player: CharacterBody2D = $DepthSorted/Player
 
 var _content_scale := 1.0
+var _water_polygons: Array[PackedVector2Array] = []
 
 
 func _ready() -> void:
@@ -25,6 +26,7 @@ func _ready() -> void:
 	if manifest.is_empty():
 		return
 	_content_scale = float(manifest.get("contentScale", 1.0))
+	_cache_water_polygons(manifest.get("blockers", []))
 	if Engine.is_editor_hint():
 		_add_chunks(manifest.get("chunks", []))
 		_add_props(manifest.get("props", []))
@@ -194,6 +196,26 @@ func _add_zone_markers(zones: Array) -> void:
 func _resource_path(path: String) -> String:
 	var normalized := path.replace("\\", "/")
 	return normalized if normalized.begins_with("res://") else "res://" + normalized
+
+
+func is_water_position(world_position: Vector2) -> bool:
+	for polygon: PackedVector2Array in _water_polygons:
+		if Geometry2D.is_point_in_polygon(world_position, polygon):
+			return true
+	return false
+
+
+func _cache_water_polygons(blockers: Array) -> void:
+	_water_polygons.clear()
+	for data: Dictionary in blockers:
+		var blocker_id := String(data.get("id", ""))
+		if String(data.get("type", "")) != "polygon" or (blocker_id != "lake_deep_water" and not blocker_id.begins_with("river_")):
+			continue
+		var polygon := PackedVector2Array()
+		for value: Variant in data.get("points", []):
+			polygon.append(_point(value) * _content_scale)
+		if polygon.size() >= 3:
+			_water_polygons.append(polygon)
 
 
 func _point(value: Variant) -> Vector2:

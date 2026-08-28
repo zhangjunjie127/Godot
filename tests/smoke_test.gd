@@ -197,8 +197,9 @@ func _run() -> void:
 	var heavy_cutoff: Variant = puddle_surface.material.get_shader_parameter("heavy_cutoff")
 	var medium_spread: Variant = puddle_surface.material.get_shader_parameter("medium_spread_pixels")
 	var heavy_spread: Variant = puddle_surface.material.get_shader_parameter("heavy_spread_pixels")
+	var edge_feather: Variant = puddle_surface.material.get_shader_parameter("edge_feather_pixels")
 	var water_opacity: Variant = puddle_surface.material.get_shader_parameter("water_opacity")
-	if medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or water_opacity == null or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(water_opacity) < 0.40:
+	if medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or edge_feather == null or water_opacity == null or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(edge_feather) <= 0.0 or float(water_opacity) < 0.40:
 		_fail("Medium and heavy puddle coverage were not doubled")
 		return
 	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 161:
@@ -272,6 +273,33 @@ func _run() -> void:
 		return
 	weather.start_weather_event("下雨", "半天", "中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	if not weather_ground.has_method("is_puddle_position") or not weather_ground.has_method("spawn_step_feedback"):
+		_fail("Player puddle feedback API is missing")
+		return
+	if weather_ground.puddle_mask != puddle_surface.texture:
+		_fail("Puddle visuals and player footstep sampling do not share the same art texture")
+		return
+	var wet_step_position := Vector2(1088.0, 976.0)
+	var dry_step_position := Vector2(32.0, 32.0)
+	if not weather_ground.is_puddle_position(wet_step_position) or weather_ground.is_puddle_position(dry_step_position):
+		_fail("Puddle mask sampling does not match known wet and dry terrain")
+		return
+	weather_ground._impacts.clear()
+	weather_ground._ripples.clear()
+	if not weather_ground.spawn_step_feedback(wet_step_position, 1.0) or weather_ground._impacts.size() != 1 or weather_ground._ripples.size() != 1:
+		_fail("Walking through a puddle did not create a splash and ripple")
+		return
+	if weather_ground.spawn_step_feedback(dry_step_position, 1.0) or weather_ground._impacts.size() != 1 or weather_ground._ripples.size() != 1:
+		_fail("Dry-ground footsteps incorrectly created puddle feedback")
+		return
+	weather_ground._impacts.clear()
+	weather_ground._ripples.clear()
+	player.global_position = wet_step_position
+	scene._last_puddle_step_position = wet_step_position - Vector2(32.0, 0.0)
+	scene._process(0.0)
+	if weather_ground._impacts.is_empty() or weather_ground._ripples.is_empty():
+		_fail("Main gameplay movement did not trigger puddle footsteps")
+		return
 	var initial_impact_count: int = weather_ground._impacts.size()
 	var initial_ripple_count: int = weather_ground._ripples.size()
 	var puddle_position := Vector2(32.0, 32.0)

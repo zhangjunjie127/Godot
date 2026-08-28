@@ -15,6 +15,8 @@ shader_parameter/heavy_cutoff = 0.34
 shader_parameter/mask_softness = 0.055
 shader_parameter/medium_spread_pixels = 3.0
 shader_parameter/heavy_spread_pixels = 4.0
+shader_parameter/edge_feather_pixels = 3.0
+shader_parameter/edge_feather_opacity = 0.58
 shader_parameter/water_opacity = 0.4
 shader_parameter/sky_reflection = 0.18
 
@@ -40,6 +42,7 @@ scale = Vector2(0.625, 0.625)
 z_index = 2
 script = ExtResource("5_ground")
 world_size = Vector2(640, 640)
+puddle_mask = ExtResource("3_mask")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)

@@ -15,6 +15,8 @@ const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underw
 const ICON_CELL_SIZE := 64
 const RESOURCE_ICON_CELL_SIZE := 128
 const WATER_ENTRY_PROBE_DISTANCE := 28.0
+const PUDDLE_STEP_DISTANCE := 18.0
+const PUDDLE_TELEPORT_DISTANCE := 64.0
 
 const ACTION_ICON_CELLS := {
 	"站立": Vector2i(0, 0),
@@ -93,6 +95,7 @@ const RESOURCE_ICON_CELLS := {
 @onready var minimap_coordinate_label: Label = $HUD/MinimapPanel/Margin/Minimap/CoordinateLabel
 @onready var weather_layer: CanvasLayer = $Weather
 @onready var screen_weather_layer: CanvasLayer = $ScreenWeather
+@onready var weather_ground: Node2D = $World/WeatherGround
 
 var inventory
 var skill_tree
@@ -106,6 +109,8 @@ var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
 var _land_world_size := Vector2(4096.0, 4096.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
+var _last_puddle_step_position := Vector2.ZERO
+var _puddle_step_distance := 0.0
 
 
 func _ready() -> void:
@@ -155,15 +160,34 @@ func _ready() -> void:
 	)
 	_refresh_inventory()
 	_refresh_skill_tree()
+	_last_puddle_step_position = player.global_position
 
 
 func _process(delta: float) -> void:
+	_update_puddle_step_feedback()
 	if _forecast_visible_seconds > 0.0:
 		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
 		forecast_popup.visible = _forecast_visible_seconds > 0.0
 	minimap_coordinate_label.text = "%d,%d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 	if world_map_overlay.visible:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
+
+
+func _update_puddle_step_feedback() -> void:
+	var current_position := player.global_position
+	var travelled := current_position.distance_to(_last_puddle_step_position)
+	_last_puddle_step_position = current_position
+	if travelled <= 0.0:
+		return
+	if travelled > PUDDLE_TELEPORT_DISTANCE or player.is_dead or player.water_mode or player.surface_swimming or player.get_movement_state() == "跳跃":
+		_puddle_step_distance = 0.0
+		return
+	_puddle_step_distance += travelled
+	if _puddle_step_distance < PUDDLE_STEP_DISTANCE:
+		return
+	_puddle_step_distance = fposmod(_puddle_step_distance, PUDDLE_STEP_DISTANCE)
+	var movement_strength := 1.0 if player.get_movement_state() == "奔跑" else 0.78
+	weather_ground.spawn_step_feedback(current_position + Vector2(0.0, 2.0), movement_strength)
 
 
 func _physics_process(_delta: float) -> void:

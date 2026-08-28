@@ -188,6 +188,8 @@ shader_parameter/heavy_cutoff = 0.34
 shader_parameter/mask_softness = 0.055
 shader_parameter/medium_spread_pixels = 3.0
 shader_parameter/heavy_spread_pixels = 4.0
+shader_parameter/edge_feather_pixels = 3.0
+shader_parameter/edge_feather_opacity = 0.58
 shader_parameter/water_opacity = 0.4
 shader_parameter/sky_reflection = 0.18
 
@@ -220,6 +222,7 @@ scale = Vector2(4, 4)
 [node name="WeatherGround" type="Node2D" parent="World"]
 z_index = -5
 script = ExtResource("12_weather_ground")
+puddle_mask = ExtResource("22_puddle_mask")
 
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30

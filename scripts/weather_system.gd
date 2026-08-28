@@ -78,6 +78,8 @@ func _ready() -> void:
 	if _puddle_surface is Sprite2D:
 		var puddle_sprite := _puddle_surface as Sprite2D
 		puddle_sprite.texture = ArtAssets.texture(puddle_sprite.texture.resource_path, puddle_sprite.texture)
+		if _ground_effects != null and _ground_effects.has_method("set_puddle_mask"):
+			_ground_effects.set_puddle_mask(puddle_sprite.texture)
 	current_rain_level = start_rain_level if start_rain_level in RAIN_LEVELS else RAIN_MEDIUM
 	current_snow_level = start_snow_level if start_snow_level in SNOW_LEVELS else SNOW_MEDIUM
 	start_weather_event(_normalize_weather(start_weather), start_duration_mode)

@@ -2,6 +2,7 @@ extends Node2D
 
 const MANIFEST_PATH := "res://assets/maps/spawn/spawn_map.json"
 const GRASS_PATCH_SCRIPT := preload("res://scripts/grass_patch.gd")
+const RESOURCE_NODE_SCRIPT := preload("res://scripts/resource_node.gd")
 const BLOCKER_LAYER := 2
 
 @onready var foundation: Node2D = $Foundation
@@ -26,6 +27,7 @@ func _ready() -> void:
 	_add_chunks(manifest.get("chunks", []))
 	_add_props(manifest.get("props", []))
 	_add_grass_patches(manifest.get("grass", []))
+	_add_resource_nodes(manifest.get("resources", []))
 	_add_world_blockers(manifest.get("blockers", []))
 	_add_zone_markers(manifest.get("zones", []))
 
@@ -116,6 +118,15 @@ func _add_grass_patches(patches: Array) -> void:
 		grass.set("patch_size", Vector2(float(data.get("w", 240.0)), float(data.get("h", 180.0))) * _content_scale)
 		grass.set("patch_texture", load(_resource_path(String(data.get("image", "")))) as Texture2D)
 		depth_sorted.add_child(grass)
+
+
+func _add_resource_nodes(resources: Array) -> void:
+	for data: Dictionary in resources:
+		var resource_node := RESOURCE_NODE_SCRIPT.new()
+		resource_node.name = String(data.get("id", "Resource")).to_pascal_case()
+		resource_node.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale
+		depth_sorted.add_child(resource_node)
+		resource_node.configure(data)
 
 
 func _add_world_blockers(blockers: Array) -> void:

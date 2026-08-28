@@ -5,6 +5,7 @@ signal movement_state_changed(state_label: String)
 signal health_changed(current: float, maximum: float)
 signal stamina_changed(current: float, maximum: float)
 signal hunger_changed(current: float, maximum: float)
+signal oxygen_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 signal torch_equipped_changed(is_equipped: bool)
 signal gender_changed(gender: String)
@@ -17,6 +18,8 @@ const STATE_CROUCH := "蹲伏"
 const STATE_PRONE := "趴下"
 const STATE_CRAWL := "爬行"
 const STATE_PICKUP := "拾取"
+const STATE_SWIM := "游泳"
+const STATE_DIVE := "潜水"
 
 const CONDITION_HAPPY := "开心"
 const CONDITION_UNHAPPY := "不开心"
@@ -63,6 +66,11 @@ const FEMALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_female_
 @export var hunger_drain_per_second := 0.12
 @export_range(0.0, 1.0) var stamina_resume_ratio := 0.2
 @export var seated_idle_delay := 8.0
+@export var swim_speed := 70.0
+@export var dive_speed := 62.0
+@export var max_oxygen := 100.0
+@export var oxygen_drain_per_second := 7.0
+@export var oxygen_recovery_per_second := 24.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -86,6 +94,9 @@ var health := 100.0
 var stamina := 100.0
 var hunger := 100.0
 var health_condition := CONDITION_HAPPY
+var water_mode := false
+var water_surface_y := 0.0
+var oxygen := 100.0
 
 
 func _ready() -> void:
@@ -93,6 +104,7 @@ func _ready() -> void:
 	stamina = max_stamina
 	hunger = max_hunger
 	health_condition = _condition_for_health(health)
+	oxygen = max_oxygen
 	_ensure_action("player_run", KEY_SHIFT)
 	_ensure_action("player_jump", KEY_SPACE)
 	_ensure_action("player_crouch", KEY_C)
@@ -108,6 +120,9 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up:
 		start_pickup()
 	_update_pickup(delta)
+	if water_mode:
+		_physics_process_water(delta)
+		return
 
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var wasd := Vector2(
@@ -190,6 +205,25 @@ func set_gender(value: String) -> void:
 	gender_changed.emit(gender)
 
 
+func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
+	water_mode = value
+	water_surface_y = surface_y
+	_is_jumping = false
+	_jump_offset = 0.0
+	_is_picking_up = false
+	_pickup_elapsed = 0.0
+	_active_animation = ""
+	set_torch_equipped(false)
+	if not water_mode:
+		set_oxygen(max_oxygen)
+		_set_movement_state(STATE_IDLE)
+	queue_redraw()
+
+
+func get_movement_state() -> String:
+	return _movement_state
+
+
 func start_pickup() -> void:
 	if _is_jumping or _is_picking_up:
 		return
@@ -230,6 +264,14 @@ func eat(amount: float) -> void:
 	set_hunger(hunger + maxf(amount, 0.0))
 
 
+func set_oxygen(value: float) -> void:
+	var next_value := clampf(value, 0.0, max_oxygen)
+	if is_equal_approx(oxygen, next_value):
+		return
+	oxygen = next_value
+	oxygen_changed.emit(oxygen, max_oxygen)
+
+
 func _condition_for_health(value: float) -> String:
 	var ratio := value / maxf(max_health, 1.0)
 	if ratio >= 0.75:
@@ -247,6 +289,10 @@ func _apply_concealment_visual() -> void:
 
 
 func _draw() -> void:
+	if water_mode:
+		draw_circle(Vector2(13.0, -30.0), 2.2, Color(0.72, 0.96, 1.0, 0.72))
+		draw_circle(Vector2(18.0, -39.0), 1.3, Color(0.72, 0.96, 1.0, 0.58))
+		return
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
 	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
@@ -308,6 +354,41 @@ func _update_hunger(delta: float) -> void:
 	set_hunger(hunger - hunger_drain_per_second * delta)
 
 
+func _physics_process_water(delta: float) -> void:
+	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var wasd := Vector2(
+		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
+		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
+	)
+	if wasd.length_squared() > 0.0:
+		direction = wasd.normalized()
+	if Input.is_action_pressed("player_jump"):
+		direction.y = -1.0
+		direction = direction.normalized()
+	if _is_picking_up:
+		direction = Vector2.ZERO
+
+	var submerged := global_position.y > water_surface_y + 36.0
+	var speed := dive_speed if submerged else swim_speed
+	velocity = direction * speed
+	move_and_slide()
+	global_position = global_position.clamp(
+		Vector2(24.0, water_surface_y - 6.0),
+		world_size - Vector2(24.0, 28.0)
+	)
+	_update_hunger(delta)
+	_update_stamina(delta, false)
+	set_oxygen(oxygen + (-oxygen_drain_per_second if submerged else oxygen_recovery_per_second) * delta)
+	if submerged and oxygen <= 0.0:
+		take_damage(6.0 * delta)
+
+	var state := STATE_PICKUP if _is_picking_up else STATE_DIVE if submerged else STATE_SWIM
+	_set_movement_state(state)
+	_idle_elapsed = 0.0
+	_update_sprite(direction, delta)
+	queue_redraw()
+
+
 func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool, crawling: bool) -> String:
 	if _is_picking_up:
 		return STATE_PICKUP
@@ -352,6 +433,8 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 			sprite_position.y = -29.0
 		STATE_PRONE, STATE_CRAWL:
 			sprite_position.y = -22.0
+		STATE_SWIM, STATE_DIVE:
+			sprite_position.y = -22.0
 		STATE_IDLE:
 			if _idle_elapsed >= seated_idle_delay and not torch_equipped:
 				sprite_position.y = -22.0
@@ -372,6 +455,8 @@ func _animation_name(moving: bool) -> String:
 			return "prone_idle"
 		STATE_CRAWL:
 			return "crawl_move"
+		STATE_SWIM, STATE_DIVE:
+			return "swim"
 		STATE_JUMP:
 			return "jump"
 		STATE_RUN:
@@ -391,7 +476,7 @@ func _animation_texture(animation: String) -> Texture2D:
 			return FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
 		"prone_idle":
 			return FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
-		"crawl_move":
+		"crawl_move", "swim":
 			return FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
 		"jump":
 			return FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
@@ -421,6 +506,8 @@ func _animation_frame(animation: String, moving: bool) -> int:
 		return floori(_animation_elapsed / 0.30) % 4
 	if animation == "idle_sit":
 		return floori(_animation_elapsed / 0.34) % 4
+	if animation == "swim":
+		return floori(_animation_elapsed / 0.18) % 4
 	if not moving:
 		return 0
 	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14

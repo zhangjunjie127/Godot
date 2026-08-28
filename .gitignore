@@ -4,3 +4,9 @@
 tests/output/
 assets/generated/
 **/_source/*.import
+assets/items/resources/animation.gif
+assets/items/resources/pipeline-meta.json
+assets/items/resources/raw-sheet*.png
+assets/items/resources/raw-sheet*.png.import
+assets/items/resources/resource-*.png
+assets/items/resources/resource-*.png.import

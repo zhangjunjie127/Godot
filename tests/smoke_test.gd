@@ -54,7 +54,7 @@ func _run() -> void:
 	var weather_ground = scene.get_node("World/WeatherGround")
 	var snow_world = scene.get_node("World/SnowWorld")
 	var screen_rain = scene.get_node("ScreenWeather/Drops")
-	var cloud_layer = scene.get_node("Clouds/Field")
+	var cloud_layer = scene.get_node("World/Clouds")
 	var night_vision = scene.get_node("NightVision/Mask")
 	var era_label: Label = scene.get_node("HUD/WorldInfo/Margin/Row/Details/EraDayLabel")
 	var world_info: PanelContainer = scene.get_node("HUD/WorldInfo")

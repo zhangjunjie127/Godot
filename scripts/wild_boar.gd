@@ -3,6 +3,7 @@ extends CharacterBody2D
 @export var roam_speed := 48.0
 @export var roam_radius := 150.0
 @export var roam_seed := 20260827
+@export var hits_required := 3
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -13,15 +14,21 @@ var _move_remaining := 0.0
 var _pause_remaining := 0.6
 var _animation_elapsed := 0.0
 var _facing_row := 0
+var hits_remaining := 3
+var is_hunted := false
 
 
 func _ready() -> void:
 	_home_position = global_position
 	_rng.seed = roam_seed
+	hits_remaining = hits_required
+	add_to_group("interactable")
 	queue_redraw()
 
 
 func _physics_process(delta: float) -> void:
+	if is_hunted:
+		return
 	if _pause_remaining > 0.0:
 		_pause_remaining -= delta
 		velocity = Vector2.ZERO
@@ -38,6 +45,28 @@ func _physics_process(delta: float) -> void:
 
 	_update_animation(delta)
 	queue_redraw()
+
+
+func interact(inventory) -> bool:
+	if is_hunted or inventory.get_item_count("stone_axe") <= 0:
+		return false
+	hits_remaining -= 1
+	modulate = Color(1.0, 0.62, 0.55)
+	var tween := create_tween()
+	tween.tween_property(self, "modulate", Color.WHITE, 0.14)
+	if hits_remaining > 0:
+		_start_pause()
+		return true
+
+	var added: int = inventory.add_item("meat_boar", "野猪肉", 3, 99)
+	if added <= 0:
+		hits_remaining = 1
+		return false
+	is_hunted = true
+	visible = false
+	set_physics_process(false)
+	$CollisionShape2D.set_deferred("disabled", true)
+	return true
 
 
 func _draw() -> void:
@@ -73,4 +102,3 @@ func _direction_row(direction: Vector2) -> int:
 	if absf(direction.x) > absf(direction.y):
 		return 2 if direction.x > 0.0 else 1
 	return 0 if direction.y > 0.0 else 3
-

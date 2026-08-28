@@ -8,7 +8,12 @@ const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
 const FEMALE_PORTRAIT := preload("res://assets/characters/player_female.png")
 const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
 const STONE_AXE_ICON := preload("res://assets/items/stone_axe/icon.png")
+const STONE_RESOURCE_ICON := preload("res://assets/maps/props/vegetation/rocks/rock_rounded_boulder.png")
+const RESOURCE_ICON_ATLAS := preload("res://assets/items/resources/sheet-transparent.png")
+const LAND_MINIMAP_TEXTURE := preload("res://assets/maps/spawn/spawn_reference_foundation_2048.png")
+const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underwater_foundation.png")
 const ICON_CELL_SIZE := 64
+const RESOURCE_ICON_CELL_SIZE := 128
 
 const ACTION_ICON_CELLS := {
 	"站立": Vector2i(0, 0),
@@ -18,6 +23,8 @@ const ACTION_ICON_CELLS := {
 	"蹲伏": Vector2i(0, 1),
 	"趴下": Vector2i(1, 1),
 	"爬行": Vector2i(2, 1),
+	"游泳": Vector2i(2, 1),
+	"潜水": Vector2i(3, 0),
 }
 const CONDITION_ICON_CELLS := {
 	"开心": Vector2i(3, 1),
@@ -30,8 +37,27 @@ const PHASE_ICON_CELLS := {
 	"黄昏": Vector2i(2, 3),
 	"夜晚": Vector2i(3, 3),
 }
+const RESOURCE_ICON_CELLS := {
+	"wood_oak": Vector2i(0, 0),
+	"wood_pine": Vector2i(1, 0),
+	"wood_birch": Vector2i(2, 0),
+	"wood_palm": Vector2i(3, 0),
+	"wood_ancient": Vector2i(4, 0),
+	"fruit_berry": Vector2i(0, 1),
+	"fruit_banana": Vector2i(1, 1),
+	"fruit_coconut": Vector2i(2, 1),
+	"fruit_rainforest": Vector2i(3, 1),
+	"fruit_citrus": Vector2i(4, 1),
+	"meat_boar": Vector2i(0, 2),
+	"meat_poultry": Vector2i(1, 2),
+	"meat_fish": Vector2i(2, 2),
+	"meat_shellfish": Vector2i(3, 2),
+	"meat_strange": Vector2i(4, 2),
+}
 
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
+@onready var land_world: Node2D = $World
+@onready var underwater_world: Node2D = $UnderwaterWorld
 @onready var day_night_cycle = $DayNightCycle
 @onready var weather = $Weather/Effect
 @onready var night_vision = $NightVision/Mask
@@ -59,22 +85,34 @@ const PHASE_ICON_CELLS := {
 @onready var forecast_label: Label = $HUD/ForecastPopup/Margin/ForecastLabel
 @onready var world_map_overlay: Control = $HUD/WorldMapOverlay
 @onready var world_map_coordinate_label: Label = $HUD/WorldMapOverlay/MapPanel/Margin/Content/CoordinateLabel
+@onready var minimap = $HUD/MinimapPanel/Margin/Minimap
+@onready var map_name_label: Label = $HUD/MinimapPanel/Margin/Minimap/AreaLabel
+@onready var weather_layer: CanvasLayer = $Weather
+@onready var screen_weather_layer: CanvasLayer = $ScreenWeather
 
 var inventory
 var skill_tree
+var dive_status: PanelContainer
+var oxygen_bar: ProgressBar
+var oxygen_label: Label
 var _forecast_visible_seconds := 0.0
 var _last_forecast_day := 0
+var _land_position := Vector2.ZERO
+var _land_world_size := Vector2(2048.0, 2048.0)
+var _land_camera_zoom := Vector2(0.546, 0.546)
 
 
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
+	_build_dive_status()
 	player.concealment_changed.connect(_on_concealment_changed)
 	player.movement_state_changed.connect(_on_movement_state_changed)
 	player.health_changed.connect(_on_health_changed)
 	player.health_condition_changed.connect(_on_health_condition_changed)
 	player.stamina_changed.connect(_on_stamina_changed)
 	player.hunger_changed.connect(_on_hunger_changed)
+	player.oxygen_changed.connect(_on_oxygen_changed)
 	player.gender_changed.connect(_on_gender_changed)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_on_inventory_changed)
@@ -95,6 +133,7 @@ func _ready() -> void:
 	_on_health_condition_changed(player.health_condition)
 	_on_stamina_changed(player.stamina, player.max_stamina)
 	_on_hunger_changed(player.hunger, player.max_hunger)
+	_on_oxygen_changed(player.oxygen, player.max_oxygen)
 	_on_gender_changed(player.gender)
 	_on_time_changed(
 		day_night_cycle.current_day,
@@ -115,7 +154,9 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("toggle_inventory"):
+	if event.is_action_pressed("player_pickup"):
+		_try_interact()
+	elif event.is_action_pressed("toggle_inventory"):
 		_toggle_inventory()
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("toggle_skill_tree"):
@@ -175,6 +216,14 @@ func _on_hunger_changed(current: float, maximum: float) -> void:
 	fill_style.bg_color = fill_color
 	fill_style.set_corner_radius_all(4)
 	hunger_bar.add_theme_stylebox_override("fill", fill_style)
+
+
+func _on_oxygen_changed(current: float, maximum: float) -> void:
+	if oxygen_bar == null or oxygen_label == null:
+		return
+	oxygen_bar.max_value = maximum
+	oxygen_bar.value = current
+	oxygen_label.text = "氧气 %d / %d" % [roundi(current), roundi(maximum)]
 
 
 func _on_gender_changed(gender: String) -> void:
@@ -237,6 +286,10 @@ func _on_inventory_changed() -> void:
 
 
 func _sync_night_state(phase: String) -> void:
+	if player.water_mode:
+		player.set_torch_equipped(false)
+		night_vision.set_night_state(false, false)
+		return
 	var is_night := phase == "夜晚"
 	var has_torch: bool = inventory.get_item_count("torch") > 0
 	player.set_torch_equipped(is_night and has_torch)
@@ -386,12 +439,134 @@ func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICO
 func _item_icon(item_id: String) -> Texture2D:
 	if item_id == "stone_axe":
 		return STONE_AXE_ICON
+	if item_id == "stone":
+		return STONE_RESOURCE_ICON
 	if item_id == "torch":
 		var texture := AtlasTexture.new()
 		texture.atlas = TORCH_ICON_ATLAS
 		texture.region = Rect2(0.0, 0.0, 128.0, 128.0)
 		return texture
+	if RESOURCE_ICON_CELLS.has(item_id):
+		var texture := AtlasTexture.new()
+		texture.atlas = RESOURCE_ICON_ATLAS
+		texture.region = Rect2(Vector2(RESOURCE_ICON_CELLS[item_id] * RESOURCE_ICON_CELL_SIZE), Vector2.ONE * RESOURCE_ICON_CELL_SIZE)
+		return texture
 	return null
+
+
+func _try_interact() -> bool:
+	if player.water_mode:
+		var exit_marker := underwater_world.get_node("ExitMarker") as Marker2D
+		if player.global_position.distance_to(exit_marker.global_position) <= 76.0:
+			exit_underwater()
+			return true
+	else:
+		var coast_entry := land_world.get_node("GameplayMetadata/SouthCoastCave") as Marker2D
+		if player.global_position.distance_to(coast_entry.global_position) <= maxf(float(coast_entry.get_meta("radius", 100.0)), 76.0):
+			enter_underwater()
+			return true
+
+	var nearest: Node2D = null
+	var nearest_distance := 76.0
+	for candidate: Node in get_tree().get_nodes_in_group("interactable"):
+		if not (candidate is Node2D) or not candidate.visible:
+			continue
+		if player.water_mode and not underwater_world.is_ancestor_of(candidate):
+			continue
+		if not player.water_mode and not land_world.is_ancestor_of(candidate):
+			continue
+		var distance := player.global_position.distance_to((candidate as Node2D).global_position)
+		if distance <= nearest_distance:
+			nearest = candidate as Node2D
+			nearest_distance = distance
+	if nearest == null or not nearest.has_method("interact"):
+		return false
+	var interacted: bool = nearest.interact(inventory)
+	if interacted:
+		player.start_pickup()
+	return interacted
+
+
+func enter_underwater() -> void:
+	if player.water_mode:
+		return
+	_land_position = player.global_position
+	_land_world_size = player.world_size
+	_land_camera_zoom = player.get_node("Camera2D").zoom
+	player.reparent(underwater_world.depth_sorted)
+	player.global_position = underwater_world.ENTRY_POSITION
+	player.world_size = underwater_world.MAP_SIZE
+	player.set_water_mode(true, underwater_world.WATER_SURFACE_Y)
+	_set_camera_for_map(underwater_world.MAP_SIZE, Vector2(0.72, 0.72))
+	land_world.visible = false
+	underwater_world.visible = true
+	weather_layer.visible = false
+	screen_weather_layer.visible = false
+	map_name_label.text = "奇渊海"
+	minimap.map_texture = UNDERWATER_MINIMAP_TEXTURE
+	minimap.world_size = underwater_world.MAP_SIZE
+	dive_status.visible = true
+	_sync_night_state(day_night_cycle.current_phase)
+
+
+func exit_underwater() -> void:
+	if not player.water_mode:
+		return
+	player.reparent(land_world.get_node("DepthSorted"))
+	player.global_position = _land_position
+	player.world_size = _land_world_size
+	player.set_water_mode(false)
+	_set_camera_for_map(_land_world_size, _land_camera_zoom)
+	underwater_world.visible = false
+	land_world.visible = true
+	weather_layer.visible = true
+	screen_weather_layer.visible = true
+	map_name_label.text = "西部台地"
+	minimap.map_texture = LAND_MINIMAP_TEXTURE
+	minimap.world_size = _land_world_size
+	dive_status.visible = false
+	_sync_night_state(day_night_cycle.current_phase)
+
+
+func _set_camera_for_map(map_size: Vector2, zoom: Vector2) -> void:
+	var camera := player.get_node("Camera2D") as Camera2D
+	camera.limit_left = 0
+	camera.limit_top = 0
+	camera.limit_right = roundi(map_size.x)
+	camera.limit_bottom = roundi(map_size.y)
+	camera.zoom = zoom
+
+
+func _build_dive_status() -> void:
+	dive_status = PanelContainer.new()
+	dive_status.name = "DiveStatus"
+	dive_status.position = Vector2(252.0, 8.0)
+	dive_status.custom_minimum_size = Vector2(272.0, 46.0)
+	dive_status.scale = Vector2(0.5, 0.5)
+	dive_status.visible = false
+	dive_status.add_theme_stylebox_override("panel", _style_box(Color(0.025, 0.10, 0.13, 0.94), Color(0.30, 0.78, 0.86), 2))
+	$HUD.add_child(dive_status)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	dive_status.add_child(margin)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 3)
+	margin.add_child(content)
+	oxygen_label = Label.new()
+	oxygen_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	oxygen_label.add_theme_font_size_override("font_size", 11)
+	oxygen_label.add_theme_color_override("font_color", Color(0.76, 0.96, 1.0))
+	content.add_child(oxygen_label)
+	oxygen_bar = ProgressBar.new()
+	oxygen_bar.custom_minimum_size = Vector2(248.0, 10.0)
+	oxygen_bar.show_percentage = false
+	oxygen_bar.add_theme_stylebox_override("background", _style_box(Color(0.03, 0.18, 0.23), Color(0.12, 0.38, 0.44)))
+	oxygen_bar.add_theme_stylebox_override("fill", _style_box(Color(0.24, 0.82, 0.92), Color(0.48, 0.96, 1.0)))
+	content.add_child(oxygen_bar)
 
 
 func _on_skill_pressed(skill_id: String) -> void:

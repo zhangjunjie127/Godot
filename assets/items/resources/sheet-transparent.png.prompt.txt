@@ -1,0 +1,6 @@
+Use case: stylized-concept
+Asset type: 5-column by 3-row Godot inventory icon sprite sheet
+Rows: five woods (oak, pine, birch, palm, ancient); five fruits (berries, bananas, coconut, rainforest fruit, golden citrus); five meats (boar, poultry, fish, shellfish, strange beast).
+Style: clean crisp 2D pixel-inspired icons, consistent scale and upper-left lighting, readable silhouettes and slightly desaturated game palette.
+Layout: exactly 5x3 equal cells, centered isolated items with generous padding.
+Raw background: completely flat #FF00FF magenta with no grid, text, labels, borders, extra objects or watermark.

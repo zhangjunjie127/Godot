@@ -1,0 +1,23 @@
+{
+  "atlas": "assets/items/resources/sheet-transparent.png",
+  "cellSize": 128,
+  "columns": 5,
+  "rows": 3,
+  "items": [
+    { "id": "wood_oak", "name": "橡木", "category": "wood", "cell": [0, 0], "image": "assets/items/resources/wood/oak.png" },
+    { "id": "wood_pine", "name": "松木", "category": "wood", "cell": [1, 0], "image": "assets/items/resources/wood/pine.png" },
+    { "id": "wood_birch", "name": "白桦木", "category": "wood", "cell": [2, 0], "image": "assets/items/resources/wood/birch.png" },
+    { "id": "wood_palm", "name": "棕榈木", "category": "wood", "cell": [3, 0], "image": "assets/items/resources/wood/palm.png" },
+    { "id": "wood_ancient", "name": "古木", "category": "wood", "cell": [4, 0], "image": "assets/items/resources/wood/ancient.png" },
+    { "id": "fruit_berry", "name": "红浆果", "category": "fruit", "cell": [0, 1], "image": "assets/items/resources/fruit/berries.png" },
+    { "id": "fruit_banana", "name": "香蕉", "category": "fruit", "cell": [1, 1], "image": "assets/items/resources/fruit/bananas.png" },
+    { "id": "fruit_coconut", "name": "椰子", "category": "fruit", "cell": [2, 1], "image": "assets/items/resources/fruit/coconut.png" },
+    { "id": "fruit_rainforest", "name": "雨林红果", "category": "fruit", "cell": [3, 1], "image": "assets/items/resources/fruit/rainforest_fruit.png" },
+    { "id": "fruit_citrus", "name": "金柑", "category": "fruit", "cell": [4, 1], "image": "assets/items/resources/fruit/golden_citrus.png" },
+    { "id": "meat_boar", "name": "野猪肉", "category": "meat", "cell": [0, 2], "image": "assets/items/resources/meat/wild_boar.png" },
+    { "id": "meat_poultry", "name": "禽肉", "category": "meat", "cell": [1, 2], "image": "assets/items/resources/meat/poultry.png" },
+    { "id": "meat_fish", "name": "鲜鱼肉", "category": "meat", "cell": [2, 2], "image": "assets/items/resources/meat/fish.png" },
+    { "id": "meat_shellfish", "name": "甲壳肉", "category": "meat", "cell": [3, 2], "image": "assets/items/resources/meat/shellfish.png" },
+    { "id": "meat_strange", "name": "异兽肉", "category": "meat", "cell": [4, 2], "image": "assets/items/resources/meat/strange_beast.png" }
+  ]
+}

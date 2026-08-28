@@ -1,0 +1,6 @@
+Use case: stylized-concept
+Asset type: production background foundation for a playable Godot 2D side-view underwater exploration map
+Primary request: Create a whimsical, strange underwater world for the game "我要上天 Ascension". The horizontal water surface line must be clearly visible across the full image near the top at about 18% of the height, with pale sky above it and transparent turquoise water below.
+Style: polished 2D pixel-inspired game background, crisp readable silhouettes, fresh cyan and turquoise palette, restrained coral accents, low texture noise, not photorealistic.
+Composition: wide 16:9 side-view stage with broad uncluttered swimming routes, giant spiral shells, coral mushrooms, hydrothermal vents, an ancient stone face and natural stone arches.
+Constraints: stable scenery only; no player, UI, text, labels, collectibles, buildings, white gaps or watermark.

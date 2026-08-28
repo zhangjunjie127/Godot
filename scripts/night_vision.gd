@@ -4,8 +4,9 @@ const NO_TORCH_RADIUS := 41.0
 const TORCH_RADIUS := 82.0
 const NO_TORCH_SOFTNESS := 30.0
 const TORCH_SOFTNESS := 56.0
-const NO_TORCH_REVEAL := 0.42
-const TORCH_REVEAL := 1.0
+const OUTER_ALPHA := 0.75
+const NO_TORCH_INNER_ALPHA := 0.55
+const TORCH_INNER_ALPHA := 0.20
 
 @export var player_path: NodePath
 @export var environment_path: NodePath
@@ -54,4 +55,7 @@ func _sync_material() -> void:
 		return
 	material.set_shader_parameter("radius_px", current_radius)
 	material.set_shader_parameter("softness_px", current_softness)
-	material.set_shader_parameter("reveal_strength", TORCH_REVEAL if torch_equipped else NO_TORCH_REVEAL)
+	material.set_shader_parameter("outer_alpha", OUTER_ALPHA)
+	material.set_shader_parameter("no_torch_inner_alpha", NO_TORCH_INNER_ALPHA)
+	material.set_shader_parameter("torch_inner_alpha", TORCH_INNER_ALPHA)
+	material.set_shader_parameter("torch_equipped", torch_equipped)

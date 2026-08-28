@@ -68,7 +68,8 @@ maps_and_props = {
 "res://assets/maps/spawn/spawn_reference_chunk_1_0.png": null,
 "res://assets/maps/spawn/spawn_reference_chunk_1_1.png": null,
 "res://assets/maps/spawn/spawn_reference_foundation_2048.png": null,
-"res://assets/maps/underwater/underwater_foundation.png": null
+"res://assets/maps/underwater/underwater_foundation.png": null,
+"res://assets/weather/rain/puddle_mask.png": null
 }
 items = {
 "res://assets/items/resources/sheet-transparent.png": null,

@@ -51,6 +51,8 @@ func _run() -> void:
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	var weather = scene.get_node("Weather/Effect")
 	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
+	var rain_visual = scene.get_node("Weather/RainVisuals")
+	var puddle_surface: Sprite2D = scene.get_node("World/RainPuddleSurface")
 	var weather_ground = scene.get_node("World/WeatherGround")
 	var snow_world = scene.get_node("World/SnowWorld")
 	var screen_rain = scene.get_node("ScreenWeather/Drops")
@@ -152,10 +154,19 @@ func _run() -> void:
 		_fail("Rain did not fade in gradually")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if not wetness_overlay.visible or not weather_ground.raining or weather_ground._puddles.size() != 20:
-		_fail("Rain did not enable wet terrain and puddles")
+	if not wetness_overlay.visible or not puddle_surface.visible or not weather_ground.raining or weather_ground._puddles.size() != 96:
+		_fail("Layered rain did not enable wet grading, masked puddles and ground effects")
 		return
-	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 90:
+	if rain_visual.intensity != weather.visual_rain_density or rain_visual._particles.size() != 260:
+		_fail("Rain streak layer did not follow the authoritative weather intensity")
+		return
+	if rain_visual._rain_loop == null or rain_visual._rain_loop.stream == null or rain_visual.get_audio_volume_db() <= -80.0:
+		_fail("Rain audio loop did not initialize with the layered effect")
+		return
+	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0:
+		_fail("Wet grade or puddle refraction shader did not receive rain intensity")
+		return
+	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 156:
 		_fail("Medium rain density did not initialize")
 		return
 	weather.set_rain_level("小雨")
@@ -167,8 +178,12 @@ func _run() -> void:
 	weather.set_rain_level("大雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var heavy_rain_count: int = weather.get_active_rain_particle_count()
-	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 150):
+	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 260):
 		_fail("Light, medium and heavy rain densities are not distinct")
+		return
+	weather_ground.advance_effects(1.0)
+	if weather_ground._ripples.is_empty():
+		_fail("Full rain did not create ambient puddle ripples")
 		return
 	screen_rain.advance_effects(1.0)
 	if screen_rain._drops.is_empty():
@@ -191,7 +206,7 @@ func _run() -> void:
 		_fail("Rain stopped abruptly instead of fading out")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or weather_ground.raining:
+	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or puddle_surface.visible or weather_ground.raining or rain_visual.is_audio_playing():
 		_fail("Rain fade-out did not finish cleanly")
 		return
 	screen_rain.advance_effects(0.2)
@@ -206,7 +221,11 @@ func _run() -> void:
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	weather_ground.advance_effects(2.0)
 	var initial_impact_count: int = weather_ground._impacts.size()
-	weather_ground.spawn_impact(player.global_position)
+	var puddle_position: Vector2 = weather_ground.get_puddle_position(0)
+	if puddle_position == Vector2.INF or not weather_ground.is_wettable(puddle_position):
+		_fail("Generated puddles do not share the authored wet-ground mask")
+		return
+	weather_ground.spawn_impact(puddle_position)
 	if weather_ground._impacts.size() != initial_impact_count + 1:
 		_fail("Rain impact did not create a splash and ripple")
 		return
@@ -291,10 +310,11 @@ func _run() -> void:
 		_fail("Rain wetness did not reactivate")
 		return
 	weather_ground.advance_effects(2.0)
-	var impact_particle: Dictionary = weather._rain_particles[0]
-	impact_particle["position"] = Vector2(320.0, 100.0)
+	var impact_particle: Dictionary = rain_visual._particles[0]
 	impact_particle["velocity"] = Vector2(-60.0, 400.0)
-	impact_particle["impact_y"] = 102.0
+	var puddle_screen_position: Vector2 = scene.get_viewport().get_canvas_transform() * weather_ground.get_puddle_position(0)
+	impact_particle["position"] = puddle_screen_position - (impact_particle["velocity"] as Vector2) * 0.01
+	impact_particle["impact_y"] = puddle_screen_position.y
 	impact_particle["splash"] = true
 	weather.advance_visual_seconds(0.01)
 	if weather_ground._impacts.is_empty():
@@ -304,7 +324,7 @@ func _run() -> void:
 	var rain_lengths: Dictionary = {}
 	var maximum_rain_length := 0.0
 	var maximum_rain_width := 0.0
-	for particle: Dictionary in weather._rain_particles:
+	for particle: Dictionary in rain_visual._particles:
 		var velocity: Vector2 = particle["velocity"]
 		if velocity.x >= 0.0 or velocity.y <= 0.0:
 			_fail("Rain motion does not follow the visible streak direction")
@@ -316,11 +336,11 @@ func _run() -> void:
 	if rain_speeds.size() < 6 or rain_lengths.size() < 5:
 		_fail("Rain particles still look mechanically uniform")
 		return
-	if maximum_rain_length > 12.0 or maximum_rain_width > 0.9:
+	if maximum_rain_length > 10.5 or maximum_rain_width > 0.78:
 		_fail("Falling rain streaks are still too large")
 		return
 	var sampled_rain_motion := false
-	for particle: Dictionary in weather._rain_particles:
+	for particle: Dictionary in rain_visual._particles:
 		var before: Vector2 = particle["position"]
 		if before.x <= 10.0 or before.y >= 300.0:
 			continue
@@ -718,6 +738,8 @@ func _run() -> void:
 		return
 
 	print("SMOKE_OK: title, gender, idle, item icons, world snow, forecast and gameplay systems")
+	scene.free()
+	await process_frame
 	quit()
 
 

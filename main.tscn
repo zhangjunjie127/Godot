@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3]
+[gd_scene load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -18,6 +18,11 @@
 [ext_resource type="Script" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
 [ext_resource type="PackedScene" path="res://underwater.tscn" id="17_underwater"]
 [ext_resource type="PackedScene" path="res://land_collision.tscn" id="18_land_collision"]
+[ext_resource type="Script" path="res://scripts/rain_visual_effect.gd" id="19_rain_visual"]
+[ext_resource type="Shader" path="res://effects/rain/puddle_surface.gdshader" id="20_puddle_shader"]
+[ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="21_wet_shader"]
+[ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
+[ext_resource type="AudioStream" path="res://assets/weather/rain/rain_loop.wav" id="23_rain_audio"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -174,11 +179,11 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="Shader" id="Shader_weather_wetness"]
-code = "shader_type canvas_item;\n\nuniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;\n\nvoid fragment() {\n\tvec4 scene = texture(screen_texture, SCREEN_UV);\n\tfloat light = max(scene.r, max(scene.g, scene.b));\n\tvec3 wet = mix(scene.rgb, scene.rgb * vec3(0.78, 0.86, 0.92), 0.68);\n\twet += vec3(0.045, 0.065, 0.075) * smoothstep(0.52, 0.92, light);\n\tCOLOR = vec4(wet, scene.a);\n}\n"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_weather_wetness"]
-shader = SubResource("Shader_weather_wetness")
+shader = ExtResource("21_wet_shader")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
+shader = ExtResource("20_puddle_shader")
 
 [sub_resource type="Shader" id="Shader_night_vision"]
 code = "shader_type canvas_item;\n\nuniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;\nuniform vec2 center_uv = vec2(0.5, 0.5);\nuniform vec2 viewport_size = vec2(640.0, 360.0);\nuniform vec3 night_tint = vec3(0.07, 0.084, 0.126);\nuniform float radius_px = 41.0;\nuniform float softness_px = 30.0;\nuniform float outer_alpha = 0.75;\nuniform float no_torch_inner_alpha = 0.55;\nuniform float torch_inner_alpha = 0.20;\nuniform bool torch_equipped = false;\n\nvoid fragment() {\n\tvec4 scene = texture(screen_texture, SCREEN_UV);\n\tvec2 delta_px = (UV - center_uv) * viewport_size;\n\tfloat visibility = 1.0 - smoothstep(radius_px, radius_px + softness_px, length(delta_px));\n\tfloat inner_alpha = torch_equipped ? torch_inner_alpha : no_torch_inner_alpha;\n\tfloat darkness = mix(outer_alpha, inner_alpha, visibility);\n\tvec3 restored = clamp(scene.rgb / max(night_tint, vec3(0.04)), vec3(0.0), vec3(1.0));\n\tvec3 base_color = mix(scene.rgb, restored, visibility);\n\tCOLOR = vec4(mix(base_color, vec3(0.0), darkness), scene.a);\n}\n"
@@ -197,9 +202,19 @@ script = ExtResource("2_world")
 [node name="Foundation" type="Node2D" parent="World"]
 z_index = -20
 
+[node name="RainPuddleSurface" type="Sprite2D" parent="World"]
+visible = false
+z_index = -7
+material = SubResource("ShaderMaterial_puddle_surface")
+texture_filter = 2
+texture = ExtResource("22_puddle_mask")
+centered = false
+scale = Vector2(4, 4)
+
 [node name="WeatherGround" type="Node2D" parent="World"]
 z_index = -5
 script = ExtResource("12_weather_ground")
+puddle_mask = ExtResource("22_puddle_mask")
 
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30
@@ -285,6 +300,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="RainVisuals" type="Control" parent="Weather"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("19_rain_visual")
+ground_effects_path = NodePath("../../World/WeatherGround")
+audio_player_path = NodePath("RainLoop")
+
+[node name="RainLoop" type="AudioStreamPlayer" parent="Weather/RainVisuals"]
+stream = ExtResource("23_rain_audio")
+volume_db = -42.0
+
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3
 anchors_preset = 15
@@ -297,6 +328,8 @@ script = ExtResource("11_weather")
 day_night_cycle_path = NodePath("../../DayNightCycle")
 ground_effects_path = NodePath("../../World/WeatherGround")
 wetness_overlay_path = NodePath("../Wetness")
+puddle_surface_path = NodePath("../../World/RainPuddleSurface")
+rain_visual_effect_path = NodePath("../RainVisuals")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
 snow_world_effect_path = NodePath("../../World/SnowWorld")
 

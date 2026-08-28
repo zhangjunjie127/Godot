@@ -103,4 +103,6 @@ func _capture() -> void:
 		quit(1)
 		return
 	print("SCREENSHOT_OK: " + output_path)
+	scene.free()
+	await process_frame
 	quit()

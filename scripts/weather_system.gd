@@ -34,6 +34,8 @@ const GAME_MINUTES_PER_DAY := 1440
 @export var day_night_cycle_path: NodePath
 @export var ground_effects_path: NodePath
 @export var wetness_overlay_path: NodePath
+@export var puddle_surface_path: NodePath
+@export var rain_visual_effect_path: NodePath
 @export var screen_rain_effect_path: NodePath
 @export var snow_world_effect_path: NodePath
 @export var random_seed := 0
@@ -49,9 +51,10 @@ var visual_snow_density := 0.0
 
 var _rng := RandomNumberGenerator.new()
 var _last_calendar_minute := -1
-var _rain_particles: Array[Dictionary] = []
 var _ground_effects: Node
 var _wetness_overlay: CanvasItem
+var _puddle_surface: CanvasItem
+var _rain_visual_effect: Node
 var _screen_rain_effect: Node
 var _snow_world_effect: Node
 var _target_rain_density := 0.0
@@ -67,12 +70,15 @@ func _ready() -> void:
 		_rng.seed = random_seed
 	_ground_effects = get_node_or_null(ground_effects_path)
 	_wetness_overlay = get_node_or_null(wetness_overlay_path) as CanvasItem
+	_puddle_surface = get_node_or_null(puddle_surface_path) as CanvasItem
+	_rain_visual_effect = get_node_or_null(rain_visual_effect_path)
 	_screen_rain_effect = get_node_or_null(screen_rain_effect_path)
 	_snow_world_effect = get_node_or_null(snow_world_effect_path)
+	if _puddle_surface is Sprite2D:
+		var puddle_sprite := _puddle_surface as Sprite2D
+		puddle_sprite.texture = ArtAssets.texture(puddle_sprite.texture.resource_path, puddle_sprite.texture)
 	current_rain_level = start_rain_level if start_rain_level in RAIN_LEVELS else RAIN_MEDIUM
 	current_snow_level = start_snow_level if start_snow_level in SNOW_LEVELS else SNOW_MEDIUM
-	resized.connect(_reset_rain_particles)
-	_reset_rain_particles()
 	start_weather_event(_normalize_weather(start_weather), start_duration_mode)
 	var day_night_cycle := get_node_or_null(day_night_cycle_path)
 	if day_night_cycle != null:
@@ -162,9 +168,8 @@ func advance_visual_seconds(seconds: float) -> void:
 	visual_snow_density = move_toward(visual_snow_density, _target_snow_density, fade_step)
 	_sync_rain_visual_layers()
 	_sync_snow_visual_layer(delta)
-	if visual_rain_density > 0.001:
-		_update_rain(delta, get_active_rain_particle_count())
-	queue_redraw()
+	if _rain_visual_effect != null and _rain_visual_effect.has_method("advance_effects"):
+		_rain_visual_effect.advance_effects(delta)
 
 
 func _set_event_level(level: String, valid_levels: Array, fallback: String, is_rain: bool) -> bool:
@@ -199,60 +204,6 @@ func _on_time_changed(day: int, hour: int, minute: int, _phase: String) -> void:
 	_last_calendar_minute = calendar_minute
 
 
-func _reset_rain_particles() -> void:
-	_rain_particles.clear()
-	for _index: int in range(150):
-		_rain_particles.append(_new_rain_particle(false))
-
-
-func _new_rain_particle(spawn_above: bool) -> Dictionary:
-	var viewport_size := _effect_size()
-	var speed := _rng.randf_range(320.0, 620.0)
-	var start_y := _rng.randf_range(-90.0, -8.0) if spawn_above else _rng.randf_range(-40.0, viewport_size.y)
-	var impact_min := clampf(start_y + 45.0, 24.0, viewport_size.y)
-	return {
-		"position": Vector2(_rng.randf_range(0.0, viewport_size.x + 100.0), start_y),
-		"velocity": Vector2(_rng.randf_range(-120.0, -55.0), speed),
-		"impact_y": _rng.randf_range(impact_min, viewport_size.y + 12.0),
-		"splash": _rng.randf() < 0.55,
-		"length": _rng.randf_range(5.0, 12.0),
-		"alpha": _rng.randf_range(0.20, 0.55),
-		"width": _rng.randf_range(0.45, 0.9),
-	}
-
-
-func _update_rain(delta: float, active_count: int) -> void:
-	var viewport_size := _effect_size()
-	for index: int in range(active_count):
-		var particle: Dictionary = _rain_particles[index]
-		var position: Vector2 = particle["position"]
-		position += (particle["velocity"] as Vector2) * delta
-		if position.y >= float(particle["impact_y"]):
-			if bool(particle["splash"]):
-				_spawn_ground_impact(position)
-			particle.assign(_new_rain_particle(true))
-		elif position.y > viewport_size.y + 24.0 or position.x < -30.0:
-			particle.assign(_new_rain_particle(true))
-		else:
-			particle["position"] = position
-
-
-func _draw() -> void:
-	if visual_rain_density <= 0.001:
-		return
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.10, 0.17, 0.24, 0.04 + visual_rain_density * 0.07))
-	for index: int in range(get_active_rain_particle_count()):
-		var particle: Dictionary = _rain_particles[index]
-		var head: Vector2 = particle["position"]
-		var velocity: Vector2 = particle["velocity"]
-		var tail := head - velocity.normalized() * float(particle["length"])
-		draw_line(tail, head, Color(0.68, 0.84, 0.94, float(particle["alpha"])), float(particle["width"]), true)
-
-
-func _effect_size() -> Vector2:
-	return Vector2(maxf(size.x, 640.0), maxf(size.y, 360.0))
-
-
 func _apply_weather_visuals() -> void:
 	_target_rain_density = _density_for_level(current_rain_level, RAIN_LEVELS) if current_weather == WEATHER_RAIN else 0.0
 	_target_snow_density = _density_for_level(current_snow_level, SNOW_LEVELS) if current_weather == WEATHER_SNOW else 0.0
@@ -260,15 +211,10 @@ func _apply_weather_visuals() -> void:
 	_sync_snow_visual_layer(0.0)
 
 
-func _spawn_ground_impact(screen_position: Vector2) -> void:
-	if _ground_effects == null or not _ground_effects.has_method("spawn_impact"):
-		return
-	var world_position := get_viewport().get_canvas_transform().affine_inverse() * screen_position
-	_ground_effects.spawn_impact(world_position)
-
-
 func get_active_rain_particle_count() -> int:
-	return clampi(roundi(_rain_particles.size() * visual_rain_density), 0, _rain_particles.size())
+	if _rain_visual_effect == null or not _rain_visual_effect.has_method("get_active_particle_count"):
+		return 0
+	return int(_rain_visual_effect.get_active_particle_count())
 
 
 func get_active_snow_particle_count() -> int:
@@ -331,10 +277,18 @@ func get_scheduled_events() -> Array[Dictionary]:
 
 
 func _sync_rain_visual_layers() -> void:
-	var wet_strength := clampf(visual_rain_density * 1.8, 0.0, 1.0)
+	var wet_strength := clampf(visual_rain_density * 1.25, 0.0, 1.0)
+	if _rain_visual_effect != null and _rain_visual_effect.has_method("set_intensity"):
+		_rain_visual_effect.set_intensity(visual_rain_density)
 	if _wetness_overlay != null:
 		_wetness_overlay.visible = wet_strength > 0.001
-		_wetness_overlay.modulate.a = wet_strength
+		_wetness_overlay.modulate.a = 1.0
+		if _wetness_overlay.material != null:
+			_wetness_overlay.material.set_shader_parameter("rain_intensity", wet_strength)
+	if _puddle_surface != null:
+		_puddle_surface.visible = wet_strength > 0.001
+		if _puddle_surface.material != null:
+			_puddle_surface.material.set_shader_parameter("rain_intensity", wet_strength)
 	if _ground_effects != null and _ground_effects.has_method("set_rain_strength"):
 		_ground_effects.set_rain_strength(wet_strength)
 	if _screen_rain_effect != null and _screen_rain_effect.has_method("set_intensity"):

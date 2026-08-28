@@ -75,7 +75,7 @@ func _apply_camera_limits(map_size: Vector2) -> void:
 
 func _add_chunks(chunks: Array) -> void:
 	for data: Dictionary in chunks:
-		var texture := load(_resource_path(String(data.get("image", "")))) as Texture2D
+		var texture := ArtAssets.texture(_resource_path(String(data.get("image", ""))))
 		if texture == null:
 			push_error("Missing map chunk: " + String(data.get("image", "")))
 			continue
@@ -91,7 +91,7 @@ func _add_chunks(chunks: Array) -> void:
 
 func _add_props(props: Array) -> void:
 	for data: Dictionary in props:
-		var texture := load(_resource_path(String(data.get("image", "")))) as Texture2D
+		var texture := ArtAssets.texture(_resource_path(String(data.get("image", ""))))
 		if texture == null:
 			push_error("Missing map prop: " + String(data.get("image", "")))
 			continue
@@ -128,7 +128,7 @@ func _add_grass_patches(patches: Array) -> void:
 		grass.name = String(data.get("id", "Grass")).to_pascal_case()
 		grass.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale
 		grass.set("patch_size", Vector2(float(data.get("w", 240.0)), float(data.get("h", 180.0))) * _content_scale)
-		grass.set("patch_texture", load(_resource_path(String(data.get("image", "")))) as Texture2D)
+		grass.set("patch_texture", ArtAssets.texture(_resource_path(String(data.get("image", "")))))
 		depth_sorted.add_child(grass)
 
 

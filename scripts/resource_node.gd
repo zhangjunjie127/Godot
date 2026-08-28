@@ -23,7 +23,7 @@ func configure(data: Dictionary) -> void:
 	add_to_group("interactable")
 	add_to_group("interactable_resource")
 
-	var texture := load(_resource_path(String(data.get("image", "")))) as Texture2D
+	var texture := ArtAssets.texture(_resource_path(String(data.get("image", ""))))
 	if texture != null:
 		var rendered_size := Vector2(
 			float(data.get("w", texture.get_width())),

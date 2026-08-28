@@ -80,7 +80,7 @@ func _populate_clouds() -> void:
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
 		var sprite := Sprite2D.new()
 		sprite.name = "Cloud%d" % (index + 1)
-		sprite.texture = CLOUD_TEXTURE
+		sprite.texture = ArtAssets.texture(CLOUD_TEXTURE.resource_path, CLOUD_TEXTURE)
 		sprite.hframes = 3
 		sprite.vframes = 3
 		sprite.frame = cell

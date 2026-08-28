@@ -1,0 +1,90 @@
+[gd_resource type="Resource" script_class="ArtCatalog" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/art_catalog.gd" id="1_catalog"]
+
+[resource]
+script = ExtResource("1_catalog")
+characters = {
+"res://assets/characters/player_female.png": null,
+"res://assets/characters/player_female_crawl/sheet-transparent.png": null,
+"res://assets/characters/player_female_crouch/sheet-transparent.png": null,
+"res://assets/characters/player_female_idle_relaxed/sheet-transparent.png": null,
+"res://assets/characters/player_female_idle_sit/sheet-transparent.png": null,
+"res://assets/characters/player_female_jump/sheet-transparent.png": null,
+"res://assets/characters/player_female_pickup/sheet-transparent.png": null,
+"res://assets/characters/player_female_prone_idle/sheet-transparent.png": null,
+"res://assets/characters/player_female_swim/sheet-transparent.png": null,
+"res://assets/characters/player_female_torch_hold/sheet-transparent.png": null,
+"res://assets/characters/player_female_walk/sheet-transparent.png": null,
+"res://assets/characters/player_male.png": null,
+"res://assets/characters/player_male_crawl/sheet-transparent.png": null,
+"res://assets/characters/player_male_crouch/sheet-transparent.png": null,
+"res://assets/characters/player_male_idle_relaxed/sheet-transparent.png": null,
+"res://assets/characters/player_male_idle_sit/sheet-transparent.png": null,
+"res://assets/characters/player_male_jump/sheet-transparent.png": null,
+"res://assets/characters/player_male_pickup/sheet-transparent.png": null,
+"res://assets/characters/player_male_prone_idle/sheet-transparent.png": null,
+"res://assets/characters/player_male_swim/sheet-transparent.png": null,
+"res://assets/characters/player_male_torch_hold/sheet-transparent.png": null,
+"res://assets/characters/player_male_walk/sheet-transparent.png": null
+}
+creatures = {
+"res://assets/creatures/fish_golden/sheet-transparent.png": null,
+"res://assets/creatures/fish_turquoise/sheet-transparent.png": null,
+"res://assets/creatures/fish_violet/sheet-transparent.png": null,
+"res://assets/monsters/wild_boar_walk/sheet-transparent.png": null
+}
+maps_and_props = {
+"res://assets/maps/props/vegetation/deadwood/deadwood_bone_root.png": null,
+"res://assets/maps/props/vegetation/deadwood/deadwood_fallen_log.png": null,
+"res://assets/maps/props/vegetation/deadwood/deadwood_hollow_stump.png": null,
+"res://assets/maps/props/vegetation/deadwood/deadwood_stump_cluster.png": null,
+"res://assets/maps/props/vegetation/deadwood/deadwood_tree_bent.png": null,
+"res://assets/maps/props/vegetation/deadwood/deadwood_tree_tall.png": null,
+"res://assets/maps/props/vegetation/hazards/hazard_carnivorous_plant.png": null,
+"res://assets/maps/props/vegetation/hazards/hazard_ground_vines.png": null,
+"res://assets/maps/props/vegetation/hazards/hazard_thorny_vine.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_blue_cluster.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_orange_cluster.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_purple_cluster.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_red_cluster.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_shelf_cluster.png": null,
+"res://assets/maps/props/vegetation/mushrooms/mushroom_violet_cluster.png": null,
+"res://assets/maps/props/vegetation/plants/plant_blue_broadleaf.png": null,
+"res://assets/maps/props/vegetation/plants/plant_cattails.png": null,
+"res://assets/maps/props/vegetation/plants/plant_green_broadleaf.png": null,
+"res://assets/maps/props/vegetation/plants/plant_red_flowers.png": null,
+"res://assets/maps/props/vegetation/plants/plant_white_flowers.png": null,
+"res://assets/maps/props/vegetation/plants/plant_yellow_blade.png": null,
+"res://assets/maps/props/vegetation/rocks/rock_rounded_boulder.png": null,
+"res://assets/maps/props/vegetation/trees/tree_ancient_canopy.png": null,
+"res://assets/maps/props/vegetation/trees/tree_banana.png": null,
+"res://assets/maps/props/vegetation/trees/tree_baobab.png": null,
+"res://assets/maps/props/vegetation/trees/tree_broadleaf_cluster.png": null,
+"res://assets/maps/props/vegetation/trees/tree_cone_crown.png": null,
+"res://assets/maps/props/vegetation/trees/tree_conifer.png": null,
+"res://assets/maps/props/vegetation/trees/tree_giant_leaf.png": null,
+"res://assets/maps/props/vegetation/trees/tree_jungle_vines.png": null,
+"res://assets/maps/props/vegetation/trees/tree_layered_canopy.png": null,
+"res://assets/maps/props/vegetation/trees/tree_palm_small.png": null,
+"res://assets/maps/props/vegetation/trees/tree_tropical_palm_large.png": null,
+"res://assets/maps/props/vegetation/trees/tree_twisted_vine.png": null,
+"res://assets/maps/spawn/spawn_reference_chunk_0_0.png": null,
+"res://assets/maps/spawn/spawn_reference_chunk_0_1.png": null,
+"res://assets/maps/spawn/spawn_reference_chunk_1_0.png": null,
+"res://assets/maps/spawn/spawn_reference_chunk_1_1.png": null,
+"res://assets/maps/spawn/spawn_reference_foundation_2048.png": null,
+"res://assets/maps/underwater/underwater_foundation.png": null
+}
+items = {
+"res://assets/items/resources/sheet-transparent.png": null,
+"res://assets/items/stone_axe/icon.png": null,
+"res://assets/items/torch/sheet-transparent.png": null
+}
+ui = {
+"res://assets/ui/status_icons/sheet-transparent.png": null,
+"res://assets/ui/title/cover-background.png": null
+}
+weather = {
+"res://assets/weather/clouds/sheet-transparent.png": null
+}

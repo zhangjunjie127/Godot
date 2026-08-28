@@ -19,6 +19,7 @@ var is_hunted := false
 
 
 func _ready() -> void:
+	sprite.texture = ArtAssets.texture(sprite.texture.resource_path, sprite.texture)
 	_home_position = global_position
 	_rng.seed = roam_seed
 	hits_remaining = hits_required

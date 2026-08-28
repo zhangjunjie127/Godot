@@ -531,27 +531,29 @@ func _animation_name(moving: bool) -> String:
 
 func _animation_texture(animation: String) -> Texture2D:
 	var is_female := gender == GENDER_FEMALE
+	var fallback: Texture2D
 	match animation:
 		"crouch_idle", "crouch_move":
-			return FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
+			fallback = FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
 		"prone_idle":
-			return FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
+			fallback = FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
 		"crawl_move":
-			return FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
+			fallback = FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
 		"swim":
-			return FEMALE_SWIM_TEXTURE if is_female else MALE_SWIM_TEXTURE
+			fallback = FEMALE_SWIM_TEXTURE if is_female else MALE_SWIM_TEXTURE
 		"jump":
-			return FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
+			fallback = FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
 		"torch_hold":
-			return FEMALE_TORCH_HOLD_TEXTURE if is_female else MALE_TORCH_HOLD_TEXTURE
+			fallback = FEMALE_TORCH_HOLD_TEXTURE if is_female else MALE_TORCH_HOLD_TEXTURE
 		"pickup":
-			return FEMALE_PICKUP_TEXTURE if is_female else MALE_PICKUP_TEXTURE
+			fallback = FEMALE_PICKUP_TEXTURE if is_female else MALE_PICKUP_TEXTURE
 		"idle_relaxed":
-			return FEMALE_IDLE_RELAXED_TEXTURE if is_female else MALE_IDLE_RELAXED_TEXTURE
+			fallback = FEMALE_IDLE_RELAXED_TEXTURE if is_female else MALE_IDLE_RELAXED_TEXTURE
 		"idle_sit":
-			return FEMALE_IDLE_SIT_TEXTURE if is_female else MALE_IDLE_SIT_TEXTURE
+			fallback = FEMALE_IDLE_SIT_TEXTURE if is_female else MALE_IDLE_SIT_TEXTURE
 		_:
-			return FEMALE_WALK_TEXTURE if is_female else MALE_WALK_TEXTURE
+			fallback = FEMALE_WALK_TEXTURE if is_female else MALE_WALK_TEXTURE
+	return ArtAssets.texture(fallback.resource_path, fallback)
 
 
 func _animation_frame(animation: String, moving: bool) -> int:

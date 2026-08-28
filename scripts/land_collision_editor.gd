@@ -10,6 +10,7 @@ extends Node2D
 
 
 func _ready() -> void:
+	map_preview.texture = ArtAssets.texture(map_preview.texture.resource_path, map_preview.texture)
 	map_preview.visible = Engine.is_editor_hint()
 	set_process(Engine.is_editor_hint())
 	queue_redraw()

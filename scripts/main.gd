@@ -109,6 +109,7 @@ var _land_camera_zoom := Vector2(0.546, 0.546)
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
+	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
 	_build_dive_status()
 	_build_death_overlay()
 	player.concealment_changed.connect(_on_concealment_changed)
@@ -202,7 +203,7 @@ func _on_concealment_changed(is_concealed: bool) -> void:
 func _on_movement_state_changed(state_label: String) -> void:
 	if state_label == "拾取":
 		var texture := AtlasTexture.new()
-		texture.atlas = PICKUP_ACTION_ATLAS
+		texture.atlas = _art(PICKUP_ACTION_ATLAS)
 		texture.region = Rect2(256.0, 0.0, 128.0, 128.0)
 		action_icon.texture = texture
 	else:
@@ -251,7 +252,7 @@ func _on_oxygen_changed(current: float, maximum: float) -> void:
 
 
 func _on_gender_changed(gender: String) -> void:
-	portrait.texture = FEMALE_PORTRAIT if gender == "female" else MALE_PORTRAIT
+	portrait.texture = _art(FEMALE_PORTRAIT if gender == "female" else MALE_PORTRAIT)
 
 
 func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void:
@@ -454,7 +455,7 @@ func _branch_color(branch_id: String) -> Color:
 
 func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICON_CELL_SIZE) -> void:
 	var texture := AtlasTexture.new()
-	texture.atlas = STATUS_ICON_ATLAS
+	texture.atlas = _art(STATUS_ICON_ATLAS)
 	var inset := float(ICON_CELL_SIZE - region_size) * 0.5
 	texture.region = Rect2(Vector2(cell * ICON_CELL_SIZE) + Vector2.ONE * inset, Vector2.ONE * region_size)
 	target.texture = texture
@@ -462,17 +463,17 @@ func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICO
 
 func _item_icon(item_id: String) -> Texture2D:
 	if item_id == "stone_axe":
-		return STONE_AXE_ICON
+		return _art(STONE_AXE_ICON)
 	if item_id == "stone":
-		return STONE_RESOURCE_ICON
+		return _art(STONE_RESOURCE_ICON)
 	if item_id == "torch":
 		var texture := AtlasTexture.new()
-		texture.atlas = TORCH_ICON_ATLAS
+		texture.atlas = _art(TORCH_ICON_ATLAS)
 		texture.region = Rect2(0.0, 0.0, 128.0, 128.0)
 		return texture
 	if RESOURCE_ICON_CELLS.has(item_id):
 		var texture := AtlasTexture.new()
-		texture.atlas = RESOURCE_ICON_ATLAS
+		texture.atlas = _art(RESOURCE_ICON_ATLAS)
 		texture.region = Rect2(Vector2(RESOURCE_ICON_CELLS[item_id] * RESOURCE_ICON_CELL_SIZE), Vector2.ONE * RESOURCE_ICON_CELL_SIZE)
 		return texture
 	return null
@@ -524,7 +525,7 @@ func enter_underwater() -> void:
 	weather_layer.visible = false
 	screen_weather_layer.visible = false
 	map_name_label.text = "奇渊海"
-	minimap.map_texture = UNDERWATER_MINIMAP_TEXTURE
+	minimap.map_texture = _art(UNDERWATER_MINIMAP_TEXTURE)
 	minimap.world_size = underwater_world.MAP_SIZE
 	dive_status.visible = true
 	_sync_night_state(day_night_cycle.current_phase)
@@ -545,7 +546,7 @@ func exit_underwater() -> void:
 	weather_layer.visible = true
 	screen_weather_layer.visible = true
 	map_name_label.text = "西部台地"
-	minimap.map_texture = LAND_MINIMAP_TEXTURE
+	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
 	minimap.world_size = _land_world_size
 	dive_status.visible = false
 	_sync_night_state(day_night_cycle.current_phase)
@@ -557,6 +558,10 @@ func _set_camera_for_map(map_size: Vector2, zoom: Vector2) -> void:
 	camera.limit_right = roundi(map_size.x)
 	camera.limit_bottom = roundi(map_size.y)
 	camera.zoom = zoom
+
+
+func _art(fallback: Texture2D) -> Texture2D:
+	return ArtAssets.texture(fallback.resource_path, fallback)
 
 
 func _build_dive_status() -> void:

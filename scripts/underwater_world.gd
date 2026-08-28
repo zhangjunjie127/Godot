@@ -18,6 +18,8 @@ var bubble_effect: Node2D
 
 
 func _ready() -> void:
+	var background := $Background as Sprite2D
+	background.texture = ArtAssets.texture(background.texture.resource_path, background.texture)
 	_build_fish()
 	bubble_effect = BubbleScript.new()
 	bubble_effect.name = "BubbleEffect"
@@ -39,4 +41,5 @@ func _build_fish() -> void:
 			rng.randf_range(FISH_BOUNDS.position.y, FISH_BOUNDS.end.y)
 		)
 		depth_sorted.add_child(fish)
-		fish.configure(FISH_TEXTURES[index], FISH_BOUNDS, 20260828 + index * 97, rng.randf_range(0.34, 0.44))
+		var fallback := FISH_TEXTURES[index] as Texture2D
+		fish.configure(ArtAssets.texture(fallback.resource_path, fallback), FISH_BOUNDS, 20260828 + index * 97, rng.randf_range(0.34, 0.44))

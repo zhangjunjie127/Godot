@@ -10,6 +10,13 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle"]
 shader = ExtResource("4_puddle_shader")
+shader_parameter/medium_cutoff = 0.72
+shader_parameter/heavy_cutoff = 0.34
+shader_parameter/mask_softness = 0.055
+shader_parameter/medium_spread_pixels = 3.0
+shader_parameter/heavy_spread_pixels = 4.0
+shader_parameter/water_opacity = 0.4
+shader_parameter/sky_reflection = 0.18
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wet"]
 shader = ExtResource("6_wet_shader")

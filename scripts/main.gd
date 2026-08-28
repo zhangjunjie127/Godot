@@ -90,6 +90,7 @@ const RESOURCE_ICON_CELLS := {
 @onready var world_map = $HUD/WorldMapOverlay/MapPanel/Margin/Content/Map
 @onready var minimap = $HUD/MinimapPanel/Margin/Minimap
 @onready var map_name_label: Label = $HUD/MinimapPanel/Margin/Minimap/AreaLabel
+@onready var minimap_coordinate_label: Label = $HUD/MinimapPanel/Margin/Minimap/CoordinateLabel
 @onready var weather_layer: CanvasLayer = $Weather
 @onready var screen_weather_layer: CanvasLayer = $ScreenWeather
 
@@ -160,6 +161,7 @@ func _process(delta: float) -> void:
 	if _forecast_visible_seconds > 0.0:
 		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
 		forecast_popup.visible = _forecast_visible_seconds > 0.0
+	minimap_coordinate_label.text = "%d,%d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 	if world_map_overlay.visible:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 

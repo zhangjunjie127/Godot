@@ -76,6 +76,7 @@ func _run() -> void:
 	var world_info: PanelContainer = scene.get_node("HUD/WorldInfo")
 	var minimap = scene.get_node("HUD/MinimapPanel/Margin/Minimap")
 	var map_name_label: Label = scene.get_node("HUD/MinimapPanel/Margin/Minimap/AreaLabel")
+	var minimap_coordinate_label: Label = scene.get_node("HUD/MinimapPanel/Margin/Minimap/CoordinateLabel")
 	var minimap_panel: PanelContainer = scene.get_node("HUD/MinimapPanel")
 	var forecast_popup: PanelContainer = scene.get_node("HUD/ForecastPopup")
 	var forecast_label: Label = scene.get_node("HUD/ForecastPopup/Margin/ForecastLabel")
@@ -145,6 +146,14 @@ func _run() -> void:
 	if map_name_label.text != "西部台地" or map_name_label.get_parent() != minimap:
 		_fail("West Plateau map name was not placed inside the minimap")
 		return
+	var original_player_position: Vector2 = player.global_position
+	player.global_position = Vector2(1200.0, 1300.0)
+	scene._process(0.0)
+	if minimap_coordinate_label.text != "1200,1300" or minimap_coordinate_label.get_parent() != minimap or minimap_coordinate_label.horizontal_alignment != HORIZONTAL_ALIGNMENT_RIGHT:
+		_fail("Player coordinates are not updating at the minimap bottom-right")
+		return
+	player.global_position = original_player_position
+	scene._process(0.0)
 	if not forecast_popup.visible or not forecast_label.text.contains("未来 1 日") or weather.get_forecast(2).size() != 2:
 		_fail("Two-day scheduled weather forecast did not initialize")
 		return
@@ -177,8 +186,20 @@ func _run() -> void:
 	if rain_visual._rain_loop == null or rain_visual._rain_loop.stream == null or rain_visual.get_audio_volume_db() <= -80.0:
 		_fail("Rain audio loop did not initialize with the layered effect")
 		return
+	var audio_players := scene.find_children("*", "AudioStreamPlayer", true, false)
+	if audio_players.size() != 1 or audio_players[0] != rain_visual._rain_loop:
+		_fail("Rain loop is not the only retained game audio source")
+		return
 	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0:
 		_fail("Wet grade or puddle refraction shader did not receive rain intensity")
+		return
+	var medium_cutoff: Variant = puddle_surface.material.get_shader_parameter("medium_cutoff")
+	var heavy_cutoff: Variant = puddle_surface.material.get_shader_parameter("heavy_cutoff")
+	var medium_spread: Variant = puddle_surface.material.get_shader_parameter("medium_spread_pixels")
+	var heavy_spread: Variant = puddle_surface.material.get_shader_parameter("heavy_spread_pixels")
+	var water_opacity: Variant = puddle_surface.material.get_shader_parameter("water_opacity")
+	if medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or water_opacity == null or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(water_opacity) < 0.40:
+		_fail("Medium and heavy puddle coverage were not doubled")
 		return
 	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 161:
 		_fail("Medium rain density did not initialize")

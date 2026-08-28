@@ -33,7 +33,6 @@ scale = Vector2(0.625, 0.625)
 z_index = 2
 script = ExtResource("5_ground")
 world_size = Vector2(640, 640)
-puddle_mask = ExtResource("3_mask")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)

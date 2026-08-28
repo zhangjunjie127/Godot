@@ -21,6 +21,7 @@ const SNOW_HEAVY := "大雪"
 const SNOW_LEVELS := [SNOW_LIGHT, SNOW_MEDIUM, SNOW_HEAVY]
 
 const PRECIPITATION_DENSITIES := [0.30, 0.60, 1.0]
+const PUDDLE_START_STRENGTH := 0.45
 const DURATION_HALF_DAY := "半天"
 const DURATION_FULL_DAY := "一天"
 const DURATION_SPECIAL := "特殊事件"
@@ -286,7 +287,7 @@ func _sync_rain_visual_layers() -> void:
 		if _wetness_overlay.material != null:
 			_wetness_overlay.material.set_shader_parameter("rain_intensity", wet_strength)
 	if _puddle_surface != null:
-		_puddle_surface.visible = wet_strength > 0.001
+		_puddle_surface.visible = wet_strength > PUDDLE_START_STRENGTH
 		if _puddle_surface.material != null:
 			_puddle_surface.material.set_shader_parameter("rain_intensity", wet_strength)
 	if _ground_effects != null and _ground_effects.has_method("set_rain_strength"):

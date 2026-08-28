@@ -213,7 +213,6 @@ scale = Vector2(4, 4)
 [node name="WeatherGround" type="Node2D" parent="World"]
 z_index = -5
 script = ExtResource("12_weather_ground")
-puddle_mask = ExtResource("22_puddle_mask")
 
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30

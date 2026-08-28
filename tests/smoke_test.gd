@@ -25,8 +25,8 @@ func _run() -> void:
 	var rain_demo := rain_demo_scene.instantiate()
 	root.add_child(rain_demo)
 	await process_frame
-	if not rain_demo.get_node("Weather/RainVisuals/FarStreaks").process_material is ParticleProcessMaterial or not rain_demo.get_node("GroundEffects").has_wet_mask():
-		_fail("RainDemo did not initialize GPU streaks and the shared puddle mask")
+	if not rain_demo.get_node("Weather/RainVisuals/FarStreaks").process_material is ParticleProcessMaterial or not rain_demo.get_node("GroundEffects").has_method("get_ripple_spawn_rate"):
+		_fail("RainDemo did not initialize GPU streaks and graded ground feedback")
 		return
 	rain_demo.free()
 	await process_frame
@@ -168,8 +168,8 @@ func _run() -> void:
 		_fail("Rain did not fade in gradually")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if not wetness_overlay.visible or not puddle_surface.visible or not weather_ground.raining or not weather_ground.has_wet_mask():
-		_fail("Layered rain did not enable wet grading, masked puddles and ground effects")
+	if not wetness_overlay.visible or not puddle_surface.visible or not weather_ground.raining:
+		_fail("Layered rain did not enable wet grading, puddles and ground effects")
 		return
 	if not is_equal_approx(rain_visual.intensity, weather.visual_rain_density) or rain_visual.get_layer_particle_counts() != Vector2i(220, 110):
 		_fail("Rain streak layer did not follow the authoritative weather intensity")
@@ -195,9 +195,27 @@ func _run() -> void:
 	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 330):
 		_fail("Light, medium and heavy rain densities are not distinct")
 		return
-	var sampled_puddle_position: Vector2 = weather_ground.get_visible_wet_position()
-	if sampled_puddle_position == Vector2.INF or not weather_ground.is_wettable(sampled_puddle_position):
-		_fail("Rain feedback could not find a visible point inside the shared puddle mask")
+	weather.set_rain_level("小雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var light_impact_rate: float = weather_ground.get_impact_spawn_rate()
+	if puddle_surface.visible or light_impact_rate <= 0.0 or weather_ground.get_ripple_spawn_rate() != 0.0:
+		_fail("Light rain should create splashes without puddles or ripples")
+		return
+	weather.set_rain_level("中雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	var medium_impact_rate: float = weather_ground.get_impact_spawn_rate()
+	var medium_ripple_rate: float = weather_ground.get_ripple_spawn_rate()
+	if not puddle_surface.visible or medium_impact_rate <= light_impact_rate or medium_ripple_rate <= 0.0:
+		_fail("Medium rain should add limited puddles, splashes and ripples")
+		return
+	weather.set_rain_level("大雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	if weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() <= medium_ripple_rate:
+		_fail("Heavy rain should increase puddles, splashes and ripple emphasis")
+		return
+	var sampled_feedback_position: Vector2 = weather_ground.get_visible_feedback_position()
+	if sampled_feedback_position == Vector2.INF or not weather_ground.is_feedback_area(sampled_feedback_position):
+		_fail("Rain feedback could not find a visible ground position")
 		return
 	screen_rain.advance_effects(1.0)
 	if screen_rain._drops.is_empty():
@@ -235,9 +253,9 @@ func _run() -> void:
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var initial_impact_count: int = weather_ground._impacts.size()
 	var initial_ripple_count: int = weather_ground._ripples.size()
-	var puddle_position: Vector2 = weather_ground.get_visible_wet_position()
-	if puddle_position == Vector2.INF or not weather_ground.is_wettable(puddle_position):
-		_fail("Ground effects do not share the authored wet-ground mask")
+	var puddle_position := Vector2(32.0, 32.0)
+	if not weather_ground.is_feedback_area(puddle_position):
+		_fail("Rain feedback rejected ordinary terrain")
 		return
 	weather_ground.spawn_impact(puddle_position)
 	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != initial_ripple_count + 1:
@@ -324,7 +342,7 @@ func _run() -> void:
 	if not wetness_overlay.visible or not weather_ground.raining:
 		_fail("Rain wetness did not reactivate")
 		return
-	var impact_position: Vector2 = weather_ground.get_visible_wet_position()
+	var impact_position: Vector2 = weather_ground.get_visible_feedback_position()
 	weather_ground.spawn_impact(impact_position)
 	if weather_ground._impacts.is_empty():
 		_fail("Falling rain did not trigger a ground splash")

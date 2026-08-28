@@ -36,17 +36,18 @@ func _run() -> void:
 	if clouds == null or not (clouds is Node2D):
 		_fail("Clouds are not world-space Node2D scenery")
 		return
-	clouds.process_mode = Node.PROCESS_MODE_DISABLED
 	clouds.set_weather("晴朗")
 	var cloud_before: Vector2 = clouds.get_cloud_world_position(0)
 	player.global_position += Vector2(260.0, 120.0)
-	await process_frame
-	if clouds.get_cloud_world_position(0) != cloud_before:
+	for _frame: int in range(60):
+		await process_frame
+	var cloud_after: Vector2 = clouds.get_cloud_world_position(0)
+	if not is_equal_approx(cloud_after.y, cloud_before.y):
 		_fail("Clouds followed the player or camera")
 		return
-	clouds.advance_clouds(1.0)
-	if clouds.get_cloud_world_position(0).x >= cloud_before.x:
-		_fail("Clouds did not move left by themselves")
+	var cloud_distance := cloud_before.x - cloud_after.x
+	if cloud_distance < 20.0:
+		_fail("Clouds moved only %.2f units during real process frames" % cloud_distance)
 		return
 
 	var expected_items := [
@@ -117,8 +118,8 @@ func _run() -> void:
 	if background == null or background.texture == null or background.texture.get_width() < 1200 or background.texture.get_height() < 700:
 		_fail("Underwater map background is missing or too small")
 		return
-	if underwater.get_node_or_null("Collision/LeftWall") != null or underwater.get_node_or_null("Collision/RightWall") != null:
-		_fail("Underwater map still has left or right collision walls")
+	if underwater.get_node_or_null("Collision/LeftWall") != null or underwater.get_node_or_null("Collision/RightWall") != null or underwater.get_node_or_null("Collision/Seabed") != null:
+		_fail("Underwater map still has wall or seabed collisions")
 		return
 	var coast_entry := scene.get_node("World/GameplayMetadata/SouthCoastCave") as Marker2D
 	player.global_position = coast_entry.global_position

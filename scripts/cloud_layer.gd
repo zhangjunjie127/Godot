@@ -92,7 +92,7 @@ func _populate_clouds() -> void:
 		clouds.append({
 			"sprite": sprite,
 			"position": sprite.position,
-			"speed": _rng.randf_range(5.0, 12.0),
+			"speed": _rng.randf_range(22.0, 40.0),
 			"scale": cloud_scale,
 			"cell": cell,
 		})

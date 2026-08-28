@@ -1,10 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/underwater_world.gd" id="1_underwater"]
 [ext_resource type="Texture2D" path="res://assets/maps/underwater/underwater_foundation.png" id="2_background"]
-
-[sub_resource type="RectangleShape2D" id="Rectangle_floor"]
-size = Vector2(1672, 48)
 
 [node name="UnderwaterWorld" type="Node2D"]
 visible = false
@@ -15,16 +12,6 @@ z_index = -20
 texture_filter = 1
 texture = ExtResource("2_background")
 centered = false
-
-[node name="Collision" type="Node2D" parent="."]
-
-[node name="Seabed" type="StaticBody2D" parent="Collision"]
-collision_layer = 2
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Collision/Seabed"]
-position = Vector2(836, 935)
-shape = SubResource("Rectangle_floor")
 
 [node name="DepthSorted" type="Node2D" parent="."]
 y_sort_enabled = true

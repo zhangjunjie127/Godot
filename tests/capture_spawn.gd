@@ -71,9 +71,7 @@ func _capture() -> void:
 		"pickup":
 			Input.action_press("player_pickup")
 		"idle_relaxed":
-			scene.player._idle_elapsed = 1.0
-		"idle_sit":
-			scene.player.seated_idle_delay = 0.0
+			pass
 	var capture_frames := 60 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
 	for _frame: int in range(capture_frames):
 		await physics_frame

@@ -45,7 +45,6 @@ const MALE_JUMP_TEXTURE := preload("res://assets/characters/player_male_jump/she
 const MALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_torch_hold/sheet-transparent.png")
 const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
-const MALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_male_idle_sit/sheet-transparent.png")
 const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/sheet-transparent.png")
 
 const FEMALE_WALK_TEXTURE := preload("res://assets/characters/player_female_walk/sheet-transparent.png")
@@ -56,7 +55,6 @@ const FEMALE_JUMP_TEXTURE := preload("res://assets/characters/player_female_jump
 const FEMALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_female_torch_hold/sheet-transparent.png")
 const FEMALE_PICKUP_TEXTURE := preload("res://assets/characters/player_female_pickup/sheet-transparent.png")
 const FEMALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_female_idle_relaxed/sheet-transparent.png")
-const FEMALE_IDLE_SIT_TEXTURE := preload("res://assets/characters/player_female_idle_sit/sheet-transparent.png")
 const FEMALE_SWIM_TEXTURE := preload("res://assets/characters/player_female_swim/sheet-transparent.png")
 
 @export var move_speed := 85.0
@@ -74,7 +72,6 @@ const FEMALE_SWIM_TEXTURE := preload("res://assets/characters/player_female_swim
 @export var stamina_recovery_per_second := 20.0
 @export var hunger_drain_per_second := 0.12
 @export_range(0.0, 1.0) var stamina_resume_ratio := 0.2
-@export var seated_idle_delay := 8.0
 @export var swim_speed := 70.0
 @export var dive_speed := 62.0
 @export var max_oxygen := 100.0
@@ -96,7 +93,6 @@ var _active_animation := ""
 var _facing_row := 0
 var _is_picking_up := false
 var _pickup_elapsed := 0.0
-var _idle_elapsed := 0.0
 var torch_equipped := false
 var gender := GENDER_MALE
 var health := 100.0
@@ -175,7 +171,6 @@ func _physics_process(delta: float) -> void:
 
 	var state := _resolve_movement_state(direction, running, crouching, crawling)
 	_set_movement_state(state)
-	_idle_elapsed = _idle_elapsed + delta if state == STATE_IDLE else 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()
 
@@ -439,7 +434,6 @@ func _physics_process_water(delta: float) -> void:
 
 	var state := STATE_PICKUP if _is_picking_up else STATE_DIVE if submerged else STATE_SWIM
 	_set_movement_state(state)
-	_idle_elapsed = 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()
 
@@ -452,7 +446,6 @@ func _physics_process_surface_swim(delta: float) -> void:
 	_update_hunger(delta)
 	_update_stamina(delta, false)
 	_set_movement_state(STATE_SWIM)
-	_idle_elapsed = 0.0
 	_update_sprite(direction, delta)
 	queue_redraw()
 
@@ -504,9 +497,6 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 			sprite_position.y = -44.0
 		STATE_SWIM, STATE_DIVE:
 			sprite_position.y = -44.0
-		STATE_IDLE:
-			if _idle_elapsed >= seated_idle_delay and not torch_equipped:
-				sprite_position.y = -44.0
 	if moving and _facing_row == 0 and (_movement_state == STATE_WALK or _movement_state == STATE_RUN):
 		sprite_position.y += 8.0
 
@@ -535,7 +525,7 @@ func _animation_name(moving: bool) -> String:
 		_:
 			if torch_equipped:
 				return "torch_hold"
-			return "idle_sit" if _idle_elapsed >= seated_idle_delay else "idle_relaxed"
+			return "idle_relaxed"
 
 
 func _animation_texture(animation: String) -> Texture2D:
@@ -558,8 +548,6 @@ func _animation_texture(animation: String) -> Texture2D:
 			fallback = FEMALE_PICKUP_TEXTURE if is_female else MALE_PICKUP_TEXTURE
 		"idle_relaxed":
 			fallback = FEMALE_IDLE_RELAXED_TEXTURE if is_female else MALE_IDLE_RELAXED_TEXTURE
-		"idle_sit":
-			fallback = FEMALE_IDLE_SIT_TEXTURE if is_female else MALE_IDLE_SIT_TEXTURE
 		_:
 			fallback = FEMALE_WALK_TEXTURE if is_female else MALE_WALK_TEXTURE
 	return ArtAssets.texture(fallback.resource_path, fallback)
@@ -579,8 +567,6 @@ func _animation_frame(animation: String, moving: bool) -> int:
 		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":
 		return floori(_animation_elapsed / 0.30) % frame_count
-	if animation == "idle_sit":
-		return floori(_animation_elapsed / 0.34) % frame_count
 	if animation == "swim":
 		var swim_frame_duration := 0.18 if gender == GENDER_FEMALE else 0.10
 		return floori(_animation_elapsed / swim_frame_duration) % frame_count

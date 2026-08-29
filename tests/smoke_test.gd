@@ -762,20 +762,18 @@ func _run() -> void:
 	Input.action_release("player_jump")
 	for _frame: int in range(40):
 		await physics_frame
-	player._idle_elapsed = 0.5
 	player._active_animation = ""
 	await physics_frame
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(0.88, 0.88):
 		_fail("Relaxed standing breathing animation or shared character scale did not activate")
 		return
-	player._idle_elapsed = player.seated_idle_delay + 0.1
+	player._animation_elapsed = 100.0
 	player._active_animation = ""
 	await physics_frame
-	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_sit/sheet-transparent.png" or player_sprite.scale != Vector2(0.88, 0.88):
-		_fail("Seated breathing animation or shared character scale did not activate")
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(0.88, 0.88):
+		_fail("Extended idle switched away from the standing breathing animation")
 		return
 	player.set_gender("female")
-	player._idle_elapsed = 0.5
 	await physics_frame
 	var portrait: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait")
 	if player_sprite.texture.resource_path != "res://assets/characters/player_female_idle_relaxed/sheet-transparent.png" or portrait.texture.resource_path != "res://assets/characters/player_female.png":

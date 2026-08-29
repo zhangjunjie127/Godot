@@ -1,4 +1,0 @@
-Derived runtime source copy of spawn_neurotic_wilds_source.png.
-
-Creative generation prompt: see spawn_neurotic_wilds_source.prompt.txt.
-Processing: exact file copy; no visual changes.

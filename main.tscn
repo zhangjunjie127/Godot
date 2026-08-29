@@ -236,7 +236,7 @@ world_size = Vector2(8192, 8192)
 y_sort_enabled = true
 
 [node name="Player" type="CharacterBody2D" parent="World/DepthSorted"]
-position = Vector2(3800, 4550)
+position = Vector2(4100, 4700)
 collision_layer = 1
 collision_mask = 2
 script = ExtResource("3_player")
@@ -264,7 +264,7 @@ limit_right = 8192
 limit_bottom = 8192
 
 [node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
-position = Vector2(4170, 4420)
+position = Vector2(4680, 4780)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("7_boar_script")
@@ -619,7 +619,7 @@ theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.035, 0.94)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 10
-text = "扭脊原野"
+text = "升天群岛"
 
 [node name="CoordinateLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
 layout_mode = 1
@@ -976,7 +976,7 @@ world_mode = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.70, 0.72, 0.73, 1)
 theme_override_font_sizes/font_size = 11
-text = "坐标  3800, 4550"
+text = "坐标  4100, 4700"
 horizontal_alignment = 1
 
 [node name="ScreenWeather" type="CanvasLayer" parent="."]

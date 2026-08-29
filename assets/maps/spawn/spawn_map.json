@@ -1,15 +1,16 @@
 {
-  "version": 7,
-  "source": "generated-clean-wilds-20260829",
+  "version": 8,
+  "source": "user-supplied-tropical-island-20260829",
   "vegetationSeed": 20260829,
   "contentScale": 1.0,
   "mapSize": {
 	"width": 8192,
 	"height": 8192
   },
+  "chunkSize": 2048,
   "spawn": {
-	"x": 3800,
-	"y": 4550
+	"x": 4100,
+	"y": 4700
   },
   "chunks": [
 	{
@@ -24,7 +25,23 @@
 	  "id": "chunk_1_0",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_1_0.png",
 	  "position": [
+		2048,
+		0
+	  ]
+	},
+	{
+	  "id": "chunk_2_0",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_2_0.png",
+	  "position": [
 		4096,
+		0
+	  ]
+	},
+	{
+	  "id": "chunk_3_0",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_3_0.png",
+	  "position": [
+		6144,
 		0
 	  ]
 	},
@@ -33,15 +50,95 @@
 	  "image": "assets/maps/spawn/spawn_reference_chunk_0_1.png",
 	  "position": [
 		0,
-		4096
+		2048
 	  ]
 	},
 	{
 	  "id": "chunk_1_1",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_1_1.png",
 	  "position": [
+		2048,
+		2048
+	  ]
+	},
+	{
+	  "id": "chunk_2_1",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_2_1.png",
+	  "position": [
+		4096,
+		2048
+	  ]
+	},
+	{
+	  "id": "chunk_3_1",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_3_1.png",
+	  "position": [
+		6144,
+		2048
+	  ]
+	},
+	{
+	  "id": "chunk_0_2",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_0_2.png",
+	  "position": [
+		0,
+		4096
+	  ]
+	},
+	{
+	  "id": "chunk_1_2",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_1_2.png",
+	  "position": [
+		2048,
+		4096
+	  ]
+	},
+	{
+	  "id": "chunk_2_2",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_2_2.png",
+	  "position": [
 		4096,
 		4096
+	  ]
+	},
+	{
+	  "id": "chunk_3_2",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_3_2.png",
+	  "position": [
+		6144,
+		4096
+	  ]
+	},
+	{
+	  "id": "chunk_0_3",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_0_3.png",
+	  "position": [
+		0,
+		6144
+	  ]
+	},
+	{
+	  "id": "chunk_1_3",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_1_3.png",
+	  "position": [
+		2048,
+		6144
+	  ]
+	},
+	{
+	  "id": "chunk_2_3",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_2_3.png",
+	  "position": [
+		4096,
+		6144
+	  ]
+	},
+	{
+	  "id": "chunk_3_3",
+	  "image": "assets/maps/spawn/spawn_reference_chunk_3_3.png",
+	  "position": [
+		6144,
+		6144
 	  ]
 	}
   ],
@@ -66,8 +163,8 @@
 	{
 	  "id": "east_grass",
 	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
-	  "x": 6120,
-	  "y": 4380,
+	  "x": 5350,
+	  "y": 4300,
 	  "w": 112,
 	  "h": 86
 	},
@@ -245,29 +342,29 @@
 	{
 	  "id": "spawn_zone",
 	  "type": "spawn",
-	  "x": 3800,
-	  "y": 4550,
+	  "x": 4100,
+	  "y": 4700,
 	  "radius": 120
 	},
 	{
-	  "id": "twisted_north_range",
+	  "id": "north_highlands",
 	  "type": "landmark",
-	  "x": 2700,
-	  "y": 1450,
+	  "x": 3500,
+	  "y": 1150,
 	  "radius": 820
 	},
 	{
-	  "id": "central_horn",
+	  "id": "central_crossroads",
 	  "type": "landmark",
-	  "x": 4800,
-	  "y": 4650,
+	  "x": 4200,
+	  "y": 4100,
 	  "radius": 520
 	},
 	{
-	  "id": "southern_inlets",
+	  "id": "southern_waterfalls",
 	  "type": "landmark",
-	  "x": 4300,
-	  "y": 6900,
+	  "x": 4200,
+	  "y": 6250,
 	  "radius": 720
 	}
   ]

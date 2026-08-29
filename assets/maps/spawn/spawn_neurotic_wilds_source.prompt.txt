@@ -1,9 +1,0 @@
-Use case: style-transfer
-Asset type: production foundation art for the existing layered Godot 4 exploration map
-Input image: the previous complete overworld is the composition reference.
-Primary request: redraw the same square overworld in clean high-definition 2D hand-painted game art, removing the pixel-art treatment entirely.
-Composition/framing: preserve the 45-degree top-down camera, land-to-ocean ratio, coastline silhouette, northern and northwestern twisted mountain chains, central open traversal land, southern bays and inlets, and offshore rock positions so existing collision remains aligned.
-Style/medium: crisp non-pixel 2D digital painting; smooth antialiased contours, controlled cel-painted shading, readable terrain color masses, sharp high-resolution edges, restrained texture detail; not photorealistic and not 3D.
-Terrain: exposed earth, sparse bare ground, warped terraces, eroded cliffs, twisted mountains, irregular coast, and clear turquoise-to-deep-teal ocean. Land remains the visual majority.
-Constraints: foundation terrain only. No decorative vegetation, trees, bushes, thorn clusters, grass tufts, flowers, mushrooms, plants, logs, stumps, loose prop rocks, characters, animals, structures, roads, UI, text, labels, or gameplay items.
-Avoid: pixel art, blocky pixels, nearest-neighbor look, dithering, noisy speckles, blurry painting, dense detail, photorealism, forests, decorative props, neat circular craters, symmetry, border, or watermark.

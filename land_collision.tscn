@@ -18,102 +18,88 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="Polygon" type="CollisionPolygon2D" parent="OceanNorth"]
-polygon = PackedVector2Array(0, 0, 8192, 0, 8192, 760, 7520, 690, 6900, 430, 6200, 330, 5480, 420, 4840, 290, 4200, 300, 3620, 520, 3000, 400, 2420, 390, 1870, 520, 1420, 650, 1040, 820, 0, 980)
+polygon = PackedVector2Array(0, 0, 8192, 0, 8192, 2260, 7220, 2240, 6740, 2080, 6320, 1860, 5880, 1590, 5480, 1510, 5070, 1360, 4680, 1110, 4290, 760, 3860, 650, 3480, 720, 3150, 950, 2840, 1280, 2480, 1540, 2120, 1840, 1800, 2180, 1320, 2360, 0, 2440)
 
 [node name="OceanWest" type="StaticBody2D" parent="." groups=["water_collision"]]
 collision_layer = 2
 collision_mask = 0
 
 [node name="Polygon" type="CollisionPolygon2D" parent="OceanWest"]
-polygon = PackedVector2Array(0, 760, 1080, 760, 980, 1330, 930, 1940, 850, 2520, 760, 3150, 650, 3820, 740, 4480, 850, 5100, 900, 5730, 1080, 6280, 1030, 6810, 780, 7350, 620, 7850, 0, 8192)
+polygon = PackedVector2Array(0, 2180, 1460, 2180, 1760, 2460, 1900, 2860, 1790, 3290, 1530, 3660, 1310, 4100, 1420, 4540, 1720, 4870, 1690, 5310, 1420, 5650, 1080, 6040, 860, 6520, 620, 7040, 0, 7220)
 
 [node name="OceanEast" type="StaticBody2D" parent="." groups=["water_collision"]]
 collision_layer = 2
 collision_mask = 0
 
 [node name="Polygon" type="CollisionPolygon2D" parent="OceanEast"]
-polygon = PackedVector2Array(8192, 580, 7480, 650, 7240, 1140, 7350, 1720, 7190, 2310, 7320, 2920, 7580, 3420, 7100, 3860, 7140, 4380, 7330, 4960, 7440, 5520, 7590, 6100, 7480, 6650, 7160, 7180, 6820, 7690, 6460, 8192, 8192, 8192)
+polygon = PackedVector2Array(8192, 2060, 7080, 2070, 6720, 2310, 6500, 2700, 6590, 3120, 6800, 3510, 6700, 3930, 6520, 4300, 6690, 4690, 6920, 5100, 6780, 5540, 6480, 5990, 6500, 6460, 6890, 6870, 7360, 7120, 8192, 7240)
 
-[node name="OceanSouthWest" type="StaticBody2D" parent="." groups=["water_collision"]]
+[node name="OceanSouth" type="StaticBody2D" parent="." groups=["water_collision"]]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanSouthWest"]
-polygon = PackedVector2Array(0, 7460, 650, 7300, 1180, 7100, 1540, 6800, 1800, 6990, 1890, 7410, 2250, 7630, 2480, 8192, 0, 8192)
+[node name="Polygon" type="CollisionPolygon2D" parent="OceanSouth"]
+polygon = PackedVector2Array(0, 6860, 740, 6700, 1180, 6380, 1640, 6070, 2080, 6110, 2440, 6470, 2820, 6510, 3220, 6290, 3610, 6540, 4000, 6730, 4450, 6660, 4820, 6420, 5220, 6250, 5650, 6390, 6120, 6620, 6650, 6790, 7080, 7040, 7640, 7170, 8192, 7140, 8192, 8192, 0, 8192)
 
-[node name="OceanSouthBay" type="StaticBody2D" parent="." groups=["water_collision"]]
+[node name="NorthSummit" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanSouthBay"]
-polygon = PackedVector2Array(1850, 8192, 1920, 7350, 2260, 7050, 2550, 6730, 2960, 6810, 3240, 7110, 3560, 7040, 3880, 6630, 4180, 6500, 4480, 6720, 4610, 7180, 4930, 7430, 5160, 8192)
+[node name="Polygon" type="CollisionPolygon2D" parent="NorthSummit"]
+polygon = PackedVector2Array(3100, 1190, 3220, 760, 3430, 650, 3610, 790, 3720, 1190, 3560, 1480, 3300, 1450)
 
-[node name="OceanSouthEast" type="StaticBody2D" parent="." groups=["water_collision"]]
+[node name="NorthwestPlateau" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanSouthEast"]
-polygon = PackedVector2Array(4820, 8192, 4890, 7420, 5200, 7130, 5500, 6820, 5840, 6900, 6090, 7190, 6360, 7090, 6760, 6820, 7110, 7150, 7250, 7630, 7540, 7890, 7800, 8192)
+[node name="Polygon" type="CollisionPolygon2D" parent="NorthwestPlateau"]
+polygon = PackedVector2Array(1890, 1920, 2180, 1660, 2520, 1660, 2780, 1900, 2860, 2290, 2690, 2560, 2300, 2640, 1990, 2420)
 
-[node name="NorthWestTwistedRange" type="StaticBody2D" parent="."]
+[node name="CentralNeedles" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="NorthWestTwistedRange"]
-polygon = PackedVector2Array(820, 1240, 1120, 840, 1600, 620, 2130, 700, 2580, 1040, 2890, 1510, 2810, 2070, 2480, 2590, 1940, 2910, 1390, 2800, 980, 2380, 760, 1810)
+[node name="Polygon" type="CollisionPolygon2D" parent="CentralNeedles"]
+polygon = PackedVector2Array(4030, 1770, 4370, 1420, 4720, 1530, 4930, 1920, 5100, 2410, 4930, 2860, 4580, 3040, 4230, 2810, 3970, 2350)
 
-[node name="NorthCentralTwistedRange" type="StaticBody2D" parent="."]
+[node name="WestFallsRidge" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="NorthCentralTwistedRange"]
-polygon = PackedVector2Array(2570, 690, 3030, 390, 3530, 360, 4010, 620, 4450, 1030, 4540, 1530, 4270, 2050, 3790, 2350, 3330, 2240, 3000, 1810, 2710, 1290)
+[node name="Polygon" type="CollisionPolygon2D" parent="WestFallsRidge"]
+polygon = PackedVector2Array(1390, 2750, 1700, 2410, 2100, 2390, 2360, 2710, 2260, 3100, 1910, 3330, 1540, 3220)
 
-[node name="NorthEastTwistedRange" type="StaticBody2D" parent="."]
+[node name="CentralRockSpine" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="NorthEastTwistedRange"]
-polygon = PackedVector2Array(4310, 620, 4770, 350, 5280, 330, 5790, 520, 6200, 860, 6500, 1280, 6420, 1740, 6060, 2050, 5570, 2080, 5090, 1840, 4700, 1460)
+[node name="Polygon" type="CollisionPolygon2D" parent="CentralRockSpine"]
+polygon = PackedVector2Array(3220, 3000, 3500, 2700, 3800, 2770, 4010, 3150, 3900, 3500, 3570, 3700, 3280, 3490)
 
-[node name="WestMiddleSpine" type="StaticBody2D" parent="."]
+[node name="RibCage" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="WestMiddleSpine"]
-polygon = PackedVector2Array(720, 2200, 1130, 1900, 1640, 1960, 2080, 2320, 2330, 2800, 2290, 3370, 2010, 3820, 1510, 4010, 1080, 3800, 790, 3330, 610, 2780)
+[node name="Polygon" type="CollisionPolygon2D" parent="RibCage"]
+polygon = PackedVector2Array(3780, 3570, 4200, 3370, 4640, 3490, 4830, 3810, 4680, 4110, 4270, 4220, 3900, 4050)
 
-[node name="CentralWestRidge" type="StaticBody2D" parent="."]
+[node name="SouthwestBoulders" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="CentralWestRidge"]
-polygon = PackedVector2Array(2240, 2380, 2670, 2200, 3140, 2360, 3480, 2730, 3560, 3170, 3370, 3510, 2970, 3650, 2550, 3440, 2280, 3020)
+[node name="Polygon" type="CollisionPolygon2D" parent="SouthwestBoulders"]
+polygon = PackedVector2Array(2050, 5220, 2460, 4930, 2890, 5030, 3090, 5400, 2930, 5790, 2520, 5930, 2160, 5660)
 
-[node name="EastMiddleRidge" type="StaticBody2D" parent="."]
+[node name="SpiralRuins" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="EastMiddleRidge"]
-polygon = PackedVector2Array(5900, 2060, 6330, 1900, 6750, 2100, 7030, 2520, 6980, 3020, 6700, 3370, 6300, 3300, 6020, 2920, 5810, 2500)
+[node name="Polygon" type="CollisionPolygon2D" parent="SpiralRuins"]
+polygon = PackedVector2Array(4550, 4830, 4910, 4680, 5290, 4820, 5450, 5150, 5330, 5480, 4950, 5610, 4620, 5400)
 
-[node name="CentralSouthHorn" type="StaticBody2D" parent="."]
+[node name="SoutheastCliffs" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="CentralSouthHorn"]
-polygon = PackedVector2Array(4550, 4250, 4780, 4000, 5100, 3940, 5400, 4140, 5540, 4470, 5460, 4840, 5200, 5100, 4870, 5040, 4620, 4780)
-
-[node name="SouthWestWarpedRidge" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
-
-[node name="Polygon" type="CollisionPolygon2D" parent="SouthWestWarpedRidge"]
-polygon = PackedVector2Array(1180, 5210, 1530, 4920, 1950, 4930, 2260, 5220, 2380, 5620, 2220, 6000, 1840, 6170, 1450, 6040, 1190, 5700)
-
-[node name="SouthEastWarpedRidge" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
-
-[node name="Polygon" type="CollisionPolygon2D" parent="SouthEastWarpedRidge"]
-polygon = PackedVector2Array(5830, 4910, 6190, 4720, 6600, 4830, 6880, 5160, 6970, 5570, 6790, 5940, 6410, 6060, 6080, 5860, 5860, 5480)
+[node name="Polygon" type="CollisionPolygon2D" parent="SoutheastCliffs"]
+polygon = PackedVector2Array(5550, 4320, 5990, 4200, 6350, 4440, 6480, 4870, 6290, 5220, 5900, 5310, 5580, 5050)

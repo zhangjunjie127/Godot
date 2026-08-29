@@ -102,8 +102,8 @@ func _run() -> void:
 	if camera.zoom.x < 0.546:
 		_fail("Camera zoom changed unexpectedly")
 		return
-	if foundation.get_child_count() != 4:
-		_fail("Spawn foundation did not load four runtime chunks")
+	if foundation.get_child_count() != 9 or scene.get_node("World").get_loaded_chunk_count() != 9:
+		_fail("Spawn foundation did not stream the expected 3x3 runtime neighborhood")
 		return
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
@@ -143,16 +143,21 @@ func _run() -> void:
 	if not is_equal_approx(world_info.global_position.y, minimap_visible_bottom):
 		_fail("Era and day panel is not tight against the minimap border")
 		return
-	if map_name_label.text != "扭脊原野" or map_name_label.get_parent() != minimap:
-		_fail("Twisted Wilds map name was not placed inside the minimap")
+	if map_name_label.text != "升天群岛" or map_name_label.get_parent() != minimap:
+		_fail("Tropical island map name was not placed inside the minimap")
 		return
 	var original_player_position: Vector2 = player.global_position
 	player.global_position = Vector2(1200.0, 1300.0)
+	scene.get_node("World")._process(0.0)
+	if scene.get_node("World").get_loaded_chunk_count() != 4:
+		_fail("Map chunk streaming did not release distant chunks at the northwest corner")
+		return
 	scene._process(0.0)
 	if minimap_coordinate_label.text != "1200,1300" or minimap_coordinate_label.get_parent() != minimap or minimap_coordinate_label.horizontal_alignment != HORIZONTAL_ALIGNMENT_RIGHT:
 		_fail("Player coordinates are not updating at the minimap bottom-right")
 		return
 	player.global_position = original_player_position
+	scene.get_node("World")._process(0.0)
 	scene._process(0.0)
 	if not forecast_popup.visible or not forecast_label.text.contains("未来 1 日") or weather.get_forecast(2).size() != 2:
 		_fail("Two-day scheduled weather forecast did not initialize")
@@ -547,24 +552,24 @@ func _run() -> void:
 		return
 
 	var walkable_query := PhysicsPointQueryParameters2D.new()
-	walkable_query.position = Vector2(3800.0, 4550.0)
+	walkable_query.position = Vector2(4100.0, 4700.0)
 	walkable_query.collision_mask = 2
 	if not scene.get_world_2d().direct_space_state.intersect_point(walkable_query).is_empty():
 		_fail("Replacement map spawn point was blocked")
 		return
 
 	var mountain_query := PhysicsPointQueryParameters2D.new()
-	mountain_query.position = Vector2(2200.0, 1200.0)
+	mountain_query.position = Vector2(3400.0, 1050.0)
 	mountain_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(mountain_query).is_empty():
-		_fail("Mountain collision did not block the northwest twisted range")
+		_fail("Mountain collision did not block the north summit")
 		return
 
 	var ridge_query := PhysicsPointQueryParameters2D.new()
-	ridge_query.position = Vector2(4400.0, 1400.0)
+	ridge_query.position = Vector2(4520.0, 2050.0)
 	ridge_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(ridge_query).is_empty():
-		_fail("Second twisted ridge collision did not load")
+		_fail("Central rock needle collision did not load")
 		return
 
 	player.global_position = grass.global_position
@@ -588,7 +593,7 @@ func _run() -> void:
 		return
 	player.set_local_player(true)
 
-	player.global_position = Vector2(2000.0, 2000.0)
+	player.global_position = Vector2(4100.0, 4700.0)
 	for _frame: int in range(8):
 		await physics_frame
 		if visibility_icon.tooltip_text == "公开可见":

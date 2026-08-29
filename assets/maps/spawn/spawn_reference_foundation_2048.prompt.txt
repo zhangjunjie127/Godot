@@ -1,4 +1,3 @@
-Derived minimap and world-map overview from spawn_neurotic_wilds_source.png.
+Derived minimap and world-map overview from the user-supplied tropical_island_source.png.
 
-Creative generation prompt: see spawn_neurotic_wilds_source.prompt.txt.
-Processing: resized to 2048x2048 with high-quality Lanczos sampling by tools/build_neurotic_spawn_map.py. The four runtime chunks are built from this overview and enlarged to 4096x4096 each with Lanczos sampling so the non-pixel artwork retains smooth edges.
+Processing: resized to 2048x2048 with Lanczos sampling for UI use only. Gameplay uses sixteen exact-pixel 2048x2048 crops from the original 8192x8192 source, with no resampling or sharpening.

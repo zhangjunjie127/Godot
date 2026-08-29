@@ -5,6 +5,8 @@ const MANIFEST_PATH := "res://assets/maps/spawn/spawn_map.json"
 const GRASS_PATCH_SCRIPT := preload("res://scripts/grass_patch.gd")
 const RESOURCE_NODE_SCRIPT := preload("res://scripts/resource_node.gd")
 const BLOCKER_LAYER := 2
+const DEFAULT_CHUNK_SIZE := 2048.0
+const RUNTIME_CHUNK_RADIUS := 1
 
 @export var show_collision_debug := true:
 	set(value):
@@ -19,6 +21,10 @@ const BLOCKER_LAYER := 2
 
 var _content_scale := 1.0
 var _water_polygons: Array[PackedVector2Array] = []
+var _chunk_size := DEFAULT_CHUNK_SIZE
+var _chunk_definitions: Array[Dictionary] = []
+var _loaded_chunks: Dictionary = {}
+var _active_chunk := Vector2i(-999, -999)
 
 
 func _ready() -> void:
@@ -26,9 +32,11 @@ func _ready() -> void:
 	if manifest.is_empty():
 		return
 	_content_scale = float(manifest.get("contentScale", 1.0))
+	_chunk_size = float(manifest.get("chunkSize", DEFAULT_CHUNK_SIZE)) * _content_scale
+	_chunk_definitions.assign(manifest.get("chunks", []))
 	_cache_water_polygons()
 	if Engine.is_editor_hint():
-		_add_chunks(manifest.get("chunks", []))
+		_add_all_chunks()
 		_add_props(manifest.get("props", []))
 		queue_redraw()
 		return
@@ -37,11 +45,17 @@ func _ready() -> void:
 	player.world_size = map_size
 	player.global_position = _scaled_point(manifest.get("spawn", {}))
 	_apply_camera_limits(map_size)
-	_add_chunks(manifest.get("chunks", []))
+	_refresh_streamed_chunks(true)
 	_add_props(manifest.get("props", []))
 	_add_grass_patches(manifest.get("grass", []))
 	_add_resource_nodes(manifest.get("resources", []))
 	_add_zone_markers(manifest.get("zones", []))
+
+
+func _process(_delta: float) -> void:
+	if Engine.is_editor_hint() or not is_instance_valid(player):
+		return
+	_refresh_streamed_chunks()
 
 
 func _read_manifest() -> Dictionary:
@@ -73,20 +87,54 @@ func _apply_camera_limits(map_size: Vector2) -> void:
 	camera.zoom = Vector2.ONE * zoom_value
 
 
-func _add_chunks(chunks: Array) -> void:
-	for data: Dictionary in chunks:
-		var texture := ArtAssets.texture(_resource_path(String(data.get("image", ""))))
-		if texture == null:
-			push_error("Missing map chunk: " + String(data.get("image", "")))
+func _add_all_chunks() -> void:
+	for data: Dictionary in _chunk_definitions:
+		_load_chunk(data)
+
+
+func _refresh_streamed_chunks(force := false) -> void:
+	var current := Vector2i(floori(player.global_position.x / _chunk_size), floori(player.global_position.y / _chunk_size))
+	if not force and current == _active_chunk:
+		return
+	_active_chunk = current
+
+	var required := {}
+	for data: Dictionary in _chunk_definitions:
+		var chunk_position := _point(data.get("position", [0, 0])) * _content_scale
+		var coordinates := Vector2i(roundi(chunk_position.x / _chunk_size), roundi(chunk_position.y / _chunk_size))
+		if absi(coordinates.x - current.x) <= RUNTIME_CHUNK_RADIUS and absi(coordinates.y - current.y) <= RUNTIME_CHUNK_RADIUS:
+			var id := String(data.get("id", ""))
+			required[id] = true
+			if not _loaded_chunks.has(id):
+				_load_chunk(data)
+
+	for id: String in _loaded_chunks.keys():
+		if required.has(id):
 			continue
-		var sprite := Sprite2D.new()
-		sprite.name = String(data.get("id", "Chunk")).to_pascal_case()
-		sprite.texture = texture
-		sprite.centered = false
-		sprite.position = _scaled_point(data.get("position", [0, 0]))
-		sprite.scale = Vector2.ONE * _content_scale
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		foundation.add_child(sprite)
+		var sprite := _loaded_chunks[id] as Sprite2D
+		_loaded_chunks.erase(id)
+		sprite.queue_free()
+
+
+func _load_chunk(data: Dictionary) -> void:
+	var id := String(data.get("id", "Chunk"))
+	var texture := ArtAssets.texture(_resource_path(String(data.get("image", ""))))
+	if texture == null:
+		push_error("Missing map chunk: " + String(data.get("image", "")))
+		return
+	var sprite := Sprite2D.new()
+	sprite.name = id.to_pascal_case()
+	sprite.texture = texture
+	sprite.centered = false
+	sprite.position = _scaled_point(data.get("position", [0, 0]))
+	sprite.scale = Vector2.ONE * _content_scale
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	foundation.add_child(sprite)
+	_loaded_chunks[id] = sprite
+
+
+func get_loaded_chunk_count() -> int:
+	return _loaded_chunks.size()
 
 
 func _add_props(props: Array) -> void:

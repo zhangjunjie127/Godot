@@ -1,34 +1,37 @@
 from pathlib import Path
-from shutil import copyfile
-
-from PIL import Image, ImageFilter
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MAP_DIR = ROOT / "assets" / "maps" / "spawn"
-GENERATED_SOURCE = MAP_DIR / "spawn_neurotic_wilds_source.png"
-FOUNDATION_SOURCE = MAP_DIR / "spawn_reference_foundation_source.png"
+SOURCE = MAP_DIR / "source" / "tropical_island_source.png"
 OVERVIEW = MAP_DIR / "spawn_reference_foundation_2048.png"
-CHUNK_SIZE = 4096
+MAP_SIZE = 8192
+CHUNK_SIZE = 2048
+GRID_SIZE = MAP_SIZE // CHUNK_SIZE
 
 
 def main() -> None:
-    if not GENERATED_SOURCE.exists():
-        raise FileNotFoundError(GENERATED_SOURCE)
+    if not SOURCE.exists():
+        raise FileNotFoundError(SOURCE)
 
-    copyfile(GENERATED_SOURCE, FOUNDATION_SOURCE)
-    with Image.open(GENERATED_SOURCE) as source:
-        overview = source.convert("RGB").resize((2048, 2048), Image.Resampling.LANCZOS)
-        overview = overview.filter(ImageFilter.UnsharpMask(radius=0.8, percent=70, threshold=3))
+    with Image.open(SOURCE) as source:
+        if source.size != (MAP_SIZE, MAP_SIZE):
+            raise RuntimeError(f"{SOURCE.name}: expected {MAP_SIZE}x{MAP_SIZE}, got {source.size}")
+
+        overview = source.resize((2048, 2048), Image.Resampling.LANCZOS)
         overview.save(OVERVIEW, compress_level=6)
 
-        for row in range(2):
-            for column in range(2):
-                quadrant = overview.crop(
-                    (column * 1024, row * 1024, (column + 1) * 1024, (row + 1) * 1024)
+        for row in range(GRID_SIZE):
+            for column in range(GRID_SIZE):
+                chunk = source.crop(
+                    (
+                        column * CHUNK_SIZE,
+                        row * CHUNK_SIZE,
+                        (column + 1) * CHUNK_SIZE,
+                        (row + 1) * CHUNK_SIZE,
+                    )
                 )
-                chunk = quadrant.resize((CHUNK_SIZE, CHUNK_SIZE), Image.Resampling.LANCZOS)
-                chunk = chunk.filter(ImageFilter.UnsharpMask(radius=1.2, percent=85, threshold=3))
                 chunk.save(
                     MAP_DIR / f"spawn_reference_chunk_{column}_{row}.png",
                     compress_level=6,
@@ -38,8 +41,8 @@ def main() -> None:
         OVERVIEW: (2048, 2048),
         **{
             MAP_DIR / f"spawn_reference_chunk_{column}_{row}.png": (CHUNK_SIZE, CHUNK_SIZE)
-            for row in range(2)
-            for column in range(2)
+            for row in range(GRID_SIZE)
+            for column in range(GRID_SIZE)
         },
     }
     for path, size in expected.items():

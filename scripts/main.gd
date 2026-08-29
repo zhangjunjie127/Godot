@@ -575,7 +575,7 @@ func exit_underwater() -> void:
 	land_world.visible = true
 	weather_layer.visible = true
 	screen_weather_layer.visible = true
-	map_name_label.text = "扭脊原野"
+	map_name_label.text = "升天群岛"
 	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
 	minimap.world_size = _land_world_size
 	dive_status.visible = false

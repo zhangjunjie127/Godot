@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: directly usable foundation art for a layered Godot 4 exploration map
+Primary request: Redraw a double-size 2D pixel-art overworld as a neurotic, anxious-expressionist primeval wilderness. Land must occupy roughly 75 to 80 percent of the square map and transition gradually from high, violently twisted mountain chains in the north and northwest toward an irregular ocean coastline.
+Scene/backdrop: One continuous island-like landmass with broad central and southern traversal spaces, exposed dirt, warped terraces, strange ridges, broken cliffs, asymmetric bays, narrow inlets, scattered offshore rocks, and an uneven coastline. The foundation contains terrain only; runtime vegetation, resources, actors, UI, and collision remain separate.
+Style/medium: crisp production-quality 2D pixel art, 3/4 top-down view around 45 degrees, grotesque and anxious hand-shaped terrain silhouettes, readable at gameplay zoom, restrained surface noise.
+Color palette: muted moss green, dirty olive, dry umber, bone-gray rock, oxidized turquoise and deep teal water; cohesive low-to-medium saturation.
+Composition/framing: square complete-world overview designed for an 8192x8192 runtime world split into four equal quadrants. Keep the central-southern land open enough for player movement. Concentrate the largest mountain masses in the north and northwest, with smaller warped ridges elsewhere.
+Constraints: no seams between quadrants; no text, labels, UI, grid, border, structures, roads, characters, animals, skulls, bones, items, or landmarks that imply interaction.
+Avoid: absolutely no large trees, tree canopy, dense forest, jungle, palms, thick vegetation, lush grass carpet, photorealism, smooth 3D rendering, excessive tiny detail, multicolored texture noise, neat circular craters, or symmetrical coastlines.

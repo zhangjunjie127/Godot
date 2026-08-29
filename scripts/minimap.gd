@@ -63,7 +63,7 @@ func _draw_world_map() -> void:
 				draw_circle(board_rect.get_center(), minf(board_size.x, board_size.y) * 0.23, Color(0.20, 0.23, 0.24, 0.72))
 			draw_rect(board_rect, Color(0.58, 0.47, 0.29, 0.88), false, 2.0)
 			if board == CURRENT_BOARD:
-				draw_string(font, board_rect.position + Vector2(8.0, 20.0), "西部台地", HORIZONTAL_ALIGNMENT_LEFT, -1.0, 16, Color(1.0, 0.94, 0.68, 1.0))
+				draw_string(font, board_rect.position + Vector2(8.0, 20.0), "扭脊原野", HORIZONTAL_ALIGNMENT_LEFT, -1.0, 16, Color(1.0, 0.94, 0.68, 1.0))
 			else:
 				draw_string(font, board_rect.get_center() + Vector2(-27.0, 5.0), "未探索", HORIZONTAL_ALIGNMENT_LEFT, -1.0, 13, Color(0.68, 0.70, 0.72, 0.78))
 

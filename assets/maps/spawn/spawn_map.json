@@ -1,1081 +1,278 @@
 {
-  "version": 5,
-  "source": "desktop-map-import-20260828",
-  "vegetationSeed": 20260828,
+  "version": 6,
+  "source": "generated-neurotic-wilds-20260829",
+  "vegetationSeed": 20260829,
   "contentScale": 1.0,
   "mapSize": {
-	"width": 4096,
-	"height": 4096
+	"width": 8192,
+	"height": 8192
   },
   "spawn": {
-	"x": 2450,
-	"y": 2300
+	"x": 3800,
+	"y": 4550
   },
   "chunks": [
 	{
 	  "id": "chunk_0_0",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_0_0.png",
-	  "position": [
-		0,
-		0
-	  ]
+	  "position": [0, 0]
 	},
 	{
 	  "id": "chunk_1_0",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_1_0.png",
-	  "position": [
-		2048,
-		0
-	  ]
+	  "position": [4096, 0]
 	},
 	{
 	  "id": "chunk_0_1",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_0_1.png",
-	  "position": [
-		0,
-		2048
-	  ]
+	  "position": [0, 4096]
 	},
 	{
 	  "id": "chunk_1_1",
 	  "image": "assets/maps/spawn/spawn_reference_chunk_1_1.png",
-	  "position": [
-		2048,
-		2048
-	  ]
+	  "position": [4096, 4096]
 	}
   ],
   "props": [
 	{
-	  "id": "new_tree_broadleaf_large_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_broadleaf_large.png",
-	  "x": 3389,
-	  "y": 1934,
-	  "w": 62,
-	  "h": 105,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "id": "new_thorn_west_1",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 2860,
+	  "y": 4280,
+	  "w": 42,
+	  "h": 34,
+	  "flipH": true
 	},
 	{
-	  "id": "new_tree_broadleaf_large_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_broadleaf_large.png",
-	  "x": 1458,
-	  "y": 1555,
-	  "w": 55,
-	  "h": 92,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "id": "new_thorn_west_2",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 3150,
+	  "y": 4860,
+	  "w": 38,
+	  "h": 30,
+	  "flipH": false
 	},
 	{
-	  "id": "new_tree_broadleaf_large_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_broadleaf_large.png",
-	  "x": 2690,
-	  "y": 2940,
-	  "w": 60,
-	  "h": 100,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "id": "new_thorn_north_1",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 4050,
+	  "y": 3070,
+	  "w": 44,
+	  "h": 35,
+	  "flipH": false
 	},
 	{
-	  "id": "new_tree_broadleaf_large_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_broadleaf_large.png",
-	  "x": 1627,
-	  "y": 1826,
-	  "w": 60,
-	  "h": 100,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_large_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 2671,
-	  "y": 2632,
-	  "w": 55,
-	  "h": 96,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_large_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 2549,
-	  "y": 2868,
-	  "w": 58,
-	  "h": 103,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_large_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 2036,
-	  "y": 3020,
-	  "w": 53,
-	  "h": 93,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_large_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 2809,
-	  "y": 2824,
-	  "w": 49,
-	  "h": 86,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_small_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_small.png",
-	  "x": 1288,
-	  "y": 3273,
-	  "w": 35,
-	  "h": 63,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_small_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_small.png",
-	  "x": 1323,
-	  "y": 2380,
-	  "w": 40,
-	  "h": 72,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_palm_small_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_small.png",
-	  "x": 3389,
-	  "y": 1725,
+	  "id": "new_thorn_north_2",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 4750,
+	  "y": 3250,
 	  "w": 39,
-	  "h": 71,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "h": 31,
+	  "flipH": true
 	},
 	{
-	  "id": "new_tree_palm_small_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_small.png",
-	  "x": 2672,
-	  "y": 2505,
-	  "w": 41,
-	  "h": 75,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_twisted_small_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_twisted_small.png",
-	  "x": 1521,
-	  "y": 1424,
-	  "w": 44,
-	  "h": 59,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_twisted_small_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_twisted_small.png",
-	  "x": 2565,
-	  "y": 1922,
-	  "w": 46,
-	  "h": 62,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_twisted_small_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_twisted_small.png",
-	  "x": 1653,
-	  "y": 2927,
-	  "w": 53,
-	  "h": 71,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_twisted_small_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_twisted_small.png",
-	  "x": 2780,
-	  "y": 2025,
-	  "w": 44,
-	  "h": 59,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_large_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_large.png",
-	  "x": 1756,
-	  "y": 1663,
-	  "w": 60,
-	  "h": 74,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_large_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_large.png",
-	  "x": 1334,
-	  "y": 1567,
-	  "w": 54,
-	  "h": 67,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_large_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_large.png",
-	  "x": 2296,
-	  "y": 2936,
-	  "w": 63,
-	  "h": 78,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_large_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_large.png",
-	  "x": 3317,
-	  "y": 2031,
-	  "w": 61,
-	  "h": 77,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_medium_1",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_medium.png",
-	  "x": 2482,
-	  "y": 1321,
-	  "w": 47,
-	  "h": 47,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_medium_2",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_medium.png",
-	  "x": 2606,
-	  "y": 3251,
-	  "w": 43,
-	  "h": 43,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_medium_3",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_medium.png",
-	  "x": 1596,
-	  "y": 1473,
-	  "w": 40,
-	  "h": 40,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_tree_canopy_medium_4",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_medium.png",
-	  "x": 1382,
-	  "y": 1729,
-	  "w": 41,
-	  "h": 41,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_dead_tree_large_1",
-	  "image": "assets/maps/props/vegetation/deadwood/dead_tree_large.png",
-	  "x": 3112,
-	  "y": 2375,
-	  "w": 57,
-	  "h": 75,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 11,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_dead_tree_large_2",
-	  "image": "assets/maps/props/vegetation/deadwood/dead_tree_large.png",
-	  "x": 2464,
-	  "y": 2009,
-	  "w": 54,
-	  "h": 72,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_dead_tree_medium_1",
-	  "image": "assets/maps/props/vegetation/deadwood/dead_tree_medium.png",
-	  "x": 3471,
-	  "y": 2311,
-	  "w": 32,
-	  "h": 55,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_dead_tree_medium_2",
-	  "image": "assets/maps/props/vegetation/deadwood/dead_tree_medium.png",
-	  "x": 1647,
-	  "y": 2772,
-	  "w": 30,
-	  "h": 52,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_fallen_log_large_1",
-	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
-	  "x": 3212,
-	  "y": 1933,
-	  "w": 74,
-	  "h": 53,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 14,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_fallen_log_large_2",
-	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
-	  "x": 1125,
-	  "y": 1518,
-	  "w": 74,
-	  "h": 53,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 14,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_fallen_log_medium_1",
-	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_medium.png",
-	  "x": 1841,
-	  "y": 3029,
-	  "w": 59,
-	  "h": 39,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 11,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_fallen_log_medium_2",
-	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_medium.png",
-	  "x": 1667,
-	  "y": 1548,
-	  "w": 55,
+	  "id": "new_thorn_east_1",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 5980,
+	  "y": 4050,
+	  "w": 45,
 	  "h": 36,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "flipH": true
 	},
 	{
-	  "id": "new_stump_large_1",
-	  "image": "assets/maps/props/vegetation/deadwood/stump_large.png",
-	  "x": 1320,
-	  "y": 1739,
-	  "w": 51,
-	  "h": 45,
+	  "id": "new_thorn_east_2",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 6280,
+	  "y": 4680,
+	  "w": 40,
+	  "h": 32,
+	  "flipH": false
+	},
+	{
+	  "id": "new_thorn_south_1",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 4170,
+	  "y": 5780,
+	  "w": 46,
+	  "h": 37,
+	  "flipH": false
+	},
+	{
+	  "id": "new_thorn_south_2",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 5200,
+	  "y": 5540,
+	  "w": 39,
+	  "h": 31,
+	  "flipH": true
+	},
+	{
+	  "id": "new_blade_grass_1",
+	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
+	  "x": 3500,
+	  "y": 3930,
+	  "w": 36,
+	  "h": 36,
+	  "flipH": false
+	},
+	{
+	  "id": "new_blade_grass_2",
+	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
+	  "x": 4550,
+	  "y": 4720,
+	  "w": 42,
+	  "h": 42,
+	  "flipH": true
+	},
+	{
+	  "id": "new_blade_grass_3",
+	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
+	  "x": 5770,
+	  "y": 5180,
+	  "w": 38,
+	  "h": 38,
+	  "flipH": false
+	},
+	{
+	  "id": "new_broad_grass_1",
+	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
+	  "x": 3310,
+	  "y": 5360,
+	  "w": 40,
+	  "h": 41,
+	  "flipH": true
+	},
+	{
+	  "id": "new_broad_grass_2",
+	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
+	  "x": 5100,
+	  "y": 3700,
+	  "w": 37,
+	  "h": 38,
+	  "flipH": false
+	},
+	{
+	  "id": "new_broad_grass_3",
+	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
+	  "x": 6060,
+	  "y": 5650,
+	  "w": 41,
+	  "h": 42,
+	  "flipH": true
+	},
+	{
+	  "id": "new_fallen_log_1",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
+	  "x": 2960,
+	  "y": 5540,
+	  "w": 72,
+	  "h": 51,
 	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "collision": {"type": "circle", "radius": 14, "offset": [0, -5]}
 	},
 	{
-	  "id": "new_stump_large_2",
-	  "image": "assets/maps/props/vegetation/deadwood/stump_large.png",
-	  "x": 3096,
-	  "y": 2534,
-	  "w": 54,
-	  "h": 47,
+	  "id": "new_fallen_log_2",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_medium.png",
+	  "x": 4820,
+	  "y": 5270,
+	  "w": 58,
+	  "h": 38,
 	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "collision": {"type": "circle", "radius": 11, "offset": [0, -5]}
 	},
 	{
-	  "id": "new_stump_small_1",
+	  "id": "new_fallen_log_3",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
+	  "x": 5530,
+	  "y": 3370,
+	  "w": 74,
+	  "h": 53,
+	  "flipH": true,
+	  "collision": {"type": "circle", "radius": 14, "offset": [0, -5]}
+	},
+	{
+	  "id": "new_stump_1",
+	  "image": "assets/maps/props/vegetation/deadwood/stump_large.png",
+	  "x": 3630,
+	  "y": 3480,
+	  "w": 50,
+	  "h": 44,
+	  "flipH": false,
+	  "collision": {"type": "circle", "radius": 10, "offset": [0, -5]}
+	},
+	{
+	  "id": "new_stump_2",
 	  "image": "assets/maps/props/vegetation/deadwood/stump_small.png",
-	  "x": 2581,
-	  "y": 2108,
+	  "x": 5350,
+	  "y": 4900,
 	  "w": 32,
 	  "h": 32,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_stump_small_2",
-	  "image": "assets/maps/props/vegetation/deadwood/stump_small.png",
-	  "x": 2136,
-	  "y": 2961,
-	  "w": 34,
-	  "h": 34,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_spire_large_1",
-	  "image": "assets/maps/props/vegetation/rocks/spire_large.png",
-	  "x": 3402,
-	  "y": 1470,
-	  "w": 47,
-	  "h": 72,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_spire_large_2",
-	  "image": "assets/maps/props/vegetation/rocks/spire_large.png",
-	  "x": 1611,
-	  "y": 1645,
-	  "w": 47,
-	  "h": 72,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_spire_medium_1",
-	  "image": "assets/maps/props/vegetation/rocks/spire_medium.png",
-	  "x": 1293,
-	  "y": 2062,
-	  "w": 50,
-	  "h": 58,
 	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "collision": {"type": "circle", "radius": 7, "offset": [0, -5]}
 	},
 	{
-	  "id": "new_spire_medium_2",
-	  "image": "assets/maps/props/vegetation/rocks/spire_medium.png",
-	  "x": 1211,
-	  "y": 2058,
-	  "w": 44,
-	  "h": 51,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_spire_cluster_large_1",
-	  "image": "assets/maps/props/vegetation/rocks/spire_cluster_large.png",
-	  "x": 1140,
-	  "y": 2267,
-	  "w": 39,
-	  "h": 66,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_spire_cluster_large_2",
-	  "image": "assets/maps/props/vegetation/rocks/spire_cluster_large.png",
-	  "x": 1698,
-	  "y": 1435,
-	  "w": 40,
-	  "h": 68,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 8,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_boulder_large_1",
-	  "image": "assets/maps/props/vegetation/rocks/boulder_large.png",
-	  "x": 1428,
-	  "y": 1637,
-	  "w": 50,
-	  "h": 43,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 10,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_boulder_large_2",
-	  "image": "assets/maps/props/vegetation/rocks/boulder_large.png",
-	  "x": 3478,
-	  "y": 1716,
-	  "w": 45,
-	  "h": 38,
-	  "flipH": false,
-	  "collision": {
-		"type": "circle",
-		"radius": 9,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_boulder_medium_1",
+	  "id": "new_boulder_1",
 	  "image": "assets/maps/props/vegetation/rocks/boulder_medium.png",
-	  "x": 967,
-	  "y": 1447,
-	  "w": 34,
-	  "h": 26,
-	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
-	},
-	{
-	  "id": "new_boulder_medium_2",
-	  "image": "assets/maps/props/vegetation/rocks/boulder_medium.png",
-	  "x": 1431,
-	  "y": 1508,
-	  "w": 36,
+	  "x": 2760,
+	  "y": 5010,
+	  "w": 35,
 	  "h": 27,
 	  "flipH": true,
-	  "collision": {
-		"type": "circle",
-		"radius": 7,
-		"offset": [
-		  0,
-		  -5
-		]
-	  }
+	  "collision": {"type": "circle", "radius": 7, "offset": [0, -5]}
 	},
 	{
-	  "id": "new_broad_grass_large_1",
-	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
-	  "x": 1247,
-	  "y": 1449,
-	  "w": 42,
-	  "h": 43,
-	  "flipH": false
-	},
-	{
-	  "id": "new_broad_grass_large_2",
-	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
-	  "x": 1112,
-	  "y": 2771,
-	  "w": 36,
-	  "h": 37,
-	  "flipH": false
-	},
-	{
-	  "id": "new_blade_grass_large_1",
-	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
-	  "x": 3039,
-	  "y": 2525,
-	  "w": 40,
+	  "id": "new_boulder_2",
+	  "image": "assets/maps/props/vegetation/rocks/boulder_large.png",
+	  "x": 4940,
+	  "y": 5900,
+	  "w": 47,
 	  "h": 40,
-	  "flipH": true
+	  "flipH": false,
+	  "collision": {"type": "circle", "radius": 10, "offset": [0, -5]}
 	},
 	{
-	  "id": "new_blade_grass_large_2",
-	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
-	  "x": 1307,
-	  "y": 1441,
-	  "w": 44,
-	  "h": 44,
-	  "flipH": false
-	},
-	{
-	  "id": "new_shrub_large_1",
-	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
-	  "x": 3498,
-	  "y": 1825,
-	  "w": 38,
-	  "h": 30,
-	  "flipH": true
-	},
-	{
-	  "id": "new_shrub_large_2",
-	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
-	  "x": 3228,
-	  "y": 2492,
-	  "w": 46,
-	  "h": 37,
-	  "flipH": false
-	},
-	{
-	  "id": "new_shrub_large_3",
-	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
-	  "x": 1730,
-	  "y": 1737,
-	  "w": 37,
-	  "h": 30,
-	  "flipH": true
-	},
-	{
-	  "id": "new_flowers_white_large_1",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_white_large.png",
-	  "x": 2850,
-	  "y": 2476,
-	  "w": 38,
-	  "h": 44,
-	  "flipH": false
-	},
-	{
-	  "id": "new_flowers_white_large_2",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_white_large.png",
-	  "x": 2727,
-	  "y": 2784,
-	  "w": 33,
-	  "h": 38,
-	  "flipH": true
-	},
-	{
-	  "id": "new_flowers_white_medium_1",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_white_medium.png",
-	  "x": 1769,
-	  "y": 1380,
-	  "w": 39,
-	  "h": 29,
-	  "flipH": true
-	},
-	{
-	  "id": "new_flowers_white_medium_2",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_white_medium.png",
-	  "x": 1129,
-	  "y": 2626,
-	  "w": 38,
-	  "h": 29,
-	  "flipH": false
-	},
-	{
-	  "id": "new_flowers_pink_large_1",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_pink_large.png",
-	  "x": 2644,
-	  "y": 2862,
-	  "w": 50,
-	  "h": 37,
-	  "flipH": true
-	},
-	{
-	  "id": "new_flowers_pink_large_2",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_pink_large.png",
-	  "x": 1497,
-	  "y": 1367,
-	  "w": 44,
-	  "h": 33,
-	  "flipH": false
-	},
-	{
-	  "id": "new_flowers_pink_medium_1",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_pink_medium.png",
-	  "x": 2369,
-	  "y": 1606,
-	  "w": 32,
+	  "id": "new_boulder_3",
+	  "image": "assets/maps/props/vegetation/rocks/boulder_medium.png",
+	  "x": 6410,
+	  "y": 5000,
+	  "w": 34,
 	  "h": 26,
-	  "flipH": true
-	},
-	{
-	  "id": "new_flowers_pink_medium_2",
-	  "image": "assets/maps/props/vegetation/flowers/flowers_pink_medium.png",
-	  "x": 2564,
-	  "y": 2647,
-	  "w": 33,
-	  "h": 27,
-	  "flipH": false
-	},
-	{
-	  "id": "new_cattails_large_1",
-	  "image": "assets/maps/props/vegetation/plants/cattails_large.png",
-	  "x": 2885,
-	  "y": 2781,
-	  "w": 40,
-	  "h": 45,
-	  "flipH": true
-	},
-	{
-	  "id": "new_cattails_large_2",
-	  "image": "assets/maps/props/vegetation/plants/cattails_large.png",
-	  "x": 2020,
-	  "y": 3297,
-	  "w": 43,
-	  "h": 49,
-	  "flipH": true
-	},
-	{
-	  "id": "new_spiral_fern_large_1",
-	  "image": "assets/maps/props/vegetation/plants/spiral_fern_large.png",
-	  "x": 1628,
-	  "y": 1582,
-	  "w": 48,
-	  "h": 52,
-	  "flipH": false
-	},
-	{
-	  "id": "new_spiral_fern_large_2",
-	  "image": "assets/maps/props/vegetation/plants/spiral_fern_large.png",
-	  "x": 1534,
-	  "y": 2101,
-	  "w": 48,
-	  "h": 52,
-	  "flipH": false
-	},
-	{
-	  "id": "new_mushroom_red_large_1",
-	  "image": "assets/maps/props/vegetation/mushrooms/mushroom_red_large.png",
-	  "x": 1408,
-	  "y": 1359,
-	  "w": 38,
-	  "h": 47,
-	  "flipH": false
-	},
-	{
-	  "id": "new_mushroom_red_large_2",
-	  "image": "assets/maps/props/vegetation/mushrooms/mushroom_red_large.png",
-	  "x": 3447,
-	  "y": 2842,
-	  "w": 43,
-	  "h": 53,
-	  "flipH": true
-	},
-	{
-	  "id": "new_mushroom_orange_medium_1",
-	  "image": "assets/maps/props/vegetation/mushrooms/mushroom_orange_medium.png",
-	  "x": 1584,
-	  "y": 1363,
-	  "w": 27,
-	  "h": 29,
-	  "flipH": true
-	},
-	{
-	  "id": "new_mushroom_orange_medium_2",
-	  "image": "assets/maps/props/vegetation/mushrooms/mushroom_orange_medium.png",
-	  "x": 3183,
-	  "y": 2452,
-	  "w": 30,
-	  "h": 33,
-	  "flipH": false
+	  "flipH": false,
+	  "collision": {"type": "circle", "radius": 7, "offset": [0, -5]}
 	}
   ],
   "grass": [
 	{
 	  "id": "west_grass",
 	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
-	  "x": 1320,
-	  "y": 1720,
+	  "x": 3080,
+	  "y": 4520,
 	  "w": 112,
 	  "h": 86
 	},
 	{
 	  "id": "north_grass",
 	  "image": "assets/maps/props/vegetation/plants/broad_grass_large.png",
-	  "x": 1730,
-	  "y": 1260,
+	  "x": 4300,
+	  "y": 3260,
 	  "w": 110,
 	  "h": 88
 	},
 	{
 	  "id": "east_grass",
 	  "image": "assets/maps/props/vegetation/plants/blade_grass_large.png",
-	  "x": 3300,
-	  "y": 2200,
+	  "x": 6120,
+	  "y": 4380,
 	  "w": 112,
 	  "h": 86
 	},
 	{
 	  "id": "south_grass",
 	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
-	  "x": 1900,
-	  "y": 3030,
+	  "x": 4380,
+	  "y": 5680,
 	  "w": 114,
 	  "h": 88
-	},
-	{
-	  "id": "shore_cattails",
-	  "image": "assets/maps/props/vegetation/plants/cattails_large.png",
-	  "x": 3400,
-	  "y": 2780,
-	  "w": 92,
-	  "h": 94
 	}
   ],
   "resources": [
@@ -1083,12 +280,12 @@
 	  "id": "resource_oak",
 	  "action": "伐木",
 	  "resourceId": "wood_oak",
-	  "name": "橡木",
-	  "image": "assets/maps/props/vegetation/trees/tree_broadleaf_large.png",
-	  "x": 2520,
-	  "y": 2140,
-	  "w": 55,
-	  "h": 92,
+	  "name": "橡木枯干",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
+	  "x": 4250,
+	  "y": 4160,
+	  "w": 72,
+	  "h": 51,
 	  "radius": 28,
 	  "hits": 3,
 	  "yield": 3,
@@ -1098,12 +295,12 @@
 	  "id": "resource_pine",
 	  "action": "伐木",
 	  "resourceId": "wood_pine",
-	  "name": "松木",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_medium.png",
-	  "x": 2760,
-	  "y": 2260,
-	  "w": 40,
-	  "h": 40,
+	  "name": "松木枯干",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_medium.png",
+	  "x": 4660,
+	  "y": 3860,
+	  "w": 58,
+	  "h": 38,
 	  "radius": 28,
 	  "hits": 3,
 	  "yield": 3,
@@ -1113,12 +310,12 @@
 	  "id": "resource_birch",
 	  "action": "伐木",
 	  "resourceId": "wood_birch",
-	  "name": "白桦木",
-	  "image": "assets/maps/props/vegetation/trees/tree_canopy_large.png",
-	  "x": 3150,
-	  "y": 2450,
-	  "w": 55,
-	  "h": 69,
+	  "name": "白桦残桩",
+	  "image": "assets/maps/props/vegetation/deadwood/stump_large.png",
+	  "x": 5040,
+	  "y": 4470,
+	  "w": 51,
+	  "h": 45,
 	  "radius": 28,
 	  "hits": 3,
 	  "yield": 3,
@@ -1128,12 +325,12 @@
 	  "id": "resource_palm",
 	  "action": "伐木",
 	  "resourceId": "wood_palm",
-	  "name": "棕榈木",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 3350,
-	  "y": 2650,
-	  "w": 52,
-	  "h": 92,
+	  "name": "硬质漂木",
+	  "image": "assets/maps/props/vegetation/deadwood/fallen_log_large.png",
+	  "x": 5680,
+	  "y": 4720,
+	  "w": 74,
+	  "h": 53,
 	  "radius": 28,
 	  "hits": 3,
 	  "yield": 3,
@@ -1143,12 +340,12 @@
 	  "id": "resource_ancient_wood",
 	  "action": "伐木",
 	  "resourceId": "wood_ancient",
-	  "name": "古木",
-	  "image": "assets/maps/props/vegetation/trees/tree_twisted_small.png",
-	  "x": 1550,
-	  "y": 2860,
-	  "w": 46,
-	  "h": 61,
+	  "name": "古木残桩",
+	  "image": "assets/maps/props/vegetation/deadwood/stump_large.png",
+	  "x": 3380,
+	  "y": 5220,
+	  "w": 54,
+	  "h": 47,
 	  "radius": 28,
 	  "hits": 4,
 	  "yield": 2,
@@ -1160,8 +357,8 @@
 	  "resourceId": "fruit_berry",
 	  "name": "红浆果",
 	  "image": "assets/maps/props/vegetation/flowers/flowers_pink_large.png",
-	  "x": 2390,
-	  "y": 2420,
+	  "x": 3580,
+	  "y": 3950,
 	  "w": 48,
 	  "h": 36,
 	  "radius": 23,
@@ -1172,13 +369,13 @@
 	  "id": "resource_bananas",
 	  "action": "采集",
 	  "resourceId": "fruit_banana",
-	  "name": "香蕉",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_small.png",
-	  "x": 2940,
-	  "y": 2760,
-	  "w": 35,
-	  "h": 64,
-	  "radius": 28,
+	  "name": "野生蕉果",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 5250,
+	  "y": 3890,
+	  "w": 46,
+	  "h": 37,
+	  "radius": 23,
 	  "hits": 1,
 	  "yield": 2
 	},
@@ -1186,13 +383,13 @@
 	  "id": "resource_coconut",
 	  "action": "采集",
 	  "resourceId": "fruit_coconut",
-	  "name": "椰子",
-	  "image": "assets/maps/props/vegetation/trees/tree_palm_large.png",
-	  "x": 3210,
-	  "y": 2860,
-	  "w": 52,
-	  "h": 92,
-	  "radius": 28,
+	  "name": "硬壳野果",
+	  "image": "assets/maps/props/vegetation/plants/shrub_large.png",
+	  "x": 6030,
+	  "y": 4900,
+	  "w": 44,
+	  "h": 35,
+	  "radius": 23,
 	  "hits": 1,
 	  "yield": 2
 	},
@@ -1200,10 +397,10 @@
 	  "id": "resource_rainforest_fruit",
 	  "action": "采集",
 	  "resourceId": "fruit_rainforest",
-	  "name": "雨林红果",
+	  "name": "荒原红果",
 	  "image": "assets/maps/props/vegetation/mushrooms/mushroom_red_large.png",
-	  "x": 1710,
-	  "y": 1840,
+	  "x": 3060,
+	  "y": 4750,
 	  "w": 43,
 	  "h": 53,
 	  "radius": 23,
@@ -1216,8 +413,8 @@
 	  "resourceId": "fruit_citrus",
 	  "name": "金柑",
 	  "image": "assets/maps/props/vegetation/flowers/flowers_white_large.png",
-	  "x": 1830,
-	  "y": 2960,
+	  "x": 4140,
+	  "y": 5480,
 	  "w": 39,
 	  "h": 45,
 	  "radius": 23,
@@ -1230,10 +427,10 @@
 	  "resourceId": "stone",
 	  "name": "石料",
 	  "image": "assets/maps/props/vegetation/rocks/boulder_large.png",
-	  "x": 2620,
-	  "y": 2550,
-	  "w": 46,
-	  "h": 39,
+	  "x": 4860,
+	  "y": 5140,
+	  "w": 47,
+	  "h": 40,
 	  "radius": 23,
 	  "hits": 2,
 	  "yield": 3
@@ -1243,30 +440,30 @@
 	{
 	  "id": "spawn_zone",
 	  "type": "spawn",
-	  "x": 2450,
-	  "y": 2300,
-	  "radius": 100
+	  "x": 3800,
+	  "y": 4550,
+	  "radius": 120
 	},
 	{
-	  "id": "west_skull",
+	  "id": "twisted_north_range",
 	  "type": "landmark",
-	  "x": 820,
-	  "y": 1850,
-	  "radius": 360
+	  "x": 2700,
+	  "y": 1450,
+	  "radius": 820
 	},
 	{
-	  "id": "south_stone_circle",
+	  "id": "central_horn",
 	  "type": "landmark",
-	  "x": 850,
-	  "y": 3300,
-	  "radius": 430
+	  "x": 4800,
+	  "y": 4650,
+	  "radius": 520
 	},
 	{
-	  "id": "south_whirlpool",
+	  "id": "southern_inlets",
 	  "type": "landmark",
-	  "x": 2250,
-	  "y": 3650,
-	  "radius": 480
+	  "x": 4300,
+	  "y": 6900,
+	  "radius": 720
 	}
   ]
 }

@@ -217,17 +217,18 @@ material = SubResource("ShaderMaterial_puddle_surface")
 texture_filter = 2
 texture = ExtResource("22_puddle_mask")
 centered = false
-scale = Vector2(4, 4)
+scale = Vector2(8, 8)
 
 [node name="WeatherGround" type="Node2D" parent="World"]
 z_index = -5
 script = ExtResource("12_weather_ground")
+world_size = Vector2(8192, 8192)
 puddle_mask = ExtResource("22_puddle_mask")
 
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30
 script = ExtResource("16_snow_world")
-world_size = Vector2(4096, 4096)
+world_size = Vector2(8192, 8192)
 
 [node name="Collision" parent="World" instance=ExtResource("18_land_collision")]
 
@@ -235,7 +236,7 @@ world_size = Vector2(4096, 4096)
 y_sort_enabled = true
 
 [node name="Player" type="CharacterBody2D" parent="World/DepthSorted"]
-position = Vector2(1024, 900)
+position = Vector2(3800, 4550)
 collision_layer = 1
 collision_mask = 2
 script = ExtResource("3_player")
@@ -259,11 +260,11 @@ position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 limit_left = 0
 limit_top = 0
-limit_right = 4096
-limit_bottom = 4096
+limit_right = 8192
+limit_bottom = 8192
 
 [node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
-position = Vector2(1320, 1110)
+position = Vector2(4170, 4420)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("7_boar_script")
@@ -290,7 +291,7 @@ z_index = 30
 script = ExtResource("14_cloud_layer")
 weather_path = NodePath("../../Weather/Effect")
 day_night_cycle_path = NodePath("../../DayNightCycle")
-world_size = Vector2(4096, 4096)
+world_size = Vector2(8192, 8192)
 
 [node name="UnderwaterWorld" parent="." instance=ExtResource("17_underwater")]
 
@@ -601,7 +602,7 @@ clip_contents = true
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../World/DepthSorted/Player")
-world_size = Vector2(4096, 4096)
+world_size = Vector2(8192, 8192)
 
 [node name="AreaLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
 layout_mode = 1
@@ -618,7 +619,7 @@ theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.035, 0.94)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 10
-text = "西部台地"
+text = "扭脊原野"
 
 [node name="CoordinateLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
 layout_mode = 1
@@ -968,14 +969,14 @@ clip_contents = true
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../../../World/DepthSorted/Player")
-world_size = Vector2(4096, 4096)
+world_size = Vector2(8192, 8192)
 world_mode = true
 
 [node name="CoordinateLabel" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.70, 0.72, 0.73, 1)
 theme_override_font_sizes/font_size = 11
-text = "坐标  1024, 900"
+text = "坐标  3800, 4550"
 horizontal_alignment = 1
 
 [node name="ScreenWeather" type="CanvasLayer" parent="."]

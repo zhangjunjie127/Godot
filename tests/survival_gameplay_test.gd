@@ -129,7 +129,7 @@ func _run() -> void:
 	if land_collision == null or land_collision.get_child_count() < 14 or ocean_polygon == null:
 		_fail("Editable land collision scene was not loaded")
 		return
-	if not scene.get_node("World").is_water_position(Vector2(3900.0, 2300.0)):
+	if not scene.get_node("World").is_water_position(Vector2(8050.0, 3900.0)):
 		_fail("Surface swimming no longer follows the editable water collision polygon")
 		return
 	if scene.get_node_or_null("WaterTransition") != null:
@@ -144,7 +144,7 @@ func _run() -> void:
 		return
 	for _frame: int in range(50):
 		await physics_frame
-	player.global_position = Vector2(2450.0, 2300.0)
+	player.global_position = Vector2(3800.0, 4550.0)
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
@@ -154,7 +154,7 @@ func _run() -> void:
 		return
 	for _frame: int in range(40):
 		await physics_frame
-	player.global_position = Vector2(3380.0, 2400.0)
+	player.global_position = Vector2(6900.0, 3900.0)
 	Input.action_press("ui_right")
 	for _frame: int in range(420):
 		await physics_frame

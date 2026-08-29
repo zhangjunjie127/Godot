@@ -1,9 +1,4 @@
-Use case: stylized-concept
-Asset type: production foundation map for an existing Godot 4 top-down exploration game
-Input image: the visible complete 4096x4096 runtime island map immediately above is the exact composition, scale, camera, coastline, landmark-position, and gameplay-layout reference.
-Primary request: recreate the same complete square island map as a modern crisp 2D pixel-art foundation while preserving the reference layout one-for-one so the existing collision polygons, spawn position, gameplay zones, and four 2048x2048 runtime quadrants still align.
-Composition/framing: exact square overhead 45-degree three-quarter top-down view; full island and surrounding ocean visible; no crop, no rotation, no perspective change. Preserve the broad coastline silhouette and these positions: three large northern flat-topped mesas, broad open central grassland, two circular middle/right craters, western fossil-skull landmark, southwest stone-circle landmark, central-south rocky cave mesa, eastern beach, southern bay, large southern whirlpool, and surrounding rock islets. Keep the central traversal areas open and readable.
-Style/medium: polished contemporary 32-bit pixel art, intentionally pixel-rendered edges and clustered shading, sharp nearest-neighbor-like readability, clear terrain color blocks, low visual noise, restrained texture detail, not painterly, not realistic, not blurry. Clean and transparent-feeling colors inspired by high-quality modern pixel adventure games without copying any existing game's assets.
-Color palette: fresh turquoise and deep cyan ocean, muted yellow-green grass, warm pale sandstone and cliffs, restrained shadows; unified hue and moderately reduced saturation.
-Foundation constraints: stable terrain only. No trees, bushes, loose vegetation, characters, animals, enemies, buildings, UI, text, labels, weather, clouds, pickups, tools, item icons, or decorative clutter. Do not introduce paths, rivers, bridges, extra islands, or new landmarks. No white/blank areas.
-Technical constraints: seamless single square image suitable for normalization to 4096x4096 and slicing on exact vertical and horizontal center lines into four equal quadrants; maintain continuous terrain and water across both center seams; no border, no watermark.
+Derived runtime source copy of spawn_neurotic_wilds_source.png.
+
+Creative generation prompt: see spawn_neurotic_wilds_source.prompt.txt.
+Processing: exact file copy; no visual changes.

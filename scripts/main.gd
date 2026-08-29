@@ -107,7 +107,7 @@ var death_message_label: Label
 var _forecast_visible_seconds := 0.0
 var _last_forecast_day := 0
 var _land_position := Vector2.ZERO
-var _land_world_size := Vector2(4096.0, 4096.0)
+var _land_world_size := Vector2(8192.0, 8192.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
 var _last_puddle_step_position := Vector2.ZERO
 var _puddle_step_distance := 0.0
@@ -575,7 +575,7 @@ func exit_underwater() -> void:
 	land_world.visible = true
 	weather_layer.visible = true
 	screen_weather_layer.visible = true
-	map_name_label.text = "西部台地"
+	map_name_label.text = "扭脊原野"
 	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
 	minimap.world_size = _land_world_size
 	dive_status.visible = false

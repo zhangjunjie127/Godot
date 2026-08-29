@@ -1,1 +1,4 @@
-Runtime overview derived from spawn_reference_foundation_source.png. The accepted 1254 x 1254 generated pixel-art source is normalized through a 1024 x 1024 logical pixel canvas, then enlarged with nearest-neighbor sampling. This file is the 2048 x 2048 minimap/world-map overview; the four runtime chunks are sliced from the matching 4096 x 4096 enlargement without further creative changes.
+Derived minimap and world-map overview from spawn_neurotic_wilds_source.png.
+
+Creative generation prompt: see spawn_neurotic_wilds_source.prompt.txt.
+Processing: resized to 2048x2048 with nearest-neighbor sampling by tools/build_neurotic_spawn_map.py. The four runtime chunks are built from this overview and enlarged to 4096x4096 each with nearest-neighbor sampling.

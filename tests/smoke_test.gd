@@ -93,8 +93,8 @@ func _run() -> void:
 	weather.process_mode = Node.PROCESS_MODE_DISABLED
 	screen_rain.process_mode = Node.PROCESS_MODE_DISABLED
 	cloud_layer.process_mode = Node.PROCESS_MODE_DISABLED
-	if player.world_size != Vector2(4096.0, 4096.0):
-		_fail("Replacement map did not load its 4096 world size")
+	if player.world_size != Vector2(8192.0, 8192.0):
+		_fail("Replacement map did not load its 8192 world size")
 		return
 	if player.move_speed != 85.0 or player.run_speed != 140.0 or player.crouch_speed != 41.0 or player.crawl_speed != 23.0:
 		_fail("Player movement speeds were not reduced by 50 percent")
@@ -143,8 +143,8 @@ func _run() -> void:
 	if not is_equal_approx(world_info.global_position.y, minimap_visible_bottom):
 		_fail("Era and day panel is not tight against the minimap border")
 		return
-	if map_name_label.text != "西部台地" or map_name_label.get_parent() != minimap:
-		_fail("West Plateau map name was not placed inside the minimap")
+	if map_name_label.text != "扭脊原野" or map_name_label.get_parent() != minimap:
+		_fail("Twisted Wilds map name was not placed inside the minimap")
 		return
 	var original_player_position: Vector2 = player.global_position
 	player.global_position = Vector2(1200.0, 1300.0)
@@ -279,7 +279,7 @@ func _run() -> void:
 	if weather_ground.puddle_mask != puddle_surface.texture:
 		_fail("Puddle visuals and player footstep sampling do not share the same art texture")
 		return
-	var wet_step_position := Vector2(1088.0, 976.0)
+	var wet_step_position := Vector2(2176.0, 1952.0)
 	var dry_step_position := Vector2(32.0, 32.0)
 	if not weather_ground.is_puddle_position(wet_step_position) or weather_ground.is_puddle_position(dry_step_position):
 		_fail("Puddle mask sampling does not match known wet and dry terrain")
@@ -417,7 +417,7 @@ func _run() -> void:
 	if wind_after.x >= 0.0 or wind_after.y <= 0.0 or wind_before.distance_to(wind_after) > 0.08:
 		_fail("Rain gusts jump instead of changing smoothly")
 		return
-	if minimap.player != player or minimap.world_size != Vector2(4096.0, 4096.0):
+	if minimap.player != player or minimap.world_size != Vector2(8192.0, 8192.0):
 		_fail("Minimap did not bind to the local player")
 		return
 	if scene.inventory.slots.size() != 20 or scene.inventory.get_item_count("stone_axe") != 1 or scene.inventory.get_item_count("torch") != 1:
@@ -463,8 +463,8 @@ func _run() -> void:
 	for child: Node in depth_sorted.get_children():
 		if child.name.begins_with("New"):
 			vegetation_count += 1
-	if vegetation_count != 69:
-		_fail("All 69 replacement vegetation props did not load")
+	if vegetation_count != 22:
+		_fail("All 22 sparse wilderness props did not load")
 		return
 	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
 		_fail("Player four-direction animation sheet did not load")
@@ -540,31 +540,31 @@ func _run() -> void:
 	await process_frame
 
 	var ocean_query := PhysicsPointQueryParameters2D.new()
-	ocean_query.position = Vector2(3900.0, 2300.0)
+	ocean_query.position = Vector2(8050.0, 3900.0)
 	ocean_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(ocean_query).is_empty():
 		_fail("Ocean collision did not cover a deep-water point")
 		return
 
 	var walkable_query := PhysicsPointQueryParameters2D.new()
-	walkable_query.position = Vector2(2450.0, 2300.0)
+	walkable_query.position = Vector2(3800.0, 4550.0)
 	walkable_query.collision_mask = 2
 	if not scene.get_world_2d().direct_space_state.intersect_point(walkable_query).is_empty():
 		_fail("Replacement map spawn point was blocked")
 		return
 
 	var mountain_query := PhysicsPointQueryParameters2D.new()
-	mountain_query.position = Vector2(2050.0, 400.0)
+	mountain_query.position = Vector2(2200.0, 1200.0)
 	mountain_query.collision_mask = 2
 	if scene.get_world_2d().direct_space_state.intersect_point(mountain_query).is_empty():
-		_fail("Mountain collision did not block the north mesa")
+		_fail("Mountain collision did not block the northwest twisted range")
 		return
 
-	var crater_query := PhysicsPointQueryParameters2D.new()
-	crater_query.position = Vector2(1620.0, 1360.0)
-	crater_query.collision_mask = 2
-	if scene.get_world_2d().direct_space_state.intersect_point(crater_query).is_empty():
-		_fail("Center crater collision did not load")
+	var ridge_query := PhysicsPointQueryParameters2D.new()
+	ridge_query.position = Vector2(4400.0, 1400.0)
+	ridge_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(ridge_query).is_empty():
+		_fail("Second twisted ridge collision did not load")
 		return
 
 	player.global_position = grass.global_position

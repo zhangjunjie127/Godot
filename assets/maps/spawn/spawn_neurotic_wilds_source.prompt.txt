@@ -1,9 +1,9 @@
-Use case: stylized-concept
-Asset type: directly usable foundation art for a layered Godot 4 exploration map
-Primary request: Redraw a double-size 2D pixel-art overworld as a neurotic, anxious-expressionist primeval wilderness. Land must occupy roughly 75 to 80 percent of the square map and transition gradually from high, violently twisted mountain chains in the north and northwest toward an irregular ocean coastline.
-Scene/backdrop: One continuous island-like landmass with broad central and southern traversal spaces, exposed dirt, warped terraces, strange ridges, broken cliffs, asymmetric bays, narrow inlets, scattered offshore rocks, and an uneven coastline. The foundation contains terrain only; runtime vegetation, resources, actors, UI, and collision remain separate.
-Style/medium: crisp production-quality 2D pixel art, 3/4 top-down view around 45 degrees, grotesque and anxious hand-shaped terrain silhouettes, readable at gameplay zoom, restrained surface noise.
-Color palette: muted moss green, dirty olive, dry umber, bone-gray rock, oxidized turquoise and deep teal water; cohesive low-to-medium saturation.
-Composition/framing: square complete-world overview designed for an 8192x8192 runtime world split into four equal quadrants. Keep the central-southern land open enough for player movement. Concentrate the largest mountain masses in the north and northwest, with smaller warped ridges elsewhere.
-Constraints: no seams between quadrants; no text, labels, UI, grid, border, structures, roads, characters, animals, skulls, bones, items, or landmarks that imply interaction.
-Avoid: absolutely no large trees, tree canopy, dense forest, jungle, palms, thick vegetation, lush grass carpet, photorealism, smooth 3D rendering, excessive tiny detail, multicolored texture noise, neat circular craters, or symmetrical coastlines.
+Use case: style-transfer
+Asset type: production foundation art for the existing layered Godot 4 exploration map
+Input image: the previous complete overworld is the composition reference.
+Primary request: redraw the same square overworld in clean high-definition 2D hand-painted game art, removing the pixel-art treatment entirely.
+Composition/framing: preserve the 45-degree top-down camera, land-to-ocean ratio, coastline silhouette, northern and northwestern twisted mountain chains, central open traversal land, southern bays and inlets, and offshore rock positions so existing collision remains aligned.
+Style/medium: crisp non-pixel 2D digital painting; smooth antialiased contours, controlled cel-painted shading, readable terrain color masses, sharp high-resolution edges, restrained texture detail; not photorealistic and not 3D.
+Terrain: exposed earth, sparse bare ground, warped terraces, eroded cliffs, twisted mountains, irregular coast, and clear turquoise-to-deep-teal ocean. Land remains the visual majority.
+Constraints: foundation terrain only. No decorative vegetation, trees, bushes, thorn clusters, grass tufts, flowers, mushrooms, plants, logs, stumps, loose prop rocks, characters, animals, structures, roads, UI, text, labels, or gameplay items.
+Avoid: pixel art, blocky pixels, nearest-neighbor look, dithering, noisy speckles, blurry painting, dense detail, photorealism, forests, decorative props, neat circular craters, symmetry, border, or watermark.

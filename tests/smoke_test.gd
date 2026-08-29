@@ -463,8 +463,8 @@ func _run() -> void:
 	for child: Node in depth_sorted.get_children():
 		if child.name.begins_with("New"):
 			vegetation_count += 1
-	if vegetation_count != 22:
-		_fail("All 22 sparse wilderness props did not load")
+	if vegetation_count != 0:
+		_fail("Decorative vegetation props were not removed")
 		return
 	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
 		_fail("Player four-direction animation sheet did not load")

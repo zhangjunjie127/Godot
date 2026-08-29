@@ -1,7 +1,7 @@
 from pathlib import Path
 from shutil import copyfile
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +18,8 @@ def main() -> None:
 
     copyfile(GENERATED_SOURCE, FOUNDATION_SOURCE)
     with Image.open(GENERATED_SOURCE) as source:
-        overview = source.convert("RGB").resize((2048, 2048), Image.Resampling.NEAREST)
+        overview = source.convert("RGB").resize((2048, 2048), Image.Resampling.LANCZOS)
+        overview = overview.filter(ImageFilter.UnsharpMask(radius=0.8, percent=70, threshold=3))
         overview.save(OVERVIEW, compress_level=6)
 
         for row in range(2):
@@ -26,7 +27,8 @@ def main() -> None:
                 quadrant = overview.crop(
                     (column * 1024, row * 1024, (column + 1) * 1024, (row + 1) * 1024)
                 )
-                chunk = quadrant.resize((CHUNK_SIZE, CHUNK_SIZE), Image.Resampling.NEAREST)
+                chunk = quadrant.resize((CHUNK_SIZE, CHUNK_SIZE), Image.Resampling.LANCZOS)
+                chunk = chunk.filter(ImageFilter.UnsharpMask(radius=1.2, percent=85, threshold=3))
                 chunk.save(
                     MAP_DIR / f"spawn_reference_chunk_{column}_{row}.png",
                     compress_level=6,

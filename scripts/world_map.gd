@@ -6,7 +6,7 @@ const GRASS_PATCH_SCRIPT := preload("res://scripts/grass_patch.gd")
 const RESOURCE_NODE_SCRIPT := preload("res://scripts/resource_node.gd")
 const BLOCKER_LAYER := 2
 const DEFAULT_CHUNK_SIZE := 2048.0
-const RUNTIME_CHUNK_RADIUS := 1
+const STREAM_MARGIN := 64.0
 
 @export var show_collision_debug := true:
 	set(value):
@@ -24,7 +24,7 @@ var _water_polygons: Array[PackedVector2Array] = []
 var _chunk_size := DEFAULT_CHUNK_SIZE
 var _chunk_definitions: Array[Dictionary] = []
 var _loaded_chunks: Dictionary = {}
-var _active_chunk := Vector2i(-999, -999)
+var _active_chunk_bounds := Rect2i(Vector2i(-999, -999), Vector2i.ZERO)
 
 
 func _ready() -> void:
@@ -53,7 +53,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if Engine.is_editor_hint() or not is_instance_valid(player):
+	if Engine.is_editor_hint() or not visible or not is_instance_valid(player):
 		return
 	_refresh_streamed_chunks()
 
@@ -93,16 +93,26 @@ func _add_all_chunks() -> void:
 
 
 func _refresh_streamed_chunks(force := false) -> void:
-	var current := Vector2i(floori(player.global_position.x / _chunk_size), floori(player.global_position.y / _chunk_size))
-	if not force and current == _active_chunk:
+	var camera := player.get_node("Camera2D") as Camera2D
+	var half_view := get_viewport_rect().size / camera.zoom * 0.5 + Vector2.ONE * STREAM_MARGIN
+	var minimum := Vector2i(
+		floori((player.global_position.x - half_view.x) / _chunk_size),
+		floori((player.global_position.y - half_view.y) / _chunk_size)
+	)
+	var maximum := Vector2i(
+		floori((player.global_position.x + half_view.x) / _chunk_size),
+		floori((player.global_position.y + half_view.y) / _chunk_size)
+	)
+	var bounds := Rect2i(minimum, maximum - minimum + Vector2i.ONE)
+	if not force and bounds == _active_chunk_bounds:
 		return
-	_active_chunk = current
+	_active_chunk_bounds = bounds
 
 	var required := {}
 	for data: Dictionary in _chunk_definitions:
 		var chunk_position := _point(data.get("position", [0, 0])) * _content_scale
 		var coordinates := Vector2i(roundi(chunk_position.x / _chunk_size), roundi(chunk_position.y / _chunk_size))
-		if absi(coordinates.x - current.x) <= RUNTIME_CHUNK_RADIUS and absi(coordinates.y - current.y) <= RUNTIME_CHUNK_RADIUS:
+		if bounds.has_point(coordinates):
 			var id := String(data.get("id", ""))
 			required[id] = true
 			if not _loaded_chunks.has(id):

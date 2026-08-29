@@ -6,52 +6,52 @@
 [ext_resource type="Texture2D" path="res://assets/characters/player_female.png" id="4_female"]
 
 [sub_resource type="StyleBoxFlat" id="Style_button_normal"]
-bg_color = Color(0.08, 0.16, 0.105, 0.96)
+bg_color = Color(0.055, 0.065, 0.075, 0.96)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.74, 0.78, 0.42, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+border_color = Color(0.72, 0.54, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="Style_button_hover"]
-bg_color = Color(0.16, 0.28, 0.15, 1)
+bg_color = Color(0.13, 0.15, 0.17, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.95, 0.86, 0.44, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+border_color = Color(0.94, 0.74, 0.36, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="Style_button_pressed"]
-bg_color = Color(0.24, 0.34, 0.14, 1)
+bg_color = Color(0.18, 0.16, 0.11, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.92, 0.52, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+border_color = Color(1, 0.82, 0.46, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="Style_gender_panel"]
-bg_color = Color(0.025, 0.06, 0.042, 0.96)
+bg_color = Color(0.035, 0.043, 0.052, 0.98)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.58, 0.65, 0.36, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+border_color = Color(0.72, 0.54, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 8
 
@@ -84,38 +84,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.01, 0.025, 0.02, 0.28)
+color = Color(0.015, 0.025, 0.035, 0.12)
 
 [node name="Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 38.0
-offset_bottom = 104.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.96, 0.78, 1)
-theme_override_colors/font_outline_color = Color(0.035, 0.055, 0.035, 0.96)
-theme_override_constants/outline_size = 8
-theme_override_font_sizes/font_size = 40
+visible = false
 text = "我要上天Ascension"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="StartButton" type="Button" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -92.0
-offset_top = -82.0
-offset_right = 92.0
-offset_bottom = -36.0
-grow_horizontal = 2
-grow_vertical = 0
+anchors_preset = 0
+offset_left = 38.0
+offset_top = 288.0
+offset_right = 218.0
+offset_bottom = 330.0
+grow_horizontal = 1
+grow_vertical = 1
 focus_neighbor_top = NodePath(".")
-theme_override_colors/font_color = Color(1, 0.97, 0.82, 1)
+theme_override_colors/font_color = Color(0.96, 0.94, 0.86, 1)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("Style_button_normal")
 theme_override_styles/hover = SubResource("Style_button_hover")
@@ -139,7 +124,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.005, 0.012, 0.009, 0.62)
+color = Color(0.01, 0.015, 0.022, 0.68)
 
 [node name="Panel" type="PanelContainer" parent="GenderPanel"]
 layout_mode = 1
@@ -169,7 +154,7 @@ theme_override_constants/separation = 10
 
 [node name="Heading" type="Label" parent="GenderPanel/Panel/Margin/Content"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.94, 0.78, 1)
+theme_override_colors/font_color = Color(0.96, 0.94, 0.86, 1)
 theme_override_font_sizes/font_size = 18
 text = "选择角色"
 horizontal_alignment = 1

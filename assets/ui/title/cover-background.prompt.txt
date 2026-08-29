@@ -1,0 +1,13 @@
+Use case: stylized-concept
+Asset type: 16:9 game title-screen cover background for a 2D pixel-inspired survival adventure
+Primary request: Create a polished flat graphic-design cover for a game about humanity ascending through eras, spanning ocean, land, mountains, sky, and stars. The composition should communicate upward progression in one strong iconic silhouette.
+Scene/backdrop: A stylized island and stepped mountain rising from a clean turquoise ocean into broad clouds and a star-dotted upper sky; a tiny lone explorer silhouette at the lower center looking upward; no buildings and no era-specific technology.
+Style/medium: Crisp flat editorial poster design with subtle pixel-inspired stepped edges, bold geometric color fields, screen-print clarity, minimal texture, not painterly, not photorealistic.
+Composition/framing: Landscape 16:9; centered vertical ascent motif; reserve a calm high-contrast title-safe area for a large Chinese title and smaller English subtitle; keep important forms away from the outer 5% edges.
+Lighting/mood: Fresh, adventurous, clear, optimistic, monumental.
+Color palette: Turquoise and deep teal water, moss and fresh green land, bone-white clouds, charcoal shadows, muted brass/gold accents, restrained coral highlight.
+Constraints: No words, no letters, no logos, no watermark, no UI, no frame, no excessive details, readable at 1280x720.
+
+The exact title is composed locally by tools/build_cover.py:
+Top: 我要上天
+Bottom: ASCENSION

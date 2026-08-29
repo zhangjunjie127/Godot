@@ -379,12 +379,12 @@ func _refresh_inventory() -> void:
 		button.focus_mode = Control.FOCUS_NONE
 		button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		button.add_theme_font_size_override("font_size", 10)
-		button.add_theme_color_override("font_color", Color(0.93, 0.95, 0.86))
-		button.add_theme_stylebox_override("normal", _style_box(Color(0.07, 0.11, 0.085, 0.98), Color(0.32, 0.42, 0.28)))
-		button.add_theme_stylebox_override("hover", _style_box(Color(0.09, 0.15, 0.11, 1.0), Color(0.54, 0.66, 0.36)))
+		button.add_theme_color_override("font_color", Color(0.94, 0.92, 0.84))
+		button.add_theme_stylebox_override("normal", _style_box(Color(0.07, 0.085, 0.105, 0.98), Color(0.42, 0.34, 0.22)))
+		button.add_theme_stylebox_override("hover", _style_box(Color(0.12, 0.14, 0.17, 1.0), Color(0.78, 0.59, 0.28)))
 		if slot.is_empty():
 			button.text = "空"
-			button.add_theme_color_override("font_color", Color(0.43, 0.49, 0.40))
+			button.add_theme_color_override("font_color", Color(0.46, 0.49, 0.52))
 		else:
 			used_slots += 1
 			button.icon = _item_icon(String(slot["id"]))
@@ -420,7 +420,7 @@ func _refresh_skill_tree() -> void:
 				arrow.text = ">"
 				arrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 				arrow.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-				arrow.add_theme_color_override("font_color", Color(0.48, 0.55, 0.42))
+				arrow.add_theme_color_override("font_color", Color(0.46, 0.48, 0.51))
 				row.add_child(arrow)
 			row.add_child(_create_skill_button(skills[index], String(branch["id"])))
 		skill_branches.add_child(row)
@@ -435,14 +435,14 @@ func _refresh_skill_tree() -> void:
 	ritual_button.pressed.connect(_on_skill_pressed.bind(skill_tree.RITUAL_ID))
 	if ritual_unlocked:
 		ritual_button.text = "◆ 升维仪式已完成"
-		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.12, 0.28, 0.17), Color(0.48, 0.78, 0.42), 2))
+		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.11, 0.20, 0.17), Color(0.42, 0.72, 0.52), 2))
 	elif ritual_available:
 		ritual_button.text = "◆ 点亮升维仪式"
-		ritual_button.add_theme_stylebox_override("normal", _style_box(Color(0.28, 0.21, 0.06), Color(1.0, 0.78, 0.22), 2))
-		ritual_button.add_theme_stylebox_override("hover", _style_box(Color(0.36, 0.28, 0.08), Color(1.0, 0.9, 0.4), 2))
+		ritual_button.add_theme_stylebox_override("normal", _style_box(Color(0.22, 0.17, 0.08), Color(0.90, 0.68, 0.30), 2))
+		ritual_button.add_theme_stylebox_override("hover", _style_box(Color(0.30, 0.23, 0.10), Color(1.0, 0.82, 0.42), 2))
 	else:
 		ritual_button.text = "◇ 升维仪式"
-		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.075, 0.06), Color(0.22, 0.28, 0.20)))
+		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.065, 0.08), Color(0.24, 0.26, 0.29)))
 	ritual_row.add_child(ritual_button)
 
 
@@ -455,8 +455,8 @@ func _create_skill_button(skill: Dictionary, branch_id: String) -> Button:
 	button.focus_mode = Control.FOCUS_NONE
 	button.disabled = not available
 	button.add_theme_font_size_override("font_size", 10)
-	button.add_theme_color_override("font_color", Color(0.95, 0.96, 0.88))
-	button.add_theme_color_override("font_disabled_color", Color(0.57, 0.62, 0.53))
+	button.add_theme_color_override("font_color", Color(0.95, 0.93, 0.86))
+	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.54, 0.57))
 	button.pressed.connect(_on_skill_pressed.bind(skill_id))
 	if unlocked:
 		var color := _branch_color(branch_id)
@@ -464,11 +464,11 @@ func _create_skill_button(skill: Dictionary, branch_id: String) -> Button:
 		button.add_theme_stylebox_override("disabled", _style_box(Color(color.r * 0.28, color.g * 0.28, color.b * 0.28, 1.0), color, 2))
 	elif available:
 		button.text = "◇ " + String(skill["name"])
-		button.add_theme_stylebox_override("normal", _style_box(Color(0.23, 0.20, 0.07), Color(0.98, 0.76, 0.22), 2))
-		button.add_theme_stylebox_override("hover", _style_box(Color(0.31, 0.27, 0.08), Color(1.0, 0.86, 0.34), 2))
+		button.add_theme_stylebox_override("normal", _style_box(Color(0.20, 0.16, 0.08), Color(0.90, 0.68, 0.30), 2))
+		button.add_theme_stylebox_override("hover", _style_box(Color(0.28, 0.22, 0.10), Color(1.0, 0.82, 0.42), 2))
 	else:
 		button.text = "· " + String(skill["name"])
-		button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.075, 0.06), Color(0.22, 0.28, 0.20)))
+		button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.065, 0.08), Color(0.24, 0.26, 0.29)))
 	button.tooltip_text = String(skill["name"])
 	return button
 
@@ -601,7 +601,7 @@ func _build_dive_status() -> void:
 	dive_status.custom_minimum_size = Vector2(272.0, 46.0)
 	dive_status.scale = Vector2(0.5, 0.5)
 	dive_status.visible = false
-	dive_status.add_theme_stylebox_override("panel", _style_box(Color(0.025, 0.10, 0.13, 0.94), Color(0.30, 0.78, 0.86), 2))
+	dive_status.add_theme_stylebox_override("panel", _style_box(Color(0.04, 0.07, 0.095, 0.95), Color(0.30, 0.72, 0.82), 2))
 	$HUD.add_child(dive_status)
 
 	var margin := MarginContainer.new()
@@ -630,7 +630,7 @@ func _build_death_overlay() -> void:
 	death_overlay = ColorRect.new()
 	death_overlay.name = "DeathOverlay"
 	death_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	death_overlay.color = Color(0.005, 0.02, 0.025, 0.84)
+	death_overlay.color = Color(0.01, 0.015, 0.022, 0.84)
 	death_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	death_overlay.visible = false
 	$HUD.add_child(death_overlay)
@@ -649,12 +649,16 @@ func _build_death_overlay() -> void:
 	death_message_label.text = "你溺水死亡"
 	death_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	death_message_label.add_theme_font_size_override("font_size", 22)
-	death_message_label.add_theme_color_override("font_color", Color(0.78, 0.95, 1.0))
+	death_message_label.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84))
 	content.add_child(death_message_label)
 
 	var restart_button := Button.new()
 	restart_button.text = "重新开始"
 	restart_button.custom_minimum_size = Vector2(220.0, 34.0)
+	restart_button.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84))
+	restart_button.add_theme_stylebox_override("normal", _style_box(Color(0.075, 0.09, 0.11), Color(0.48, 0.38, 0.22)))
+	restart_button.add_theme_stylebox_override("hover", _style_box(Color(0.13, 0.15, 0.18), Color(0.84, 0.64, 0.30)))
+	restart_button.add_theme_stylebox_override("pressed", _style_box(Color(0.20, 0.17, 0.10), Color(0.96, 0.76, 0.38)))
 	restart_button.pressed.connect(_restart_game)
 	content.add_child(restart_button)
 

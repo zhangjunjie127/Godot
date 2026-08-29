@@ -18,8 +18,8 @@ func _run() -> void:
 	day_night.set_game_time(1, 21.0)
 	await process_frame
 	var outer_alpha: Variant = night_vision.material.get_shader_parameter("outer_alpha")
-	if outer_alpha == null or not is_equal_approx(float(outer_alpha), 0.60):
-		_fail("Night darkness is not 60 percent with a torch")
+	if outer_alpha == null or not is_equal_approx(float(outer_alpha), 0.50):
+		_fail("Night darkness is not 50 percent with a torch")
 		return
 	var torch_inner_alpha: Variant = night_vision.material.get_shader_parameter("torch_inner_alpha")
 	if torch_inner_alpha == null or not is_equal_approx(float(torch_inner_alpha), 0.20):
@@ -28,7 +28,7 @@ func _run() -> void:
 	scene.inventory.remove_item("torch", 1)
 	await process_frame
 	outer_alpha = night_vision.material.get_shader_parameter("outer_alpha")
-	if outer_alpha == null or not is_equal_approx(float(outer_alpha), 0.60):
+	if outer_alpha == null or not is_equal_approx(float(outer_alpha), 0.50):
 		_fail("Night darkness changed when the torch was removed")
 		return
 

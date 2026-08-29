@@ -630,7 +630,7 @@ func _run() -> void:
 	Input.action_press("ui_down")
 	await physics_frame
 	await physics_frame
-	if player_sprite.frame_coords.y != 0 or player_sprite.position.y != -28.0:
+	if player_sprite.frame_coords.y != 0 or player_sprite.position.y != -56.0 or player_sprite.scale != Vector2(0.88, 0.88):
 		_fail("Down-facing movement does not overlap the character with its shadow")
 		return
 	Input.action_release("ui_down")
@@ -677,7 +677,7 @@ func _run() -> void:
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crouch/sheet-transparent.png":
 		_fail("Crouch state did not use its animation sheet")
 		return
-	if player_sprite.scale != Vector2(0.44, 0.44):
+	if player_sprite.scale != Vector2(0.88, 0.88):
 		_fail("Crouch animation fell back to sprite squashing")
 		return
 	Input.action_release("player_crouch")
@@ -740,13 +740,13 @@ func _run() -> void:
 	player._idle_elapsed = 0.5
 	player._active_animation = ""
 	await physics_frame
-	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(0.44, 0.44):
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(0.88, 0.88):
 		_fail("Relaxed standing breathing animation or shared character scale did not activate")
 		return
 	player._idle_elapsed = player.seated_idle_delay + 0.1
 	player._active_animation = ""
 	await physics_frame
-	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_sit/sheet-transparent.png" or player_sprite.scale != Vector2(0.44, 0.44):
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_sit/sheet-transparent.png" or player_sprite.scale != Vector2(0.88, 0.88):
 		_fail("Seated breathing animation or shared character scale did not activate")
 		return
 	player.set_gender("female")

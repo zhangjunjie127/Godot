@@ -473,8 +473,20 @@ func _run() -> void:
 	if vegetation_count != 0:
 		_fail("Decorative vegetation props were not removed")
 		return
-	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
-		_fail("Player four-direction animation sheet did not load")
+	if player_sprite.hframes != 12 or player_sprite.vframes != 8:
+		_fail("Male player 12-frame eight-direction animation sheet did not load")
+		return
+	if (
+		player._direction_row(Vector2.DOWN) != 0
+		or player._direction_row(Vector2(1.0, 1.0)) != 1
+		or player._direction_row(Vector2.RIGHT) != 2
+		or player._direction_row(Vector2(1.0, -1.0)) != 3
+		or player._direction_row(Vector2.UP) != 4
+		or player._direction_row(Vector2(-1.0, -1.0)) != 5
+		or player._direction_row(Vector2.LEFT) != 6
+		or player._direction_row(Vector2(-1.0, 1.0)) != 7
+	):
+		_fail("Male eight-direction row mapping is incorrect")
 		return
 	if boar_sprite.hframes != 4 or boar_sprite.vframes != 4:
 		_fail("Wild boar animation sheet did not load")
@@ -612,7 +624,7 @@ func _run() -> void:
 	if not _icon_is_ready(action_icon, "奔跑"):
 		_fail("Run state did not activate")
 		return
-	if player_sprite.frame_coords.y != 1 or player_sprite.frame_coords.x == 0:
+	if player_sprite.frame_coords.y != 2 or player_sprite.frame_coords.x == 0:
 		_fail("Player right-facing run animation did not advance")
 		return
 	if stamina_bar.value >= stamina_bar.max_value:
@@ -623,7 +635,7 @@ func _run() -> void:
 	Input.action_press("ui_left")
 	await physics_frame
 	await physics_frame
-	if player_sprite.frame_coords.y != 2:
+	if player_sprite.frame_coords.y != 6:
 		_fail("Player left-facing animation is reversed")
 		return
 	Input.action_release("ui_left")
@@ -756,6 +768,9 @@ func _run() -> void:
 	if player_sprite.texture.resource_path != "res://assets/characters/player_female_idle_relaxed/sheet-transparent.png" or portrait.texture.resource_path != "res://assets/characters/player_female.png":
 		_fail("Female selection did not switch the character animation and portrait")
 		return
+	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
+		_fail("Female selection did not retain its four-frame four-direction layout")
+		return
 	Input.action_press("ui_right")
 	await physics_frame
 	await physics_frame
@@ -765,6 +780,9 @@ func _run() -> void:
 	Input.action_release("ui_right")
 	player.set_gender("male")
 	await physics_frame
+	if player_sprite.hframes != 12 or player_sprite.vframes != 8:
+		_fail("Male selection did not restore the 12-frame eight-direction layout")
+		return
 
 	if scene.inventory.add_item("plant_fiber", "植物纤维", 120, 99) != 120:
 		_fail("Backpack could not stack items")

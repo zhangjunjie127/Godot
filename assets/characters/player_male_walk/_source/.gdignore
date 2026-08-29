@@ -1,1 +1,1 @@
-# Source and QC files are not loaded by the game runtime.
+Editable source frames. Godot imports only ../sheet-transparent.png.

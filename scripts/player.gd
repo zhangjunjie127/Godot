@@ -32,6 +32,10 @@ const GENDER_MALE := "male"
 const GENDER_FEMALE := "female"
 const CHARACTER_SCALE := Vector2(1.76, 1.76)
 const CHARACTER_VISUAL_SCALE := 4.0
+const MALE_FRAME_COLUMNS := 12
+const MALE_DIRECTION_ROWS := 8
+const FEMALE_FRAME_COLUMNS := 4
+const FEMALE_DIRECTION_ROWS := 4
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const MALE_CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
@@ -210,9 +214,12 @@ func set_torch_equipped(value: bool) -> void:
 func set_gender(value: String) -> void:
 	var next_gender := GENDER_FEMALE if value == GENDER_FEMALE else GENDER_MALE
 	if gender == next_gender:
+		_configure_sprite_sheet()
 		return
 	gender = next_gender
+	_facing_row = 0
 	_active_animation = ""
+	_configure_sprite_sheet()
 	gender_changed.emit(gender)
 
 
@@ -485,6 +492,7 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 
 	var frame_column := _animation_frame(animation, moving)
 	sprite.texture = _animation_texture(animation)
+	_configure_sprite_sheet()
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
 	var sprite_position := Vector2(0.0, -128.0 - _jump_offset * CHARACTER_VISUAL_SCALE)
@@ -558,28 +566,65 @@ func _animation_texture(animation: String) -> Texture2D:
 
 
 func _animation_frame(animation: String, moving: bool) -> int:
+	var frame_count := FEMALE_FRAME_COLUMNS if gender == GENDER_FEMALE else MALE_FRAME_COLUMNS
 	if animation == "pickup":
-		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * 4.0), 3)
+		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * float(frame_count)), frame_count - 1)
 	if animation == "torch_hold":
-		return floori(_animation_elapsed / 0.16) % 4
+		var torch_frame_duration := 0.16 if gender == GENDER_FEMALE else 0.10
+		return floori(_animation_elapsed / torch_frame_duration) % frame_count
 	if animation == "jump":
 		var progress := clampf(_jump_elapsed / maxf(jump_duration, 0.01), 0.0, 0.999)
-		return mini(floori(progress * 4.0), 3)
+		return mini(floori(progress * float(frame_count)), frame_count - 1)
 	if animation == "prone_idle":
-		return floori(_animation_elapsed / 0.24) % 4
+		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":
-		return floori(_animation_elapsed / 0.30) % 4
+		return floori(_animation_elapsed / 0.30) % frame_count
 	if animation == "idle_sit":
-		return floori(_animation_elapsed / 0.34) % 4
+		return floori(_animation_elapsed / 0.34) % frame_count
 	if animation == "swim":
-		return floori(_animation_elapsed / 0.18) % 4
+		var swim_frame_duration := 0.18 if gender == GENDER_FEMALE else 0.10
+		return floori(_animation_elapsed / swim_frame_duration) % frame_count
 	if not moving:
 		return 0
 	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
-	return floori(_animation_elapsed / frame_duration) % 4
+	return floori(_animation_elapsed / frame_duration) % frame_count
 
 
 func _direction_row(direction: Vector2) -> int:
+	if gender == GENDER_MALE:
+		var octant := wrapi(roundi(atan2(direction.y, direction.x) / (PI / 4.0)), 0, 8)
+		match octant:
+			0:
+				return 2
+			1:
+				return 1
+			2:
+				return 0
+			3:
+				return 7
+			4:
+				return 6
+			5:
+				return 5
+			6:
+				return 4
+			_:
+				return 3
 	if absf(direction.x) > absf(direction.y):
 		return 1 if direction.x > 0.0 else 2
 	return 0 if direction.y > 0.0 else 3
+
+
+func _configure_sprite_sheet() -> void:
+	if not is_instance_valid(sprite):
+		return
+	if gender == GENDER_FEMALE:
+		if sprite.hframes != FEMALE_FRAME_COLUMNS or sprite.vframes != FEMALE_DIRECTION_ROWS:
+			sprite.frame = 0
+		sprite.hframes = FEMALE_FRAME_COLUMNS
+		sprite.vframes = FEMALE_DIRECTION_ROWS
+	else:
+		if sprite.hframes != MALE_FRAME_COLUMNS or sprite.vframes != MALE_DIRECTION_ROWS:
+			sprite.frame = 0
+		sprite.hframes = MALE_FRAME_COLUMNS
+		sprite.vframes = MALE_DIRECTION_ROWS

@@ -243,11 +243,11 @@ script = ExtResource("3_player")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player"]
 texture_filter = 1
-position = Vector2(0, -128)
+position = Vector2(0, -64)
 texture = ExtResource("5_player_walk")
 hframes = 12
 vframes = 8
-scale = Vector2(1.76, 1.76)
+scale = Vector2(0.88, 0.88)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/Player"]
 position = Vector2(0, -10)

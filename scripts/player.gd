@@ -30,8 +30,8 @@ const CONDITION_DYING := "濒死"
 
 const GENDER_MALE := "male"
 const GENDER_FEMALE := "female"
-const CHARACTER_SCALE := Vector2(1.76, 1.76)
-const CHARACTER_VISUAL_SCALE := 4.0
+const CHARACTER_SCALE := Vector2(0.88, 0.88)
+const CHARACTER_VISUAL_SCALE := 2.0
 const MALE_FRAME_COLUMNS := 12
 const MALE_DIRECTION_ROWS := 8
 const FEMALE_FRAME_COLUMNS := 4
@@ -349,16 +349,16 @@ func _apply_concealment_visual() -> void:
 
 func _draw() -> void:
 	if water_mode:
-		draw_circle(Vector2(52.0, -120.0), 8.8, Color(0.72, 0.96, 1.0, 0.72))
-		draw_circle(Vector2(72.0, -156.0), 5.2, Color(0.72, 0.96, 1.0, 0.58))
+		draw_circle(Vector2(26.0, -60.0), 4.4, Color(0.72, 0.96, 1.0, 0.72))
+		draw_circle(Vector2(36.0, -78.0), 2.6, Color(0.72, 0.96, 1.0, 0.58))
 		return
 	if surface_swimming:
 		return
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
 	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
-	draw_set_transform(Vector2(12.0, -4.0), 0.0, Vector2(shadow_width * jump_scale, 0.34 * jump_scale))
-	draw_circle(Vector2.ZERO, 60.0, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
+	draw_set_transform(Vector2(6.0, -2.0), 0.0, Vector2(shadow_width * jump_scale, 0.34 * jump_scale))
+	draw_circle(Vector2.ZERO, 30.0, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -495,20 +495,20 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 	_configure_sprite_sheet()
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
-	var sprite_position := Vector2(0.0, -128.0 - _jump_offset * CHARACTER_VISUAL_SCALE)
+	var sprite_position := Vector2(0.0, -64.0 - _jump_offset * CHARACTER_VISUAL_SCALE)
 	var sprite_scale := CHARACTER_SCALE
 	match _movement_state:
 		STATE_CROUCH:
-			sprite_position.y = -116.0
+			sprite_position.y = -58.0
 		STATE_PRONE, STATE_CRAWL:
-			sprite_position.y = -88.0
+			sprite_position.y = -44.0
 		STATE_SWIM, STATE_DIVE:
-			sprite_position.y = -88.0
+			sprite_position.y = -44.0
 		STATE_IDLE:
 			if _idle_elapsed >= seated_idle_delay and not torch_equipped:
-				sprite_position.y = -88.0
+				sprite_position.y = -44.0
 	if moving and _facing_row == 0 and (_movement_state == STATE_WALK or _movement_state == STATE_RUN):
-		sprite_position.y += 16.0
+		sprite_position.y += 8.0
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale

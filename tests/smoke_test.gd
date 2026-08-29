@@ -106,6 +106,19 @@ func _run() -> void:
 	if foundation.get_child_count() != initial_chunk_count or initial_chunk_count < 4 or initial_chunk_count > 12:
 		_fail("Spawn foundation did not stream the camera-visible chunk range: nodes=%d loaded=%d" % [foundation.get_child_count(), initial_chunk_count])
 		return
+	for chunk: Sprite2D in foundation.get_children():
+		var water_surface := chunk.get_node_or_null("WaterSurface") as Sprite2D
+		if water_surface == null or water_surface.texture != chunk.texture or not water_surface.material is ShaderMaterial:
+			_fail("A streamed map chunk is missing its editable water surface overlay: " + chunk.name)
+			return
+		var water_material := water_surface.material as ShaderMaterial
+		var water_mask := water_material.get_shader_parameter("water_mask") as Texture2D
+		if water_mask == null or water_mask.get_size() != chunk.texture.get_size():
+			_fail("A water mask does not match its map chunk dimensions: " + chunk.name)
+			return
+		if water_material.get_shader_parameter("chunk_world_origin") != chunk.position:
+			_fail("Water motion is not aligned to map world coordinates: " + chunk.name)
+			return
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")
 		return

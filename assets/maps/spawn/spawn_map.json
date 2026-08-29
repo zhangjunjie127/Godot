@@ -19,7 +19,10 @@
 	  "position": [
 		0,
 		0
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_0_0_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_1_0",
@@ -27,7 +30,10 @@
 	  "position": [
 		2048,
 		0
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_1_0_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_2_0",
@@ -35,7 +41,10 @@
 	  "position": [
 		4096,
 		0
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_2_0_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_3_0",
@@ -43,7 +52,10 @@
 	  "position": [
 		6144,
 		0
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_3_0_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_0_1",
@@ -51,7 +63,10 @@
 	  "position": [
 		0,
 		2048
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_0_1_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_1_1",
@@ -59,7 +74,10 @@
 	  "position": [
 		2048,
 		2048
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_1_1_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_2_1",
@@ -67,7 +85,10 @@
 	  "position": [
 		4096,
 		2048
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_2_1_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_3_1",
@@ -75,7 +96,10 @@
 	  "position": [
 		6144,
 		2048
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_3_1_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_0_2",
@@ -83,7 +107,10 @@
 	  "position": [
 		0,
 		4096
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_0_2_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_1_2",
@@ -91,7 +118,10 @@
 	  "position": [
 		2048,
 		4096
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_1_2_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_2_2",
@@ -99,7 +129,10 @@
 	  "position": [
 		4096,
 		4096
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_2_2_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_3_2",
@@ -107,7 +140,10 @@
 	  "position": [
 		6144,
 		4096
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_3_2_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_0_3",
@@ -115,7 +151,10 @@
 	  "position": [
 		0,
 		6144
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_0_3_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_1_3",
@@ -123,7 +162,10 @@
 	  "position": [
 		2048,
 		6144
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_1_3_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_2_3",
@@ -131,7 +173,10 @@
 	  "position": [
 		4096,
 		6144
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_2_3_water_mask.png"
+	  }
 	},
 	{
 	  "id": "chunk_3_3",
@@ -139,7 +184,10 @@
 	  "position": [
 		6144,
 		6144
-	  ]
+	  ],
+	  "water": {
+		"image": "assets/maps/spawn/spawn_reference_chunk_3_3_water_mask.png"
+	  }
 	}
   ],
   "props": [],
@@ -367,5 +415,22 @@
 	  "y": 6250,
 	  "radius": 720
 	}
-  ]
+  ],
+  "waterSurface": {
+	"enabled": true,
+	"flowDirection": [
+	  0.94,
+	  0.34
+	],
+	"flowSpeed": 22.0,
+	"flowStrength": 0.075,
+	"causticsScale": 0.018,
+	"causticsStrength": 0.12,
+	"tint": [
+	  0.06,
+	  0.5,
+	  0.66,
+	  1.0
+	]
+  }
 }

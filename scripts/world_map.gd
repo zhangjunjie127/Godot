@@ -4,6 +4,7 @@ extends Node2D
 const MANIFEST_PATH := "res://assets/maps/spawn/spawn_map.json"
 const GRASS_PATCH_SCRIPT := preload("res://scripts/grass_patch.gd")
 const RESOURCE_NODE_SCRIPT := preload("res://scripts/resource_node.gd")
+const RIVER_SURFACE_SHADER := preload("res://shaders/river_surface.gdshader")
 const BLOCKER_LAYER := 2
 const DEFAULT_CHUNK_SIZE := 2048.0
 const STREAM_MARGIN := 64.0
@@ -25,6 +26,7 @@ var _chunk_size := DEFAULT_CHUNK_SIZE
 var _chunk_definitions: Array[Dictionary] = []
 var _loaded_chunks: Dictionary = {}
 var _active_chunk_bounds := Rect2i(Vector2i(-999, -999), Vector2i.ZERO)
+var _water_surface: Dictionary = {}
 
 
 func _ready() -> void:
@@ -34,6 +36,7 @@ func _ready() -> void:
 	_content_scale = float(manifest.get("contentScale", 1.0))
 	_chunk_size = float(manifest.get("chunkSize", DEFAULT_CHUNK_SIZE)) * _content_scale
 	_chunk_definitions.assign(manifest.get("chunks", []))
+	_water_surface = manifest.get("waterSurface", {})
 	_cache_water_polygons()
 	if Engine.is_editor_hint():
 		_add_all_chunks()
@@ -140,7 +143,38 @@ func _load_chunk(data: Dictionary) -> void:
 	sprite.scale = Vector2.ONE * _content_scale
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	foundation.add_child(sprite)
+	_add_water_surface(sprite, data, texture)
 	_loaded_chunks[id] = sprite
+
+
+func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Texture2D) -> void:
+	if not bool(_water_surface.get("enabled", true)):
+		return
+	var water_data: Dictionary = data.get("water", {})
+	var mask_texture := ArtAssets.texture(_resource_path(String(water_data.get("image", ""))))
+	if mask_texture == null:
+		push_error("Missing water mask for map chunk: " + String(data.get("id", "")))
+		return
+
+	var material := ShaderMaterial.new()
+	material.shader = RIVER_SURFACE_SHADER
+	material.set_shader_parameter("water_mask", mask_texture)
+	material.set_shader_parameter("chunk_world_origin", chunk.position)
+	material.set_shader_parameter("chunk_world_size", source_texture.get_size() * _content_scale)
+	material.set_shader_parameter("flow_direction", _point(_water_surface.get("flowDirection", [0.94, 0.34])))
+	material.set_shader_parameter("flow_speed", float(_water_surface.get("flowSpeed", 22.0)))
+	material.set_shader_parameter("flow_strength", float(_water_surface.get("flowStrength", 0.075)))
+	material.set_shader_parameter("caustics_scale", float(_water_surface.get("causticsScale", 0.018)))
+	material.set_shader_parameter("caustics_strength", float(_water_surface.get("causticsStrength", 0.12)))
+	material.set_shader_parameter("water_tint", _color(_water_surface.get("tint", [0.06, 0.50, 0.66, 1.0])))
+
+	var water := Sprite2D.new()
+	water.name = "WaterSurface"
+	water.texture = source_texture
+	water.centered = false
+	water.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	water.material = material
+	chunk.add_child(water)
 
 
 func get_loaded_chunk_count() -> int:
@@ -277,6 +311,17 @@ func _point(value: Variant) -> Vector2:
 
 func _scaled_point(value: Variant) -> Vector2:
 	return _point(value) * _content_scale
+
+
+func _color(value: Variant) -> Color:
+	if value is Array and value.size() >= 3:
+		return Color(
+			float(value[0]),
+			float(value[1]),
+			float(value[2]),
+			float(value[3]) if value.size() >= 4 else 1.0
+		)
+	return Color(0.06, 0.50, 0.66, 1.0)
 
 
 func _draw() -> void:

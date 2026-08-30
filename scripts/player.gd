@@ -533,7 +533,7 @@ func _animation_frame(animation: String, moving: bool) -> int:
 	if animation == "prone_idle":
 		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":
-		return floori(_animation_elapsed / 0.30) % frame_count
+		return floori(_animation_elapsed / (1.0 / 12.0)) % frame_count
 	if animation == "swim":
 		return floori(_animation_elapsed / 0.10) % frame_count
 	if not moving:

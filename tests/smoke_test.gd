@@ -795,6 +795,10 @@ func _run() -> void:
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(2.2, 2.2):
 		_fail("Relaxed standing breathing animation or shared character scale did not activate")
 		return
+	player._animation_elapsed = 1.0 / 12.0
+	if player._animation_frame("idle_relaxed", false) != 1:
+		_fail("The replacement idle animation is not playing at its authored 12 FPS")
+		return
 	player._animation_elapsed = 100.0
 	player._active_animation = ""
 	await physics_frame

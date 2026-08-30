@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/rain_visual_effect.gd" id="1_rain_visual"]
 [ext_resource type="Shader" path="res://effects/rain/rain_streak.gdshader" id="2_streak_shader"]
-[ext_resource type="AudioStream" path="res://assets/weather/rain/rain_loop.wav" id="3_rain_audio"]
+[ext_resource type="AudioStream" path="res://assets/weather/rain/rain_wash.wav" id="3_rain_audio"]
 
 [node name="RainSystem" type="Control"]
 layout_mode = 3

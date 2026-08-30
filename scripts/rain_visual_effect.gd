@@ -1,7 +1,7 @@
 extends Control
 
-const FAR_PARTICLE_COUNT := 220
-const NEAR_PARTICLE_COUNT := 110
+const FAR_PARTICLE_COUNT := 360
+const NEAR_PARTICLE_COUNT := 160
 
 @export var random_seed := 20260828
 @export var far_particles_path: NodePath
@@ -17,7 +17,7 @@ const NEAR_PARTICLE_COUNT := 110
 @export_range(200.0, 1000.0, 10.0) var far_speed_max := 590.0
 @export_range(300.0, 1200.0, 10.0) var near_speed_min := 620.0
 @export_range(300.0, 1400.0, 10.0) var near_speed_max := 820.0
-@export_range(0.0, 0.12, 0.005) var haze_max_alpha := 0.055
+@export_range(0.0, 0.12, 0.005) var haze_max_alpha := 0.045
 @export_range(-40.0, 0.0, 0.5) var rain_loop_max_volume_db := -8.0
 
 var intensity := 0.0
@@ -45,9 +45,9 @@ func _ready() -> void:
 		0.86,
 		far_speed_min,
 		far_speed_max,
-		Vector2(4.0, 12.0),
-		Color(0.62, 0.76, 0.85, 0.25),
-		0.11
+		Vector2(3.0, 11.0),
+		Color(0.60, 0.75, 0.84, 0.23),
+		0.09
 	)
 	_configure_layer(
 		_near_particles,
@@ -55,9 +55,9 @@ func _ready() -> void:
 		0.68,
 		near_speed_min,
 		near_speed_max,
-		Vector2(5.0, 18.0),
-		Color(0.75, 0.88, 0.94, 0.42),
-		0.14
+		Vector2(4.0, 16.0),
+		Color(0.74, 0.88, 0.94, 0.38),
+		0.11
 	)
 	_setup_audio_loop()
 	resized.connect(_update_viewport_coverage)
@@ -126,6 +126,7 @@ func _configure_layer(
 	particles.amount = particle_count
 	particles.lifetime = lifetime
 	particles.randomness = 0.38
+	particles.preprocess = lifetime * 0.65
 	particles.local_coords = true
 	particles.interpolate = true
 	particles.emitting = false
@@ -133,7 +134,7 @@ func _configure_layer(
 	var process_material := ParticleProcessMaterial.new()
 	process_material.particle_flag_align_y = true
 	process_material.direction = Vector3(get_wind_vector().x, get_wind_vector().y, 0.0)
-	process_material.spread = 4.5
+	process_material.spread = 6.0
 	process_material.initial_velocity_min = speed_min
 	process_material.initial_velocity_max = speed_max
 	process_material.gravity = Vector3.ZERO
@@ -146,7 +147,7 @@ func _configure_layer(
 	shader_material.shader = streak_shader
 	shader_material.set_shader_parameter("streak_color", streak_color)
 	shader_material.set_shader_parameter("width", width)
-	shader_material.set_shader_parameter("edge_softness", 0.075)
+	shader_material.set_shader_parameter("edge_softness", 0.085)
 	var image := Image.create_empty(maxi(2, roundi(streak_size.x)), maxi(4, roundi(streak_size.y)), false, Image.FORMAT_RGBA8)
 	image.fill(Color.WHITE)
 	particles.texture = ImageTexture.create_from_image(image)

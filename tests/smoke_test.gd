@@ -200,7 +200,7 @@ func _run() -> void:
 	if not wetness_overlay.visible or not puddle_surface.visible or not weather_ground.raining:
 		_fail("Layered rain did not enable wet grading, puddles and ground effects")
 		return
-	if not is_equal_approx(rain_visual.intensity, weather.visual_rain_density) or rain_visual.get_layer_particle_counts() != Vector2i(220, 110):
+	if not is_equal_approx(rain_visual.intensity, weather.visual_rain_density) or rain_visual.get_layer_particle_counts() != Vector2i(360, 160):
 		_fail("Rain streak layer did not follow the authoritative weather intensity")
 		return
 	if rain_visual._rain_loop == null or rain_visual._rain_loop.stream == null or rain_visual.get_audio_volume_db() <= -80.0:
@@ -210,19 +210,33 @@ func _run() -> void:
 	if audio_players.size() != 1 or audio_players[0] != rain_visual._rain_loop:
 		_fail("Rain loop is not the only retained game audio source")
 		return
-	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0:
+	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("puddle_amount") <= 0.0:
 		_fail("Wet grade or puddle refraction shader did not receive rain intensity")
 		return
+	if puddle_surface.material.get_shader_parameter("puddle_mask") != puddle_surface.texture or puddle_surface.material.get_shader_parameter("ripple_flow") == null:
+		_fail("Puddle refraction does not share the authored mask and G/B ripple field")
+		return
+	var ripple_flow_texture := puddle_surface.material.get_shader_parameter("ripple_flow") as Texture2D
+	var ripple_flow_image := ripple_flow_texture.get_image()
+	var ripple_channel_difference := 0.0
+	for sample_y: int in range(1, 8):
+		for sample_x: int in range(1, 8):
+			var ripple_sample := ripple_flow_image.get_pixel(ripple_flow_image.get_width() * sample_x / 8, ripple_flow_image.get_height() * sample_y / 8)
+			ripple_channel_difference += absf(ripple_sample.g - ripple_sample.b)
+	if ripple_channel_difference < 0.1:
+		_fail("Puddle ripple field does not contain independent G/B motion channels")
+		return
+	var small_cutoff: Variant = puddle_surface.material.get_shader_parameter("small_cutoff")
 	var medium_cutoff: Variant = puddle_surface.material.get_shader_parameter("medium_cutoff")
 	var heavy_cutoff: Variant = puddle_surface.material.get_shader_parameter("heavy_cutoff")
 	var medium_spread: Variant = puddle_surface.material.get_shader_parameter("medium_spread_pixels")
 	var heavy_spread: Variant = puddle_surface.material.get_shader_parameter("heavy_spread_pixels")
 	var edge_feather: Variant = puddle_surface.material.get_shader_parameter("edge_feather_pixels")
 	var water_opacity: Variant = puddle_surface.material.get_shader_parameter("water_opacity")
-	if medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or edge_feather == null or water_opacity == null or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(edge_feather) <= 0.0 or float(water_opacity) < 0.40:
+	if small_cutoff == null or medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or edge_feather == null or water_opacity == null or float(small_cutoff) <= float(medium_cutoff) or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(edge_feather) <= 0.0 or float(water_opacity) < 0.40:
 		_fail("Medium and heavy puddle coverage were not doubled")
 		return
-	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 161:
+	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 255:
 		_fail("Medium rain density did not initialize")
 		return
 	weather.set_rain_level("小雨")
@@ -234,27 +248,37 @@ func _run() -> void:
 	weather.set_rain_level("大雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var heavy_rain_count: int = weather.get_active_rain_particle_count()
-	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 330):
+	if not (light_rain_count < medium_rain_count and medium_rain_count < heavy_rain_count and heavy_rain_count == 520):
 		_fail("Light, medium and heavy rain densities are not distinct")
 		return
-	weather.set_rain_level("小雨")
+	weather.start_weather_event("晴朗", "半天")
+	weather.advance_visual_seconds(weather.rain_fade_seconds + weather.puddle_drain_seconds)
+	weather.start_weather_event("下雨", "半天", "小雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var light_impact_rate: float = weather_ground.get_impact_spawn_rate()
-	if puddle_surface.visible or light_impact_rate <= 0.0 or weather_ground.get_ripple_spawn_rate() != 0.0:
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or light_impact_rate <= 0.0 or weather_ground.get_ripple_spawn_rate() != 0.0:
 		_fail("Light rain should create splashes without puddles or ripples")
 		return
 	weather.set_rain_level("中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var medium_impact_rate: float = weather_ground.get_impact_spawn_rate()
 	var medium_ripple_rate: float = weather_ground.get_ripple_spawn_rate()
-	if not puddle_surface.visible or medium_impact_rate <= light_impact_rate or medium_ripple_rate <= 0.0:
+	var medium_puddle_amount: float = weather.get_puddle_amount()
+	if not puddle_surface.visible or medium_puddle_amount <= 0.0 or medium_impact_rate <= light_impact_rate or medium_ripple_rate <= 0.0:
 		_fail("Medium rain should add limited puddles, splashes and ripples")
 		return
 	weather.set_rain_level("大雨")
-	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() <= medium_ripple_rate:
+	weather.advance_visual_seconds(weather.puddle_formation_seconds)
+	if weather.get_puddle_amount() <= medium_puddle_amount or weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() <= medium_ripple_rate:
 		_fail("Heavy rain should increase puddles, splashes and ripple emphasis")
 		return
+	weather.set_rain_level("小雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	if not puddle_surface.visible or weather.get_puddle_amount() <= medium_puddle_amount:
+		_fail("Puddles drained while rain was still falling")
+		return
+	weather.set_rain_level("大雨")
+	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var sampled_feedback_position: Vector2 = weather_ground.get_visible_feedback_position()
 	if sampled_feedback_position == Vector2.INF or not weather_ground.is_feedback_area(sampled_feedback_position):
 		_fail("Rain feedback could not find a visible ground position")
@@ -280,7 +304,7 @@ func _run() -> void:
 		_fail("Rain stopped abruptly instead of fading out")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or puddle_surface.visible or weather_ground.raining or rain_visual.is_audio_playing():
+	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or not puddle_surface.visible or weather.get_puddle_amount() <= 0.0 or weather_ground.raining or rain_visual.is_audio_playing():
 		_fail("Rain fade-out did not finish cleanly")
 		return
 	screen_rain.advance_effects(0.2)
@@ -291,8 +315,12 @@ func _run() -> void:
 	if not screen_rain._drops.is_empty():
 		_fail("Screen droplets did not fade away")
 		return
+	weather.advance_visual_seconds(weather.puddle_drain_seconds)
+	if weather.get_puddle_amount() != 0.0 or puddle_surface.visible:
+		_fail("Puddles did not drain after rain fully stopped")
+		return
 	weather.start_weather_event("下雨", "半天", "中雨")
-	weather.advance_visual_seconds(weather.rain_fade_seconds)
+	weather.advance_visual_seconds(weather.rain_fade_seconds + weather.puddle_formation_seconds)
 	if not weather_ground.has_method("is_puddle_position") or not weather_ground.has_method("spawn_step_feedback"):
 		_fail("Player puddle feedback API is missing")
 		return
@@ -327,8 +355,12 @@ func _run() -> void:
 		_fail("Rain feedback rejected ordinary terrain")
 		return
 	weather_ground.spawn_impact(puddle_position)
+	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != initial_ripple_count:
+		_fail("Dry-ground rain impact did not create a splash-only response")
+		return
+	weather_ground.spawn_impact(wet_step_position)
 	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != initial_ripple_count + 1:
-		_fail("Rain impact did not create a splash and ripple")
+		_fail("Puddle rain impact did not create a ripple-only response")
 		return
 	weather_ground.set_rain_strength(0.0)
 	weather_ground.advance_effects(2.0)
@@ -411,8 +443,7 @@ func _run() -> void:
 	if not wetness_overlay.visible or not weather_ground.raining:
 		_fail("Rain wetness did not reactivate")
 		return
-	var impact_position: Vector2 = weather_ground.get_visible_feedback_position()
-	weather_ground.spawn_impact(impact_position)
+	weather_ground.spawn_impact(Vector2(32.0, 32.0))
 	if weather_ground._impacts.is_empty():
 		_fail("Falling rain did not trigger a ground splash")
 		return

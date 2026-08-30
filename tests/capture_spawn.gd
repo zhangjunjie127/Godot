@@ -45,6 +45,8 @@ func _capture() -> void:
 	if capture_weather == "下雨":
 		weather.set_rain_level(capture_rain_level)
 		weather.advance_visual_seconds(weather.rain_fade_seconds)
+		if capture_rain_level != "小雨":
+			weather.advance_visual_seconds(weather.puddle_formation_seconds)
 	elif capture_weather == "下雪":
 		weather.set_snow_level(capture_snow_level)
 		weather.advance_visual_seconds(weather.rain_fade_seconds)

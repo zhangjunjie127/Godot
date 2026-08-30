@@ -89,5 +89,6 @@ ui = {
 "res://assets/ui/title/cover-background.png": null
 }
 weather = {
-"res://assets/weather/clouds/sheet-transparent.png": null
+"res://assets/weather/clouds/sheet-transparent.png": null,
+"res://assets/weather/rain/ripple_flow_gb.png": null
 }

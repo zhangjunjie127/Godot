@@ -32,6 +32,8 @@ const GAME_MINUTES_PER_DAY := 1440
 @export_enum("小雨", "中雨", "大雨") var start_rain_level := RAIN_MEDIUM
 @export_enum("小雪", "中雪", "大雪") var start_snow_level := SNOW_MEDIUM
 @export_range(0.5, 8.0, 0.1) var rain_fade_seconds := 3.0
+@export_range(2.0, 60.0, 0.5) var puddle_formation_seconds := 14.0
+@export_range(5.0, 180.0, 1.0) var puddle_drain_seconds := 45.0
 @export var day_night_cycle_path: NodePath
 @export var ground_effects_path: NodePath
 @export var wetness_overlay_path: NodePath
@@ -49,6 +51,7 @@ var event_duration_days := 0.5
 var remaining_game_minutes := 720
 var visual_rain_density := 0.0
 var visual_snow_density := 0.0
+var puddle_amount := 0.0
 
 var _rng := RandomNumberGenerator.new()
 var _last_calendar_minute := -1
@@ -78,6 +81,11 @@ func _ready() -> void:
 	if _puddle_surface is Sprite2D:
 		var puddle_sprite := _puddle_surface as Sprite2D
 		puddle_sprite.texture = ArtAssets.texture(puddle_sprite.texture.resource_path, puddle_sprite.texture)
+		if puddle_sprite.material != null:
+			puddle_sprite.material.set_shader_parameter("puddle_mask", puddle_sprite.texture)
+			var ripple_flow := puddle_sprite.material.get_shader_parameter("ripple_flow") as Texture2D
+			if ripple_flow != null:
+				puddle_sprite.material.set_shader_parameter("ripple_flow", ArtAssets.texture(ripple_flow.resource_path, ripple_flow))
 		if _ground_effects != null and _ground_effects.has_method("set_puddle_mask"):
 			_ground_effects.set_puddle_mask(puddle_sprite.texture)
 	current_rain_level = start_rain_level if start_rain_level in RAIN_LEVELS else RAIN_MEDIUM
@@ -169,6 +177,7 @@ func advance_visual_seconds(seconds: float) -> void:
 	var fade_step := delta / maxf(rain_fade_seconds, 0.1)
 	visual_rain_density = move_toward(visual_rain_density, _target_rain_density, fade_step)
 	visual_snow_density = move_toward(visual_snow_density, _target_snow_density, fade_step)
+	_update_puddle_accumulation(delta)
 	_sync_rain_visual_layers()
 	_sync_snow_visual_layer(delta)
 	if _rain_visual_effect != null and _rain_visual_effect.has_method("advance_effects"):
@@ -224,6 +233,10 @@ func get_active_snow_particle_count() -> int:
 	if _snow_world_effect == null or not _snow_world_effect.has_method("get_active_particle_count"):
 		return 0
 	return int(_snow_world_effect.get_active_particle_count())
+
+
+func get_puddle_amount() -> float:
+	return puddle_amount
 
 
 func get_forecast(days: int = 2) -> Array[Dictionary]:
@@ -289,13 +302,27 @@ func _sync_rain_visual_layers() -> void:
 		if _wetness_overlay.material != null:
 			_wetness_overlay.material.set_shader_parameter("rain_intensity", wet_strength)
 	if _puddle_surface != null:
-		_puddle_surface.visible = wet_strength > PUDDLE_START_STRENGTH
+		_puddle_surface.visible = puddle_amount > 0.001
 		if _puddle_surface.material != null:
-			_puddle_surface.material.set_shader_parameter("rain_intensity", wet_strength)
-	if _ground_effects != null and _ground_effects.has_method("set_rain_strength"):
-		_ground_effects.set_rain_strength(wet_strength)
+			_puddle_surface.material.set_shader_parameter("rain_intensity", visual_rain_density)
+			_puddle_surface.material.set_shader_parameter("puddle_amount", puddle_amount)
+	if _ground_effects != null:
+		if _ground_effects.has_method("set_weather_state"):
+			_ground_effects.set_weather_state(wet_strength, puddle_amount)
+		elif _ground_effects.has_method("set_rain_strength"):
+			_ground_effects.set_rain_strength(wet_strength)
 	if _screen_rain_effect != null and _screen_rain_effect.has_method("set_intensity"):
 		_screen_rain_effect.set_intensity(visual_rain_density)
+
+
+func _update_puddle_accumulation(delta: float) -> void:
+	if visual_rain_density >= PUDDLE_START_STRENGTH:
+		var target_amount := visual_rain_density
+		if target_amount > puddle_amount:
+			var formation_rate := maxf(visual_rain_density, 0.12) / maxf(puddle_formation_seconds, 0.1)
+			puddle_amount = move_toward(puddle_amount, target_amount, formation_rate * delta)
+	elif visual_rain_density <= 0.001:
+		puddle_amount = move_toward(puddle_amount, 0.0, delta / maxf(puddle_drain_seconds, 0.1))
 
 
 func _sync_snow_visual_layer(delta: float) -> void:

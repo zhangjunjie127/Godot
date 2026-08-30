@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://effects/rain/rain_demo.gd" id="1_demo"]
 [ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="2_map"]
@@ -7,18 +7,22 @@
 [ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="5_ground"]
 [ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="6_wet_shader"]
 [ext_resource type="PackedScene" path="res://effects/rain/RainSystem.tscn" id="7_rain_system"]
+[ext_resource type="Texture2D" path="res://assets/weather/rain/ripple_flow_gb.png" id="8_ripple_flow"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle"]
 shader = ExtResource("4_puddle_shader")
+shader_parameter/puddle_mask = ExtResource("3_mask")
+shader_parameter/ripple_flow = ExtResource("8_ripple_flow")
+shader_parameter/small_cutoff = 0.88
 shader_parameter/medium_cutoff = 0.72
 shader_parameter/heavy_cutoff = 0.34
 shader_parameter/mask_softness = 0.055
 shader_parameter/medium_spread_pixels = 3.0
 shader_parameter/heavy_spread_pixels = 4.0
 shader_parameter/edge_feather_pixels = 3.0
-shader_parameter/edge_feather_opacity = 0.58
-shader_parameter/water_opacity = 0.4
-shader_parameter/sky_reflection = 0.18
+shader_parameter/edge_feather_opacity = 0.42
+shader_parameter/water_opacity = 0.42
+shader_parameter/sky_reflection = 0.16
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wet"]
 shader = ExtResource("6_wet_shader")

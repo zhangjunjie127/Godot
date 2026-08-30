@@ -686,7 +686,8 @@ func _run() -> void:
 	Input.action_press("ui_down")
 	await physics_frame
 	await physics_frame
-	if player_sprite.frame_coords.y != 0 or player_sprite.position.y != -140.0 or player_sprite.scale != Vector2(2.2, 2.2):
+	var grounded_sprite_y: float = player.SHADOW_CENTER.y - (player.CHARACTER_FEET_BASELINE - player.CHARACTER_FRAME_SIZE * 0.5) * player.CHARACTER_SCALE.y
+	if player_sprite.frame_coords.y != 0 or not is_equal_approx(player_sprite.position.y, grounded_sprite_y) or player_sprite.scale != Vector2(2.2, 2.2):
 		_fail("Down-facing movement does not overlap the character with its shadow")
 		return
 	Input.action_release("ui_down")

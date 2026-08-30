@@ -29,6 +29,11 @@ const CONDITION_DYING := "濒死"
 
 const CHARACTER_SCALE := Vector2(2.2, 2.2)
 const CHARACTER_VISUAL_SCALE := 5.0
+const CHARACTER_FRAME_SIZE := 128.0
+const CHARACTER_FEET_BASELINE := 117.0
+const SHADOW_CENTER := Vector2(0.0, -5.0)
+const SHADOW_RADIUS := 75.0
+const SHADOW_VERTICAL_SCALE := 0.34
 const MALE_FRAME_COLUMNS := 12
 const MALE_DIRECTION_ROWS := 8
 
@@ -321,8 +326,8 @@ func _draw() -> void:
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
 	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
-	draw_set_transform(Vector2(15.0, -5.0), 0.0, Vector2(shadow_width * jump_scale, 0.34 * jump_scale))
-	draw_circle(Vector2.ZERO, 75.0, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
+	draw_set_transform(SHADOW_CENTER, 0.0, Vector2(shadow_width * jump_scale, SHADOW_VERTICAL_SCALE * jump_scale))
+	draw_circle(Vector2.ZERO, SHADOW_RADIUS, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
 	draw_set_transform(Vector2.ZERO)
 
 
@@ -457,17 +462,12 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 	_configure_sprite_sheet()
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
-	var sprite_position := Vector2(0.0, -160.0 - _jump_offset * CHARACTER_VISUAL_SCALE)
+	var grounded_sprite_y := SHADOW_CENTER.y - (CHARACTER_FEET_BASELINE - CHARACTER_FRAME_SIZE * 0.5) * CHARACTER_SCALE.y
+	var sprite_position := Vector2(0.0, grounded_sprite_y - _jump_offset * CHARACTER_VISUAL_SCALE)
 	var sprite_scale := CHARACTER_SCALE
 	match _movement_state:
-		STATE_CROUCH:
-			sprite_position.y = -145.0
-		STATE_PRONE, STATE_CRAWL:
-			sprite_position.y = -110.0
 		STATE_SWIM, STATE_DIVE:
 			sprite_position.y = -110.0
-	if moving and _facing_row == 0 and (_movement_state == STATE_WALK or _movement_state == STATE_RUN):
-		sprite_position.y += 20.0
 
 	sprite.position = sprite_position
 	sprite.scale = sprite_scale

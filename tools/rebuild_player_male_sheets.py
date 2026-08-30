@@ -1,4 +1,5 @@
 from pathlib import Path
+from statistics import median
 
 from PIL import Image
 
@@ -30,16 +31,44 @@ FRAME_COUNTS = {
 def rebuild(action_dir: Path) -> None:
     frame_count = FRAME_COUNTS.get(action_dir.name, 12)
     sheet = Image.new("RGBA", (CELL_SIZE * frame_count, CELL_SIZE * 8), (0, 0, 0, 0))
+    processed_directions: dict[str, list[Image.Image]] = {}
     for row, direction in enumerate(DIRECTIONS):
+        mirror_source = {"nw": "ne", "w": "e", "sw": "se"}.get(direction)
+        if mirror_source:
+            frames = [frame.transpose(Image.Transpose.FLIP_LEFT_RIGHT) for frame in processed_directions[mirror_source]]
+        else:
+            frames = [
+                Image.open(action_dir / "_source" / direction / f"{column + 1:02d}.png").convert("RGBA")
+                for column in range(frame_count)
+            ]
+            if action_dir.name in {"player_male_walk", "player_male_run"}:
+                loop_heights = [frame.getchannel("A").getbbox()[3] - frame.getchannel("A").getbbox()[1] for frame in frames[2:]]
+                target_height = round(median(loop_heights))
+                frames[2:] = [_stabilize_visible_height(frame, target_height) for frame in frames[2:]]
+        processed_directions[direction] = frames
         for column in range(frame_count):
             frame_path = action_dir / "_source" / direction / f"{column + 1:02d}.png"
-            frame = Image.open(frame_path).convert("RGBA")
+            frame = frames[column]
             if frame.size != (CELL_SIZE, CELL_SIZE):
                 raise ValueError(f"{frame_path} must be 128x128, got {frame.size}")
             sheet.alpha_composite(frame, (column * CELL_SIZE, row * CELL_SIZE))
     output = action_dir / "sheet-transparent.png"
     sheet.save(output)
     print(output)
+
+
+def _stabilize_visible_height(frame: Image.Image, target_height: int) -> Image.Image:
+    bounds = frame.getchannel("A").getbbox()
+    if bounds is None or bounds[3] - bounds[1] == target_height:
+        return frame
+    crop = frame.crop(bounds)
+    width = max(1, round(crop.width * target_height / crop.height))
+    resized = crop.resize((width, target_height), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    x = round((CELL_SIZE - width) * 0.5)
+    y = 117 - target_height
+    canvas.alpha_composite(resized, (x, y))
+    return canvas
 
 
 def main() -> None:

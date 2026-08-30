@@ -38,6 +38,8 @@ const SHADOW_VERTICAL_SCALE := 0.34
 const LEGACY_FRAME_COLUMNS := 12
 const NEW_ACTION_FRAME_COLUMNS := 16
 const MALE_DIRECTION_ROWS := 8
+const MOVEMENT_LOOP_START_FRAME := 2
+const ATTACK_FRAMES_PER_PUNCH := 8
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const MALE_RUN_TEXTURE := preload("res://assets/characters/player_male_run/sheet-transparent.png")
@@ -51,10 +53,10 @@ const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup
 const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
 const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/sheet-transparent.png")
 
-@export var move_speed := 85.0
-@export var run_speed := 140.0
-@export var crouch_speed := 41.0
-@export var crawl_speed := 23.0
+@export var move_speed := 170.0
+@export var run_speed := 280.0
+@export var crouch_speed := 82.0
+@export var crawl_speed := 46.0
 @export var jump_height := 30.0
 @export var jump_duration := 0.55
 @export var world_size := Vector2(2048.0, 2048.0)
@@ -71,7 +73,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var max_oxygen := 100.0
 @export var oxygen_drain_per_second := 7.0
 @export var oxygen_recovery_per_second := 24.0
-@export var attack_duration := 2.0
+@export var attack_duration := 0.48
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -90,6 +92,9 @@ var _is_picking_up := false
 var _pickup_elapsed := 0.0
 var _is_attacking := false
 var _attack_elapsed := 0.0
+var _attack_start_frame := 0
+var _next_attack_start_frame := 0
+var _queued_attacks := 0
 var torch_equipped := false
 var health := 100.0
 var stamina := 100.0
@@ -116,7 +121,7 @@ func _ready() -> void:
 	_ensure_action("player_crouch", KEY_C)
 	_ensure_action("player_crawl", KEY_Z)
 	_ensure_action("player_pickup", KEY_F)
-	_ensure_action("player_attack", KEY_J)
+	_ensure_mouse_action("player_attack", MOUSE_BUTTON_LEFT)
 	queue_redraw()
 
 
@@ -125,7 +130,7 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_set_movement_state(STATE_DEAD)
 		return
-	if Input.is_action_just_pressed("player_attack") and not _is_attacking:
+	if Input.is_action_just_pressed("player_attack"):
 		start_attack()
 	_update_attack(delta)
 	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up and not _is_attacking:
@@ -215,6 +220,8 @@ func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	_pickup_elapsed = 0.0
 	_is_attacking = false
 	_attack_elapsed = 0.0
+	_queued_attacks = 0
+	_next_attack_start_frame = 0
 	_active_animation = ""
 	set_torch_equipped(false)
 	if not water_mode and not is_dead:
@@ -234,6 +241,8 @@ func set_surface_swimming(value: bool) -> void:
 	_pickup_elapsed = 0.0
 	_is_attacking = false
 	_attack_elapsed = 0.0
+	_queued_attacks = 0
+	_next_attack_start_frame = 0
 	_active_animation = ""
 	velocity = Vector2.ZERO
 	set_oxygen(max_oxygen)
@@ -263,10 +272,27 @@ func start_pickup() -> void:
 
 
 func start_attack() -> void:
-	if _is_jumping or _is_picking_up or _is_attacking or water_mode or surface_swimming:
+	if _is_jumping or _is_picking_up or water_mode or surface_swimming:
 		return
+	if _is_attacking:
+		_queued_attacks += 1
+		return
+	_begin_attack()
+
+
+func get_queued_attack_count() -> int:
+	return _queued_attacks
+
+
+func get_movement_loop_start_frame(animation: String) -> int:
+	return MOVEMENT_LOOP_START_FRAME if animation == "walk" or animation == "run" else 0
+
+
+func _begin_attack() -> void:
 	_is_attacking = true
 	_attack_elapsed = 0.0
+	_attack_start_frame = _next_attack_start_frame
+	_next_attack_start_frame = ATTACK_FRAMES_PER_PUNCH if _attack_start_frame == 0 else 0
 	_set_movement_state(STATE_ATTACK)
 
 
@@ -369,6 +395,17 @@ func _ensure_action(action: StringName, key: Key) -> void:
 	InputMap.action_add_event(action, event)
 
 
+func _ensure_mouse_action(action: StringName, button: MouseButton) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	for existing: InputEvent in InputMap.action_get_events(action):
+		if existing is InputEventMouseButton and existing.button_index == button:
+			return
+	var event := InputEventMouseButton.new()
+	event.button_index = button
+	InputMap.action_add_event(action, event)
+
+
 func _update_jump(delta: float) -> void:
 	if not _is_jumping:
 		_jump_offset = 0.0
@@ -394,9 +431,16 @@ func _update_attack(delta: float) -> void:
 	if not _is_attacking:
 		return
 	_attack_elapsed += delta
-	if _attack_elapsed >= maxf(attack_duration, 0.1):
-		_is_attacking = false
-		_attack_elapsed = 0.0
+	var duration := maxf(attack_duration, 0.1)
+	while _attack_elapsed >= duration:
+		_attack_elapsed -= duration
+		if _queued_attacks > 0:
+			_queued_attacks -= 1
+			_begin_attack()
+		else:
+			_is_attacking = false
+			_attack_elapsed = 0.0
+			break
 
 
 func _update_stamina(delta: float, running: bool) -> void:
@@ -566,7 +610,8 @@ func _animation_texture(animation: String) -> Texture2D:
 func _animation_frame(animation: String, moving: bool) -> int:
 	var frame_count := _animation_frame_count(animation)
 	if animation == "attack":
-		return mini(floori(clampf(_attack_elapsed / maxf(attack_duration, 0.1), 0.0, 0.999) * float(frame_count)), frame_count - 1)
+		var local_frame := mini(floori(clampf(_attack_elapsed / maxf(attack_duration, 0.1), 0.0, 0.999) * float(ATTACK_FRAMES_PER_PUNCH)), ATTACK_FRAMES_PER_PUNCH - 1)
+		return _attack_start_frame + local_frame
 	if animation == "pickup":
 		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * float(frame_count)), frame_count - 1)
 	if animation == "torch_hold":
@@ -582,8 +627,9 @@ func _animation_frame(animation: String, moving: bool) -> int:
 		return floori(_animation_elapsed / 0.10) % frame_count
 	if not moving:
 		return 0
-	var frame_duration := 0.125 if animation == "run" or animation == "walk" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
-	return floori(_animation_elapsed / frame_duration) % frame_count
+	var frame_duration := 0.09 if animation == "run" else 0.11 if animation == "walk" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
+	var start_frame := get_movement_loop_start_frame(animation)
+	return start_frame + floori(_animation_elapsed / frame_duration) % (frame_count - start_frame)
 
 
 func _animation_frame_count(animation: String) -> int:

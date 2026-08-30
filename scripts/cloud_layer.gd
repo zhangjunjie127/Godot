@@ -36,12 +36,12 @@ func set_weather(value: String) -> void:
 	current_weather = value
 	visible = current_weather in ["晴朗", "阴天"]
 	var active_count := OVERCAST_CLOUD_COUNT if current_weather == "阴天" else CLEAR_CLOUD_COUNT
-	var cloud_color := Color(0.68, 0.73, 0.76, 0.82) if current_weather == "阴天" else Color(1.0, 1.0, 1.0, 0.70)
+	var shadow_color := Color(0.04, 0.06, 0.08, 0.24) if current_weather == "阴天" else Color(0.08, 0.10, 0.11, 0.13)
 	for index: int in range(clouds.size()):
 		var sprite := clouds[index]["sprite"] as Sprite2D
 		sprite.visible = index < active_count
-		sprite.self_modulate = cloud_color
-		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (2.2 if current_weather == "阴天" else 1.0)
+		sprite.self_modulate = shadow_color
+		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (3.4 if current_weather == "阴天" else 2.5)
 
 
 func advance_clouds(seconds: float) -> void:
@@ -81,6 +81,10 @@ func get_cloud_tint() -> Color:
 	return Color.WHITE
 
 
+func is_shadow_only() -> bool:
+	return true
+
+
 func _populate_clouds() -> void:
 	for child: Node in get_children():
 		child.queue_free()
@@ -89,13 +93,13 @@ func _populate_clouds() -> void:
 		var cell := _random_cloud_cell()
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
 		var sprite := Sprite2D.new()
-		sprite.name = "Cloud%d" % (index + 1)
+		sprite.name = "CloudShadow%d" % (index + 1)
 		sprite.texture = ArtAssets.texture(CLOUD_TEXTURE.resource_path, CLOUD_TEXTURE)
 		sprite.hframes = 3
 		sprite.vframes = 3
 		sprite.frame = cell
 		sprite.scale = Vector2.ONE * cloud_scale
-		sprite.self_modulate = Color(1.0, 1.0, 1.0, 0.70)
+		sprite.self_modulate = Color(0.08, 0.10, 0.11, 0.13)
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		sprite.position = Vector2(
 			world_size.x * (float(index) + 0.35) / float(OVERCAST_CLOUD_COUNT),

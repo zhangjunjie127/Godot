@@ -394,27 +394,21 @@ func _sync_rain_visual_layers() -> void:
 		if _wetness_overlay.material != null:
 			_wetness_overlay.material.set_shader_parameter("rain_intensity", wet_strength)
 	if _puddle_surface != null:
-		_puddle_surface.visible = puddle_amount > 0.001
+		_puddle_surface.visible = false
 		if _puddle_surface.material != null:
 			_puddle_surface.material.set_shader_parameter("rain_intensity", visual_rain_density)
-			_puddle_surface.material.set_shader_parameter("puddle_amount", puddle_amount)
+			_puddle_surface.material.set_shader_parameter("puddle_amount", 0.0)
 	if _ground_effects != null:
 		if _ground_effects.has_method("set_weather_state"):
-			_ground_effects.set_weather_state(wet_strength, puddle_amount)
+			_ground_effects.set_weather_state(wet_strength, 0.0)
 		elif _ground_effects.has_method("set_rain_strength"):
 			_ground_effects.set_rain_strength(wet_strength)
 	if _screen_rain_effect != null and _screen_rain_effect.has_method("set_intensity"):
 		_screen_rain_effect.set_intensity(visual_rain_density)
 
 
-func _update_puddle_accumulation(delta: float) -> void:
-	if visual_rain_density >= PUDDLE_START_STRENGTH:
-		var target_amount := visual_rain_density
-		if target_amount > puddle_amount:
-			var formation_rate := maxf(visual_rain_density, 0.12) / maxf(puddle_formation_seconds, 0.1)
-			puddle_amount = move_toward(puddle_amount, target_amount, formation_rate * delta)
-	elif visual_rain_density <= 0.001:
-		puddle_amount = move_toward(puddle_amount, 0.0, delta / maxf(puddle_drain_seconds, 0.1))
+func _update_puddle_accumulation(_delta: float) -> void:
+	puddle_amount = 0.0
 
 
 func _sync_snow_visual_layer(delta: float) -> void:

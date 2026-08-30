@@ -35,7 +35,6 @@ func _run() -> void:
 	await physics_frame
 
 	var player: CharacterBody2D = scene.get_node("World/DepthSorted/Player")
-	var grass: Area2D = scene.get_node("World/DepthSorted/EastGrass")
 	var health_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthBar")
 	var health_label: Label = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HealthGroup/HealthLabel")
 	var stamina_bar: ProgressBar = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup/StaminaBar")
@@ -47,7 +46,6 @@ func _run() -> void:
 	var stamina_group: Control = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup")
 	var hunger_group: Control = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/HungerGroup")
 	var condition_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon")
-	var action_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon")
 	var visibility_icon: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon")
 	var phase_icon: TextureRect = scene.get_node("HUD/PhasePanel/Margin/PhaseIcon")
 	var player_status: PanelContainer = scene.get_node("HUD/PlayerStatus")
@@ -59,6 +57,7 @@ func _run() -> void:
 	var boar_sprite: Sprite2D = wild_boar.get_node("Sprite2D")
 	var day_night_cycle = scene.get_node("DayNightCycle")
 	var weather = scene.get_node("Weather/Effect")
+	var wet_footstep_audio := scene.get_node("Weather/WetFootstep") as AudioStreamPlayer
 	var wetness_overlay: ColorRect = scene.get_node("Weather/Wetness")
 	var rain_visual = scene.get_node("Weather/RainVisuals")
 	var far_rain: GPUParticles2D = rain_visual.get_node("FarStreaks")
@@ -93,8 +92,8 @@ func _run() -> void:
 	if player.world_size != Vector2(8192.0, 8192.0):
 		_fail("Replacement map did not load its 8192 world size")
 		return
-	if player.move_speed != 85.0 or player.run_speed != 140.0 or player.crouch_speed != 41.0 or player.crawl_speed != 23.0:
-		_fail("Player movement speeds were not reduced by 50 percent")
+	if player.move_speed != 170.0 or player.run_speed != 280.0 or player.crouch_speed != 82.0 or player.crawl_speed != 46.0:
+		_fail("Normal player movement speeds were not restored")
 		return
 	if not is_equal_approx(camera.zoom.x, 0.273):
 		_fail("Camera was not pulled back by 50 percent")
@@ -174,16 +173,19 @@ func _run() -> void:
 	if not forecast_popup.visible or not forecast_label.text.contains("未来 1 日") or weather.get_forecast(2).size() != 2:
 		_fail("Two-day scheduled weather forecast did not initialize")
 		return
-	if not _icon_is_ready(action_icon, "站立") or not _icon_is_ready(condition_icon, "开心") or not _icon_is_ready(visibility_icon, "公开可见"):
+	if scene.get_node_or_null("HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon") != null:
+		_fail("Movement-state icon was not removed from the player HUD")
+		return
+	if not _icon_is_ready(condition_icon, "开心") or not _icon_is_ready(visibility_icon, "公开可见"):
 		_fail("Player HUD status icons did not initialize")
 		return
-	if action_icon.custom_minimum_size != Vector2(32.0, 32.0) or condition_icon.custom_minimum_size != Vector2(32.0, 32.0) or visibility_icon.custom_minimum_size != Vector2(32.0, 32.0):
+	if condition_icon.custom_minimum_size != Vector2(32.0, 32.0) or visibility_icon.custom_minimum_size != Vector2(32.0, 32.0):
 		_fail("Player status icons were not enlarged")
 		return
 	if phase_icon.custom_minimum_size != Vector2(32.0, 32.0):
 		_fail("Day phase icon was not enlarged inside its fixed panel")
 		return
-	if (action_icon.texture as AtlasTexture).region.size != Vector2(48.0, 48.0) or (phase_icon.texture as AtlasTexture).region.size != Vector2(40.0, 40.0):
+	if (phase_icon.texture as AtlasTexture).region.size != Vector2(40.0, 40.0):
 		_fail("Transparent icon padding was not cropped for readability")
 		return
 	if weather.current_weather != "下雨":
@@ -194,8 +196,8 @@ func _run() -> void:
 		_fail("Rain did not fade in gradually")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if not wetness_overlay.visible or not puddle_surface.visible or not weather_ground.raining:
-		_fail("Layered rain did not enable wet grading, puddles and ground effects")
+	if not wetness_overlay.visible or puddle_surface.visible or not weather_ground.raining or weather.get_puddle_amount() != 0.0:
+		_fail("Rain did not retain wet grading while keeping puddle visuals disabled")
 		return
 	if not is_equal_approx(rain_visual.intensity, weather.visual_rain_density) or rain_visual.get_layer_particle_counts() != Vector2i(360, 160):
 		_fail("Rain streak layer did not follow the authoritative weather intensity")
@@ -207,34 +209,11 @@ func _run() -> void:
 	var thunder_audio := scene.get_node("Weather/Thunder") as AudioStreamPlayer
 	var day_birds_audio := scene.get_node("Weather/DayBirds") as AudioStreamPlayer
 	var day_wind_audio := scene.get_node("Weather/DayWind") as AudioStreamPlayer
-	if audio_players.size() != 4 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players or day_birds_audio not in audio_players or day_wind_audio not in audio_players:
-		_fail("Weather audio must contain only rain, thunder, daytime birds and daytime wind")
+	if audio_players.size() != 5 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players or day_birds_audio not in audio_players or day_wind_audio not in audio_players or wet_footstep_audio not in audio_players:
+		_fail("Rainy footstep audio was not retained with the weather audio")
 		return
-	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("puddle_amount") <= 0.0:
-		_fail("Wet grade or puddle refraction shader did not receive rain intensity")
-		return
-	if puddle_surface.material.get_shader_parameter("puddle_mask") != puddle_surface.texture or puddle_surface.material.get_shader_parameter("ripple_flow") == null:
-		_fail("Puddle refraction does not share the authored mask and G/B ripple field")
-		return
-	var ripple_flow_texture := puddle_surface.material.get_shader_parameter("ripple_flow") as Texture2D
-	var ripple_flow_image := ripple_flow_texture.get_image()
-	var ripple_channel_difference := 0.0
-	for sample_y: int in range(1, 8):
-		for sample_x: int in range(1, 8):
-			var ripple_sample := ripple_flow_image.get_pixel(ripple_flow_image.get_width() * sample_x / 8, ripple_flow_image.get_height() * sample_y / 8)
-			ripple_channel_difference += absf(ripple_sample.g - ripple_sample.b)
-	if ripple_channel_difference < 0.1:
-		_fail("Puddle ripple field does not contain independent G/B motion channels")
-		return
-	var small_cutoff: Variant = puddle_surface.material.get_shader_parameter("small_cutoff")
-	var medium_cutoff: Variant = puddle_surface.material.get_shader_parameter("medium_cutoff")
-	var heavy_cutoff: Variant = puddle_surface.material.get_shader_parameter("heavy_cutoff")
-	var medium_spread: Variant = puddle_surface.material.get_shader_parameter("medium_spread_pixels")
-	var heavy_spread: Variant = puddle_surface.material.get_shader_parameter("heavy_spread_pixels")
-	var edge_feather: Variant = puddle_surface.material.get_shader_parameter("edge_feather_pixels")
-	var water_opacity: Variant = puddle_surface.material.get_shader_parameter("water_opacity")
-	if small_cutoff == null or medium_cutoff == null or heavy_cutoff == null or medium_spread == null or heavy_spread == null or edge_feather == null or water_opacity == null or float(small_cutoff) <= float(medium_cutoff) or not is_equal_approx(float(medium_spread), 3.0) or not is_equal_approx(float(heavy_spread), 4.0) or float(edge_feather) <= 0.0 or float(water_opacity) < 0.40:
-		_fail("Medium and heavy puddle coverage were not doubled")
+	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or float(puddle_surface.material.get_shader_parameter("puddle_amount")) != 0.0:
+		_fail("Wet grade or disabled puddle shader state is incorrect")
 		return
 	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 255:
 		_fail("Medium rain density did not initialize")
@@ -262,20 +241,18 @@ func _run() -> void:
 	weather.set_rain_level("中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var medium_impact_rate: float = weather_ground.get_impact_spawn_rate()
-	var medium_ripple_rate: float = weather_ground.get_ripple_spawn_rate()
-	var medium_puddle_amount: float = weather.get_puddle_amount()
-	if not puddle_surface.visible or medium_puddle_amount <= 0.0 or medium_impact_rate <= light_impact_rate or medium_ripple_rate <= 0.0:
-		_fail("Medium rain should add limited puddles, splashes and ripples")
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or medium_impact_rate <= light_impact_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
+		_fail("Medium rain should strengthen splashes without enabling puddles")
 		return
 	weather.set_rain_level("大雨")
 	weather.advance_visual_seconds(weather.puddle_formation_seconds)
-	if weather.get_puddle_amount() <= medium_puddle_amount or weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() <= medium_ripple_rate:
-		_fail("Heavy rain should increase puddles, splashes and ripple emphasis")
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
+		_fail("Heavy rain should increase splash density without puddles")
 		return
 	weather.set_rain_level("小雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if not puddle_surface.visible or weather.get_puddle_amount() <= medium_puddle_amount:
-		_fail("Puddles drained while rain was still falling")
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0:
+		_fail("Puddle visuals returned while rain was falling")
 		return
 	weather.set_rain_level("大雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
@@ -304,7 +281,7 @@ func _run() -> void:
 		_fail("Rain stopped abruptly instead of fading out")
 		return
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
-	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or not puddle_surface.visible or weather.get_puddle_amount() <= 0.0 or weather_ground.raining or rain_visual.is_audio_playing():
+	if weather.visual_rain_density != 0.0 or wetness_overlay.visible or puddle_surface.visible or weather.get_puddle_amount() != 0.0 or weather_ground.raining or rain_visual.is_audio_playing():
 		_fail("Rain fade-out did not finish cleanly")
 		return
 	screen_rain.advance_effects(0.2)
@@ -321,46 +298,28 @@ func _run() -> void:
 		return
 	weather.start_weather_event("下雨", "半天", "中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds + weather.puddle_formation_seconds)
-	if not weather_ground.has_method("is_puddle_position") or not weather_ground.has_method("spawn_step_feedback"):
-		_fail("Player puddle feedback API is missing")
-		return
-	if weather_ground.puddle_mask != puddle_surface.texture:
-		_fail("Puddle visuals and player footstep sampling do not share the same art texture")
-		return
 	var wet_step_position := Vector2(2176.0, 1952.0)
-	var dry_step_position := Vector2(32.0, 32.0)
-	if not weather_ground.is_puddle_position(wet_step_position) or weather_ground.is_puddle_position(dry_step_position):
-		_fail("Puddle mask sampling does not match known wet and dry terrain")
-		return
 	weather_ground._impacts.clear()
 	weather_ground._ripples.clear()
-	if not weather_ground.spawn_step_feedback(wet_step_position, 1.0) or weather_ground._impacts.size() != 1 or weather_ground._ripples.size() != 1:
-		_fail("Walking through a puddle did not create a splash and ripple")
-		return
-	if weather_ground.spawn_step_feedback(dry_step_position, 1.0) or weather_ground._impacts.size() != 1 or weather_ground._ripples.size() != 1:
-		_fail("Dry-ground footsteps incorrectly created puddle feedback")
-		return
-	weather_ground._impacts.clear()
-	weather_ground._ripples.clear()
+	var step_audio_before: int = scene.get_rain_step_play_count()
 	player.global_position = wet_step_position
 	scene._last_puddle_step_position = wet_step_position - Vector2(32.0, 0.0)
 	scene._process(0.0)
-	if weather_ground._impacts.is_empty() or weather_ground._ripples.is_empty():
-		_fail("Main gameplay movement did not trigger puddle footsteps")
+	if scene.get_rain_step_play_count() != step_audio_before + 1 or not weather_ground._impacts.is_empty() or not weather_ground._ripples.is_empty():
+		_fail("Rainy movement did not keep footstep audio separate from puddle visuals")
 		return
-	var initial_impact_count: int = weather_ground._impacts.size()
-	var initial_ripple_count: int = weather_ground._ripples.size()
+	var initial_impact_count := 0
 	var puddle_position := Vector2(32.0, 32.0)
 	if not weather_ground.is_feedback_area(puddle_position):
 		_fail("Rain feedback rejected ordinary terrain")
 		return
 	weather_ground.spawn_impact(puddle_position)
-	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != initial_ripple_count:
-		_fail("Dry-ground rain impact did not create a splash-only response")
+	if weather_ground._impacts.size() != initial_impact_count + 1 or not weather_ground._ripples.is_empty():
+		_fail("Rain impact did not create a splash-only response")
 		return
 	weather_ground.spawn_impact(wet_step_position)
-	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != initial_ripple_count + 1:
-		_fail("Puddle rain impact did not create a ripple-only response")
+	if weather_ground._impacts.size() != initial_impact_count + 2 or not weather_ground._ripples.is_empty():
+		_fail("Disabled puddles still created rain ripples")
 		return
 	weather_ground.set_rain_strength(0.0)
 	weather_ground.advance_effects(2.0)
@@ -482,19 +441,23 @@ func _run() -> void:
 	if stone_axe_button.icon == null or torch_button.icon == null or stone_axe_button.tooltip_text.find("石斧") < 0 or torch_button.tooltip_text.find("火把") < 0:
 		_fail("Stone axe or torch inventory icon did not render")
 		return
-	if skill_branches.get_child_count() != 3 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
-		_fail("Three-branch skill tree did not initialize")
+	if skill_branches.get_child_count() != 5 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
+		_fail("Primitive Era five-branch skill tree did not initialize")
 		return
 	if ritual_row.get_parent() != skill_branches.get_parent() or ritual_row.get_index() <= skill_branches.get_index():
-		_fail("Ascension ritual was not placed to the right of all three branches")
+		_fail("Ascension ritual was not placed after all five branches")
 		return
 	cloud_layer.set_weather("晴朗")
-	if cloud_layer.get_active_cloud_count() != 4:
-		_fail("Clear weather did not show randomized clouds")
+	if cloud_layer.get_active_cloud_count() != 4 or not cloud_layer.is_shadow_only():
+		_fail("Clear weather did not show randomized ground shadows")
 		return
 	for cloud: Dictionary in cloud_layer.clouds:
 		if not cloud_layer.BLOCK_CLOUD_CELLS.has(int(cloud["cell"])):
 			_fail("Thin cloud frames were not removed")
+			return
+		var shadow := cloud["sprite"] as Sprite2D
+		if shadow.self_modulate.r > 0.2 or shadow.self_modulate.a > 0.30:
+			_fail("Visible white clouds remained instead of ground shadows")
 			return
 	cloud_layer.set_weather("下雨")
 	if cloud_layer.get_active_cloud_count() != 0:
@@ -504,19 +467,16 @@ func _run() -> void:
 		if branch_row.get_child_count() != 8:
 			_fail("Skill branch did not render four illuminated nodes")
 			return
-	if scene.skill_tree.get_total_skill_count() != 12:
-		_fail("Skill tree does not contain 12 branch skills")
+	if scene.skill_tree.get_total_skill_count() != 20 or scene.skill_tree.get_total_skill_cost() != 40:
+		_fail("Primitive Era skill tree does not contain 20 skills costing 40 SP")
 		return
-	if scene.get_node_or_null("World/DepthSorted/EastGrass") == null:
-		_fail("Interactive vegetation did not load")
+	if scene.get_node_or_null("World/DepthSorted/EastGrass") != null:
+		_fail("Interactive vegetation was not removed")
 		return
-	var vegetation_count := 0
 	for child: Node in depth_sorted.get_children():
-		if child.name.begins_with("New"):
-			vegetation_count += 1
-	if vegetation_count != 0:
-		_fail("Decorative vegetation props were not removed")
-		return
+		if child.name.to_lower().contains("grass") or child.name.to_lower().contains("tree") or child.name.to_lower().contains("plant"):
+			_fail("A vegetation patch remains in the depth-sorted map")
+			return
 	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
 		_fail("Male player 16-frame eight-direction animation sheet did not load")
 		return
@@ -630,11 +590,8 @@ func _run() -> void:
 		_fail("Central rock needle collision did not load")
 		return
 
-	player.global_position = grass.global_position
-	for _frame: int in range(10):
-		await physics_frame
-		if visibility_icon.tooltip_text == "草丛隐蔽":
-			break
+	player.enter_cover(scene)
+	await process_frame
 	if not _icon_is_ready(visibility_icon, "草丛隐蔽"):
 		push_error("Player did not enter concealment")
 		quit(1)
@@ -651,11 +608,8 @@ func _run() -> void:
 		return
 	player.set_local_player(true)
 
-	player.global_position = Vector2(4100.0, 4700.0)
-	for _frame: int in range(8):
-		await physics_frame
-		if visibility_icon.tooltip_text == "公开可见":
-			break
+	player.exit_cover(scene)
+	await process_frame
 	if not _icon_is_ready(visibility_icon, "公开可见"):
 		push_error("Player did not leave concealment")
 		quit(1)
@@ -665,7 +619,7 @@ func _run() -> void:
 	Input.action_press("ui_right")
 	for _frame: int in range(10):
 		await physics_frame
-	if not _icon_is_ready(action_icon, "奔跑"):
+	if player.get_movement_state() != player.STATE_RUN:
 		_fail("Run state did not activate")
 		return
 	if player_sprite.frame_coords.y != 2 or player_sprite.frame_coords.x == 0:
@@ -728,7 +682,7 @@ func _run() -> void:
 	Input.action_press("player_crouch")
 	await physics_frame
 	await physics_frame
-	if not _icon_is_ready(action_icon, "蹲伏"):
+	if player.get_movement_state() != player.STATE_CROUCH:
 		_fail("Crouch state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crouch/sheet-transparent.png":
@@ -742,7 +696,7 @@ func _run() -> void:
 	Input.action_press("player_crawl")
 	for _frame: int in range(18):
 		await physics_frame
-	if not _icon_is_ready(action_icon, "趴下"):
+	if player.get_movement_state() != player.STATE_PRONE:
 		_fail("Prone state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_prone_idle/sheet-transparent.png":
@@ -754,7 +708,7 @@ func _run() -> void:
 	Input.action_press("ui_right")
 	for _frame: int in range(12):
 		await physics_frame
-	if not _icon_is_ready(action_icon, "爬行"):
+	if player.get_movement_state() != player.STATE_CRAWL:
 		_fail("Prone movement did not enter the crawl state")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_crawl/sheet-transparent.png":
@@ -769,13 +723,13 @@ func _run() -> void:
 	Input.action_press("player_pickup")
 	await physics_frame
 	await physics_frame
-	if action_icon.tooltip_text != "拾取" or player_sprite.texture.resource_path != "res://assets/characters/player_male_pickup/sheet-transparent.png":
+	if player.get_movement_state() != player.STATE_PICKUP or player_sprite.texture.resource_path != "res://assets/characters/player_male_pickup/sheet-transparent.png":
 		_fail("F did not trigger the four-direction pickup animation")
 		return
 	Input.action_release("player_pickup")
 	for _frame: int in range(50):
 		await physics_frame
-	if action_icon.tooltip_text == "拾取":
+	if player.get_movement_state() == player.STATE_PICKUP:
 		_fail("Pickup animation did not return to movement control")
 		return
 
@@ -784,20 +738,20 @@ func _run() -> void:
 	for _frame: int in range(4):
 		await physics_frame
 	Input.action_release("player_attack")
-	if action_icon.tooltip_text != "攻击" or player_sprite.texture.resource_path != "res://assets/characters/player_male_attack/sheet-transparent.png" or player_sprite.hframes != 16 or player_sprite.frame_coords.x == 0:
-		_fail("J did not trigger the 16-frame eight-direction attack animation")
+	if player.get_movement_state() != player.STATE_ATTACK or player_sprite.texture.resource_path != "res://assets/characters/player_male_attack/sheet-transparent.png" or player_sprite.hframes != 16:
+		_fail("Left click did not trigger the eight-direction punch animation")
 		return
 	for _frame: int in range(20):
 		await physics_frame
-	player.attack_duration = 2.0
-	if action_icon.tooltip_text == "攻击":
+	player.attack_duration = 0.48
+	if player.get_movement_state() == player.STATE_ATTACK:
 		_fail("Attack animation did not return to movement control")
 		return
 
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
-	if not _icon_is_ready(action_icon, "跳跃"):
+	if player.get_movement_state() != player.STATE_JUMP:
 		_fail("Jump state did not activate")
 		return
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_jump/sheet-transparent.png":
@@ -852,14 +806,21 @@ func _run() -> void:
 		return
 	scene._toggle_world_map()
 
+	scene.skill_tree.add_skill_points(28)
 	for branch: Dictionary in scene.skill_tree.BRANCHES:
 		for skill: Dictionary in branch["skills"]:
 			var skill_id := String(skill["id"])
 			if not scene.skill_tree.unlock_skill(skill_id):
 				_fail("Skill branch could not unlock: " + skill_id)
 				return
-	if scene.skill_tree.skill_points != 0 or not scene.skill_tree.is_ritual_ready():
-		_fail("Ritual did not activate after all skills were filled")
+	if scene.skill_tree.skill_points != 0 or scene.skill_tree.is_ritual_ready():
+		_fail("Ritual ignored the era proof or personally gathered materials")
+		return
+	for material_id: String in scene.skill_tree.RITUAL_CORE_MATERIALS:
+		scene.skill_tree.add_personal_material(material_id, int(scene.skill_tree.RITUAL_CORE_MATERIALS[material_id]))
+	scene.skill_tree.add_era_proof("狂暴猿王")
+	if not scene.skill_tree.is_ritual_ready():
+		_fail("Complete Primitive Era requirements did not activate the ritual")
 		return
 	if not scene.skill_tree.unlock_skill("ascension_ritual") or scene.skill_tree.current_era != "青铜时代":
 		_fail("Ritual did not evolve the player to the next era")

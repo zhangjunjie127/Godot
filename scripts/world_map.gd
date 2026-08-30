@@ -34,13 +34,15 @@ func _ready() -> void:
 	if manifest.is_empty():
 		return
 	_content_scale = float(manifest.get("contentScale", 1.0))
+	var show_vegetation := bool(manifest.get("showVegetation", true))
 	_chunk_size = float(manifest.get("chunkSize", DEFAULT_CHUNK_SIZE)) * _content_scale
 	_chunk_definitions.assign(manifest.get("chunks", []))
 	_water_surface = manifest.get("waterSurface", {})
 	_cache_water_polygons()
 	if Engine.is_editor_hint():
 		_add_all_chunks()
-		_add_props(manifest.get("props", []))
+		if show_vegetation:
+			_add_props(manifest.get("props", []))
 		queue_redraw()
 		return
 
@@ -49,9 +51,10 @@ func _ready() -> void:
 	player.global_position = _scaled_point(manifest.get("spawn", {}))
 	_apply_camera_limits(map_size)
 	_refresh_streamed_chunks(true)
-	_add_props(manifest.get("props", []))
-	_add_grass_patches(manifest.get("grass", []))
-	_add_resource_nodes(manifest.get("resources", []))
+	if show_vegetation:
+		_add_props(manifest.get("props", []))
+		_add_grass_patches(manifest.get("grass", []))
+	_add_resource_nodes(manifest.get("resources", []), show_vegetation)
 	_add_zone_markers(manifest.get("zones", []))
 
 
@@ -224,8 +227,10 @@ func _add_grass_patches(patches: Array) -> void:
 		depth_sorted.add_child(grass)
 
 
-func _add_resource_nodes(resources: Array) -> void:
+func _add_resource_nodes(resources: Array, include_vegetation := true) -> void:
 	for data: Dictionary in resources:
+		if not include_vegetation and String(data.get("resourceId", "")) != "stone":
+			continue
 		var resource_node := RESOURCE_NODE_SCRIPT.new()
 		resource_node.name = String(data.get("id", "Resource")).to_pascal_case()
 		resource_node.position = Vector2(float(data.get("x", 0.0)), float(data.get("y", 0.0))) * _content_scale

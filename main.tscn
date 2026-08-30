@@ -26,6 +26,7 @@
 [ext_resource type="AudioStream" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
 [ext_resource type="AudioStream" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
 [ext_resource type="AudioStream" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
+[ext_resource type="AudioStream" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -295,7 +296,7 @@ z_index = 20
 [node name="GameplayMetadata" type="Node" parent="World"]
 
 [node name="Clouds" type="Node2D" parent="World"]
-z_index = 30
+z_index = -4
 script = ExtResource("14_cloud_layer")
 weather_path = NodePath("../../Weather/Effect")
 day_night_cycle_path = NodePath("../../DayNightCycle")
@@ -330,6 +331,10 @@ volume_db = -50.0
 [node name="DayWind" type="AudioStreamPlayer" parent="Weather"]
 stream = ExtResource("26_day_wind")
 volume_db = -50.0
+
+[node name="WetFootstep" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("27_wet_footstep")
+volume_db = -12.0
 
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3
@@ -509,19 +514,12 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="IndicatorRow" type="HBoxContainer" parent="HUD/PlayerStatus/Margin/Content/Stats"]
-custom_minimum_size = Vector2(106, 32)
+custom_minimum_size = Vector2(69, 32)
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
 [node name="ConditionIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-mouse_filter = 0
-expand_mode = 1
-stretch_mode = 5
-
-[node name="ActionIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 0

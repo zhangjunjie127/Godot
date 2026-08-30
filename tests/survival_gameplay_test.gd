@@ -32,29 +32,33 @@ func _run() -> void:
 		return
 
 	var clouds := scene.get_node_or_null("World/Clouds")
-	if clouds == null or not (clouds is Node2D):
-		_fail("Clouds are not world-space Node2D scenery")
+	if clouds == null or not (clouds is Node2D) or not clouds.is_shadow_only():
+		_fail("Cloud shadows are not world-space Node2D scenery")
 		return
 	clouds.set_weather("晴朗")
 	var cloud_before: Vector2 = clouds.get_cloud_world_position(0)
 	player.global_position += Vector2(260.0, 120.0)
 	if not clouds.is_processing():
-		_fail("Clouds are not processing independently")
+		_fail("Cloud shadows are not processing independently")
 		return
 	clouds.process_mode = Node.PROCESS_MODE_DISABLED
 	clouds.advance_clouds(1.0)
 	var cloud_after: Vector2 = clouds.get_cloud_world_position(0)
 	if absf(cloud_after.y - cloud_before.y) > 8.0:
-		_fail("Clouds followed the player or camera")
+		_fail("Cloud shadows followed the player or camera")
 		return
 	var cloud_distance := cloud_before.x - cloud_after.x
 	var expected_cloud_distance := float(clouds.clouds[0]["speed"])
 	if not is_equal_approx(cloud_distance, expected_cloud_distance):
-		_fail("Cloud movement did not match its independent speed")
+		_fail("Cloud-shadow movement did not match its independent speed")
 		return
 	var cloud_speeds: Array[float] = []
 	for cloud: Dictionary in clouds.clouds:
 		cloud_speeds.append(float(cloud["speed"]))
+		var shadow := cloud["sprite"] as Sprite2D
+		if shadow.self_modulate.r > 0.2 or shadow.self_modulate.a > 0.30:
+			_fail("A visible white cloud remained instead of a ground shadow")
+			return
 	if cloud_speeds.min() < 26.0 or cloud_speeds.max() > 34.0 or cloud_speeds.max() - cloud_speeds.min() < 1.0:
 		_fail("Clouds do not have close but visibly independent speeds")
 		return
@@ -70,46 +74,17 @@ func _run() -> void:
 			return
 
 	var resource_nodes := get_nodes_in_group("interactable_resource")
-	var action_types := {}
-	for node: Node in resource_nodes:
-		action_types[String(node.action_type)] = true
-	for required_action: String in ["采集", "采石", "伐木"]:
-		if not action_types.has(required_action):
-			_fail("Missing world resource action: " + required_action)
-			return
-
-	var gather_node: Node2D = null
-	for node: Node in resource_nodes:
-		if String(node.action_type) == "采集":
-			gather_node = node as Node2D
-			break
-	if gather_node == null:
-		_fail("No gatherable food node was loaded")
+	if resource_nodes.size() != 1 or String(resource_nodes[0].action_type) != "采石":
+		_fail("Trees, plants or vegetation resource nodes remain on the map")
 		return
-	var gather_item_id := String(gather_node.resource_id)
-	var gather_before: int = scene.inventory.get_item_count(gather_item_id)
-	player.global_position = gather_node.global_position
-	scene._try_interact()
-	if scene.inventory.get_item_count(gather_item_id) <= gather_before:
-		_fail("Gathering did not add food to the backpack")
+	var stone_node := resource_nodes[0]
+	var stone_before: int = scene.inventory.get_item_count("stone")
+	player.global_position = stone_node.global_position
+	for _hit: int in range(stone_node.hits_required):
+		scene._try_interact()
+	if scene.inventory.get_item_count("stone") <= stone_before:
+		_fail("The non-vegetation stone resource stopped working")
 		return
-	for action_name: String in ["采石", "伐木"]:
-		var target: Node2D = null
-		for node: Node in resource_nodes:
-			if String(node.action_type) == action_name:
-				target = node as Node2D
-				break
-		if target == null:
-			_fail("No resource node for " + action_name)
-			return
-		var item_id := String(target.resource_id)
-		var item_before: int = scene.inventory.get_item_count(item_id)
-		player.global_position = target.global_position
-		for _hit: int in range(target.hits_required):
-			scene._try_interact()
-		if scene.inventory.get_item_count(item_id) <= item_before:
-			_fail(action_name + " did not add material to the backpack")
-			return
 
 	var boar = scene.get_node("World/DepthSorted/WildBoar")
 	if not boar.scale.is_equal_approx(Vector2(3.0, 3.0)) or not boar.get_node("Sprite2D").scale.is_equal_approx(Vector2(0.36, 0.36)):

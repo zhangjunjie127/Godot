@@ -3,7 +3,6 @@ extends Node2D
 const InventoryDataScript = preload("res://scripts/inventory.gd")
 const EraSkillTreeScript = preload("res://scripts/skill_tree.gd")
 const STATUS_ICON_ATLAS := preload("res://assets/ui/status_icons/sheet-transparent.png")
-const PICKUP_ACTION_ATLAS := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
 const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
 const STONE_AXE_ICON := preload("res://assets/items/stone_axe/icon.png")
@@ -17,18 +16,6 @@ const WATER_ENTRY_PROBE_DISTANCE := 28.0
 const PUDDLE_STEP_DISTANCE := 18.0
 const PUDDLE_TELEPORT_DISTANCE := 64.0
 
-const ACTION_ICON_CELLS := {
-	"站立": Vector2i(0, 0),
-	"行走": Vector2i(1, 0),
-	"奔跑": Vector2i(2, 0),
-	"跳跃": Vector2i(3, 0),
-	"蹲伏": Vector2i(0, 1),
-	"趴下": Vector2i(1, 1),
-	"爬行": Vector2i(2, 1),
-	"游泳": Vector2i(2, 1),
-	"潜水": Vector2i(3, 0),
-	"死亡": Vector2i(2, 2),
-}
 const CONDITION_ICON_CELLS := {
 	"开心": Vector2i(3, 1),
 	"不开心": Vector2i(0, 2),
@@ -73,7 +60,6 @@ const RESOURCE_ICON_CELLS := {
 @onready var hunger_label: Label = $HUD/PlayerStatus/Margin/Content/Stats/HungerGroup/HungerLabel
 @onready var portrait: TextureRect = $HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait
 @onready var condition_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ConditionIcon
-@onready var action_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/ActionIcon
 @onready var visibility_icon: TextureRect = $HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow/VisibilityIcon
 @onready var phase_icon: TextureRect = $HUD/PhasePanel/Margin/PhaseIcon
 @onready var inventory_overlay: Control = $HUD/InventoryOverlay
@@ -95,6 +81,7 @@ const RESOURCE_ICON_CELLS := {
 @onready var weather_layer: CanvasLayer = $Weather
 @onready var screen_weather_layer: CanvasLayer = $ScreenWeather
 @onready var weather_ground: Node2D = $World/WeatherGround
+@onready var wet_footstep_audio: AudioStreamPlayer = $Weather/WetFootstep
 
 var inventory
 var skill_tree
@@ -110,6 +97,7 @@ var _land_world_size := Vector2(8192.0, 8192.0)
 var _land_camera_zoom := Vector2(0.546, 0.546)
 var _last_puddle_step_position := Vector2.ZERO
 var _puddle_step_distance := 0.0
+var _rain_step_play_count := 0
 
 
 func _ready() -> void:
@@ -122,7 +110,6 @@ func _ready() -> void:
 	_build_dive_status()
 	_build_death_overlay()
 	player.concealment_changed.connect(_on_concealment_changed)
-	player.movement_state_changed.connect(_on_movement_state_changed)
 	player.health_changed.connect(_on_health_changed)
 	player.health_condition_changed.connect(_on_health_condition_changed)
 	player.stamina_changed.connect(_on_stamina_changed)
@@ -143,7 +130,6 @@ func _ready() -> void:
 	_ensure_action("toggle_skill_tree", KEY_K)
 	_ensure_action("toggle_world_map", KEY_M)
 	_on_concealment_changed(false)
-	_on_movement_state_changed("站立")
 	_on_health_changed(player.health, player.max_health)
 	_on_health_condition_changed(player.health_condition)
 	_on_stamina_changed(player.stamina, player.max_stamina)
@@ -162,7 +148,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_update_puddle_step_feedback()
+	_update_rain_step_audio()
 	if _forecast_visible_seconds > 0.0:
 		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
 		forecast_popup.visible = _forecast_visible_seconds > 0.0
@@ -171,21 +157,29 @@ func _process(delta: float) -> void:
 		world_map_coordinate_label.text = "坐标  %d, %d" % [roundi(player.global_position.x), roundi(player.global_position.y)]
 
 
-func _update_puddle_step_feedback() -> void:
+func _update_rain_step_audio() -> void:
 	var current_position := player.global_position
 	var travelled := current_position.distance_to(_last_puddle_step_position)
 	_last_puddle_step_position = current_position
 	if travelled <= 0.0:
 		return
-	if travelled > PUDDLE_TELEPORT_DISTANCE or player.is_dead or player.water_mode or player.surface_swimming or player.get_movement_state() == "跳跃":
+	if travelled > PUDDLE_TELEPORT_DISTANCE or player.is_dead or player.water_mode or player.surface_swimming or player.get_movement_state() == "跳跃" or weather.visual_rain_density <= 0.04:
 		_puddle_step_distance = 0.0
 		return
 	_puddle_step_distance += travelled
 	if _puddle_step_distance < PUDDLE_STEP_DISTANCE:
 		return
 	_puddle_step_distance = fposmod(_puddle_step_distance, PUDDLE_STEP_DISTANCE)
-	var movement_strength := 1.0 if player.get_movement_state() == "奔跑" else 0.78
-	weather_ground.spawn_step_feedback(current_position + Vector2(0.0, 2.0), movement_strength)
+	_rain_step_play_count += 1
+	if DisplayServer.get_name() == "headless":
+		return
+	wet_footstep_audio.pitch_scale = randf_range(0.92, 1.08)
+	wet_footstep_audio.volume_db = lerpf(-18.0, -8.0, clampf(weather.visual_rain_density, 0.0, 1.0))
+	wet_footstep_audio.play()
+
+
+func get_rain_step_play_count() -> int:
+	return _rain_step_play_count
 
 
 func _physics_process(_delta: float) -> void:
@@ -226,17 +220,6 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_concealment_changed(is_concealed: bool) -> void:
 	_set_atlas_icon(visibility_icon, Vector2i(0, 3) if is_concealed else Vector2i(3, 2), 48)
 	visibility_icon.tooltip_text = "草丛隐蔽" if is_concealed else "公开可见"
-
-
-func _on_movement_state_changed(state_label: String) -> void:
-	if state_label == "拾取":
-		var texture := AtlasTexture.new()
-		texture.atlas = _art(PICKUP_ACTION_ATLAS)
-		texture.region = Rect2(256.0, 0.0, 128.0, 128.0)
-		action_icon.texture = texture
-	else:
-		_set_atlas_icon(action_icon, ACTION_ICON_CELLS.get(state_label, Vector2i.ZERO), 48)
-	action_icon.tooltip_text = state_label
 
 
 func _on_health_condition_changed(condition: String) -> void:
@@ -394,12 +377,12 @@ func _refresh_skill_tree() -> void:
 	_clear_children(skill_branches)
 	_clear_children(ritual_row)
 	skill_points_label.text = "技能点  %d" % skill_tree.skill_points
-	era_progress_label.text = "已进化至 青铜时代" if skill_tree.current_era == "青铜时代" else "原始时代 → 青铜时代"
+	era_progress_label.text = "已进化至 青铜时代" if skill_tree.current_era == "青铜时代" else "原始时代 · 技能 %d/20 · 核心材料 %d/4" % [skill_tree.get_unlocked_skill_count(), skill_tree.get_ritual_material_count()]
 	for branch: Dictionary in skill_tree.BRANCHES:
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 3)
 		var category := Label.new()
-		category.custom_minimum_size = Vector2(62.0, 42.0)
+		category.custom_minimum_size = Vector2(76.0, 42.0)
 		category.text = String(branch["name"])
 		category.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		category.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -428,15 +411,16 @@ func _refresh_skill_tree() -> void:
 	ritual_button.add_theme_font_size_override("font_size", 11)
 	ritual_button.pressed.connect(_on_skill_pressed.bind(skill_tree.RITUAL_ID))
 	if ritual_unlocked:
-		ritual_button.text = "◆ 升维仪式已完成"
+		ritual_button.text = "★ 圣火冶炼已完成"
 		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.11, 0.20, 0.17), Color(0.42, 0.72, 0.52), 2))
 	elif ritual_available:
-		ritual_button.text = "◆ 点亮升维仪式"
+		ritual_button.text = "★ 点燃圣火冶炼"
 		ritual_button.add_theme_stylebox_override("normal", _style_box(Color(0.22, 0.17, 0.08), Color(0.90, 0.68, 0.30), 2))
 		ritual_button.add_theme_stylebox_override("hover", _style_box(Color(0.30, 0.23, 0.10), Color(1.0, 0.82, 0.42), 2))
 	else:
-		ritual_button.text = "◇ 升维仪式"
+		ritual_button.text = "☆ 圣火冶炼"
 		ritual_button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.065, 0.08), Color(0.24, 0.26, 0.29)))
+	ritual_button.tooltip_text = "原始 → 青铜" if ritual_available else "还需：" + "、".join(skill_tree.get_ritual_missing_requirements())
 	ritual_row.add_child(ritual_button)
 
 
@@ -448,33 +432,32 @@ func _create_skill_button(skill: Dictionary, branch_id: String) -> Button:
 	button.custom_minimum_size = Vector2(108.0, 42.0)
 	button.focus_mode = Control.FOCUS_NONE
 	button.disabled = not available
-	button.add_theme_font_size_override("font_size", 10)
+	button.add_theme_font_size_override("font_size", 9)
 	button.add_theme_color_override("font_color", Color(0.95, 0.93, 0.86))
 	button.add_theme_color_override("font_disabled_color", Color(0.52, 0.54, 0.57))
 	button.pressed.connect(_on_skill_pressed.bind(skill_id))
 	if unlocked:
 		var color := _branch_color(branch_id)
-		button.text = "◆ " + String(skill["name"])
+		button.text = "◆ T%d · %s\n%d SP" % [int(skill["tier"]), String(skill["name"]), int(skill["cost"])]
 		button.add_theme_stylebox_override("disabled", _style_box(Color(color.r * 0.28, color.g * 0.28, color.b * 0.28, 1.0), color, 2))
 	elif available:
-		button.text = "◇ " + String(skill["name"])
+		button.text = "◇ T%d · %s\n%d SP" % [int(skill["tier"]), String(skill["name"]), int(skill["cost"])]
 		button.add_theme_stylebox_override("normal", _style_box(Color(0.20, 0.16, 0.08), Color(0.90, 0.68, 0.30), 2))
 		button.add_theme_stylebox_override("hover", _style_box(Color(0.28, 0.22, 0.10), Color(1.0, 0.82, 0.42), 2))
 	else:
-		button.text = "· " + String(skill["name"])
+		button.text = "· T%d · %s\n%d SP" % [int(skill["tier"]), String(skill["name"]), int(skill["cost"])]
 		button.add_theme_stylebox_override("disabled", _style_box(Color(0.055, 0.065, 0.08), Color(0.24, 0.26, 0.29)))
-	button.tooltip_text = String(skill["name"])
+	button.tooltip_text = "%s\n%s\n消耗 %d 技能点" % [String(skill["name"]), String(skill["effect"]), int(skill["cost"])]
 	return button
 
 
 func _branch_color(branch_id: String) -> Color:
 	match branch_id:
-		"technology":
-			return Color(0.95, 0.57, 0.24)
-		"learning":
-			return Color(0.40, 0.70, 0.92)
-		_:
-			return Color(0.48, 0.82, 0.42)
+		"gathering": return Color(0.42, 0.78, 0.40)
+		"building": return Color(0.92, 0.68, 0.28)
+		"combat": return Color(0.88, 0.35, 0.29)
+		"survival": return Color(0.28, 0.74, 0.78)
+		_: return Color(0.62, 0.48, 0.86)
 
 
 func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICON_CELL_SIZE) -> void:

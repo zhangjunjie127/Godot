@@ -10,6 +10,8 @@ const NIGHT_START_HOUR := 21.0
 const NIGHT_COLOR := Color(0.07, 0.084, 0.126, 1.0)
 const DAY_COLOR := Color.WHITE
 const DUSK_COLOR := Color(0.88, 0.69, 0.58, 1.0)
+const OVERCAST_COLOR := Color(0.68, 0.74, 0.76, 1.0)
+const LIGHTNING_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 
 @export_range(1.0, 3600.0, 1.0) var day_duration_seconds := 900.0
 @export_range(1.0, 3600.0, 1.0) var dusk_duration_seconds := 300.0
@@ -21,10 +23,13 @@ const DUSK_COLOR := Color(0.88, 0.69, 0.58, 1.0)
 var current_day := 1
 var current_hour := 7.0
 var current_phase := "白天"
+var weather_cloudiness := 0.0
+var lightning_strength := 0.0
 
 @onready var environment: CanvasModulate = get_node_or_null(environment_path) as CanvasModulate
 
 var _last_display_minute := -1
+var _base_environment_color := DAY_COLOR
 
 
 func _ready() -> void:
@@ -88,6 +93,16 @@ func set_game_time(day: int, hour: float) -> void:
 	_emit_time_changed()
 
 
+func set_weather_cloudiness(value: float) -> void:
+	weather_cloudiness = clampf(value, 0.0, 1.0)
+	_refresh_environment()
+
+
+func set_lightning_strength(value: float) -> void:
+	lightning_strength = clampf(value, 0.0, 1.0)
+	_refresh_environment()
+
+
 func _emit_time_changed() -> void:
 	var total_minutes := floori(current_hour * 60.0)
 	_last_display_minute = total_minutes
@@ -135,18 +150,30 @@ func _snap_to_phase_boundary() -> void:
 
 
 func _apply_environment() -> void:
-	if environment == null:
-		return
 	var hour := current_hour
 	if hour < 5.0 or hour >= NIGHT_START_HOUR:
-		environment.color = NIGHT_COLOR
+		_base_environment_color = NIGHT_COLOR
 	elif hour < DAY_START_HOUR:
-		environment.color = NIGHT_COLOR.lerp(DAY_COLOR, hour - 5.0)
+		_base_environment_color = NIGHT_COLOR.lerp(DAY_COLOR, hour - 5.0)
 	elif hour < DUSK_START_HOUR:
-		environment.color = DAY_COLOR
+		_base_environment_color = DAY_COLOR
 	elif hour < 19.0:
-		environment.color = DAY_COLOR.lerp(DUSK_COLOR, hour - DUSK_START_HOUR)
+		_base_environment_color = DAY_COLOR.lerp(DUSK_COLOR, hour - DUSK_START_HOUR)
 	elif hour < NIGHT_START_HOUR:
-		environment.color = DUSK_COLOR.lerp(NIGHT_COLOR, (hour - 19.0) / 2.0)
+		_base_environment_color = DUSK_COLOR.lerp(NIGHT_COLOR, (hour - 19.0) / 2.0)
 	else:
-		environment.color = NIGHT_COLOR
+		_base_environment_color = NIGHT_COLOR
+	_refresh_environment()
+
+
+func _refresh_environment() -> void:
+	if environment == null:
+		return
+	var overcast_tint := DAY_COLOR.lerp(OVERCAST_COLOR, weather_cloudiness)
+	var weather_color := Color(
+		_base_environment_color.r * overcast_tint.r,
+		_base_environment_color.g * overcast_tint.g,
+		_base_environment_color.b * overcast_tint.b,
+		1.0
+	)
+	environment.color = weather_color.lerp(LIGHTNING_COLOR, lightning_strength)

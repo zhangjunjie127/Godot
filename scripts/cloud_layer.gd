@@ -2,7 +2,8 @@ extends Node2D
 
 const CLOUD_TEXTURE := preload("res://assets/weather/clouds/sheet-transparent.png")
 const CELL_SIZE := 192
-const CLOUD_COUNT := 4
+const CLEAR_CLOUD_COUNT := 4
+const OVERCAST_CLOUD_COUNT := 8
 const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
 @export var weather_path: NodePath
@@ -33,7 +34,14 @@ func _process(delta: float) -> void:
 
 func set_weather(value: String) -> void:
 	current_weather = value
-	visible = current_weather == "晴朗"
+	visible = current_weather in ["晴朗", "阴天"]
+	var active_count := OVERCAST_CLOUD_COUNT if current_weather == "阴天" else CLEAR_CLOUD_COUNT
+	var cloud_color := Color(0.68, 0.73, 0.76, 0.82) if current_weather == "阴天" else Color(1.0, 1.0, 1.0, 0.70)
+	for index: int in range(clouds.size()):
+		var sprite := clouds[index]["sprite"] as Sprite2D
+		sprite.visible = index < active_count
+		sprite.self_modulate = cloud_color
+		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (2.2 if current_weather == "阴天" else 1.0)
 
 
 func advance_clouds(seconds: float) -> void:
@@ -45,7 +53,7 @@ func advance_clouds(seconds: float) -> void:
 		var drift_phase := float(cloud["drift_phase"]) + float(cloud["drift_speed"]) * maxf(seconds, 0.0)
 		position.x -= float(cloud["speed"]) * maxf(seconds, 0.0)
 		position.y += sin(drift_phase) * float(cloud["drift_amount"]) * maxf(seconds, 0.0)
-		if position.x < -float(CELL_SIZE) * float(cloud["scale"]):
+		if position.x < -float(CELL_SIZE) * sprite.scale.x:
 			position.x = world_size.x + _rng.randf_range(40.0, 220.0)
 			position.y = _rng.randf_range(180.0, world_size.y * 0.72)
 			cloud["cell"] = _random_cloud_cell()
@@ -56,7 +64,9 @@ func advance_clouds(seconds: float) -> void:
 
 
 func get_active_cloud_count() -> int:
-	return clouds.size() if visible else 0
+	if not visible:
+		return 0
+	return OVERCAST_CLOUD_COUNT if current_weather == "阴天" else CLEAR_CLOUD_COUNT
 
 
 func get_cloud_world_position(index: int) -> Vector2:
@@ -75,7 +85,7 @@ func _populate_clouds() -> void:
 	for child: Node in get_children():
 		child.queue_free()
 	clouds.clear()
-	for index: int in range(CLOUD_COUNT):
+	for index: int in range(OVERCAST_CLOUD_COUNT):
 		var cell := _random_cloud_cell()
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
 		var sprite := Sprite2D.new()
@@ -88,7 +98,7 @@ func _populate_clouds() -> void:
 		sprite.self_modulate = Color(1.0, 1.0, 1.0, 0.70)
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		sprite.position = Vector2(
-			world_size.x * (float(index) + 0.35) / float(CLOUD_COUNT),
+			world_size.x * (float(index) + 0.35) / float(OVERCAST_CLOUD_COUNT),
 			_rng.randf_range(180.0, world_size.y * 0.72)
 		)
 		add_child(sprite)

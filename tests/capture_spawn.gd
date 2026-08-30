@@ -46,6 +46,8 @@ func _capture() -> void:
 	elif capture_weather == "下雪":
 		weather.set_snow_level(capture_snow_level)
 		weather.advance_visual_seconds(weather.rain_fade_seconds)
+	elif capture_weather == "阴天":
+		weather.advance_visual_seconds(weather.atmosphere_fade_seconds)
 	if capture_panel == "inventory":
 		scene._toggle_inventory()
 	elif capture_panel == "skills":

@@ -204,8 +204,9 @@ func _run() -> void:
 		_fail("Rain audio loop did not initialize with the layered effect")
 		return
 	var audio_players := scene.find_children("*", "AudioStreamPlayer", true, false)
-	if audio_players.size() != 1 or audio_players[0] != rain_visual._rain_loop:
-		_fail("Rain loop is not the only retained game audio source")
+	var thunder_audio := scene.get_node("Weather/Thunder") as AudioStreamPlayer
+	if audio_players.size() != 2 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players:
+		_fail("Weather audio must contain only the rain loop and requested rolling thunder")
 		return
 	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("puddle_amount") <= 0.0:
 		_fail("Wet grade or puddle refraction shader did not receive rain intensity")
@@ -557,7 +558,7 @@ func _run() -> void:
 	if not _icon_is_ready(phase_icon, "夜晚"):
 		_fail("Night icon did not update beside the minimap")
 		return
-	if not is_equal_approx(day_night_tint.color.r, 0.07) or not night_vision.visible or not player.torch_equipped:
+	if day_night_tint.color.r > 0.07 or not night_vision.visible or not player.torch_equipped:
 		_fail("Night did not become nearly black or auto-equip the backpack torch")
 		return
 	if night_vision.NO_TORCH_RADIUS != 41.0 or night_vision.TORCH_RADIUS != 82.0:

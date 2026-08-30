@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3]
+[gd_scene load_steps=46 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -23,6 +23,7 @@
 [ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="21_wet_shader"]
 [ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
 [ext_resource type="Texture2D" path="res://assets/weather/rain/ripple_flow_gb.png" id="23_ripple_flow"]
+[ext_resource type="AudioStream" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -316,6 +317,10 @@ mouse_filter = 2
 
 [node name="RainVisuals" parent="Weather" instance=ExtResource("19_rain_system")]
 
+[node name="Thunder" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("24_thunder")
+volume_db = -18.0
+
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3
 anchors_preset = 15
@@ -332,6 +337,7 @@ puddle_surface_path = NodePath("../../World/RainPuddleSurface")
 rain_visual_effect_path = NodePath("../RainVisuals")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
 snow_world_effect_path = NodePath("../../World/SnowWorld")
+thunder_audio_path = NodePath("../Thunder")
 
 [node name="NightVision" type="CanvasLayer" parent="."]
 layer = 80

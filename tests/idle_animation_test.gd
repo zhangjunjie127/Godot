@@ -6,6 +6,7 @@ const FRAME_COLUMNS := 12
 const DIRECTION_ROWS := 8
 const CELL_SIZE := 128
 const FEET_BASELINE := 117
+const MINIMUM_WIDTHS_BY_ROW := [65, 56, 49, 55, 62, 55, 49, 58]
 
 
 func _initialize() -> void:
@@ -29,6 +30,9 @@ func _run() -> void:
 			if idle_rect.end.y != FEET_BASELINE:
 				_fail("Idle feet baseline drifted to %d at row %d column %d" % [idle_rect.end.y, row, column])
 				return
+			if idle_rect.size.x < MINIMUM_WIDTHS_BY_ROW[row]:
+				_fail("Idle silhouette is horizontally clipped at row %d column %d: %d pixels" % [row, column, idle_rect.size.x])
+				return
 			minimum_height = mini(minimum_height, idle_rect.size.y)
 			maximum_height = maxi(maximum_height, idle_rect.size.y)
 			idle_height_total += idle_rect.size.y
@@ -44,7 +48,7 @@ func _run() -> void:
 		_fail("Idle and walk body scales differ: %.3f" % height_ratio)
 		return
 
-	print("IDLE_ANIMATION_OK: complete lower body, stable scale and shared feet baseline")
+	print("IDLE_ANIMATION_OK: complete hands and lower body, stable scale and shared feet baseline")
 	quit()
 
 

@@ -1,4 +1,5 @@
 .godot/
+__pycache__/
 *.tmp
 *.bak
 tests/output/

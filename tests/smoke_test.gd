@@ -205,8 +205,10 @@ func _run() -> void:
 		return
 	var audio_players := scene.find_children("*", "AudioStreamPlayer", true, false)
 	var thunder_audio := scene.get_node("Weather/Thunder") as AudioStreamPlayer
-	if audio_players.size() != 2 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players:
-		_fail("Weather audio must contain only the rain loop and requested rolling thunder")
+	var day_birds_audio := scene.get_node("Weather/DayBirds") as AudioStreamPlayer
+	var day_wind_audio := scene.get_node("Weather/DayWind") as AudioStreamPlayer
+	if audio_players.size() != 4 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players or day_birds_audio not in audio_players or day_wind_audio not in audio_players:
+		_fail("Weather audio must contain only rain, thunder, daytime birds and daytime wind")
 		return
 	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("rain_intensity") <= 0.0 or puddle_surface.material.get_shader_parameter("puddle_amount") <= 0.0:
 		_fail("Wet grade or puddle refraction shader did not receive rain intensity")

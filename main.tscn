@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3]
+[gd_scene load_steps=48 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -24,6 +24,8 @@
 [ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
 [ext_resource type="Texture2D" path="res://assets/weather/rain/ripple_flow_gb.png" id="23_ripple_flow"]
 [ext_resource type="AudioStream" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
+[ext_resource type="AudioStream" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
+[ext_resource type="AudioStream" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -321,6 +323,14 @@ mouse_filter = 2
 stream = ExtResource("24_thunder")
 volume_db = -18.0
 
+[node name="DayBirds" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("25_day_birds")
+volume_db = -50.0
+
+[node name="DayWind" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("26_day_wind")
+volume_db = -50.0
+
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3
 anchors_preset = 15
@@ -338,6 +348,8 @@ rain_visual_effect_path = NodePath("../RainVisuals")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
 snow_world_effect_path = NodePath("../../World/SnowWorld")
 thunder_audio_path = NodePath("../Thunder")
+day_birds_audio_path = NodePath("../DayBirds")
+day_wind_audio_path = NodePath("../DayWind")
 
 [node name="NightVision" type="CanvasLayer" parent="."]
 layer = 80

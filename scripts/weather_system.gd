@@ -43,6 +43,9 @@ const GAME_MINUTES_PER_DAY := 1440
 @export_range(0.4, 4.0, 0.1) var thunder_delay_min := 0.8
 @export_range(0.4, 6.0, 0.1) var thunder_delay_max := 2.4
 @export_range(-30.0, 0.0, 0.5) var thunder_max_volume_db := -7.0
+@export_range(1.0, 10.0, 0.1) var day_ambience_fade_seconds := 4.0
+@export_range(-40.0, 0.0, 0.5) var birds_max_volume_db := -14.0
+@export_range(-40.0, 0.0, 0.5) var wind_max_volume_db := -23.0
 @export var day_night_cycle_path: NodePath
 @export var ground_effects_path: NodePath
 @export var wetness_overlay_path: NodePath
@@ -51,6 +54,8 @@ const GAME_MINUTES_PER_DAY := 1440
 @export var screen_rain_effect_path: NodePath
 @export var snow_world_effect_path: NodePath
 @export var thunder_audio_path: NodePath
+@export var day_birds_audio_path: NodePath
+@export var day_wind_audio_path: NodePath
 @export var random_seed := 0
 
 var current_weather := WEATHER_RAIN
@@ -62,6 +67,7 @@ var remaining_game_minutes := 720
 var visual_rain_density := 0.0
 var visual_snow_density := 0.0
 var visual_cloudiness := 0.0
+var day_ambience_amount := 0.0
 var puddle_amount := 0.0
 
 var _rng := RandomNumberGenerator.new()
@@ -74,9 +80,13 @@ var _screen_rain_effect: Node
 var _snow_world_effect: Node
 var _day_night_cycle: Node
 var _thunder_audio: AudioStreamPlayer
+var _day_birds_audio: AudioStreamPlayer
+var _day_wind_audio: AudioStreamPlayer
 var _target_rain_density := 0.0
 var _target_snow_density := 0.0
 var _target_cloudiness := 0.0
+var _target_day_ambience := 0.0
+var _current_phase := "白天"
 var _forecast_queue: Array[Dictionary] = []
 var _storm_elapsed := 0.0
 var _next_lightning_seconds := -1.0
@@ -102,6 +112,12 @@ func _ready() -> void:
 	_snow_world_effect = get_node_or_null(snow_world_effect_path)
 	_day_night_cycle = get_node_or_null(day_night_cycle_path)
 	_thunder_audio = get_node_or_null(thunder_audio_path) as AudioStreamPlayer
+	_day_birds_audio = get_node_or_null(day_birds_audio_path) as AudioStreamPlayer
+	_day_wind_audio = get_node_or_null(day_wind_audio_path) as AudioStreamPlayer
+	if _day_night_cycle != null:
+		_current_phase = String(_day_night_cycle.current_phase)
+	_setup_audio_loop(_day_birds_audio)
+	_setup_audio_loop(_day_wind_audio)
 	if _puddle_surface is Sprite2D:
 		var puddle_sprite := _puddle_surface as Sprite2D
 		puddle_sprite.texture = ArtAssets.texture(puddle_sprite.texture.resource_path, puddle_sprite.texture)
@@ -202,8 +218,14 @@ func advance_visual_seconds(seconds: float) -> void:
 	visual_rain_density = move_toward(visual_rain_density, _target_rain_density, fade_step)
 	visual_snow_density = move_toward(visual_snow_density, _target_snow_density, fade_step)
 	visual_cloudiness = move_toward(visual_cloudiness, _target_cloudiness, atmosphere_step)
+	day_ambience_amount = move_toward(
+		day_ambience_amount,
+		_target_day_ambience,
+		delta / maxf(day_ambience_fade_seconds, 0.1)
+	)
 	_advance_storm(delta)
 	_sync_atmosphere()
+	_sync_day_ambience()
 	_update_puddle_accumulation(delta)
 	_sync_rain_visual_layers()
 	_sync_snow_visual_layer(delta)
@@ -236,11 +258,13 @@ func _finish_current_event() -> void:
 	start_weather_event(next_weather, String(next_event["duration_mode"]), next_level, true)
 
 
-func _on_time_changed(day: int, hour: int, minute: int, _phase: String) -> void:
+func _on_time_changed(day: int, hour: int, minute: int, phase: String) -> void:
 	var calendar_minute := (day - 1) * GAME_MINUTES_PER_DAY + hour * 60 + minute
 	if _last_calendar_minute >= 0 and calendar_minute > _last_calendar_minute:
 		advance_game_minutes(calendar_minute - _last_calendar_minute)
 	_last_calendar_minute = calendar_minute
+	_current_phase = phase
+	_update_day_ambience_target()
 
 
 func _apply_weather_visuals() -> void:
@@ -255,6 +279,7 @@ func _apply_weather_visuals() -> void:
 			_target_cloudiness = lerpf(0.62, 0.82, _target_snow_density)
 		_:
 			_target_cloudiness = 0.0
+	_update_day_ambience_target()
 	_reset_storm_schedule()
 	_sync_atmosphere()
 	_sync_rain_visual_layers()
@@ -467,6 +492,48 @@ func _schedule_next_lightning() -> void:
 		_next_lightning_seconds = _rng.randf_range(heavy_storm_interval_min, heavy_storm_interval_max)
 	else:
 		_next_lightning_seconds = _rng.randf_range(medium_storm_interval_min, medium_storm_interval_max)
+
+
+func _update_day_ambience_target() -> void:
+	_target_day_ambience = 1.0 if current_weather == WEATHER_CLEAR and _current_phase == "白天" else 0.0
+
+
+func _setup_audio_loop(player: AudioStreamPlayer) -> void:
+	if player == null or not (player.stream is AudioStreamWAV):
+		return
+	var stream := player.stream as AudioStreamWAV
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	stream.loop_begin = 0
+	stream.loop_end = roundi(stream.get_length() * float(stream.mix_rate))
+
+
+func _sync_day_ambience() -> void:
+	_sync_ambience_player(_day_birds_audio, birds_max_volume_db)
+	_sync_ambience_player(_day_wind_audio, wind_max_volume_db)
+
+
+func _sync_ambience_player(player: AudioStreamPlayer, maximum_volume_db: float) -> void:
+	if player == null:
+		return
+	var audible := day_ambience_amount > 0.001 and is_visible_in_tree()
+	player.volume_db = lerpf(-50.0, maximum_volume_db, sqrt(day_ambience_amount)) if audible else -50.0
+	if audible and DisplayServer.get_name() != "headless":
+		if not player.playing:
+			player.play()
+	elif player.playing:
+		player.stop()
+
+
+func get_day_ambience_amount() -> float:
+	return day_ambience_amount
+
+
+func get_day_birds_volume_db() -> float:
+	return _day_birds_audio.volume_db if _day_birds_audio != null else -80.0
+
+
+func get_day_wind_volume_db() -> float:
+	return _day_wind_audio.volume_db if _day_wind_audio != null else -80.0
 
 
 func _play_thunder() -> void:

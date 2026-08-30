@@ -47,8 +47,26 @@ func _run() -> void:
 	if weather.get_lightning_strength() != 0.0 or weather.trigger_lightning(1.0, 0.0) or clouds.get_active_cloud_count() != 4:
 		_fail("Clear weather retained storm effects")
 		return
+	weather.advance_visual_seconds(weather.day_ambience_fade_seconds)
+	var birds := scene.get_node("Weather/DayBirds") as AudioStreamPlayer
+	var wind := scene.get_node("Weather/DayWind") as AudioStreamPlayer
+	if weather.get_day_ambience_amount() < 0.99 or birds.stream == null or wind.stream == null:
+		_fail("Clear daytime ambience did not fade in with both audio tracks")
+		return
+	if weather.get_day_birds_volume_db() < weather.birds_max_volume_db - 0.1 or weather.get_day_wind_volume_db() < weather.wind_max_volume_db - 0.1:
+		_fail("Clear daytime ambience did not reach its configured volume")
+		return
+	if (birds.stream as AudioStreamWAV).loop_mode != AudioStreamWAV.LOOP_FORWARD or (wind.stream as AudioStreamWAV).loop_mode != AudioStreamWAV.LOOP_FORWARD:
+		_fail("Clear daytime ambience tracks are not configured to loop")
+		return
 
-	print("WEATHER_STORM_OK: overcast grading, double flash and delayed thunder")
+	day_night.set_game_time(1, 19.0)
+	weather.advance_visual_seconds(weather.day_ambience_fade_seconds)
+	if weather.get_day_ambience_amount() != 0.0 or weather.get_day_birds_volume_db() > -49.9 or weather.get_day_wind_volume_db() > -49.9:
+		_fail("Clear daytime ambience did not fade out at dusk")
+		return
+
+	print("WEATHER_STORM_OK: storms and clear daytime ambience")
 	scene.free()
 	await process_frame
 	quit()

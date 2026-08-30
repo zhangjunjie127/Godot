@@ -18,6 +18,7 @@ const STATE_CROUCH := "蹲伏"
 const STATE_PRONE := "趴下"
 const STATE_CRAWL := "爬行"
 const STATE_PICKUP := "拾取"
+const STATE_ATTACK := "攻击"
 const STATE_SWIM := "游泳"
 const STATE_DIVE := "潜水"
 const STATE_DEAD := "死亡"
@@ -34,10 +35,13 @@ const CHARACTER_FEET_BASELINE := 117.0
 const SHADOW_CENTER := Vector2(0.0, -5.0)
 const SHADOW_RADIUS := 75.0
 const SHADOW_VERTICAL_SCALE := 0.34
-const MALE_FRAME_COLUMNS := 12
+const LEGACY_FRAME_COLUMNS := 12
+const NEW_ACTION_FRAME_COLUMNS := 16
 const MALE_DIRECTION_ROWS := 8
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
+const MALE_RUN_TEXTURE := preload("res://assets/characters/player_male_run/sheet-transparent.png")
+const MALE_ATTACK_TEXTURE := preload("res://assets/characters/player_male_attack/sheet-transparent.png")
 const MALE_CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
 const MALE_PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_male_prone_idle/sheet-transparent.png")
 const MALE_CRAWL_TEXTURE := preload("res://assets/characters/player_male_crawl/sheet-transparent.png")
@@ -67,6 +71,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var max_oxygen := 100.0
 @export var oxygen_drain_per_second := 7.0
 @export var oxygen_recovery_per_second := 24.0
+@export var attack_duration := 2.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -83,6 +88,8 @@ var _active_animation := ""
 var _facing_row := 0
 var _is_picking_up := false
 var _pickup_elapsed := 0.0
+var _is_attacking := false
+var _attack_elapsed := 0.0
 var torch_equipped := false
 var health := 100.0
 var stamina := 100.0
@@ -109,6 +116,7 @@ func _ready() -> void:
 	_ensure_action("player_crouch", KEY_C)
 	_ensure_action("player_crawl", KEY_Z)
 	_ensure_action("player_pickup", KEY_F)
+	_ensure_action("player_attack", KEY_J)
 	queue_redraw()
 
 
@@ -117,7 +125,10 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector2.ZERO
 		_set_movement_state(STATE_DEAD)
 		return
-	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up:
+	if Input.is_action_just_pressed("player_attack") and not _is_attacking:
+		start_attack()
+	_update_attack(delta)
+	if Input.is_action_just_pressed("player_pickup") and not _is_picking_up and not _is_attacking:
 		start_pickup()
 	_update_pickup(delta)
 	if water_mode:
@@ -128,17 +139,17 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var direction := get_movement_input()
-	if _is_picking_up:
+	if _is_picking_up or _is_attacking:
 		direction = Vector2.ZERO
 
 	var jump_pressed := Input.is_action_pressed("player_jump")
-	if jump_pressed and not _jump_was_pressed and not _is_jumping and not _is_picking_up:
+	if jump_pressed and not _jump_was_pressed and not _is_jumping and not _is_picking_up and not _is_attacking:
 		_start_jump()
 	_jump_was_pressed = jump_pressed
 	_update_jump(delta)
 
-	var crawling := Input.is_action_pressed("player_crawl") and not _is_jumping and not _is_picking_up
-	var crouching := Input.is_action_pressed("player_crouch") and not crawling and not _is_jumping
+	var crawling := Input.is_action_pressed("player_crawl") and not _is_jumping and not _is_picking_up and not _is_attacking
+	var crouching := Input.is_action_pressed("player_crouch") and not crawling and not _is_jumping and not _is_attacking
 	var wants_to_run := Input.is_action_pressed("player_run") and direction.length_squared() > 0.0 and not crouching and not crawling
 	var running := wants_to_run and not _is_exhausted
 	_update_stamina(delta, running)
@@ -202,6 +213,8 @@ func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	_jump_offset = 0.0
 	_is_picking_up = false
 	_pickup_elapsed = 0.0
+	_is_attacking = false
+	_attack_elapsed = 0.0
 	_active_animation = ""
 	set_torch_equipped(false)
 	if not water_mode and not is_dead:
@@ -219,6 +232,8 @@ func set_surface_swimming(value: bool) -> void:
 	_jump_offset = 0.0
 	_is_picking_up = false
 	_pickup_elapsed = 0.0
+	_is_attacking = false
+	_attack_elapsed = 0.0
 	_active_animation = ""
 	velocity = Vector2.ZERO
 	set_oxygen(max_oxygen)
@@ -240,11 +255,19 @@ func get_movement_state() -> String:
 
 
 func start_pickup() -> void:
-	if _is_jumping or _is_picking_up:
+	if _is_jumping or _is_picking_up or _is_attacking:
 		return
 	_is_picking_up = true
 	_pickup_elapsed = 0.0
 	_set_movement_state(STATE_PICKUP)
+
+
+func start_attack() -> void:
+	if _is_jumping or _is_picking_up or _is_attacking or water_mode or surface_swimming:
+		return
+	_is_attacking = true
+	_attack_elapsed = 0.0
+	_set_movement_state(STATE_ATTACK)
 
 
 func set_health(value: float) -> void:
@@ -367,6 +390,15 @@ func _update_pickup(delta: float) -> void:
 		_pickup_elapsed = 0.0
 
 
+func _update_attack(delta: float) -> void:
+	if not _is_attacking:
+		return
+	_attack_elapsed += delta
+	if _attack_elapsed >= maxf(attack_duration, 0.1):
+		_is_attacking = false
+		_attack_elapsed = 0.0
+
+
 func _update_stamina(delta: float, running: bool) -> void:
 	var change := -stamina_drain_per_second if running else stamina_recovery_per_second
 	var next_value := clampf(stamina + change * delta, 0.0, max_stamina)
@@ -425,6 +457,8 @@ func _physics_process_surface_swim(delta: float) -> void:
 
 
 func _resolve_movement_state(direction: Vector2, running: bool, crouching: bool, crawling: bool) -> String:
+	if _is_attacking:
+		return STATE_ATTACK
 	if _is_picking_up:
 		return STATE_PICKUP
 	if _is_jumping:
@@ -459,7 +493,7 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 
 	var frame_column := _animation_frame(animation, moving)
 	sprite.texture = _animation_texture(animation)
-	_configure_sprite_sheet()
+	_configure_sprite_sheet(animation)
 	sprite.frame_coords = Vector2i(frame_column, _facing_row)
 
 	var grounded_sprite_y := SHADOW_CENTER.y - (CHARACTER_FEET_BASELINE - CHARACTER_FRAME_SIZE * 0.5) * CHARACTER_SCALE.y
@@ -475,6 +509,8 @@ func _update_sprite(direction: Vector2, delta: float) -> void:
 
 func _animation_name(moving: bool) -> String:
 	match _movement_state:
+		STATE_ATTACK:
+			return "attack"
 		STATE_PICKUP:
 			return "pickup"
 		STATE_CROUCH:
@@ -500,6 +536,8 @@ func _animation_name(moving: bool) -> String:
 func _animation_texture(animation: String) -> Texture2D:
 	var fallback: Texture2D
 	match animation:
+		"attack":
+			fallback = MALE_ATTACK_TEXTURE
 		"crouch_idle", "crouch_move":
 			fallback = MALE_CROUCH_TEXTURE
 		"prone_idle":
@@ -516,13 +554,19 @@ func _animation_texture(animation: String) -> Texture2D:
 			fallback = MALE_PICKUP_TEXTURE
 		"idle_relaxed":
 			fallback = MALE_IDLE_RELAXED_TEXTURE
+		"run":
+			fallback = MALE_RUN_TEXTURE
+		"walk":
+			fallback = MALE_WALK_TEXTURE
 		_:
 			fallback = MALE_WALK_TEXTURE
 	return ArtAssets.texture(fallback.resource_path, fallback)
 
 
 func _animation_frame(animation: String, moving: bool) -> int:
-	var frame_count := MALE_FRAME_COLUMNS
+	var frame_count := _animation_frame_count(animation)
+	if animation == "attack":
+		return mini(floori(clampf(_attack_elapsed / maxf(attack_duration, 0.1), 0.0, 0.999) * float(frame_count)), frame_count - 1)
 	if animation == "pickup":
 		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * float(frame_count)), frame_count - 1)
 	if animation == "torch_hold":
@@ -533,13 +577,17 @@ func _animation_frame(animation: String, moving: bool) -> int:
 	if animation == "prone_idle":
 		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":
-		return floori(_animation_elapsed / (1.0 / 12.0)) % frame_count
+		return floori(_animation_elapsed / 0.125) % frame_count
 	if animation == "swim":
 		return floori(_animation_elapsed / 0.10) % frame_count
 	if not moving:
 		return 0
-	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
+	var frame_duration := 0.125 if animation == "run" or animation == "walk" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
 	return floori(_animation_elapsed / frame_duration) % frame_count
+
+
+func _animation_frame_count(animation: String) -> int:
+	return NEW_ACTION_FRAME_COLUMNS if animation in ["idle_relaxed", "jump", "run", "walk", "attack"] else LEGACY_FRAME_COLUMNS
 
 
 func _direction_row(direction: Vector2) -> int:
@@ -563,10 +611,11 @@ func _direction_row(direction: Vector2) -> int:
 			return 3
 
 
-func _configure_sprite_sheet() -> void:
+func _configure_sprite_sheet(animation: String) -> void:
 	if not is_instance_valid(sprite):
 		return
-	if sprite.hframes != MALE_FRAME_COLUMNS or sprite.vframes != MALE_DIRECTION_ROWS:
+	var frame_columns := _animation_frame_count(animation)
+	if sprite.hframes != frame_columns or sprite.vframes != MALE_DIRECTION_ROWS:
 		sprite.frame = 0
-	sprite.hframes = MALE_FRAME_COLUMNS
+	sprite.hframes = frame_columns
 	sprite.vframes = MALE_DIRECTION_ROWS

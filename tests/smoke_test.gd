@@ -517,8 +517,8 @@ func _run() -> void:
 	if vegetation_count != 0:
 		_fail("Decorative vegetation props were not removed")
 		return
-	if player_sprite.hframes != 12 or player_sprite.vframes != 8:
-		_fail("Male player 12-frame eight-direction animation sheet did not load")
+	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
+		_fail("Male player 16-frame eight-direction animation sheet did not load")
 		return
 	if (
 		player._direction_row(Vector2.DOWN) != 0
@@ -631,7 +631,7 @@ func _run() -> void:
 		return
 
 	player.global_position = grass.global_position
-	for _frame: int in range(8):
+	for _frame: int in range(10):
 		await physics_frame
 		if visibility_icon.tooltip_text == "草丛隐蔽":
 			break
@@ -663,7 +663,7 @@ func _run() -> void:
 
 	Input.action_press("player_run")
 	Input.action_press("ui_right")
-	for _frame: int in range(8):
+	for _frame: int in range(10):
 		await physics_frame
 	if not _icon_is_ready(action_icon, "奔跑"):
 		_fail("Run state did not activate")
@@ -779,6 +779,21 @@ func _run() -> void:
 		_fail("Pickup animation did not return to movement control")
 		return
 
+	player.attack_duration = 0.25
+	Input.action_press("player_attack")
+	for _frame: int in range(4):
+		await physics_frame
+	Input.action_release("player_attack")
+	if action_icon.tooltip_text != "攻击" or player_sprite.texture.resource_path != "res://assets/characters/player_male_attack/sheet-transparent.png" or player_sprite.hframes != 16 or player_sprite.frame_coords.x == 0:
+		_fail("J did not trigger the 16-frame eight-direction attack animation")
+		return
+	for _frame: int in range(20):
+		await physics_frame
+	player.attack_duration = 2.0
+	if action_icon.tooltip_text == "攻击":
+		_fail("Attack animation did not return to movement control")
+		return
+
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
@@ -799,9 +814,9 @@ func _run() -> void:
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(2.2, 2.2):
 		_fail("Relaxed standing breathing animation or shared character scale did not activate")
 		return
-	player._animation_elapsed = 1.0 / 12.0
+	player._animation_elapsed = 0.125
 	if player._animation_frame("idle_relaxed", false) != 1:
-		_fail("The replacement idle animation is not playing at its authored 12 FPS")
+		_fail("The replacement idle animation is not playing at its authored 8 FPS")
 		return
 	player._animation_elapsed = 100.0
 	player._active_animation = ""
@@ -810,8 +825,8 @@ func _run() -> void:
 	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(2.2, 2.2) or portrait.texture.resource_path != "res://assets/characters/player_male.png":
 		_fail("Extended idle switched away from the standing breathing animation")
 		return
-	if player_sprite.hframes != 12 or player_sprite.vframes != 8:
-		_fail("The male player did not retain the 12-frame eight-direction layout")
+	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
+		_fail("The male player did not retain the 16-frame eight-direction layout")
 		return
 
 	if scene.inventory.add_item("plant_fiber", "植物纤维", 120, 99) != 120:

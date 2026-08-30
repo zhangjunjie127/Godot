@@ -5,6 +5,8 @@ from PIL import Image
 
 ACTIONS = (
     "player_male_walk",
+    "player_male_run",
+    "player_male_attack",
     "player_male_idle_relaxed",
     "player_male_crouch",
     "player_male_prone_idle",
@@ -16,12 +18,20 @@ ACTIONS = (
 )
 DIRECTIONS = ("s", "se", "e", "ne", "n", "nw", "w", "sw")
 CELL_SIZE = 128
+FRAME_COUNTS = {
+    "player_male_walk": 16,
+    "player_male_run": 16,
+    "player_male_attack": 16,
+    "player_male_idle_relaxed": 16,
+    "player_male_jump": 16,
+}
 
 
 def rebuild(action_dir: Path) -> None:
-    sheet = Image.new("RGBA", (CELL_SIZE * 12, CELL_SIZE * 8), (0, 0, 0, 0))
+    frame_count = FRAME_COUNTS.get(action_dir.name, 12)
+    sheet = Image.new("RGBA", (CELL_SIZE * frame_count, CELL_SIZE * 8), (0, 0, 0, 0))
     for row, direction in enumerate(DIRECTIONS):
-        for column in range(12):
+        for column in range(frame_count):
             frame_path = action_dir / "_source" / direction / f"{column + 1:02d}.png"
             frame = Image.open(frame_path).convert("RGBA")
             if frame.size != (CELL_SIZE, CELL_SIZE):

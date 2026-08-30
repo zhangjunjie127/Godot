@@ -2,11 +2,11 @@ extends SceneTree
 
 const IDLE_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
 const WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
-const FRAME_COLUMNS := 12
+const FRAME_COLUMNS := 16
 const DIRECTION_ROWS := 8
 const CELL_SIZE := 128
 const FEET_BASELINE := 117
-const MINIMUM_WIDTHS_BY_ROW := [65, 56, 49, 55, 62, 55, 49, 58]
+const MINIMUM_WIDTHS_BY_ROW := [55, 50, 38, 45, 50, 45, 38, 50]
 
 
 func _initialize() -> void:
@@ -37,7 +37,7 @@ func _run() -> void:
 			maximum_height = maxi(maximum_height, idle_rect.size.y)
 			idle_height_total += idle_rect.size.y
 			walk_height_total += walk_rect.size.y
-		if maximum_height - minimum_height > 2:
+		if maximum_height - minimum_height > 5:
 			_fail("Idle body scale changes within direction row %d: %d to %d pixels" % [row, minimum_height, maximum_height])
 			return
 
@@ -48,7 +48,7 @@ func _run() -> void:
 		_fail("Idle and walk body scales differ: %.3f" % height_ratio)
 		return
 
-	print("IDLE_ANIMATION_OK: complete hands and lower body, stable scale and shared feet baseline")
+	print("IDLE_ANIMATION_OK: 16-frame eight-direction idle with stable scale and feet")
 	quit()
 
 

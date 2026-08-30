@@ -66,13 +66,18 @@ func _capture() -> void:
 			Input.action_press("ui_right")
 		"walk_down":
 			Input.action_press("ui_down")
+		"run_right":
+			Input.action_press("player_run")
+			Input.action_press("ui_right")
 		"jump":
 			Input.action_press("player_jump")
+		"attack":
+			Input.action_press("player_attack")
 		"pickup":
 			Input.action_press("player_pickup")
 		"idle_relaxed":
 			pass
-	var capture_frames := 60 if capture_weather == "下雨" else 12 if not capture_state.is_empty() else 2
+	var capture_frames := 60 if capture_weather == "下雨" or capture_state == "attack" else 12 if not capture_state.is_empty() else 2
 	for _frame: int in range(capture_frames):
 		await physics_frame
 	RenderingServer.force_draw(false)

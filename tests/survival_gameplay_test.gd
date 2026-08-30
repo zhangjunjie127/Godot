@@ -112,6 +112,9 @@ func _run() -> void:
 			return
 
 	var boar = scene.get_node("World/DepthSorted/WildBoar")
+	if not boar.scale.is_equal_approx(Vector2(3.0, 3.0)) or not boar.get_node("Sprite2D").scale.is_equal_approx(Vector2(0.36, 0.36)):
+		_fail("The wild boar is not three times its original authored size")
+		return
 	player.global_position = boar.global_position
 	for _hit: int in range(boar.hits_required):
 		scene._try_interact()

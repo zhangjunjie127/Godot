@@ -269,6 +269,7 @@ limit_bottom = 8192
 
 [node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
 position = Vector2(4680, 4780)
+scale = Vector2(3, 3)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("7_boar_script")

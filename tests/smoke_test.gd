@@ -9,7 +9,7 @@ func _run() -> void:
 	var menu_scene := (load("res://start_menu.tscn") as PackedScene).instantiate()
 	root.add_child(menu_scene)
 	await process_frame
-	if menu_scene.get_node("Title").text != "我要上天Ascension" or not menu_scene.get_node("StartButton").visible:
+	if menu_scene.get_node("TitleBlock/Title").text != "我要上天" or menu_scene.get_node("TitleBlock/Subtitle").text != "ASCENSION" or not menu_scene.get_node("StartButton").visible:
 		_fail("Title screen or Start Game button did not initialize")
 		return
 	menu_scene._show_gender_selection()

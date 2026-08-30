@@ -6,7 +6,6 @@ from PIL import Image
 ACTIONS = (
     "player_male_walk",
     "player_male_idle_relaxed",
-    "player_male_idle_sit",
     "player_male_crouch",
     "player_male_prone_idle",
     "player_male_crawl",

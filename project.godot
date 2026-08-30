@@ -14,10 +14,6 @@ config/name="我要上天Ascension"
 run/main_scene="res://start_menu.tscn"
 config/features=PackedStringArray("4.7")
 
-[autoload]
-
-GameSession="*res://scripts/game_session.gd"
-
 [display]
 
 window/size/viewport_width=640

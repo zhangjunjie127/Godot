@@ -5,7 +5,6 @@ const EraSkillTreeScript = preload("res://scripts/skill_tree.gd")
 const STATUS_ICON_ATLAS := preload("res://assets/ui/status_icons/sheet-transparent.png")
 const PICKUP_ACTION_ATLAS := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
-const FEMALE_PORTRAIT := preload("res://assets/characters/player_female.png")
 const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
 const STONE_AXE_ICON := preload("res://assets/items/stone_axe/icon.png")
 const STONE_RESOURCE_ICON := preload("res://assets/maps/props/vegetation/rocks/boulder_large.png")
@@ -129,7 +128,6 @@ func _ready() -> void:
 	player.stamina_changed.connect(_on_stamina_changed)
 	player.hunger_changed.connect(_on_hunger_changed)
 	player.oxygen_changed.connect(_on_oxygen_changed)
-	player.gender_changed.connect(_on_gender_changed)
 	player.died.connect(_on_player_died)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_on_inventory_changed)
@@ -151,7 +149,7 @@ func _ready() -> void:
 	_on_stamina_changed(player.stamina, player.max_stamina)
 	_on_hunger_changed(player.hunger, player.max_hunger)
 	_on_oxygen_changed(player.oxygen, player.max_oxygen)
-	_on_gender_changed(player.gender)
+	portrait.texture = _art(MALE_PORTRAIT)
 	_on_time_changed(
 		day_night_cycle.current_day,
 		floori(day_night_cycle.current_hour),
@@ -279,10 +277,6 @@ func _on_oxygen_changed(current: float, maximum: float) -> void:
 	oxygen_bar.max_value = maximum
 	oxygen_bar.value = current
 	oxygen_label.text = "氧气 %d / %d" % [roundi(current), roundi(maximum)]
-
-
-func _on_gender_changed(gender: String) -> void:
-	portrait.texture = _art(FEMALE_PORTRAIT if gender == "female" else MALE_PORTRAIT)
 
 
 func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void:

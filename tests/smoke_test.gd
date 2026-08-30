@@ -12,9 +12,8 @@ func _run() -> void:
 	if menu_scene.get_node("TitleBlock/Title").text != "我要上天" or menu_scene.get_node("TitleBlock/Subtitle").text != "ASCENSION" or not menu_scene.get_node("StartButton").visible:
 		_fail("Title screen or Start Game button did not initialize")
 		return
-	menu_scene._show_gender_selection()
-	if not menu_scene.get_node("GenderPanel").visible or menu_scene.get_node("StartButton").visible:
-		_fail("Start Game did not open gender selection")
+	if menu_scene.get_node_or_null("GenderPanel") != null:
+		_fail("The removed gender selection panel is still present")
 		return
 	menu_scene.queue_free()
 	await process_frame
@@ -30,8 +29,6 @@ func _run() -> void:
 		return
 	rain_demo.free()
 	await process_frame
-	root.get_node("GameSession").select_gender("male")
-
 	var packed_scene := load("res://main.tscn") as PackedScene
 	var scene: Node = packed_scene.instantiate()
 	root.add_child(scene)
@@ -801,29 +798,12 @@ func _run() -> void:
 	player._animation_elapsed = 100.0
 	player._active_animation = ""
 	await physics_frame
-	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(2.2, 2.2):
+	var portrait: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait")
+	if player_sprite.texture.resource_path != "res://assets/characters/player_male_idle_relaxed/sheet-transparent.png" or player_sprite.scale != Vector2(2.2, 2.2) or portrait.texture.resource_path != "res://assets/characters/player_male.png":
 		_fail("Extended idle switched away from the standing breathing animation")
 		return
-	player.set_gender("female")
-	await physics_frame
-	var portrait: TextureRect = scene.get_node("HUD/PlayerStatus/Margin/Content/PortraitFrame/Portrait")
-	if player_sprite.texture.resource_path != "res://assets/characters/player_female_idle_relaxed/sheet-transparent.png" or portrait.texture.resource_path != "res://assets/characters/player_female.png":
-		_fail("Female selection did not switch the character animation and portrait")
-		return
-	if player_sprite.hframes != 4 or player_sprite.vframes != 4:
-		_fail("Female selection did not retain its four-frame four-direction layout")
-		return
-	Input.action_press("ui_right")
-	await physics_frame
-	await physics_frame
-	if player_sprite.texture.resource_path != "res://assets/characters/player_female_walk/sheet-transparent.png":
-		_fail("Female gameplay movement did not use the female animation set")
-		return
-	Input.action_release("ui_right")
-	player.set_gender("male")
-	await physics_frame
 	if player_sprite.hframes != 12 or player_sprite.vframes != 8:
-		_fail("Male selection did not restore the 12-frame eight-direction layout")
+		_fail("The male player did not retain the 12-frame eight-direction layout")
 		return
 
 	if scene.inventory.add_item("plant_fiber", "植物纤维", 120, 99) != 120:
@@ -866,7 +846,7 @@ func _run() -> void:
 		_fail("Era evolution did not update the HUD")
 		return
 
-	print("SMOKE_OK: title, gender, idle, item icons, world snow, forecast and gameplay systems")
+	print("SMOKE_OK: title, male player, idle, item icons, world snow, forecast and gameplay systems")
 	scene.free()
 	await process_frame
 	quit()

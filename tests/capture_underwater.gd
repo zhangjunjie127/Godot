@@ -6,7 +6,6 @@ func _initialize() -> void:
 
 
 func _capture() -> void:
-	root.get_node("GameSession").select_gender("male")
 	var scene := (load("res://main.tscn") as PackedScene).instantiate()
 	root.add_child(scene)
 	await physics_frame

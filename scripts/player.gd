@@ -8,7 +8,6 @@ signal hunger_changed(current: float, maximum: float)
 signal oxygen_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 signal torch_equipped_changed(is_equipped: bool)
-signal gender_changed(gender: String)
 signal died
 
 const STATE_IDLE := "站立"
@@ -28,14 +27,10 @@ const CONDITION_UNHAPPY := "不开心"
 const CONDITION_SICK := "生病"
 const CONDITION_DYING := "濒死"
 
-const GENDER_MALE := "male"
-const GENDER_FEMALE := "female"
 const CHARACTER_SCALE := Vector2(2.2, 2.2)
 const CHARACTER_VISUAL_SCALE := 5.0
 const MALE_FRAME_COLUMNS := 12
 const MALE_DIRECTION_ROWS := 8
-const FEMALE_FRAME_COLUMNS := 4
-const FEMALE_DIRECTION_ROWS := 4
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const MALE_CROUCH_TEXTURE := preload("res://assets/characters/player_male_crouch/sheet-transparent.png")
@@ -46,16 +41,6 @@ const MALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_male_to
 const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup/sheet-transparent.png")
 const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
 const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/sheet-transparent.png")
-
-const FEMALE_WALK_TEXTURE := preload("res://assets/characters/player_female_walk/sheet-transparent.png")
-const FEMALE_CROUCH_TEXTURE := preload("res://assets/characters/player_female_crouch/sheet-transparent.png")
-const FEMALE_PRONE_IDLE_TEXTURE := preload("res://assets/characters/player_female_prone_idle/sheet-transparent.png")
-const FEMALE_CRAWL_TEXTURE := preload("res://assets/characters/player_female_crawl/sheet-transparent.png")
-const FEMALE_JUMP_TEXTURE := preload("res://assets/characters/player_female_jump/sheet-transparent.png")
-const FEMALE_TORCH_HOLD_TEXTURE := preload("res://assets/characters/player_female_torch_hold/sheet-transparent.png")
-const FEMALE_PICKUP_TEXTURE := preload("res://assets/characters/player_female_pickup/sheet-transparent.png")
-const FEMALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_female_idle_relaxed/sheet-transparent.png")
-const FEMALE_SWIM_TEXTURE := preload("res://assets/characters/player_female_swim/sheet-transparent.png")
 
 @export var move_speed := 85.0
 @export var run_speed := 140.0
@@ -94,7 +79,6 @@ var _facing_row := 0
 var _is_picking_up := false
 var _pickup_elapsed := 0.0
 var torch_equipped := false
-var gender := GENDER_MALE
 var health := 100.0
 var stamina := 100.0
 var hunger := 100.0
@@ -120,9 +104,6 @@ func _ready() -> void:
 	_ensure_action("player_crouch", KEY_C)
 	_ensure_action("player_crawl", KEY_Z)
 	_ensure_action("player_pickup", KEY_F)
-	var session := get_node_or_null("/root/GameSession")
-	if session != null:
-		set_gender(String(session.selected_gender))
 	queue_redraw()
 
 
@@ -204,18 +185,6 @@ func set_torch_equipped(value: bool) -> void:
 	torch_equipped = value
 	_active_animation = ""
 	torch_equipped_changed.emit(value)
-
-
-func set_gender(value: String) -> void:
-	var next_gender := GENDER_FEMALE if value == GENDER_FEMALE else GENDER_MALE
-	if gender == next_gender:
-		_configure_sprite_sheet()
-		return
-	gender = next_gender
-	_facing_row = 0
-	_active_animation = ""
-	_configure_sprite_sheet()
-	gender_changed.emit(gender)
 
 
 func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
@@ -529,37 +498,35 @@ func _animation_name(moving: bool) -> String:
 
 
 func _animation_texture(animation: String) -> Texture2D:
-	var is_female := gender == GENDER_FEMALE
 	var fallback: Texture2D
 	match animation:
 		"crouch_idle", "crouch_move":
-			fallback = FEMALE_CROUCH_TEXTURE if is_female else MALE_CROUCH_TEXTURE
+			fallback = MALE_CROUCH_TEXTURE
 		"prone_idle":
-			fallback = FEMALE_PRONE_IDLE_TEXTURE if is_female else MALE_PRONE_IDLE_TEXTURE
+			fallback = MALE_PRONE_IDLE_TEXTURE
 		"crawl_move":
-			fallback = FEMALE_CRAWL_TEXTURE if is_female else MALE_CRAWL_TEXTURE
+			fallback = MALE_CRAWL_TEXTURE
 		"swim":
-			fallback = FEMALE_SWIM_TEXTURE if is_female else MALE_SWIM_TEXTURE
+			fallback = MALE_SWIM_TEXTURE
 		"jump":
-			fallback = FEMALE_JUMP_TEXTURE if is_female else MALE_JUMP_TEXTURE
+			fallback = MALE_JUMP_TEXTURE
 		"torch_hold":
-			fallback = FEMALE_TORCH_HOLD_TEXTURE if is_female else MALE_TORCH_HOLD_TEXTURE
+			fallback = MALE_TORCH_HOLD_TEXTURE
 		"pickup":
-			fallback = FEMALE_PICKUP_TEXTURE if is_female else MALE_PICKUP_TEXTURE
+			fallback = MALE_PICKUP_TEXTURE
 		"idle_relaxed":
-			fallback = FEMALE_IDLE_RELAXED_TEXTURE if is_female else MALE_IDLE_RELAXED_TEXTURE
+			fallback = MALE_IDLE_RELAXED_TEXTURE
 		_:
-			fallback = FEMALE_WALK_TEXTURE if is_female else MALE_WALK_TEXTURE
+			fallback = MALE_WALK_TEXTURE
 	return ArtAssets.texture(fallback.resource_path, fallback)
 
 
 func _animation_frame(animation: String, moving: bool) -> int:
-	var frame_count := FEMALE_FRAME_COLUMNS if gender == GENDER_FEMALE else MALE_FRAME_COLUMNS
+	var frame_count := MALE_FRAME_COLUMNS
 	if animation == "pickup":
 		return mini(floori(clampf(_pickup_elapsed / 0.72, 0.0, 0.999) * float(frame_count)), frame_count - 1)
 	if animation == "torch_hold":
-		var torch_frame_duration := 0.16 if gender == GENDER_FEMALE else 0.10
-		return floori(_animation_elapsed / torch_frame_duration) % frame_count
+		return floori(_animation_elapsed / 0.10) % frame_count
 	if animation == "jump":
 		var progress := clampf(_jump_elapsed / maxf(jump_duration, 0.01), 0.0, 0.999)
 		return mini(floori(progress * float(frame_count)), frame_count - 1)
@@ -568,8 +535,7 @@ func _animation_frame(animation: String, moving: bool) -> int:
 	if animation == "idle_relaxed":
 		return floori(_animation_elapsed / 0.30) % frame_count
 	if animation == "swim":
-		var swim_frame_duration := 0.18 if gender == GENDER_FEMALE else 0.10
-		return floori(_animation_elapsed / swim_frame_duration) % frame_count
+		return floori(_animation_elapsed / 0.10) % frame_count
 	if not moving:
 		return 0
 	var frame_duration := 0.09 if animation == "run" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
@@ -577,40 +543,30 @@ func _animation_frame(animation: String, moving: bool) -> int:
 
 
 func _direction_row(direction: Vector2) -> int:
-	if gender == GENDER_MALE:
-		var octant := wrapi(roundi(atan2(direction.y, direction.x) / (PI / 4.0)), 0, 8)
-		match octant:
-			0:
-				return 2
-			1:
-				return 1
-			2:
-				return 0
-			3:
-				return 7
-			4:
-				return 6
-			5:
-				return 5
-			6:
-				return 4
-			_:
-				return 3
-	if absf(direction.x) > absf(direction.y):
-		return 1 if direction.x > 0.0 else 2
-	return 0 if direction.y > 0.0 else 3
+	var octant := wrapi(roundi(atan2(direction.y, direction.x) / (PI / 4.0)), 0, 8)
+	match octant:
+		0:
+			return 2
+		1:
+			return 1
+		2:
+			return 0
+		3:
+			return 7
+		4:
+			return 6
+		5:
+			return 5
+		6:
+			return 4
+		_:
+			return 3
 
 
 func _configure_sprite_sheet() -> void:
 	if not is_instance_valid(sprite):
 		return
-	if gender == GENDER_FEMALE:
-		if sprite.hframes != FEMALE_FRAME_COLUMNS or sprite.vframes != FEMALE_DIRECTION_ROWS:
-			sprite.frame = 0
-		sprite.hframes = FEMALE_FRAME_COLUMNS
-		sprite.vframes = FEMALE_DIRECTION_ROWS
-	else:
-		if sprite.hframes != MALE_FRAME_COLUMNS or sprite.vframes != MALE_DIRECTION_ROWS:
-			sprite.frame = 0
-		sprite.hframes = MALE_FRAME_COLUMNS
-		sprite.vframes = MALE_DIRECTION_ROWS
+	if sprite.hframes != MALE_FRAME_COLUMNS or sprite.vframes != MALE_DIRECTION_ROWS:
+		sprite.frame = 0
+	sprite.hframes = MALE_FRAME_COLUMNS
+	sprite.vframes = MALE_DIRECTION_ROWS

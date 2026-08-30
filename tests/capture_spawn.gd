@@ -12,7 +12,6 @@ func _capture() -> void:
 	var capture_weather := "下雨"
 	var capture_rain_level := "中雨"
 	var capture_snow_level := "中雪"
-	var capture_gender := "male"
 	var capture_torch := true
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--hour="):
@@ -27,11 +26,8 @@ func _capture() -> void:
 			capture_rain_level = argument.trim_prefix("--rain-level=")
 		elif argument.begins_with("--snow-level="):
 			capture_snow_level = argument.trim_prefix("--snow-level=")
-		elif argument.begins_with("--gender="):
-			capture_gender = argument.trim_prefix("--gender=")
 		elif argument == "--no-torch":
 			capture_torch = false
-	root.get_node("GameSession").select_gender(capture_gender)
 	var packed_scene := load("res://main.tscn") as PackedScene
 	var scene := packed_scene.instantiate()
 	root.add_child(scene)
@@ -95,7 +91,6 @@ func _capture() -> void:
 		suffix += "_" + capture_rain_level
 	elif capture_weather == "下雪":
 		suffix += "_" + capture_snow_level
-	suffix += "_" + capture_gender
 	var output_path := output_dir.path_join("spawn_gameplay_" + suffix + ".png")
 	var error := image.save_png(output_path)
 	if error != OK:

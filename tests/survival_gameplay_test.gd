@@ -6,7 +6,6 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	root.get_node("GameSession").select_gender("male")
 	var scene := (load("res://main.tscn") as PackedScene).instantiate()
 	root.add_child(scene)
 	await physics_frame
@@ -220,12 +219,6 @@ func _run() -> void:
 	if player.sprite.texture != load("res://assets/characters/player_male_swim/sheet-transparent.png"):
 		_fail("The dedicated swimming animation was not used")
 		return
-	player.set_gender("female")
-	await physics_frame
-	if player.sprite.texture != load("res://assets/characters/player_female_swim/sheet-transparent.png"):
-		_fail("The dedicated female swimming animation was not used")
-		return
-	player.set_gender("male")
 	var bubble_effect := underwater.get_node_or_null("DepthSorted/BubbleEffect")
 	if bubble_effect == null or bubble_effect.get_bubble_count() == 0:
 		_fail("Swimming did not create a bubble trail")

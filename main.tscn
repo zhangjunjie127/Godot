@@ -342,6 +342,7 @@ volume_db = -50.0
 [node name="WetFootstep" type="AudioStreamPlayer" parent="Weather"]
 stream = ExtResource("27_wet_footstep")
 volume_db = -12.0
+max_polyphony = 3
 
 [node name="Effect" type="Control" parent="Weather"]
 layout_mode = 3

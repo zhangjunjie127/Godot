@@ -40,6 +40,8 @@ const NEW_ACTION_FRAME_COLUMNS := 16
 const MALE_DIRECTION_ROWS := 8
 const MOVEMENT_LOOP_START_FRAME := 2
 const ATTACK_FRAMES_PER_PUNCH := 8
+const JUMP_TAKEOFF_PROGRESS := 6.0 / 16.0
+const JUMP_LANDING_PROGRESS := 13.0 / 16.0
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const MALE_RUN_TEXTURE := preload("res://assets/characters/player_male_run/sheet-transparent.png")
@@ -58,7 +60,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var crouch_speed := 82.0
 @export var crawl_speed := 46.0
 @export var jump_height := 30.0
-@export var jump_duration := 0.55
+@export var jump_duration := 0.80
 @export var world_size := Vector2(2048.0, 2048.0)
 @export var is_local_player := true
 @export var max_health := 100.0
@@ -424,7 +426,11 @@ func _update_jump(delta: float) -> void:
 		return
 	_jump_elapsed += delta
 	var progress := minf(_jump_elapsed / maxf(jump_duration, 0.01), 1.0)
-	_jump_offset = sin(progress * PI) * jump_height
+	if progress <= JUMP_TAKEOFF_PROGRESS or progress >= JUMP_LANDING_PROGRESS:
+		_jump_offset = 0.0
+	else:
+		var airborne_progress := inverse_lerp(JUMP_TAKEOFF_PROGRESS, JUMP_LANDING_PROGRESS, progress)
+		_jump_offset = sin(airborne_progress * PI) * jump_height
 	if progress >= 1.0:
 		_is_jumping = false
 		_jump_offset = 0.0

@@ -325,7 +325,8 @@ func _run() -> void:
 	weather_ground._ripples.clear()
 	var step_audio_before: int = scene.get_rain_step_play_count()
 	player.global_position = wet_step_position
-	scene._last_puddle_step_position = wet_step_position - Vector2(32.0, 0.0)
+	player._set_movement_state(player.STATE_WALK)
+	scene._last_puddle_step_position = wet_step_position - Vector2(90.0, 0.0)
 	scene._process(0.0)
 	if scene.get_rain_step_play_count() != step_audio_before + 1 or not weather_ground._impacts.is_empty() or not weather_ground._ripples.is_empty():
 		_fail("Rainy movement did not keep footstep audio separate from puddle visuals")

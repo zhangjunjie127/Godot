@@ -13,8 +13,11 @@ const UNDERWATER_MINIMAP_TEXTURE := preload("res://assets/maps/underwater/underw
 const ICON_CELL_SIZE := 64
 const RESOURCE_ICON_CELL_SIZE := 128
 const WATER_ENTRY_PROBE_DISTANCE := 28.0
-const PUDDLE_STEP_DISTANCE := 18.0
-const PUDDLE_TELEPORT_DISTANCE := 64.0
+const WALK_STEP_DISTANCE := 72.0
+const RUN_STEP_DISTANCE := 88.0
+const CROUCH_STEP_DISTANCE := 82.0
+const CRAWL_STEP_DISTANCE := 54.0
+const PUDDLE_TELEPORT_DISTANCE := 180.0
 
 const CONDITION_ICON_CELLS := {
 	"开心": Vector2i(3, 1),
@@ -165,19 +168,48 @@ func _update_rain_step_audio() -> void:
 	_last_puddle_step_position = current_position
 	if travelled <= 0.0:
 		return
-	if travelled > PUDDLE_TELEPORT_DISTANCE or player.is_dead or player.water_mode or player.surface_swimming or player.get_movement_state() == "跳跃" or weather.visual_rain_density <= 0.04:
+	var movement_state: String = player.get_movement_state()
+	var step_distance: float = _step_distance_for_state(movement_state)
+	if is_inf(step_distance) or travelled > PUDDLE_TELEPORT_DISTANCE or player.is_dead or player.water_mode or player.surface_swimming or weather.visual_rain_density <= 0.04:
 		_puddle_step_distance = 0.0
 		return
 	_puddle_step_distance += travelled
-	if _puddle_step_distance < PUDDLE_STEP_DISTANCE:
+	if _puddle_step_distance < step_distance:
 		return
-	_puddle_step_distance = fposmod(_puddle_step_distance, PUDDLE_STEP_DISTANCE)
+	_puddle_step_distance = fposmod(_puddle_step_distance, step_distance)
 	_rain_step_play_count += 1
 	if DisplayServer.get_name() == "headless":
 		return
-	wet_footstep_audio.pitch_scale = randf_range(0.92, 1.08)
-	wet_footstep_audio.volume_db = lerpf(-18.0, -8.0, clampf(weather.visual_rain_density, 0.0, 1.0))
+	var alternating_pitch := 0.975 if _rain_step_play_count % 2 == 0 else 1.025
+	wet_footstep_audio.pitch_scale = alternating_pitch + randf_range(-0.012, 0.012)
+	wet_footstep_audio.volume_db = lerpf(-22.0, -12.0, clampf(weather.visual_rain_density, 0.0, 1.0)) + _step_volume_offset(movement_state)
 	wet_footstep_audio.play()
+
+
+func _step_distance_for_state(state: String) -> float:
+	match state:
+		player.STATE_WALK:
+			return WALK_STEP_DISTANCE
+		player.STATE_RUN:
+			return RUN_STEP_DISTANCE
+		player.STATE_CROUCH:
+			return CROUCH_STEP_DISTANCE
+		player.STATE_CRAWL:
+			return CRAWL_STEP_DISTANCE
+		_:
+			return INF
+
+
+func _step_volume_offset(state: String) -> float:
+	match state:
+		player.STATE_RUN:
+			return 1.5
+		player.STATE_CROUCH:
+			return -3.0
+		player.STATE_CRAWL:
+			return -5.0
+		_:
+			return 0.0
 
 
 func get_rain_step_play_count() -> int:

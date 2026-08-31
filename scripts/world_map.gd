@@ -27,6 +27,7 @@ var _chunk_definitions: Array[Dictionary] = []
 var _loaded_chunks: Dictionary = {}
 var _active_chunk_bounds := Rect2i(Vector2i(-999, -999), Vector2i.ZERO)
 var _water_surface: Dictionary = {}
+var _water_weather_strength := 0.0
 
 
 func _ready() -> void:
@@ -158,18 +159,28 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 	if mask_texture == null:
 		push_error("Missing water mask for map chunk: " + String(data.get("id", "")))
 		return
+	var depth_resource := String(water_data.get("depth", String(water_data.get("image", "")).replace("_mask.png", "_depth.png")))
+	var depth_texture := ArtAssets.texture(_resource_path(depth_resource))
+	if depth_texture == null:
+		push_error("Missing water depth mask for map chunk: " + String(data.get("id", "")))
+		return
 
 	var material := ShaderMaterial.new()
 	material.shader = RIVER_SURFACE_SHADER
 	material.set_shader_parameter("water_mask", mask_texture)
+	material.set_shader_parameter("water_depth", depth_texture)
 	material.set_shader_parameter("chunk_world_origin", chunk.position)
 	material.set_shader_parameter("chunk_world_size", source_texture.get_size() * _content_scale)
 	material.set_shader_parameter("flow_direction", _point(_water_surface.get("flowDirection", [0.94, 0.34])))
 	material.set_shader_parameter("flow_speed", float(_water_surface.get("flowSpeed", 22.0)))
-	material.set_shader_parameter("flow_strength", float(_water_surface.get("flowStrength", 0.075)))
-	material.set_shader_parameter("caustics_scale", float(_water_surface.get("causticsScale", 0.018)))
-	material.set_shader_parameter("caustics_strength", float(_water_surface.get("causticsStrength", 0.12)))
-	material.set_shader_parameter("water_tint", _color(_water_surface.get("tint", [0.06, 0.50, 0.66, 1.0])))
+	material.set_shader_parameter("distortion_pixels", float(_water_surface.get("distortionPixels", 4.0)))
+	material.set_shader_parameter("tint_strength", float(_water_surface.get("tintStrength", 0.10)))
+	material.set_shader_parameter("shallow_strength", float(_water_surface.get("shallowStrength", 0.14)))
+	material.set_shader_parameter("highlight_strength", float(_water_surface.get("highlightStrength", 0.018)))
+	material.set_shader_parameter("shoreline_strength", float(_water_surface.get("shorelineStrength", 0.10)))
+	material.set_shader_parameter("weather_strength", _water_weather_strength)
+	material.set_shader_parameter("water_tint", _color(_water_surface.get("tint", [0.02, 0.34, 0.52, 1.0])))
+	material.set_shader_parameter("shallow_tint", _color(_water_surface.get("shallowTint", [0.08, 0.68, 0.74, 1.0])))
 
 	var water := Sprite2D.new()
 	water.name = "WaterSurface"
@@ -182,6 +193,17 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 
 func get_loaded_chunk_count() -> int:
 	return _loaded_chunks.size()
+
+
+func set_water_weather_strength(value: float) -> void:
+	var strength := clampf(value, 0.0, 1.0)
+	if is_equal_approx(_water_weather_strength, strength):
+		return
+	_water_weather_strength = strength
+	for chunk: Sprite2D in _loaded_chunks.values():
+		var water := chunk.get_node_or_null("WaterSurface") as Sprite2D
+		if water != null and water.material is ShaderMaterial:
+			(water.material as ShaderMaterial).set_shader_parameter("weather_strength", strength)
 
 
 func _add_props(props: Array) -> void:

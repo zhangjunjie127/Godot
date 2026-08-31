@@ -150,6 +150,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_update_rain_step_audio()
+	land_world.set_water_weather_strength(weather.visual_rain_density)
 	if _forecast_visible_seconds > 0.0:
 		_forecast_visible_seconds = maxf(_forecast_visible_seconds - delta, 0.0)
 		forecast_popup.visible = _forecast_visible_seconds > 0.0

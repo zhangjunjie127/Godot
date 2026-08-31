@@ -112,8 +112,25 @@ func _run() -> void:
 		if water_mask == null or water_mask.get_size() != chunk.texture.get_size():
 			_fail("A water mask does not match its map chunk dimensions: " + chunk.name)
 			return
+		var water_depth := water_material.get_shader_parameter("water_depth") as Texture2D
+		if water_depth == null or water_depth.get_size() != Vector2(512.0, 512.0):
+			_fail("The optimized shoreline depth mask is missing: " + chunk.name)
+			return
 		if water_material.get_shader_parameter("chunk_world_origin") != chunk.position:
 			_fail("Water motion is not aligned to map world coordinates: " + chunk.name)
+			return
+		if not is_equal_approx(float(water_material.get_shader_parameter("distortion_pixels")), 4.0):
+			_fail("The selected natural-refraction water preset was not applied: " + chunk.name)
+			return
+	var water_interactions := scene.get_node_or_null("World/WaterSurfaceInteractions")
+	if water_interactions == null:
+		_fail("Surface-swimming ripple feedback is missing")
+		return
+	scene.get_node("World").set_water_weather_strength(0.8)
+	for chunk: Sprite2D in foundation.get_children():
+		var water_surface := chunk.get_node("WaterSurface") as Sprite2D
+		if not is_equal_approx(float(water_surface.material.get_shader_parameter("weather_strength")), 0.8):
+			_fail("Rain intensity did not strengthen the natural water motion")
 			return
 	if blockers.get_child_count() < 2:
 		_fail("Spawn map collision blockers did not load")

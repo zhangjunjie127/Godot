@@ -158,6 +158,11 @@ func _run() -> void:
 	if player.sprite.texture != load("res://assets/characters/player_male_swim/sheet-transparent.png"):
 		_fail("Surface swimming did not use the dedicated swimming animation")
 		return
+	var water_interactions = scene.get_node("World/WaterSurfaceInteractions")
+	water_interactions.advance_effects(0.1)
+	if water_interactions.get_ripple_count() == 0:
+		_fail("Surface swimming did not leave water ripples behind the player")
+		return
 	Input.action_press("player_jump")
 	await physics_frame
 	Input.action_release("player_jump")

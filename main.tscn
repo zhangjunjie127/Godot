@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3]
+[gd_scene load_steps=49 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -27,6 +27,7 @@
 [ext_resource type="AudioStream" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
 [ext_resource type="AudioStream" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
 [ext_resource type="AudioStream" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
+[ext_resource type="Script" path="res://scripts/water_surface_interactions.gd" id="28_water_interactions"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -232,6 +233,11 @@ z_index = -5
 script = ExtResource("12_weather_ground")
 world_size = Vector2(8192, 8192)
 puddle_mask = ExtResource("22_puddle_mask")
+
+[node name="WaterSurfaceInteractions" type="Node2D" parent="World"]
+z_index = -6
+script = ExtResource("28_water_interactions")
+player_path = NodePath("../DepthSorted/Player")
 
 [node name="SnowWorld" type="Node2D" parent="World"]
 z_index = 30

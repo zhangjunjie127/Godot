@@ -84,8 +84,9 @@ func _collect_manifest_paths(paths: Dictionary) -> void:
 
 func _collect_images(value: Variant, paths: Dictionary) -> void:
 	if value is Dictionary:
-		if value.has("image"):
-			paths[ArtCatalog.normalize_path(String(value["image"]))] = true
+		for key: String in ["image", "depth"]:
+			if value.has(key):
+				paths[ArtCatalog.normalize_path(String(value[key]))] = true
 		for child: Variant in value.values():
 			_collect_images(child, paths)
 	elif value is Array:

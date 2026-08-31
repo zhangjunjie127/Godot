@@ -8,6 +8,7 @@ const PRESET_NAMES := ["A  清爽透明", "B  风格浪纹", "C  自然折射"]
 
 
 func _ready() -> void:
+	DisplayServer.window_set_title("水面效果对比")
 	_build_comparison()
 
 

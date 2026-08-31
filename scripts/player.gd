@@ -125,6 +125,11 @@ func _ready() -> void:
 	queue_redraw()
 
 
+func _input(event: InputEvent) -> void:
+	if _is_attacking and event.is_pressed() and not event.is_action_pressed("player_attack"):
+		_cancel_attack()
+
+
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		velocity = Vector2.ZERO
@@ -294,6 +299,13 @@ func _begin_attack() -> void:
 	_attack_start_frame = _next_attack_start_frame
 	_next_attack_start_frame = ATTACK_FRAMES_PER_PUNCH if _attack_start_frame == 0 else 0
 	_set_movement_state(STATE_ATTACK)
+
+
+func _cancel_attack() -> void:
+	_is_attacking = false
+	_attack_elapsed = 0.0
+	_queued_attacks = 0
+	_next_attack_start_frame = 0
 
 
 func set_health(value: float) -> void:

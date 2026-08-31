@@ -48,6 +48,25 @@ func _run() -> void:
 		_fail("Attack did not return control after the queued punches ended")
 		return
 
+	player.start_attack()
+	player.start_attack()
+	var move_event := InputEventKey.new()
+	move_event.physical_keycode = KEY_W
+	move_event.pressed = true
+	player._input(move_event)
+	if player._is_attacking or player.get_queued_attack_count() != 0:
+		_fail("Movement input did not interrupt the attack and clear its queued combo")
+		return
+
+	player.start_attack()
+	var attack_event := InputEventMouseButton.new()
+	attack_event.button_index = MOUSE_BUTTON_LEFT
+	attack_event.pressed = true
+	player._input(attack_event)
+	if not player._is_attacking:
+		_fail("Another attack click incorrectly interrupted the combo")
+		return
+
 	print("PLAYER_ATTACK_COMBO_OK")
 	scene.free()
 	await process_frame

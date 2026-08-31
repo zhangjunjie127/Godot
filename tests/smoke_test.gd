@@ -119,8 +119,8 @@ func _run() -> void:
 		if water_material.get_shader_parameter("chunk_world_origin") != chunk.position:
 			_fail("Water motion is not aligned to map world coordinates: " + chunk.name)
 			return
-		if not is_equal_approx(float(water_material.get_shader_parameter("distortion_pixels")), 4.0):
-			_fail("The selected natural-refraction water preset was not applied: " + chunk.name)
+		if not is_equal_approx(float(water_material.get_shader_parameter("distortion_pixels")), 5.5):
+			_fail("The enhanced natural-refraction water preset was not applied: " + chunk.name)
 			return
 	var water_interactions := scene.get_node_or_null("World/WaterSurfaceInteractions")
 	if water_interactions == null:

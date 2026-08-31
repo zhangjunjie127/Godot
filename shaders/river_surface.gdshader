@@ -6,12 +6,12 @@ uniform sampler2D water_depth : repeat_disable, filter_linear;
 uniform vec2 chunk_world_origin = vec2(0.0);
 uniform vec2 chunk_world_size = vec2(2048.0);
 uniform vec2 flow_direction = vec2(0.94, 0.34);
-uniform float flow_speed : hint_range(0.0, 80.0, 1.0) = 22.0;
-uniform float distortion_pixels : hint_range(0.0, 10.0, 0.1) = 4.0;
-uniform float tint_strength : hint_range(0.0, 0.4, 0.01) = 0.10;
-uniform float shallow_strength : hint_range(0.0, 0.4, 0.01) = 0.14;
-uniform float highlight_strength : hint_range(0.0, 0.12, 0.001) = 0.018;
-uniform float shoreline_strength : hint_range(0.0, 0.4, 0.01) = 0.10;
+uniform float flow_speed : hint_range(0.0, 80.0, 1.0) = 28.0;
+uniform float distortion_pixels : hint_range(0.0, 10.0, 0.1) = 5.5;
+uniform float tint_strength : hint_range(0.0, 0.4, 0.01) = 0.14;
+uniform float shallow_strength : hint_range(0.0, 0.4, 0.01) = 0.22;
+uniform float highlight_strength : hint_range(0.0, 0.12, 0.001) = 0.045;
+uniform float shoreline_strength : hint_range(0.0, 0.4, 0.01) = 0.18;
 uniform float weather_strength : hint_range(0.0, 1.0, 0.01) = 0.0;
 uniform vec4 water_tint : source_color = vec4(0.02, 0.34, 0.52, 1.0);
 uniform vec4 shallow_tint : source_color = vec4(0.08, 0.68, 0.74, 1.0);
@@ -78,12 +78,24 @@ void fragment() {
 	float shoreline = mask * (1.0 - smoothstep(0.01, 0.14, depth));
 	float shallow_water = mask * (1.0 - smoothstep(0.04, 0.56, depth));
 	float foam_motion = 0.55 + 0.45 * sin(dot(world_position, vec2(0.055, -0.048)) + TIME * 1.7 + current * 4.0);
-	float thread = pow(0.5 + 0.5 * sin(
+	float thread_a = abs(sin(
 		dot(world_position, direction) * 0.125
 		+ dot(world_position, perpendicular) * 0.035
 		+ TIME * 1.05
 		+ current * 3.0
-	), 18.0);
+	));
+	float thread_b = abs(sin(
+		dot(world_position, perpendicular) * 0.082
+		- dot(world_position, direction) * 0.047
+		- TIME * 0.78
+		+ current * 2.4
+	));
+	float caustic_web = pow(1.0 - min(thread_a, thread_b), 11.0);
+	float surface_glint = pow(0.5 + 0.5 * sin(
+		dot(world_position, vec2(0.026, 0.014))
+		+ TIME * 0.62
+		+ current * 4.0
+	), 8.0);
 	float rain_rings = 0.0;
 	if (weather_strength > 0.001) {
 		rain_rings = rain_ring(world_position, 74.0, 0.82, vec2(0.0));
@@ -93,7 +105,8 @@ void fragment() {
 
 	vec3 color = mix(source, water_tint.rgb, tint_strength);
 	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength);
-	color += vec3(0.62, 0.92, 0.96) * thread * current * highlight_strength * mix(1.0, 0.55, weather_strength);
+	float visible_highlight = caustic_web * 0.82 + surface_glint * shallow_water * 0.34;
+	color += vec3(0.62, 0.92, 0.96) * visible_highlight * highlight_strength * mix(1.0, 0.55, weather_strength);
 	color += vec3(0.68, 0.91, 0.95) * rain_rings * 0.075;
 	color = mix(color, vec3(0.86, 0.98, 1.0), shoreline * foam_motion * shoreline_strength);
 	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), mask);

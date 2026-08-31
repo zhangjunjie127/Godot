@@ -1,0 +1,3742 @@
+{
+  "source": "vegetation_master.png",
+  "source_size": [
+    9216,
+    6144
+  ],
+  "asset_count": 186,
+  "categories": {
+    "deadwood": 3,
+    "flowering_plants": 20,
+    "foliage": 28,
+    "grasses": 50,
+    "groundcover": 30,
+    "palms": 14,
+    "rocks": 18,
+    "trees": 6,
+    "tropical_plants": 13,
+    "vines": 4
+  },
+  "assets": [
+    {
+      "id": "tropical_plant_001",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_001.png",
+      "source_crop": [
+        8221,
+        20,
+        9012,
+        779
+      ],
+      "source_component_area": 253144,
+      "width": 807,
+      "height": 775,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0016,
+        "brown_ratio": 0.01683,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_001",
+      "category": "palms",
+      "path": "palms/palm_tree_001.png",
+      "source_crop": [
+        5844,
+        31,
+        6847,
+        1532
+      ],
+      "source_component_area": 490095,
+      "width": 1019,
+      "height": 1517,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.09624,
+        "brown_ratio": 0.2209,
+        "gray_ratio": 2e-05
+      }
+    },
+    {
+      "id": "palm_tree_002",
+      "category": "palms",
+      "path": "palms/palm_tree_002.png",
+      "source_crop": [
+        138,
+        36,
+        1267,
+        1566
+      ],
+      "source_component_area": 681239,
+      "width": 1145,
+      "height": 1546,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05857,
+        "brown_ratio": 0.14901,
+        "gray_ratio": 7e-05
+      }
+    },
+    {
+      "id": "palm_tree_003",
+      "category": "palms",
+      "path": "palms/palm_tree_003.png",
+      "source_crop": [
+        1459,
+        58,
+        2396,
+        1546
+      ],
+      "source_component_area": 452171,
+      "width": 953,
+      "height": 1504,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0631,
+        "brown_ratio": 0.17941,
+        "gray_ratio": 0.00046
+      }
+    },
+    {
+      "id": "tropical_plant_002",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_002.png",
+      "source_crop": [
+        6864,
+        61,
+        8305,
+        1133
+      ],
+      "source_component_area": 753493,
+      "width": 1457,
+      "height": 1088,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00012,
+        "brown_ratio": 0.00016,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_004",
+      "category": "palms",
+      "path": "palms/palm_tree_004.png",
+      "source_crop": [
+        3882,
+        66,
+        4542,
+        1546
+      ],
+      "source_component_area": 308748,
+      "width": 676,
+      "height": 1496,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.11625,
+        "brown_ratio": 0.26235,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_005",
+      "category": "palms",
+      "path": "palms/palm_tree_005.png",
+      "source_crop": [
+        2527,
+        68,
+        3335,
+        1547
+      ],
+      "source_component_area": 364723,
+      "width": 824,
+      "height": 1495,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.08981,
+        "brown_ratio": 0.19913,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_006",
+      "category": "palms",
+      "path": "palms/palm_tree_006.png",
+      "source_crop": [
+        4491,
+        361,
+        5305,
+        1544
+      ],
+      "source_component_area": 293468,
+      "width": 830,
+      "height": 1199,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.08831,
+        "brown_ratio": 0.2158,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_007",
+      "category": "palms",
+      "path": "palms/palm_tree_007.png",
+      "source_crop": [
+        3264,
+        396,
+        3894,
+        1544
+      ],
+      "source_component_area": 232686,
+      "width": 646,
+      "height": 1164,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.10457,
+        "brown_ratio": 0.23111,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_008",
+      "category": "palms",
+      "path": "palms/palm_tree_008.png",
+      "source_crop": [
+        5173,
+        569,
+        5790,
+        1543
+      ],
+      "source_component_area": 216978,
+      "width": 633,
+      "height": 990,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05635,
+        "brown_ratio": 0.15086,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_003",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_003.png",
+      "source_crop": [
+        8611,
+        671,
+        9083,
+        1170
+      ],
+      "source_component_area": 90680,
+      "width": 488,
+      "height": 515,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00469,
+        "brown_ratio": 0.01758,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_009",
+      "category": "palms",
+      "path": "palms/palm_tree_009.png",
+      "source_crop": [
+        1092,
+        685,
+        1660,
+        1544
+      ],
+      "source_component_area": 178301,
+      "width": 584,
+      "height": 875,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05646,
+        "brown_ratio": 0.15029,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_004",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_004.png",
+      "source_crop": [
+        6665,
+        718,
+        7387,
+        1561
+      ],
+      "source_component_area": 248171,
+      "width": 738,
+      "height": 859,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 7e-05,
+        "brown_ratio": 0.00051,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_010",
+      "category": "palms",
+      "path": "palms/palm_tree_010.png",
+      "source_crop": [
+        5795,
+        771,
+        6332,
+        1543
+      ],
+      "source_component_area": 165219,
+      "width": 553,
+      "height": 788,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0611,
+        "brown_ratio": 0.16642,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_005",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_005.png",
+      "source_crop": [
+        7959,
+        884,
+        8597,
+        1552
+      ],
+      "source_component_area": 194305,
+      "width": 654,
+      "height": 684,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_011",
+      "category": "palms",
+      "path": "palms/palm_tree_011.png",
+      "source_crop": [
+        2017,
+        912,
+        2438,
+        1543
+      ],
+      "source_component_area": 92489,
+      "width": 437,
+      "height": 647,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05364,
+        "brown_ratio": 0.16372,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_012",
+      "category": "palms",
+      "path": "palms/palm_tree_012.png",
+      "source_crop": [
+        3020,
+        952,
+        3475,
+        1544
+      ],
+      "source_component_area": 100441,
+      "width": 471,
+      "height": 608,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05834,
+        "brown_ratio": 0.14486,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_013",
+      "category": "palms",
+      "path": "palms/palm_tree_013.png",
+      "source_crop": [
+        4370,
+        991,
+        4779,
+        1542
+      ],
+      "source_component_area": 86222,
+      "width": 425,
+      "height": 567,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.04491,
+        "brown_ratio": 0.14232,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "palm_tree_014",
+      "category": "palms",
+      "path": "palms/palm_tree_014.png",
+      "source_crop": [
+        2426,
+        1059,
+        2803,
+        1539
+      ],
+      "source_component_area": 65744,
+      "width": 393,
+      "height": 496,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.03389,
+        "brown_ratio": 0.15112,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_006",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_006.png",
+      "source_crop": [
+        3753,
+        1089,
+        4088,
+        1539
+      ],
+      "source_component_area": 52844,
+      "width": 351,
+      "height": 466,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05439,
+        "brown_ratio": 0.17862,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_007",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_007.png",
+      "source_crop": [
+        7357,
+        1115,
+        7939,
+        1554
+      ],
+      "source_component_area": 114939,
+      "width": 598,
+      "height": 455,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_008",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_008.png",
+      "source_crop": [
+        8574,
+        1210,
+        8992,
+        1572
+      ],
+      "source_component_area": 60195,
+      "width": 434,
+      "height": 378,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_009",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_009.png",
+      "source_crop": [
+        5587,
+        1258,
+        5893,
+        1545
+      ],
+      "source_component_area": 31300,
+      "width": 322,
+      "height": 303,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01137,
+        "brown_ratio": 0.07645,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tree_001",
+      "category": "trees",
+      "path": "trees/tree_001.png",
+      "source_crop": [
+        157,
+        1530,
+        1756,
+        2872
+      ],
+      "source_component_area": 1123338,
+      "width": 1615,
+      "height": 1358,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02089,
+        "brown_ratio": 0.07424,
+        "gray_ratio": 0.00047
+      }
+    },
+    {
+      "id": "tropical_plant_010",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_010.png",
+      "source_crop": [
+        1209,
+        1531,
+        1903,
+        2403
+      ],
+      "source_component_area": 252108,
+      "width": 710,
+      "height": 888,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00027,
+        "brown_ratio": 0.00108,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tree_002",
+      "category": "trees",
+      "path": "trees/tree_002.png",
+      "source_crop": [
+        3351,
+        1584,
+        4200,
+        2575
+      ],
+      "source_component_area": 432315,
+      "width": 865,
+      "height": 1007,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.07308,
+        "brown_ratio": 0.09109,
+        "gray_ratio": 0.00017
+      }
+    },
+    {
+      "id": "tree_003",
+      "category": "trees",
+      "path": "trees/tree_003.png",
+      "source_crop": [
+        2270,
+        1594,
+        3348,
+        2675
+      ],
+      "source_component_area": 495356,
+      "width": 1094,
+      "height": 1097,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02364,
+        "brown_ratio": 0.12509,
+        "gray_ratio": 0.00152
+      }
+    },
+    {
+      "id": "tropical_plant_011",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_011.png",
+      "source_crop": [
+        6385,
+        1690,
+        7020,
+        2214
+      ],
+      "source_component_area": 179978,
+      "width": 651,
+      "height": 540,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 5e-05,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "vine_001",
+      "category": "vines",
+      "path": "vines/vine_001.png",
+      "source_crop": [
+        8294,
+        1700,
+        8694,
+        2792
+      ],
+      "source_component_area": 124869,
+      "width": 416,
+      "height": 1108,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00152,
+        "brown_ratio": 0.00349,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tree_004",
+      "category": "trees",
+      "path": "trees/tree_004.png",
+      "source_crop": [
+        5252,
+        1724,
+        5904,
+        2694
+      ],
+      "source_component_area": 324263,
+      "width": 668,
+      "height": 986,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00928,
+        "brown_ratio": 0.04287,
+        "gray_ratio": 1e-05
+      }
+    },
+    {
+      "id": "vine_002",
+      "category": "vines",
+      "path": "vines/vine_002.png",
+      "source_crop": [
+        7929,
+        1747,
+        8369,
+        2612
+      ],
+      "source_component_area": 146065,
+      "width": 456,
+      "height": 881,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.23086,
+        "brown_ratio": 0.27782,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tree_005",
+      "category": "trees",
+      "path": "trees/tree_005.png",
+      "source_crop": [
+        4129,
+        1800,
+        4860,
+        2607
+      ],
+      "source_component_area": 281116,
+      "width": 747,
+      "height": 823,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01072,
+        "brown_ratio": 0.04233,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_001",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_001.png",
+      "source_crop": [
+        5868,
+        1804,
+        6384,
+        2325
+      ],
+      "source_component_area": 109163,
+      "width": 532,
+      "height": 537,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.21506,
+        "brown_ratio": 0.22725,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "vine_003",
+      "category": "vines",
+      "path": "vines/vine_003.png",
+      "source_crop": [
+        7588,
+        1878,
+        7945,
+        2715
+      ],
+      "source_component_area": 109862,
+      "width": 373,
+      "height": 853,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.10225,
+        "brown_ratio": 0.12563,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "vine_004",
+      "category": "vines",
+      "path": "vines/vine_004.png",
+      "source_crop": [
+        8717,
+        1888,
+        9028,
+        2867
+      ],
+      "source_component_area": 105082,
+      "width": 327,
+      "height": 995,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.00093,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_001",
+      "category": "foliage",
+      "path": "foliage/foliage_001.png",
+      "source_crop": [
+        7011,
+        1901,
+        7580,
+        2339
+      ],
+      "source_component_area": 95387,
+      "width": 585,
+      "height": 454,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tree_006",
+      "category": "trees",
+      "path": "trees/tree_006.png",
+      "source_crop": [
+        1672,
+        1918,
+        2340,
+        2805
+      ],
+      "source_component_area": 256178,
+      "width": 684,
+      "height": 903,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02821,
+        "brown_ratio": 0.09866,
+        "gray_ratio": 0.00183
+      }
+    },
+    {
+      "id": "flowering_plant_002",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_002.png",
+      "source_crop": [
+        4844,
+        2000,
+        5280,
+        2591
+      ],
+      "source_component_area": 116649,
+      "width": 452,
+      "height": 607,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.06756,
+        "brown_ratio": 0.11166,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_002",
+      "category": "foliage",
+      "path": "foliage/foliage_002.png",
+      "source_crop": [
+        6561,
+        2177,
+        7115,
+        2635
+      ],
+      "source_component_area": 116431,
+      "width": 570,
+      "height": 474,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_003",
+      "category": "foliage",
+      "path": "foliage/foliage_003.png",
+      "source_crop": [
+        5936,
+        2281,
+        6570,
+        2754
+      ],
+      "source_component_area": 165047,
+      "width": 650,
+      "height": 489,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_003",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_003.png",
+      "source_crop": [
+        7076,
+        2346,
+        7714,
+        2863
+      ],
+      "source_component_area": 168848,
+      "width": 654,
+      "height": 533,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.17431,
+        "brown_ratio": 0.19279,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_004",
+      "category": "foliage",
+      "path": "foliage/foliage_004.png",
+      "source_crop": [
+        2157,
+        2411,
+        2592,
+        2722
+      ],
+      "source_component_area": 65634,
+      "width": 451,
+      "height": 327,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_005",
+      "category": "foliage",
+      "path": "foliage/foliage_005.png",
+      "source_crop": [
+        3904,
+        2439,
+        4482,
+        2866
+      ],
+      "source_component_area": 113289,
+      "width": 594,
+      "height": 443,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_006",
+      "category": "foliage",
+      "path": "foliage/foliage_006.png",
+      "source_crop": [
+        2863,
+        2443,
+        3320,
+        2795
+      ],
+      "source_component_area": 78037,
+      "width": 473,
+      "height": 368,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_004",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_004.png",
+      "source_crop": [
+        4582,
+        2591,
+        5420,
+        3229
+      ],
+      "source_component_area": 312671,
+      "width": 854,
+      "height": 654,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.10433,
+        "brown_ratio": 0.11453,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "tropical_plant_012",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_012.png",
+      "source_crop": [
+        6319,
+        2630,
+        7089,
+        3229
+      ],
+      "source_component_area": 224449,
+      "width": 786,
+      "height": 615,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_005",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_005.png",
+      "source_crop": [
+        5437,
+        2724,
+        6254,
+        3258
+      ],
+      "source_component_area": 260037,
+      "width": 833,
+      "height": 550,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.19514,
+        "brown_ratio": 0.19199,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_007",
+      "category": "foliage",
+      "path": "foliage/foliage_007.png",
+      "source_crop": [
+        3132,
+        2737,
+        3770,
+        3213
+      ],
+      "source_component_area": 178698,
+      "width": 654,
+      "height": 492,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01128,
+        "brown_ratio": 0.0173,
+        "gray_ratio": 0.001
+      }
+    },
+    {
+      "id": "tropical_plant_013",
+      "category": "tropical_plants",
+      "path": "tropical_plants/tropical_plant_013.png",
+      "source_crop": [
+        7799,
+        2756,
+        8472,
+        3360
+      ],
+      "source_component_area": 230008,
+      "width": 689,
+      "height": 620,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 5e-05,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_006",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_006.png",
+      "source_crop": [
+        1954,
+        2780,
+        2545,
+        3263
+      ],
+      "source_component_area": 166710,
+      "width": 607,
+      "height": 499,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.30597,
+        "brown_ratio": 0.33818,
+        "gray_ratio": 0.00033
+      }
+    },
+    {
+      "id": "foliage_008",
+      "category": "foliage",
+      "path": "foliage/foliage_008.png",
+      "source_crop": [
+        4291,
+        2798,
+        4568,
+        3122
+      ],
+      "source_component_area": 32529,
+      "width": 293,
+      "height": 340,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_007",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_007.png",
+      "source_crop": [
+        2591,
+        2806,
+        3123,
+        3230
+      ],
+      "source_component_area": 113470,
+      "width": 548,
+      "height": 440,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.25016,
+        "brown_ratio": 0.26711,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_008",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_008.png",
+      "source_crop": [
+        634,
+        2844,
+        1334,
+        3372
+      ],
+      "source_component_area": 221146,
+      "width": 716,
+      "height": 544,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.1483,
+        "brown_ratio": 0.16262,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_009",
+      "category": "foliage",
+      "path": "foliage/foliage_009.png",
+      "source_crop": [
+        1358,
+        2845,
+        1963,
+        3312
+      ],
+      "source_component_area": 158829,
+      "width": 621,
+      "height": 483,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.04777,
+        "brown_ratio": 0.01461,
+        "gray_ratio": 0.03688
+      }
+    },
+    {
+      "id": "foliage_010",
+      "category": "foliage",
+      "path": "foliage/foliage_010.png",
+      "source_crop": [
+        7039,
+        2852,
+        7771,
+        3413
+      ],
+      "source_component_area": 209844,
+      "width": 748,
+      "height": 577,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_011",
+      "category": "foliage",
+      "path": "foliage/foliage_011.png",
+      "source_crop": [
+        8463,
+        2867,
+        8779,
+        3140
+      ],
+      "source_component_area": 36053,
+      "width": 332,
+      "height": 289,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_012",
+      "category": "foliage",
+      "path": "foliage/foliage_012.png",
+      "source_crop": [
+        211,
+        2869,
+        659,
+        3277
+      ],
+      "source_component_area": 93438,
+      "width": 464,
+      "height": 424,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_009",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_009.png",
+      "source_crop": [
+        3768,
+        2872,
+        4291,
+        3260
+      ],
+      "source_component_area": 94409,
+      "width": 539,
+      "height": 404,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.22467,
+        "brown_ratio": 0.25008,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_013",
+      "category": "foliage",
+      "path": "foliage/foliage_013.png",
+      "source_crop": [
+        8014,
+        2949,
+        9061,
+        3931
+      ],
+      "source_component_area": 276392,
+      "width": 1063,
+      "height": 998,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01355,
+        "brown_ratio": 0.02026,
+        "gray_ratio": 1e-05
+      }
+    },
+    {
+      "id": "flowering_plant_010",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_010.png",
+      "source_crop": [
+        6089,
+        3155,
+        6635,
+        3605
+      ],
+      "source_component_area": 124947,
+      "width": 562,
+      "height": 466,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.34485,
+        "brown_ratio": 0.36126,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_014",
+      "category": "foliage",
+      "path": "foliage/foliage_014.png",
+      "source_crop": [
+        4339,
+        3190,
+        4936,
+        3585
+      ],
+      "source_component_area": 127682,
+      "width": 613,
+      "height": 411,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 2e-05,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_015",
+      "category": "foliage",
+      "path": "foliage/foliage_015.png",
+      "source_crop": [
+        4970,
+        3190,
+        5573,
+        3643
+      ],
+      "source_component_area": 157753,
+      "width": 619,
+      "height": 469,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02634,
+        "brown_ratio": 0.03504,
+        "gray_ratio": 0.01135
+      }
+    },
+    {
+      "id": "flowering_plant_011",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_011.png",
+      "source_crop": [
+        2960,
+        3196,
+        3312,
+        3528
+      ],
+      "source_component_area": 42154,
+      "width": 368,
+      "height": 348,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.16181,
+        "brown_ratio": 0.17621,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_001",
+      "category": "grasses",
+      "path": "grasses/grass_clump_001.png",
+      "source_crop": [
+        3969,
+        3222,
+        4315,
+        3554
+      ],
+      "source_component_area": 47738,
+      "width": 362,
+      "height": 348,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_012",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_012.png",
+      "source_crop": [
+        2237,
+        3226,
+        2934,
+        3635
+      ],
+      "source_component_area": 158838,
+      "width": 713,
+      "height": 425,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.19146,
+        "brown_ratio": 0.03561,
+        "gray_ratio": 0.17473
+      }
+    },
+    {
+      "id": "flowering_plant_013",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_013.png",
+      "source_crop": [
+        6635,
+        3233,
+        7056,
+        3584
+      ],
+      "source_component_area": 78353,
+      "width": 437,
+      "height": 367,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.08076,
+        "brown_ratio": 0.02322,
+        "gray_ratio": 0.06954
+      }
+    },
+    {
+      "id": "flowering_plant_014",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_014.png",
+      "source_crop": [
+        5604,
+        3241,
+        6091,
+        3618
+      ],
+      "source_component_area": 71577,
+      "width": 503,
+      "height": 393,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.144,
+        "brown_ratio": 0.15671,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_015",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_015.png",
+      "source_crop": [
+        1766,
+        3260,
+        2194,
+        3603
+      ],
+      "source_component_area": 64500,
+      "width": 444,
+      "height": 359,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.35109,
+        "brown_ratio": 0.37102,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_016",
+      "category": "foliage",
+      "path": "foliage/foliage_016.png",
+      "source_crop": [
+        3341,
+        3260,
+        3983,
+        3682
+      ],
+      "source_component_area": 129440,
+      "width": 658,
+      "height": 438,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_017",
+      "category": "foliage",
+      "path": "foliage/foliage_017.png",
+      "source_crop": [
+        177,
+        3292,
+        770,
+        3785
+      ],
+      "source_component_area": 161459,
+      "width": 609,
+      "height": 509,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00393,
+        "brown_ratio": 0.0057,
+        "gray_ratio": 5e-05
+      }
+    },
+    {
+      "id": "grass_clump_002",
+      "category": "grasses",
+      "path": "grasses/grass_clump_002.png",
+      "source_crop": [
+        1381,
+        3343,
+        1763,
+        3628
+      ],
+      "source_component_area": 38563,
+      "width": 398,
+      "height": 301,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_003",
+      "category": "grasses",
+      "path": "grasses/grass_clump_003.png",
+      "source_crop": [
+        6949,
+        3348,
+        7968,
+        3802
+      ],
+      "source_component_area": 202774,
+      "width": 1035,
+      "height": 470,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.06811,
+        "brown_ratio": 0.09655,
+        "gray_ratio": 0.01252
+      }
+    },
+    {
+      "id": "foliage_018",
+      "category": "foliage",
+      "path": "foliage/foliage_018.png",
+      "source_crop": [
+        768,
+        3442,
+        1387,
+        3820
+      ],
+      "source_component_area": 131463,
+      "width": 635,
+      "height": 394,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.04655,
+        "brown_ratio": 0.02275,
+        "gray_ratio": 0.0364
+      }
+    },
+    {
+      "id": "foliage_019",
+      "category": "foliage",
+      "path": "foliage/foliage_019.png",
+      "source_crop": [
+        2705,
+        3511,
+        3143,
+        3920
+      ],
+      "source_component_area": 81424,
+      "width": 454,
+      "height": 425,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_016",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_016.png",
+      "source_crop": [
+        4234,
+        3533,
+        4681,
+        4008
+      ],
+      "source_component_area": 82379,
+      "width": 463,
+      "height": 491,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.10522,
+        "brown_ratio": 0.09607,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_004",
+      "category": "grasses",
+      "path": "grasses/grass_clump_004.png",
+      "source_crop": [
+        3149,
+        3545,
+        3504,
+        3867
+      ],
+      "source_component_area": 45378,
+      "width": 371,
+      "height": 338,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_005",
+      "category": "grasses",
+      "path": "grasses/grass_clump_005.png",
+      "source_crop": [
+        1916,
+        3557,
+        2386,
+        3906
+      ],
+      "source_component_area": 67356,
+      "width": 486,
+      "height": 365,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_006",
+      "category": "grasses",
+      "path": "grasses/grass_clump_006.png",
+      "source_crop": [
+        1421,
+        3581,
+        1888,
+        3934
+      ],
+      "source_component_area": 72442,
+      "width": 483,
+      "height": 369,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_020",
+      "category": "foliage",
+      "path": "foliage/foliage_020.png",
+      "source_crop": [
+        5869,
+        3587,
+        6319,
+        3978
+      ],
+      "source_component_area": 81436,
+      "width": 466,
+      "height": 407,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_007",
+      "category": "grasses",
+      "path": "grasses/grass_clump_007.png",
+      "source_crop": [
+        3986,
+        3599,
+        4247,
+        3944
+      ],
+      "source_component_area": 32446,
+      "width": 277,
+      "height": 361,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_021",
+      "category": "foliage",
+      "path": "foliage/foliage_021.png",
+      "source_crop": [
+        5516,
+        3599,
+        5874,
+        3972
+      ],
+      "source_component_area": 50050,
+      "width": 374,
+      "height": 389,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_008",
+      "category": "grasses",
+      "path": "grasses/grass_clump_008.png",
+      "source_crop": [
+        6330,
+        3599,
+        6783,
+        3947
+      ],
+      "source_component_area": 70780,
+      "width": 469,
+      "height": 364,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "deadwood_001",
+      "category": "deadwood",
+      "path": "deadwood/deadwood_001.png",
+      "source_crop": [
+        8099,
+        3599,
+        9021,
+        4214
+      ],
+      "source_component_area": 137976,
+      "width": 938,
+      "height": 631,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.11625,
+        "brown_ratio": 0.36047,
+        "gray_ratio": 0.00015
+      }
+    },
+    {
+      "id": "foliage_022",
+      "category": "foliage",
+      "path": "foliage/foliage_022.png",
+      "source_crop": [
+        4706,
+        3606,
+        5125,
+        3969
+      ],
+      "source_component_area": 63404,
+      "width": 435,
+      "height": 379,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_017",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_017.png",
+      "source_crop": [
+        3561,
+        3612,
+        3982,
+        3966
+      ],
+      "source_component_area": 65369,
+      "width": 437,
+      "height": 370,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.35284,
+        "brown_ratio": 0.36328,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_009",
+      "category": "grasses",
+      "path": "grasses/grass_clump_009.png",
+      "source_crop": [
+        2414,
+        3623,
+        2698,
+        3831
+      ],
+      "source_component_area": 24369,
+      "width": 300,
+      "height": 224,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_010",
+      "category": "grasses",
+      "path": "grasses/grass_clump_010.png",
+      "source_crop": [
+        5132,
+        3630,
+        5518,
+        3976
+      ],
+      "source_component_area": 51882,
+      "width": 402,
+      "height": 362,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_011",
+      "category": "grasses",
+      "path": "grasses/grass_clump_011.png",
+      "source_crop": [
+        176,
+        3741,
+        534,
+        3979
+      ],
+      "source_component_area": 33999,
+      "width": 374,
+      "height": 254,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_023",
+      "category": "foliage",
+      "path": "foliage/foliage_023.png",
+      "source_crop": [
+        6778,
+        3751,
+        7353,
+        4188
+      ],
+      "source_component_area": 139239,
+      "width": 591,
+      "height": 453,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01243,
+        "brown_ratio": 0.01547,
+        "gray_ratio": 0.00039
+      }
+    },
+    {
+      "id": "flowering_plant_018",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_018.png",
+      "source_crop": [
+        3379,
+        3789,
+        3577,
+        3990
+      ],
+      "source_component_area": 14015,
+      "width": 214,
+      "height": 217,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.5507,
+        "brown_ratio": 0.56411,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_019",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_019.png",
+      "source_crop": [
+        531,
+        3794,
+        929,
+        4115
+      ],
+      "source_component_area": 58631,
+      "width": 414,
+      "height": 337,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.24136,
+        "brown_ratio": 0.26368,
+        "gray_ratio": 0.00012
+      }
+    },
+    {
+      "id": "grass_clump_012",
+      "category": "grasses",
+      "path": "grasses/grass_clump_012.png",
+      "source_crop": [
+        795,
+        3816,
+        1745,
+        4343
+      ],
+      "source_component_area": 259359,
+      "width": 966,
+      "height": 543,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05811,
+        "brown_ratio": 0.07484,
+        "gray_ratio": 0.0002
+      }
+    },
+    {
+      "id": "grass_clump_013",
+      "category": "grasses",
+      "path": "grasses/grass_clump_013.png",
+      "source_crop": [
+        2462,
+        3824,
+        2837,
+        4161
+      ],
+      "source_component_area": 46447,
+      "width": 391,
+      "height": 353,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "deadwood_002",
+      "category": "deadwood",
+      "path": "deadwood/deadwood_002.png",
+      "source_crop": [
+        7391,
+        3825,
+        8062,
+        4628
+      ],
+      "source_component_area": 205595,
+      "width": 687,
+      "height": 819,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.10628,
+        "brown_ratio": 0.22287,
+        "gray_ratio": 0.00096
+      }
+    },
+    {
+      "id": "grass_clump_014",
+      "category": "grasses",
+      "path": "grasses/grass_clump_014.png",
+      "source_crop": [
+        1733,
+        3836,
+        2095,
+        4154
+      ],
+      "source_component_area": 42730,
+      "width": 378,
+      "height": 334,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_015",
+      "category": "grasses",
+      "path": "grasses/grass_clump_015.png",
+      "source_crop": [
+        2121,
+        3836,
+        2479,
+        4177
+      ],
+      "source_component_area": 54003,
+      "width": 374,
+      "height": 357,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02392,
+        "brown_ratio": 0.01522,
+        "gray_ratio": 0.01944
+      }
+    },
+    {
+      "id": "grass_clump_016",
+      "category": "grasses",
+      "path": "grasses/grass_clump_016.png",
+      "source_crop": [
+        2925,
+        3861,
+        3133,
+        4120
+      ],
+      "source_component_area": 21391,
+      "width": 224,
+      "height": 275,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_017",
+      "category": "grasses",
+      "path": "grasses/grass_clump_017.png",
+      "source_crop": [
+        3138,
+        3881,
+        3362,
+        4179
+      ],
+      "source_component_area": 28549,
+      "width": 240,
+      "height": 314,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_024",
+      "category": "foliage",
+      "path": "foliage/foliage_024.png",
+      "source_crop": [
+        6181,
+        3923,
+        6848,
+        4457
+      ],
+      "source_component_area": 135892,
+      "width": 683,
+      "height": 550,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00603,
+        "brown_ratio": 0.00924,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_018",
+      "category": "grasses",
+      "path": "grasses/grass_clump_018.png",
+      "source_crop": [
+        3414,
+        3972,
+        3622,
+        4225
+      ],
+      "source_component_area": 20781,
+      "width": 224,
+      "height": 269,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "flowering_plant_020",
+      "category": "flowering_plants",
+      "path": "flowering_plants/flowering_plant_020.png",
+      "source_crop": [
+        5165,
+        3972,
+        5676,
+        4391
+      ],
+      "source_component_area": 101836,
+      "width": 527,
+      "height": 435,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.31037,
+        "brown_ratio": 0.12386,
+        "gray_ratio": 0.00104
+      }
+    },
+    {
+      "id": "grass_clump_019",
+      "category": "grasses",
+      "path": "grasses/grass_clump_019.png",
+      "source_crop": [
+        3652,
+        3976,
+        3883,
+        4154
+      ],
+      "source_component_area": 15275,
+      "width": 247,
+      "height": 194,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_020",
+      "category": "grasses",
+      "path": "grasses/grass_clump_020.png",
+      "source_crop": [
+        158,
+        3983,
+        600,
+        4282
+      ],
+      "source_component_area": 48544,
+      "width": 458,
+      "height": 315,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_025",
+      "category": "foliage",
+      "path": "foliage/foliage_025.png",
+      "source_crop": [
+        5683,
+        3983,
+        6294,
+        4711
+      ],
+      "source_component_area": 181704,
+      "width": 627,
+      "height": 744,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02409,
+        "brown_ratio": 0.0345,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_026",
+      "category": "foliage",
+      "path": "foliage/foliage_026.png",
+      "source_crop": [
+        4772,
+        3989,
+        5159,
+        4382
+      ],
+      "source_component_area": 69362,
+      "width": 403,
+      "height": 409,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_021",
+      "category": "grasses",
+      "path": "grasses/grass_clump_021.png",
+      "source_crop": [
+        4310,
+        4011,
+        4728,
+        4288
+      ],
+      "source_component_area": 41697,
+      "width": 434,
+      "height": 293,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_022",
+      "category": "grasses",
+      "path": "grasses/grass_clump_022.png",
+      "source_crop": [
+        3897,
+        4026,
+        4260,
+        4277
+      ],
+      "source_component_area": 34565,
+      "width": 379,
+      "height": 267,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_027",
+      "category": "foliage",
+      "path": "foliage/foliage_027.png",
+      "source_crop": [
+        8519,
+        4031,
+        9057,
+        4409
+      ],
+      "source_component_area": 78134,
+      "width": 554,
+      "height": 394,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_023",
+      "category": "grasses",
+      "path": "grasses/grass_clump_023.png",
+      "source_crop": [
+        2646,
+        4099,
+        3140,
+        4333
+      ],
+      "source_component_area": 57021,
+      "width": 510,
+      "height": 250,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_024",
+      "category": "grasses",
+      "path": "grasses/grass_clump_024.png",
+      "source_crop": [
+        1800,
+        4115,
+        2102,
+        4396
+      ],
+      "source_component_area": 37632,
+      "width": 318,
+      "height": 297,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00011,
+        "brown_ratio": 0.00816,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_025",
+      "category": "grasses",
+      "path": "grasses/grass_clump_025.png",
+      "source_crop": [
+        3175,
+        4143,
+        3462,
+        4355
+      ],
+      "source_component_area": 23630,
+      "width": 303,
+      "height": 228,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_026",
+      "category": "grasses",
+      "path": "grasses/grass_clump_026.png",
+      "source_crop": [
+        2110,
+        4168,
+        2608,
+        4436
+      ],
+      "source_component_area": 58591,
+      "width": 514,
+      "height": 284,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_027",
+      "category": "grasses",
+      "path": "grasses/grass_clump_027.png",
+      "source_crop": [
+        3549,
+        4176,
+        3923,
+        4459
+      ],
+      "source_component_area": 52482,
+      "width": 390,
+      "height": 299,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "deadwood_003",
+      "category": "deadwood",
+      "path": "deadwood/deadwood_003.png",
+      "source_crop": [
+        6996,
+        4200,
+        7479,
+        4742
+      ],
+      "source_component_area": 105822,
+      "width": 499,
+      "height": 558,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.23001,
+        "brown_ratio": 0.49201,
+        "gray_ratio": 0.00011
+      }
+    },
+    {
+      "id": "grass_clump_028",
+      "category": "grasses",
+      "path": "grasses/grass_clump_028.png",
+      "source_crop": [
+        436,
+        4210,
+        900,
+        4485
+      ],
+      "source_component_area": 55767,
+      "width": 480,
+      "height": 291,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0014,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0016
+      }
+    },
+    {
+      "id": "grass_clump_029",
+      "category": "grasses",
+      "path": "grasses/grass_clump_029.png",
+      "source_crop": [
+        6812,
+        4217,
+        7104,
+        4490
+      ],
+      "source_component_area": 32353,
+      "width": 308,
+      "height": 289,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "foliage_028",
+      "category": "foliage",
+      "path": "foliage/foliage_028.png",
+      "source_crop": [
+        8071,
+        4220,
+        8548,
+        4656
+      ],
+      "source_component_area": 100925,
+      "width": 493,
+      "height": 452,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.00166,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_030",
+      "category": "grasses",
+      "path": "grasses/grass_clump_030.png",
+      "source_crop": [
+        1427,
+        4240,
+        1820,
+        4545
+      ],
+      "source_component_area": 46925,
+      "width": 409,
+      "height": 321,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_031",
+      "category": "grasses",
+      "path": "grasses/grass_clump_031.png",
+      "source_crop": [
+        4245,
+        4274,
+        4627,
+        4562
+      ],
+      "source_component_area": 52829,
+      "width": 398,
+      "height": 304,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_032",
+      "category": "grasses",
+      "path": "grasses/grass_clump_032.png",
+      "source_crop": [
+        3935,
+        4295,
+        4251,
+        4540
+      ],
+      "source_component_area": 37066,
+      "width": 332,
+      "height": 261,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_033",
+      "category": "grasses",
+      "path": "grasses/grass_clump_033.png",
+      "source_crop": [
+        3329,
+        4317,
+        3558,
+        4500
+      ],
+      "source_component_area": 15446,
+      "width": 245,
+      "height": 199,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_034",
+      "category": "grasses",
+      "path": "grasses/grass_clump_034.png",
+      "source_crop": [
+        2613,
+        4319,
+        3079,
+        4550
+      ],
+      "source_component_area": 54053,
+      "width": 482,
+      "height": 247,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_035",
+      "category": "grasses",
+      "path": "grasses/grass_clump_035.png",
+      "source_crop": [
+        4659,
+        4321,
+        4982,
+        4580
+      ],
+      "source_component_area": 38022,
+      "width": 339,
+      "height": 275,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_001",
+      "category": "rocks",
+      "path": "rocks/rock_001.png",
+      "source_crop": [
+        176,
+        4351,
+        486,
+        4568
+      ],
+      "source_component_area": 25433,
+      "width": 326,
+      "height": 233,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.2076,
+        "brown_ratio": 0.2286,
+        "gray_ratio": 0.0762
+      }
+    },
+    {
+      "id": "grass_clump_036",
+      "category": "grasses",
+      "path": "grasses/grass_clump_036.png",
+      "source_crop": [
+        3117,
+        4358,
+        3369,
+        4550
+      ],
+      "source_component_area": 19025,
+      "width": 268,
+      "height": 208,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_001",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_001.png",
+      "source_crop": [
+        936,
+        4371,
+        1397,
+        4621
+      ],
+      "source_component_area": 49686,
+      "width": 477,
+      "height": 266,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.00101,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_037",
+      "category": "grasses",
+      "path": "grasses/grass_clump_037.png",
+      "source_crop": [
+        5518,
+        4380,
+        5806,
+        4652
+      ],
+      "source_component_area": 36965,
+      "width": 304,
+      "height": 288,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_002",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_002.png",
+      "source_crop": [
+        1801,
+        4392,
+        2592,
+        4702
+      ],
+      "source_component_area": 111642,
+      "width": 807,
+      "height": 326,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_003",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_003.png",
+      "source_crop": [
+        8543,
+        4393,
+        8963,
+        4687
+      ],
+      "source_component_area": 58962,
+      "width": 436,
+      "height": 310,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_004",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_004.png",
+      "source_crop": [
+        5037,
+        4404,
+        5448,
+        4679
+      ],
+      "source_component_area": 51814,
+      "width": 427,
+      "height": 291,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_005",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_005.png",
+      "source_crop": [
+        6288,
+        4407,
+        6661,
+        4681
+      ],
+      "source_component_area": 47482,
+      "width": 389,
+      "height": 290,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.22109,
+        "brown_ratio": 0.24268,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_002",
+      "category": "rocks",
+      "path": "rocks/rock_002.png",
+      "source_crop": [
+        6335,
+        4487,
+        7210,
+        5430
+      ],
+      "source_component_area": 429909,
+      "width": 891,
+      "height": 959,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0952,
+        "brown_ratio": 0.08527,
+        "gray_ratio": 0.44069
+      }
+    },
+    {
+      "id": "ground_patch_006",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_006.png",
+      "source_crop": [
+        3167,
+        4498,
+        3901,
+        4877
+      ],
+      "source_component_area": 153015,
+      "width": 750,
+      "height": 395,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_007",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_007.png",
+      "source_crop": [
+        131,
+        4519,
+        1421,
+        5149
+      ],
+      "source_component_area": 486774,
+      "width": 1306,
+      "height": 646,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.11386,
+        "brown_ratio": 0.12233,
+        "gray_ratio": 0.01133
+      }
+    },
+    {
+      "id": "ground_patch_008",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_008.png",
+      "source_crop": [
+        2566,
+        4544,
+        3143,
+        4909
+      ],
+      "source_component_area": 130650,
+      "width": 593,
+      "height": 381,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_009",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_009.png",
+      "source_crop": [
+        1356,
+        4552,
+        1933,
+        4871
+      ],
+      "source_component_area": 99274,
+      "width": 593,
+      "height": 335,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00032,
+        "brown_ratio": 0.00257,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_038",
+      "category": "grasses",
+      "path": "grasses/grass_clump_038.png",
+      "source_crop": [
+        4492,
+        4623,
+        4844,
+        4926
+      ],
+      "source_component_area": 48070,
+      "width": 368,
+      "height": 319,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_003",
+      "category": "rocks",
+      "path": "rocks/rock_003.png",
+      "source_crop": [
+        7253,
+        4624,
+        8248,
+        5566
+      ],
+      "source_component_area": 554992,
+      "width": 1011,
+      "height": 958,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05942,
+        "brown_ratio": 0.06159,
+        "gray_ratio": 0.39116
+      }
+    },
+    {
+      "id": "grass_clump_039",
+      "category": "grasses",
+      "path": "grasses/grass_clump_039.png",
+      "source_crop": [
+        3875,
+        4642,
+        4136,
+        4920
+      ],
+      "source_component_area": 26794,
+      "width": 277,
+      "height": 294,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_040",
+      "category": "grasses",
+      "path": "grasses/grass_clump_040.png",
+      "source_crop": [
+        4136,
+        4647,
+        4459,
+        4920
+      ],
+      "source_component_area": 37942,
+      "width": 339,
+      "height": 289,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_041",
+      "category": "grasses",
+      "path": "grasses/grass_clump_041.png",
+      "source_crop": [
+        4879,
+        4672,
+        5203,
+        4939
+      ],
+      "source_component_area": 38651,
+      "width": 340,
+      "height": 283,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_010",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_010.png",
+      "source_crop": [
+        5924,
+        4685,
+        6392,
+        5011
+      ],
+      "source_component_area": 73576,
+      "width": 484,
+      "height": 342,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02215,
+        "brown_ratio": 0.02722,
+        "gray_ratio": 0.00484
+      }
+    },
+    {
+      "id": "rock_004",
+      "category": "rocks",
+      "path": "rocks/rock_004.png",
+      "source_crop": [
+        8278,
+        4700,
+        9082,
+        5419
+      ],
+      "source_component_area": 316762,
+      "width": 820,
+      "height": 735,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.02312,
+        "brown_ratio": 0.02105,
+        "gray_ratio": 0.30709
+      }
+    },
+    {
+      "id": "grass_clump_042",
+      "category": "grasses",
+      "path": "grasses/grass_clump_042.png",
+      "source_crop": [
+        5527,
+        4732,
+        5883,
+        5017
+      ],
+      "source_component_area": 43007,
+      "width": 372,
+      "height": 301,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_043",
+      "category": "grasses",
+      "path": "grasses/grass_clump_043.png",
+      "source_crop": [
+        5183,
+        4762,
+        5507,
+        5039
+      ],
+      "source_component_area": 38454,
+      "width": 340,
+      "height": 293,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_011",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_011.png",
+      "source_crop": [
+        1404,
+        4787,
+        2618,
+        5401
+      ],
+      "source_component_area": 441157,
+      "width": 1230,
+      "height": 630,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0221,
+        "brown_ratio": 0.01837,
+        "gray_ratio": 0.00777
+      }
+    },
+    {
+      "id": "grass_clump_044",
+      "category": "grasses",
+      "path": "grasses/grass_clump_044.png",
+      "source_crop": [
+        4298,
+        4903,
+        4665,
+        5214
+      ],
+      "source_component_area": 53414,
+      "width": 383,
+      "height": 327,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_012",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_012.png",
+      "source_crop": [
+        3383,
+        4913,
+        3920,
+        5209
+      ],
+      "source_component_area": 100755,
+      "width": 553,
+      "height": 312,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0561,
+        "brown_ratio": 0.06528,
+        "gray_ratio": 0.00116
+      }
+    },
+    {
+      "id": "grass_clump_045",
+      "category": "grasses",
+      "path": "grasses/grass_clump_045.png",
+      "source_crop": [
+        4679,
+        4914,
+        5010,
+        5184
+      ],
+      "source_component_area": 40252,
+      "width": 347,
+      "height": 286,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_046",
+      "category": "grasses",
+      "path": "grasses/grass_clump_046.png",
+      "source_crop": [
+        3964,
+        4926,
+        4295,
+        5214
+      ],
+      "source_component_area": 42324,
+      "width": 347,
+      "height": 304,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_013",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_013.png",
+      "source_crop": [
+        2636,
+        4938,
+        3368,
+        5282
+      ],
+      "source_component_area": 153760,
+      "width": 748,
+      "height": 360,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01939,
+        "brown_ratio": 0.02888,
+        "gray_ratio": 0.00367
+      }
+    },
+    {
+      "id": "rock_005",
+      "category": "rocks",
+      "path": "rocks/rock_005.png",
+      "source_crop": [
+        5520,
+        4991,
+        6409,
+        5777
+      ],
+      "source_component_area": 416027,
+      "width": 905,
+      "height": 802,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.06612,
+        "brown_ratio": 0.05922,
+        "gray_ratio": 0.3102
+      }
+    },
+    {
+      "id": "ground_patch_014",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_014.png",
+      "source_crop": [
+        138,
+        5060,
+        948,
+        5556
+      ],
+      "source_component_area": 236670,
+      "width": 826,
+      "height": 512,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.16397,
+        "brown_ratio": 0.17678,
+        "gray_ratio": 0.00018
+      }
+    },
+    {
+      "id": "grass_clump_047",
+      "category": "grasses",
+      "path": "grasses/grass_clump_047.png",
+      "source_crop": [
+        4998,
+        5064,
+        5339,
+        5332
+      ],
+      "source_component_area": 37610,
+      "width": 357,
+      "height": 284,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_048",
+      "category": "grasses",
+      "path": "grasses/grass_clump_048.png",
+      "source_crop": [
+        5326,
+        5069,
+        5604,
+        5332
+      ],
+      "source_component_area": 29878,
+      "width": 294,
+      "height": 279,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "grass_clump_049",
+      "category": "grasses",
+      "path": "grasses/grass_clump_049.png",
+      "source_crop": [
+        4608,
+        5184,
+        5004,
+        5478
+      ],
+      "source_component_area": 53636,
+      "width": 412,
+      "height": 310,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_015",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_015.png",
+      "source_crop": [
+        3379,
+        5260,
+        3911,
+        5514
+      ],
+      "source_component_area": 74458,
+      "width": 548,
+      "height": 270,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0034,
+        "brown_ratio": 0.00394,
+        "gray_ratio": 0.00201
+      }
+    },
+    {
+      "id": "ground_patch_016",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_016.png",
+      "source_crop": [
+        895,
+        5282,
+        2025,
+        5729
+      ],
+      "source_component_area": 299822,
+      "width": 1146,
+      "height": 463,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.09663,
+        "brown_ratio": 0.1122,
+        "gray_ratio": 0.00094
+      }
+    },
+    {
+      "id": "ground_patch_017",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_017.png",
+      "source_crop": [
+        3950,
+        5284,
+        4367,
+        5519
+      ],
+      "source_component_area": 47534,
+      "width": 433,
+      "height": 251,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 8e-05,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.00074
+      }
+    },
+    {
+      "id": "ground_patch_018",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_018.png",
+      "source_crop": [
+        2134,
+        5315,
+        2841,
+        5756
+      ],
+      "source_component_area": 184130,
+      "width": 723,
+      "height": 457,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.08441,
+        "brown_ratio": 0.09271,
+        "gray_ratio": 0.00027
+      }
+    },
+    {
+      "id": "ground_patch_019",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_019.png",
+      "source_crop": [
+        2837,
+        5321,
+        3321,
+        5603
+      ],
+      "source_component_area": 71602,
+      "width": 500,
+      "height": 298,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00201,
+        "brown_ratio": 0.00122,
+        "gray_ratio": 0.00196
+      }
+    },
+    {
+      "id": "ground_patch_020",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_020.png",
+      "source_crop": [
+        4919,
+        5339,
+        5452,
+        5716
+      ],
+      "source_component_area": 85467,
+      "width": 549,
+      "height": 393,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.05034,
+        "brown_ratio": 0.05444,
+        "gray_ratio": 0.00164
+      }
+    },
+    {
+      "id": "rock_006",
+      "category": "rocks",
+      "path": "rocks/rock_006.png",
+      "source_crop": [
+        8507,
+        5391,
+        8978,
+        5802
+      ],
+      "source_component_area": 106728,
+      "width": 487,
+      "height": 427,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.09072,
+        "brown_ratio": 0.09556,
+        "gray_ratio": 0.39544
+      }
+    },
+    {
+      "id": "rock_007",
+      "category": "rocks",
+      "path": "rocks/rock_007.png",
+      "source_crop": [
+        6578,
+        5402,
+        7267,
+        6037
+      ],
+      "source_component_area": 248043,
+      "width": 705,
+      "height": 651,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.09266,
+        "brown_ratio": 0.09288,
+        "gray_ratio": 0.41423
+      }
+    },
+    {
+      "id": "ground_patch_021",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_021.png",
+      "source_crop": [
+        4398,
+        5436,
+        4800,
+        5685
+      ],
+      "source_component_area": 45588,
+      "width": 418,
+      "height": 265,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_008",
+      "category": "rocks",
+      "path": "rocks/rock_008.png",
+      "source_crop": [
+        7873,
+        5446,
+        8476,
+        6015
+      ],
+      "source_component_area": 183611,
+      "width": 619,
+      "height": 585,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.06283,
+        "brown_ratio": 0.06391,
+        "gray_ratio": 0.25633
+      }
+    },
+    {
+      "id": "rock_009",
+      "category": "rocks",
+      "path": "rocks/rock_009.png",
+      "source_crop": [
+        3372,
+        5525,
+        3654,
+        5729
+      ],
+      "source_component_area": 19072,
+      "width": 298,
+      "height": 220,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.35266,
+        "brown_ratio": 0.34385,
+        "gray_ratio": 0.35182
+      }
+    },
+    {
+      "id": "rock_010",
+      "category": "rocks",
+      "path": "rocks/rock_010.png",
+      "source_crop": [
+        7286,
+        5537,
+        7858,
+        6012
+      ],
+      "source_component_area": 154348,
+      "width": 588,
+      "height": 491,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.13989,
+        "brown_ratio": 0.13685,
+        "gray_ratio": 0.41301
+      }
+    },
+    {
+      "id": "ground_patch_022",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_022.png",
+      "source_crop": [
+        3707,
+        5552,
+        4024,
+        5741
+      ],
+      "source_component_area": 26975,
+      "width": 333,
+      "height": 205,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00126,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.00204
+      }
+    },
+    {
+      "id": "ground_patch_023",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_023.png",
+      "source_crop": [
+        238,
+        5564,
+        1422,
+        6054
+      ],
+      "source_component_area": 349351,
+      "width": 1200,
+      "height": 506,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.12944,
+        "brown_ratio": 0.1441,
+        "gray_ratio": 0.02506
+      }
+    },
+    {
+      "id": "grass_clump_050",
+      "category": "grasses",
+      "path": "grasses/grass_clump_050.png",
+      "source_crop": [
+        5245,
+        5587,
+        5646,
+        5947
+      ],
+      "source_component_area": 67131,
+      "width": 417,
+      "height": 376,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.03684,
+        "brown_ratio": 0.04971,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_011",
+      "category": "rocks",
+      "path": "rocks/rock_011.png",
+      "source_crop": [
+        4111,
+        5604,
+        4321,
+        5770
+      ],
+      "source_component_area": 13281,
+      "width": 226,
+      "height": 182,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.46841,
+        "brown_ratio": 0.45607,
+        "gray_ratio": 0.38785
+      }
+    },
+    {
+      "id": "ground_patch_024",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_024.png",
+      "source_crop": [
+        2968,
+        5633,
+        3416,
+        5924
+      ],
+      "source_component_area": 65839,
+      "width": 464,
+      "height": 307,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.01166,
+        "brown_ratio": 0.01157,
+        "gray_ratio": 0.00384
+      }
+    },
+    {
+      "id": "rock_012",
+      "category": "rocks",
+      "path": "rocks/rock_012.png",
+      "source_crop": [
+        6134,
+        5657,
+        6547,
+        5987
+      ],
+      "source_component_area": 70771,
+      "width": 429,
+      "height": 346,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0366,
+        "brown_ratio": 0.01489,
+        "gray_ratio": 0.3941
+      }
+    },
+    {
+      "id": "ground_patch_025",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_025.png",
+      "source_crop": [
+        1888,
+        5665,
+        2481,
+        5999
+      ],
+      "source_component_area": 101991,
+      "width": 609,
+      "height": 350,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00437,
+        "brown_ratio": 0.00428,
+        "gray_ratio": 0.00454
+      }
+    },
+    {
+      "id": "ground_patch_026",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_026.png",
+      "source_crop": [
+        4872,
+        5711,
+        5215,
+        5954
+      ],
+      "source_component_area": 39498,
+      "width": 359,
+      "height": 259,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_027",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_027.png",
+      "source_crop": [
+        4315,
+        5713,
+        4626,
+        5935
+      ],
+      "source_component_area": 31440,
+      "width": 327,
+      "height": 238,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "ground_patch_028",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_028.png",
+      "source_crop": [
+        1453,
+        5726,
+        1873,
+        5999
+      ],
+      "source_component_area": 57615,
+      "width": 436,
+      "height": 289,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.12403,
+        "brown_ratio": 0.13011,
+        "gray_ratio": 0.00288
+      }
+    },
+    {
+      "id": "rock_013",
+      "category": "rocks",
+      "path": "rocks/rock_013.png",
+      "source_crop": [
+        3805,
+        5742,
+        4046,
+        5933
+      ],
+      "source_component_area": 18872,
+      "width": 257,
+      "height": 207,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.39593,
+        "brown_ratio": 0.38867,
+        "gray_ratio": 0.42348
+      }
+    },
+    {
+      "id": "ground_patch_029",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_029.png",
+      "source_crop": [
+        2561,
+        5745,
+        2981,
+        5975
+      ],
+      "source_component_area": 47605,
+      "width": 436,
+      "height": 246,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_014",
+      "category": "rocks",
+      "path": "rocks/rock_014.png",
+      "source_crop": [
+        5786,
+        5755,
+        6102,
+        5994
+      ],
+      "source_component_area": 34153,
+      "width": 332,
+      "height": 255,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00978,
+        "brown_ratio": 0.0012,
+        "gray_ratio": 0.12192
+      }
+    },
+    {
+      "id": "ground_patch_030",
+      "category": "groundcover",
+      "path": "groundcover/ground_patch_030.png",
+      "source_crop": [
+        3432,
+        5763,
+        3751,
+        5972
+      ],
+      "source_component_area": 28889,
+      "width": 335,
+      "height": 225,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.0,
+        "brown_ratio": 0.0001,
+        "gray_ratio": 0.0
+      }
+    },
+    {
+      "id": "rock_015",
+      "category": "rocks",
+      "path": "rocks/rock_015.png",
+      "source_crop": [
+        4655,
+        5778,
+        4826,
+        5932
+      ],
+      "source_component_area": 8985,
+      "width": 187,
+      "height": 170,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.37262,
+        "brown_ratio": 0.3695,
+        "gray_ratio": 0.3429
+      }
+    },
+    {
+      "id": "rock_016",
+      "category": "rocks",
+      "path": "rocks/rock_016.png",
+      "source_crop": [
+        8383,
+        5797,
+        8684,
+        6043
+      ],
+      "source_component_area": 33440,
+      "width": 317,
+      "height": 262,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.00858,
+        "brown_ratio": 0.00757,
+        "gray_ratio": 0.143
+      }
+    },
+    {
+      "id": "rock_017",
+      "category": "rocks",
+      "path": "rocks/rock_017.png",
+      "source_crop": [
+        4049,
+        5824,
+        4291,
+        6011
+      ],
+      "source_component_area": 18746,
+      "width": 258,
+      "height": 203,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.47402,
+        "brown_ratio": 0.47685,
+        "gray_ratio": 0.27398
+      }
+    },
+    {
+      "id": "rock_018",
+      "category": "rocks",
+      "path": "rocks/rock_018.png",
+      "source_crop": [
+        4442,
+        5894,
+        4612,
+        6033
+      ],
+      "source_component_area": 7141,
+      "width": 186,
+      "height": 155,
+      "anchor": "bottom_center",
+      "features": {
+        "colorful_ratio": 0.3956,
+        "brown_ratio": 0.39994,
+        "gray_ratio": 0.30724
+      }
+    }
+  ]
+}

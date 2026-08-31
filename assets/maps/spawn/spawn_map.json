@@ -3,6 +3,7 @@
   "source": "user-supplied-tropical-island-20260829",
   "vegetationSeed": 20260829,
   "showVegetation": false,
+  "showProps": true,
   "contentScale": 1.0,
   "mapSize": {
 	"width": 8192,
@@ -207,7 +208,78 @@
 	  }
 	}
   ],
-  "props": [],
+  "props": [
+	{
+	  "id": "northeast_palm_01",
+	  "image": "assets/maps/props/vegetation/palms/palm_tree_002.png",
+	  "x": 6270,
+	  "y": 1850,
+	  "w": 385,
+	  "h": 520,
+	  "flipH": false,
+	  "collision": {
+		"type": "circle",
+		"offset": [0, -22],
+		"radius": 30
+	  }
+	},
+	{
+	  "id": "northeast_palm_02",
+	  "image": "assets/maps/props/vegetation/palms/palm_tree_006.png",
+	  "x": 6555,
+	  "y": 1985,
+	  "w": 311,
+	  "h": 450,
+	  "flipH": true,
+	  "collision": {
+		"type": "circle",
+		"offset": [0, -20],
+		"radius": 27
+	  }
+	},
+	{
+	  "id": "northeast_palm_03",
+	  "image": "assets/maps/props/vegetation/palms/palm_tree_003.png",
+	  "x": 6240,
+	  "y": 2265,
+	  "w": 304,
+	  "h": 480,
+	  "flipH": true,
+	  "collision": {
+		"type": "circle",
+		"offset": [0, -21],
+		"radius": 29
+	  }
+	},
+	{
+	  "id": "northeast_palm_04",
+	  "image": "assets/maps/props/vegetation/palms/palm_tree_007.png",
+	  "x": 6525,
+	  "y": 2385,
+	  "w": 239,
+	  "h": 430,
+	  "flipH": false,
+	  "collision": {
+		"type": "circle",
+		"offset": [0, -19],
+		"radius": 26
+	  }
+	},
+	{
+	  "id": "northeast_palm_05",
+	  "image": "assets/maps/props/vegetation/palms/palm_tree_005.png",
+	  "x": 6760,
+	  "y": 2570,
+	  "w": 281,
+	  "h": 510,
+	  "flipH": true,
+	  "collision": {
+		"type": "circle",
+		"offset": [0, -22],
+		"radius": 30
+	  }
+	}
+  ],
   "grass": [
 	{
 	  "id": "west_grass",

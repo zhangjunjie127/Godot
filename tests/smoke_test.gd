@@ -500,10 +500,21 @@ func _run() -> void:
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") != null:
 		_fail("Interactive vegetation was not removed")
 		return
+	var northeast_palm_count := 0
 	for child: Node in depth_sorted.get_children():
-		if child.name.to_lower().contains("grass") or child.name.to_lower().contains("tree") or child.name.to_lower().contains("plant"):
+		var child_name := child.name.to_lower()
+		if child_name.contains("grass") or child_name.contains("plant") or (child_name.contains("tree") and not child_name.begins_with("northeastpalm")):
 			_fail("A vegetation patch remains in the depth-sorted map")
 			return
+		if child_name.begins_with("northeastpalm"):
+			northeast_palm_count += 1
+			var blocker := child.get_node_or_null("Blocker") as StaticBody2D
+			if child.get_node_or_null("Sprite2D") == null or blocker == null or blocker.get_child_count() != 1 or not blocker.get_child(0) is CollisionShape2D:
+				_fail("A northeast beach palm is missing its sprite or trunk collision")
+				return
+	if northeast_palm_count != 5:
+		_fail("Northeast beach palms did not load independently from hidden vegetation")
+		return
 	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
 		_fail("Male player 16-frame eight-direction animation sheet did not load")
 		return

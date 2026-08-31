@@ -1,5 +1,4 @@
 shader_type canvas_item;
-render_mode unshaded;
 
 uniform sampler2D water_mask : repeat_disable, filter_linear;
 uniform sampler2D water_depth : repeat_disable, filter_linear;

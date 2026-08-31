@@ -41,6 +41,10 @@ func _ready() -> void:
 	_far_particles = get_node_or_null(far_particles_path) as GPUParticles2D
 	_near_particles = get_node_or_null(near_particles_path) as GPUParticles2D
 	_rain_loop = get_node_or_null(audio_player_path) as AudioStreamPlayer
+	if streak_shader != null:
+		streak_shader = ArtAssets.shader(streak_shader.resource_path, streak_shader)
+	if _rain_loop != null and _rain_loop.stream != null:
+		_rain_loop.stream = ArtAssets.audio(_rain_loop.stream.resource_path, _rain_loop.stream)
 	_wind_current = base_wind_x
 	_wind_target = base_wind_x
 	_configure_layer(

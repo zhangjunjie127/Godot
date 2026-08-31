@@ -20,13 +20,40 @@ class_name ArtCatalog
 @export_group("Weather / 天气")
 @export var weather: Dictionary[String, Texture2D] = {}
 
+@export_group("Audio / 音频")
+@export var audio: Dictionary[String, AudioStream] = {}
+
+@export_group("Shaders / 着色器")
+@export var shaders: Dictionary[String, Shader] = {}
+
 
 func texture(path: String) -> Texture2D:
+	var replacement := resource(path)
+	if replacement is Texture2D:
+		return replacement as Texture2D
+	return null
+
+
+func audio_stream(path: String) -> AudioStream:
+	var replacement := resource(path)
+	if replacement is AudioStream:
+		return replacement as AudioStream
+	return null
+
+
+func shader(path: String) -> Shader:
+	var replacement := resource(path)
+	if replacement is Shader:
+		return replacement as Shader
+	return null
+
+
+func resource(path: String) -> Resource:
 	var normalized := normalize_path(path)
 	for group: Dictionary in _groups():
 		var replacement: Variant = group.get(normalized)
-		if replacement is Texture2D:
-			return replacement as Texture2D
+		if replacement is Resource:
+			return replacement as Resource
 	return null
 
 
@@ -48,7 +75,7 @@ func all_paths() -> PackedStringArray:
 
 
 func _groups() -> Array[Dictionary]:
-	return [characters, creatures, maps_and_props, items, ui, weather]
+	return [characters, creatures, maps_and_props, items, ui, weather, audio, shaders]
 
 
 static func normalize_path(path: String) -> String:

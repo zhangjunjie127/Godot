@@ -39,16 +39,22 @@ func _run() -> void:
 		_fail("Catalog and runtime art counts differ: %d vs %d" % [catalog_paths.size(), referenced.size()])
 		return
 
-	var source_path := "res://assets/characters/player_male.png"
-	var replacement := ResourceLoader.load("res://assets/items/stone_axe/icon.png") as Texture2D
-	catalog.characters[source_path] = replacement
+	var texture_path := "res://assets/characters/player_male.png"
+	var texture_replacement := ResourceLoader.load("res://assets/items/stone_axe/icon.png") as Texture2D
+	catalog.characters[texture_path] = texture_replacement
+	var audio_path := "res://assets/weather/storm/thunder_rumble.wav"
+	var audio_replacement := ResourceLoader.load("res://assets/weather/rain/rain_wash.wav") as AudioStream
+	catalog.audio[audio_path] = audio_replacement
+	var shader_path := "res://shaders/night_vision.gdshader"
+	var shader_replacement := ResourceLoader.load("res://shaders/river_surface.gdshader") as Shader
+	catalog.shaders[shader_path] = shader_replacement
 	ArtAssets._catalog = catalog
-	if ArtAssets.texture(source_path) != replacement:
+	if ArtAssets.texture(texture_path) != texture_replacement or ArtAssets.audio(audio_path) != audio_replacement or ArtAssets.shader(shader_path) != shader_replacement:
 		_fail("Runtime art resolver ignored a catalog replacement")
 		return
 	ArtAssets.reload_catalog()
 
-	print("ART_CATALOG_OK: %d runtime textures are editable" % catalog_paths.size())
+	print("ART_CATALOG_OK: %d runtime art resources are editable" % catalog_paths.size())
 	quit()
 
 
@@ -58,7 +64,7 @@ func _collect_source_paths(directory_path: String, paths: Dictionary) -> void:
 		_fail("Cannot scan project directory: " + directory_path)
 		return
 	var regex := RegEx.new()
-	regex.compile("res://assets/[A-Za-z0-9_./-]+\\.(png|jpg|jpeg|webp|svg)")
+	regex.compile("res://[A-Za-z0-9_./-]+\\.(png|jpg|jpeg|webp|svg|wav|ogg|mp3|gdshader)")
 	directory.list_dir_begin()
 	var name := directory.get_next()
 	while not name.is_empty():

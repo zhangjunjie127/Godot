@@ -6,6 +6,11 @@ const WATER_SHADER := preload("res://shaders/water_comparison.gdshader")
 const SAMPLE_REGION := Rect2(0.0, 0.0, 1200.0, 1200.0)
 const PRESET_NAMES := ["A  清爽透明", "B  风格浪纹", "C  自然折射"]
 
+@export_group("Art / Water Comparison")
+@export var map_texture: Texture2D = MAP_TEXTURE
+@export var water_mask: Texture2D = WATER_MASK
+@export var water_shader: Shader = WATER_SHADER
+
 
 func _ready() -> void:
 	DisplayServer.window_set_title("水面效果对比")
@@ -67,7 +72,9 @@ func _build_card(preset: int) -> PanelContainer:
 	preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(preview)
 
-	var map_crop := _crop(MAP_TEXTURE)
+	var editable_map := ArtAssets.texture(map_texture.resource_path, map_texture)
+	var editable_mask := ArtAssets.texture(water_mask.resource_path, water_mask)
+	var map_crop := _crop(editable_map)
 	var base := TextureRect.new()
 	base.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	base.texture = map_crop
@@ -78,8 +85,8 @@ func _build_card(preset: int) -> PanelContainer:
 	preview.add_child(base)
 
 	var material := ShaderMaterial.new()
-	material.shader = WATER_SHADER
-	material.set_shader_parameter("water_mask", _crop(WATER_MASK))
+	material.shader = ArtAssets.shader(water_shader.resource_path, water_shader)
+	material.set_shader_parameter("water_mask", _crop(editable_mask))
 	material.set_shader_parameter("preset", preset)
 
 	var water := TextureRect.new()

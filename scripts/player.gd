@@ -55,6 +55,20 @@ const MALE_PICKUP_TEXTURE := preload("res://assets/characters/player_male_pickup
 const MALE_IDLE_RELAXED_TEXTURE := preload("res://assets/characters/player_male_idle_relaxed/sheet-transparent.png")
 const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/sheet-transparent.png")
 
+@export_group("Art / Male Animation Sheets")
+@export var walk_texture: Texture2D = MALE_WALK_TEXTURE
+@export var run_texture: Texture2D = MALE_RUN_TEXTURE
+@export var attack_texture: Texture2D = MALE_ATTACK_TEXTURE
+@export var crouch_texture: Texture2D = MALE_CROUCH_TEXTURE
+@export var prone_idle_texture: Texture2D = MALE_PRONE_IDLE_TEXTURE
+@export var crawl_texture: Texture2D = MALE_CRAWL_TEXTURE
+@export var jump_texture: Texture2D = MALE_JUMP_TEXTURE
+@export var torch_hold_texture: Texture2D = MALE_TORCH_HOLD_TEXTURE
+@export var pickup_texture: Texture2D = MALE_PICKUP_TEXTURE
+@export var idle_texture: Texture2D = MALE_IDLE_RELAXED_TEXTURE
+@export var swim_texture: Texture2D = MALE_SWIM_TEXTURE
+
+@export_group("Movement and Survival")
 @export var move_speed := 170.0
 @export var run_speed := 280.0
 @export var crouch_speed := 82.0
@@ -599,29 +613,29 @@ func _animation_texture(animation: String) -> Texture2D:
 	var fallback: Texture2D
 	match animation:
 		"attack":
-			fallback = MALE_ATTACK_TEXTURE
+			fallback = attack_texture
 		"crouch_idle", "crouch_move":
-			fallback = MALE_CROUCH_TEXTURE
+			fallback = crouch_texture
 		"prone_idle":
-			fallback = MALE_PRONE_IDLE_TEXTURE
+			fallback = prone_idle_texture
 		"crawl_move":
-			fallback = MALE_CRAWL_TEXTURE
+			fallback = crawl_texture
 		"swim":
-			fallback = MALE_SWIM_TEXTURE
+			fallback = swim_texture
 		"jump":
-			fallback = MALE_JUMP_TEXTURE
+			fallback = jump_texture
 		"torch_hold":
-			fallback = MALE_TORCH_HOLD_TEXTURE
+			fallback = torch_hold_texture
 		"pickup":
-			fallback = MALE_PICKUP_TEXTURE
+			fallback = pickup_texture
 		"idle_relaxed":
-			fallback = MALE_IDLE_RELAXED_TEXTURE
+			fallback = idle_texture
 		"run":
-			fallback = MALE_RUN_TEXTURE
+			fallback = run_texture
 		"walk":
-			fallback = MALE_WALK_TEXTURE
+			fallback = walk_texture
 		_:
-			fallback = MALE_WALK_TEXTURE
+			fallback = walk_texture
 	return ArtAssets.texture(fallback.resource_path, fallback)
 
 

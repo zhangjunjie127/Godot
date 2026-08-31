@@ -23,6 +23,38 @@ static func texture(path: String, fallback: Texture2D = null) -> Texture2D:
 	return null
 
 
+static func audio(path: String, fallback: AudioStream = null) -> AudioStream:
+	var normalized := ArtCatalog.normalize_path(path)
+	var catalog := _get_catalog()
+	if catalog != null:
+		var replacement := catalog.audio_stream(normalized)
+		if replacement != null:
+			return replacement
+	if fallback != null:
+		return fallback
+	var loaded := ResourceLoader.load(normalized)
+	if loaded is AudioStream:
+		return loaded as AudioStream
+	push_error("Missing art audio: " + normalized)
+	return null
+
+
+static func shader(path: String, fallback: Shader = null) -> Shader:
+	var normalized := ArtCatalog.normalize_path(path)
+	var catalog := _get_catalog()
+	if catalog != null:
+		var replacement := catalog.shader(normalized)
+		if replacement != null:
+			return replacement
+	if fallback != null:
+		return fallback
+	var loaded := ResourceLoader.load(normalized)
+	if loaded is Shader:
+		return loaded as Shader
+	push_error("Missing art shader: " + normalized)
+	return null
+
+
 static func reload_catalog() -> void:
 	_catalog = null
 

@@ -6,6 +6,10 @@ const CLEAR_CLOUD_COUNT := 4
 const OVERCAST_CLOUD_COUNT := 8
 const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
+@export_group("Art / Cloud Shadow Sheet")
+@export var cloud_texture: Texture2D = CLOUD_TEXTURE
+
+@export_group("Cloud Motion")
 @export var weather_path: NodePath
 @export var day_night_cycle_path: NodePath
 @export var random_seed := 20260827
@@ -94,7 +98,7 @@ func _populate_clouds() -> void:
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
 		var sprite := Sprite2D.new()
 		sprite.name = "CloudShadow%d" % (index + 1)
-		sprite.texture = ArtAssets.texture(CLOUD_TEXTURE.resource_path, CLOUD_TEXTURE)
+		sprite.texture = ArtAssets.texture(cloud_texture.resource_path, cloud_texture)
 		sprite.hframes = 3
 		sprite.vframes = 3
 		sprite.frame = cell

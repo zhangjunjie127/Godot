@@ -114,6 +114,11 @@ func _ready() -> void:
 	_thunder_audio = get_node_or_null(thunder_audio_path) as AudioStreamPlayer
 	_day_birds_audio = get_node_or_null(day_birds_audio_path) as AudioStreamPlayer
 	_day_wind_audio = get_node_or_null(day_wind_audio_path) as AudioStreamPlayer
+	_apply_art_audio(_thunder_audio)
+	_apply_art_audio(_day_birds_audio)
+	_apply_art_audio(_day_wind_audio)
+	_apply_art_shader(_wetness_overlay)
+	_apply_art_shader(_puddle_surface)
 	if _day_night_cycle != null:
 		_current_phase = String(_day_night_cycle.current_phase)
 	_setup_audio_loop(_day_birds_audio)
@@ -499,6 +504,19 @@ func _setup_audio_loop(player: AudioStreamPlayer) -> void:
 	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = roundi(stream.get_length() * float(stream.mix_rate))
+
+
+func _apply_art_audio(player: AudioStreamPlayer) -> void:
+	if player != null and player.stream != null:
+		player.stream = ArtAssets.audio(player.stream.resource_path, player.stream)
+
+
+func _apply_art_shader(item: CanvasItem) -> void:
+	if item == null or not item.material is ShaderMaterial:
+		return
+	var shader_material := item.material as ShaderMaterial
+	if shader_material.shader != null:
+		shader_material.shader = ArtAssets.shader(shader_material.shader.resource_path, shader_material.shader)
 
 
 func _sync_day_ambience() -> void:

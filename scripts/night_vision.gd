@@ -22,6 +22,10 @@ var current_softness := NO_TORCH_SOFTNESS
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if material is ShaderMaterial:
+		var shader_material := material as ShaderMaterial
+		if shader_material.shader != null:
+			shader_material.shader = ArtAssets.shader(shader_material.shader.resource_path, shader_material.shader)
 	visible = false
 	_sync_material()
 

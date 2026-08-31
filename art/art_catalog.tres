@@ -34,6 +34,11 @@ maps_and_props = {
 "res://assets/maps/props/vegetation/grasses/grass_clump_040.png": null,
 "res://assets/maps/props/vegetation/grasses/grass_clump_044.png": null,
 "res://assets/maps/props/vegetation/palms/palm_tree_001.png": null,
+"res://assets/maps/props/vegetation/palms/palm_tree_002.png": null,
+"res://assets/maps/props/vegetation/palms/palm_tree_003.png": null,
+"res://assets/maps/props/vegetation/palms/palm_tree_005.png": null,
+"res://assets/maps/props/vegetation/palms/palm_tree_006.png": null,
+"res://assets/maps/props/vegetation/palms/palm_tree_007.png": null,
 "res://assets/maps/props/vegetation/tropical_plants/tropical_plant_001.png": null,
 "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_019.png": null,
 "res://assets/maps/props/vegetation/rocks/rock_011.png": null,
@@ -101,4 +106,19 @@ ui = {
 weather = {
 "res://assets/weather/clouds/sheet-transparent.png": null,
 "res://assets/weather/rain/ripple_flow_gb.png": null
+}
+audio = {
+"res://assets/weather/day/birds_ambience.wav": null,
+"res://assets/weather/day/gentle_wind.wav": null,
+"res://assets/weather/rain/rain_wash.wav": null,
+"res://assets/weather/rain/wet_footstep.wav": null,
+"res://assets/weather/storm/thunder_rumble.wav": null
+}
+shaders = {
+"res://effects/rain/puddle_surface.gdshader": null,
+"res://effects/rain/rain_streak.gdshader": null,
+"res://effects/rain/wet_grade.gdshader": null,
+"res://shaders/night_vision.gdshader": null,
+"res://shaders/river_surface.gdshader": null,
+"res://shaders/water_comparison.gdshader": null
 }

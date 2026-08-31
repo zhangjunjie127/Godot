@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3]
+[gd_scene load_steps=60 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
@@ -28,6 +28,13 @@
 [ext_resource type="AudioStream" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
 [ext_resource type="AudioStream" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
 [ext_resource type="Script" path="res://scripts/water_surface_interactions.gd" id="28_water_interactions"]
+[ext_resource type="Shader" path="res://shaders/night_vision.gdshader" id="29_night_shader"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_002.png" id="30_palm_02"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_006.png" id="31_palm_06"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_003.png" id="32_palm_03"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_007.png" id="33_palm_07"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_005.png" id="34_palm_05"]
+[ext_resource type="Script" path="res://scripts/art_sprite.gd" id="35_art_sprite"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 9.0
@@ -35,6 +42,21 @@ height = 24.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_boar"]
 radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_palm_01"]
+radius = 30.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_palm_02"]
+radius = 27.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_palm_03"]
+radius = 29.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_palm_04"]
+radius = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_palm_05"]
+radius = 30.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_player_portrait"]
 atlas = ExtResource("4_player_texture")
@@ -202,11 +224,8 @@ shader_parameter/edge_feather_opacity = 0.42
 shader_parameter/water_opacity = 0.42
 shader_parameter/sky_reflection = 0.16
 
-[sub_resource type="Shader" id="Shader_night_vision"]
-code = "shader_type canvas_item;\n\nuniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;\nuniform vec2 center_uv = vec2(0.5, 0.5);\nuniform vec2 viewport_size = vec2(640.0, 360.0);\nuniform vec3 night_tint = vec3(0.07, 0.084, 0.126);\nuniform float radius_px = 41.0;\nuniform float softness_px = 30.0;\nuniform float outer_alpha = 0.50;\nuniform float no_torch_inner_alpha = 0.55;\nuniform float torch_inner_alpha = 0.20;\nuniform bool torch_equipped = false;\n\nvoid fragment() {\n\tvec4 scene = texture(screen_texture, SCREEN_UV);\n\tvec2 delta_px = (UV - center_uv) * viewport_size;\n\tfloat visibility = 1.0 - smoothstep(radius_px, radius_px + softness_px, length(delta_px));\n\tfloat inner_alpha = torch_equipped ? torch_inner_alpha : no_torch_inner_alpha;\n\tfloat darkness = mix(outer_alpha, inner_alpha, visibility);\n\tvec3 restored = clamp(scene.rgb / max(night_tint, vec3(0.04)), vec3(0.0), vec3(1.0));\n\tvec3 night_color = restored * vec3(0.84, 0.90, 1.0);\n\tvec3 base_color = mix(night_color, restored, visibility);\n\tCOLOR = vec4(mix(base_color, vec3(0.0), darkness), scene.a);\n}\n"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night_vision"]
-shader = SubResource("Shader_night_vision")
+shader = ExtResource("29_night_shader")
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -249,6 +268,99 @@ world_size = Vector2(8192, 8192)
 
 [node name="DepthSorted" type="Node2D" parent="World"]
 y_sort_enabled = true
+
+[node name="NortheastPalm01" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6270, 1850)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm01"]
+texture_filter = 1
+position = Vector2(0, -260)
+texture = ExtResource("30_palm_02")
+scale = Vector2(0.3363, 0.3363)
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm01"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm01/Blocker"]
+position = Vector2(0, -22)
+shape = SubResource("CircleShape2D_palm_01")
+
+[node name="NortheastPalm02" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6555, 1985)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm02"]
+texture_filter = 1
+position = Vector2(0, -225)
+texture = ExtResource("31_palm_06")
+scale = Vector2(0.375, 0.375)
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm02"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm02/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_02")
+
+[node name="NortheastPalm03" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6240, 2265)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm03"]
+texture_filter = 1
+position = Vector2(0, -240)
+texture = ExtResource("32_palm_03")
+scale = Vector2(0.319, 0.319)
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm03"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm03/Blocker"]
+position = Vector2(0, -21)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm04" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6525, 2385)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm04"]
+texture_filter = 1
+position = Vector2(0, -215)
+texture = ExtResource("33_palm_07")
+scale = Vector2(0.3697, 0.3697)
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm04"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm04/Blocker"]
+position = Vector2(0, -19)
+shape = SubResource("CircleShape2D_palm_04")
+
+[node name="NortheastPalm05" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6760, 2570)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm05"]
+texture_filter = 1
+position = Vector2(0, -255)
+texture = ExtResource("34_palm_05")
+scale = Vector2(0.341, 0.341)
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm05"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm05/Blocker"]
+position = Vector2(0, -22)
+shape = SubResource("CircleShape2D_palm_05")
 
 [node name="Player" type="CharacterBody2D" parent="World/DepthSorted"]
 position = Vector2(4100, 4700)

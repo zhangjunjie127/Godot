@@ -48,6 +48,16 @@ const RESOURCE_ICON_CELLS := {
 	"meat_strange": Vector2i(4, 2),
 }
 
+@export_group("Art / UI and Map Textures")
+@export var status_icon_atlas: Texture2D = STATUS_ICON_ATLAS
+@export var male_portrait_texture: Texture2D = MALE_PORTRAIT
+@export var torch_icon_atlas: Texture2D = TORCH_ICON_ATLAS
+@export var stone_axe_icon: Texture2D = STONE_AXE_ICON
+@export var stone_resource_icon: Texture2D = STONE_RESOURCE_ICON
+@export var resource_icon_atlas: Texture2D = RESOURCE_ICON_ATLAS
+@export var land_minimap_texture: Texture2D = LAND_MINIMAP_TEXTURE
+@export var underwater_minimap_texture: Texture2D = UNDERWATER_MINIMAP_TEXTURE
+
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var land_world: Node2D = $World
 @onready var underwater_world: Node2D = $UnderwaterWorld
@@ -107,9 +117,9 @@ var _rain_step_play_count := 0
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
-	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
+	minimap.map_texture = _art(land_minimap_texture)
 	minimap.world_size = player.world_size
-	world_map.map_texture = _art(LAND_MINIMAP_TEXTURE)
+	world_map.map_texture = _art(land_minimap_texture)
 	world_map.world_size = player.world_size
 	_build_dive_status()
 	_build_death_overlay()
@@ -139,7 +149,9 @@ func _ready() -> void:
 	_on_stamina_changed(player.stamina, player.max_stamina)
 	_on_hunger_changed(player.hunger, player.max_hunger)
 	_on_oxygen_changed(player.oxygen, player.max_oxygen)
-	portrait.texture = _art(MALE_PORTRAIT)
+	portrait.texture = _art(male_portrait_texture)
+	if wet_footstep_audio.stream != null:
+		wet_footstep_audio.stream = ArtAssets.audio(wet_footstep_audio.stream.resource_path, wet_footstep_audio.stream)
 	_on_time_changed(
 		day_night_cycle.current_day,
 		floori(day_night_cycle.current_hour),
@@ -496,7 +508,7 @@ func _branch_color(branch_id: String) -> Color:
 
 func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICON_CELL_SIZE) -> void:
 	var texture := AtlasTexture.new()
-	texture.atlas = _art(STATUS_ICON_ATLAS)
+	texture.atlas = _art(status_icon_atlas)
 	var inset := float(ICON_CELL_SIZE - region_size) * 0.5
 	texture.region = Rect2(Vector2(cell * ICON_CELL_SIZE) + Vector2.ONE * inset, Vector2.ONE * region_size)
 	target.texture = texture
@@ -504,17 +516,17 @@ func _set_atlas_icon(target: TextureRect, cell: Vector2i, region_size: int = ICO
 
 func _item_icon(item_id: String) -> Texture2D:
 	if item_id == "stone_axe":
-		return _art(STONE_AXE_ICON)
+		return _art(stone_axe_icon)
 	if item_id == "stone":
-		return _art(STONE_RESOURCE_ICON)
+		return _art(stone_resource_icon)
 	if item_id == "torch":
 		var texture := AtlasTexture.new()
-		texture.atlas = _art(TORCH_ICON_ATLAS)
+		texture.atlas = _art(torch_icon_atlas)
 		texture.region = Rect2(0.0, 0.0, 128.0, 128.0)
 		return texture
 	if RESOURCE_ICON_CELLS.has(item_id):
 		var texture := AtlasTexture.new()
-		texture.atlas = _art(RESOURCE_ICON_ATLAS)
+		texture.atlas = _art(resource_icon_atlas)
 		texture.region = Rect2(Vector2(RESOURCE_ICON_CELLS[item_id] * RESOURCE_ICON_CELL_SIZE), Vector2.ONE * RESOURCE_ICON_CELL_SIZE)
 		return texture
 	return null
@@ -566,7 +578,7 @@ func enter_underwater() -> void:
 	weather_layer.visible = false
 	screen_weather_layer.visible = false
 	map_name_label.text = "奇渊海"
-	minimap.map_texture = _art(UNDERWATER_MINIMAP_TEXTURE)
+	minimap.map_texture = _art(underwater_minimap_texture)
 	minimap.world_size = underwater_world.MAP_SIZE
 	dive_status.visible = true
 	_sync_night_state(day_night_cycle.current_phase)
@@ -587,7 +599,7 @@ func exit_underwater() -> void:
 	weather_layer.visible = true
 	screen_weather_layer.visible = true
 	map_name_label.text = "升天群岛"
-	minimap.map_texture = _art(LAND_MINIMAP_TEXTURE)
+	minimap.map_texture = _art(land_minimap_texture)
 	minimap.world_size = _land_world_size
 	dive_status.visible = false
 	_sync_night_state(day_night_cycle.current_phase)

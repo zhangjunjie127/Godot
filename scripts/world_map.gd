@@ -9,6 +9,10 @@ const BLOCKER_LAYER := 2
 const DEFAULT_CHUNK_SIZE := 2048.0
 const STREAM_MARGIN := 64.0
 
+@export_group("Art / Water")
+@export var water_surface_shader: Shader = RIVER_SURFACE_SHADER
+
+@export_group("Editor Preview")
 @export var show_collision_debug := true:
 	set(value):
 		show_collision_debug = value
@@ -168,7 +172,7 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 		return
 
 	var material := ShaderMaterial.new()
-	material.shader = RIVER_SURFACE_SHADER
+	material.shader = ArtAssets.shader(water_surface_shader.resource_path, water_surface_shader)
 	material.set_shader_parameter("water_mask", mask_texture)
 	material.set_shader_parameter("water_depth", depth_texture)
 	material.set_shader_parameter("chunk_world_origin", chunk.position)

@@ -1,6 +1,8 @@
 extends Control
 
 const TRAIL_DIRECTION_Y := -1.0
+const DROP_START_INTENSITY := 0.42
+const MAX_SCREEN_DROPS := 8
 
 @export var random_seed := 20260827
 
@@ -19,9 +21,9 @@ func _ready() -> void:
 func set_intensity(value: float) -> void:
 	var previous_intensity := intensity
 	intensity = clampf(value, 0.0, 1.0)
-	if previous_intensity <= 0.001 and intensity > 0.001:
+	if previous_intensity <= DROP_START_INTENSITY and intensity > DROP_START_INTENSITY:
 		_spawn_progress = maxf(_spawn_progress, 0.75)
-	visible = intensity > 0.001 or not _drops.is_empty()
+	visible = intensity > DROP_START_INTENSITY or not _drops.is_empty()
 
 
 func _process(delta: float) -> void:
@@ -30,8 +32,9 @@ func _process(delta: float) -> void:
 
 func advance_effects(seconds: float) -> void:
 	var delta := maxf(seconds, 0.0)
-	_spawn_progress += delta * pow(intensity, 2.0) * 3.2
-	while _spawn_progress >= 1.0 and _drops.size() < 14:
+	var drop_strength := clampf(inverse_lerp(DROP_START_INTENSITY, 1.0, intensity), 0.0, 1.0)
+	_spawn_progress += delta * pow(drop_strength, 1.7) * 2.2
+	while _spawn_progress >= 1.0 and _drops.size() < MAX_SCREEN_DROPS:
 		_spawn_progress -= 1.0
 		_drops.append(_new_drop())
 
@@ -46,7 +49,7 @@ func advance_effects(seconds: float) -> void:
 	for index: int in range(_drops.size() - 1, -1, -1):
 		if float(_drops[index]["age"]) >= float(_drops[index]["duration"]):
 			_drops.remove_at(index)
-	visible = intensity > 0.001 or not _drops.is_empty()
+	visible = intensity > DROP_START_INTENSITY or not _drops.is_empty()
 	queue_redraw()
 
 

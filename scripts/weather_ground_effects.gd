@@ -17,6 +17,7 @@ const PUDDLE_SAMPLE_DIRECTIONS := [
 
 @export var random_seed := 20260828
 @export var world_size := Vector2(4096.0, 4096.0)
+@export var water_query_path: NodePath
 @export var puddle_mask: Texture2D
 @export_range(0.0, 1.0, 0.01) var small_cutoff := 0.88
 @export_range(0.0, 1.0, 0.01) var medium_cutoff := 0.72
@@ -28,6 +29,7 @@ const PUDDLE_SAMPLE_DIRECTIONS := [
 @export_range(0.5, 8.0, 0.5) var impact_rate_min := 2.0
 @export_range(1.0, 40.0, 0.5) var impact_rate_max := 18.0
 @export_range(0.5, 24.0, 0.5) var ripple_rate_max := 7.5
+@export_range(0.5, 24.0, 0.5) var water_ripple_rate_max := 11.0
 @export_range(8, 96, 1) var max_impacts := 48
 @export_range(8, 96, 1) var max_ripples := 40
 
@@ -38,12 +40,15 @@ var _impacts: Array[Dictionary] = []
 var _ripples: Array[Dictionary] = []
 var _impact_progress := 0.0
 var _ripple_progress := 0.0
+var _water_ripple_progress := 0.0
 var _rng := RandomNumberGenerator.new()
 var _puddle_mask_image: Image
+var _water_query: Node
 
 
 func _ready() -> void:
 	_rng.seed = random_seed
+	_water_query = get_node_or_null(water_query_path)
 	_cache_puddle_mask()
 	set_process(false)
 
@@ -76,7 +81,9 @@ func set_weather_state(rain_value: float, puddle_value: float) -> void:
 func spawn_impact(world_position: Vector2) -> void:
 	if not raining or not is_feedback_area(world_position):
 		return
-	if is_puddle_position(world_position):
+	if is_water_surface_position(world_position):
+		_spawn_ripple(world_position, lerpf(0.42, 0.86, get_water_ripple_strength()))
+	elif is_puddle_position(world_position):
 		_spawn_ripple(world_position, lerpf(0.48, 0.90, get_ripple_strength()))
 	else:
 		_spawn_impact(world_position, 1.0)
@@ -113,6 +120,10 @@ func advance_effects(seconds: float) -> void:
 
 func is_feedback_area(world_position: Vector2) -> bool:
 	return world_position.x >= 0.0 and world_position.y >= 0.0 and world_position.x < world_size.x and world_position.y < world_size.y
+
+
+func is_water_surface_position(world_position: Vector2) -> bool:
+	return _water_query != null and _water_query.has_method("is_water_position") and bool(_water_query.call("is_water_position", world_position))
 
 
 func is_puddle_position(world_position: Vector2) -> bool:
@@ -155,6 +166,14 @@ func get_ripple_spawn_rate() -> float:
 	return ripple_rate_max * pow(get_ripple_strength(), 1.25) if raining and puddle_amount > PUDDLE_START_AMOUNT else 0.0
 
 
+func get_water_ripple_strength() -> float:
+	return smoothstep(0.08, 1.0, rain_strength) if raining else 0.0
+
+
+func get_water_ripple_spawn_rate() -> float:
+	return water_ripple_rate_max * pow(get_water_ripple_strength(), 1.2) if raining else 0.0
+
+
 func _update_effect_ages(delta: float) -> void:
 	for impact: Dictionary in _impacts:
 		impact["age"] = float(impact["age"]) + delta
@@ -180,12 +199,20 @@ func _spawn_rain_feedback(delta: float) -> void:
 	_ripple_progress += delta * get_ripple_spawn_rate()
 	while _ripple_progress >= 1.0 and _ripples.size() < max_ripples:
 		_ripple_progress -= 1.0
-		var position := _random_visible_position(true)
+		var position := _random_puddle_position()
 		if position != Vector2.INF:
 			_spawn_ripple(position, _rng.randf_range(0.38, 0.72) * lerpf(0.80, 1.25, ripple_strength))
 
+	var water_ripple_strength := get_water_ripple_strength()
+	_water_ripple_progress += delta * get_water_ripple_spawn_rate()
+	while _water_ripple_progress >= 1.0 and _ripples.size() < max_ripples:
+		_water_ripple_progress -= 1.0
+		var position := _random_visible_position(true)
+		if position != Vector2.INF:
+			_spawn_ripple(position, _rng.randf_range(0.30, 0.68) * lerpf(0.72, 1.18, water_ripple_strength))
 
-func _random_visible_position(required_wet: Variant = null) -> Vector2:
+
+func _random_visible_position(required_water: Variant = null) -> Vector2:
 	var viewport_size := get_viewport_rect().size
 	var inverse_canvas := get_viewport().get_canvas_transform().affine_inverse()
 	for _attempt: int in range(POSITION_ATTEMPTS):
@@ -196,9 +223,23 @@ func _random_visible_position(required_wet: Variant = null) -> Vector2:
 		var world_position := inverse_canvas * screen_position
 		if not is_feedback_area(world_position):
 			continue
-		if required_wet != null and is_puddle_position(world_position) != bool(required_wet):
+		if required_water != null and is_water_surface_position(world_position) != bool(required_water):
 			continue
 		return world_position
+	return Vector2.INF
+
+
+func _random_puddle_position() -> Vector2:
+	var viewport_size := get_viewport_rect().size
+	var inverse_canvas := get_viewport().get_canvas_transform().affine_inverse()
+	for _attempt: int in range(POSITION_ATTEMPTS):
+		var screen_position := Vector2(
+			_rng.randf_range(-18.0, viewport_size.x + 18.0),
+			_rng.randf_range(viewport_size.y * 0.18, viewport_size.y + 10.0)
+		)
+		var world_position := inverse_canvas * screen_position
+		if is_puddle_position(world_position):
+			return world_position
 	return Vector2.INF
 
 

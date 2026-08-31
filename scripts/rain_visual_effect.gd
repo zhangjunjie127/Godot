@@ -2,6 +2,7 @@ extends Control
 
 const FAR_PARTICLE_COUNT := 360
 const NEAR_PARTICLE_COUNT := 160
+const MIST_WISP_COUNT := 11
 
 @export var random_seed := 20260828
 @export var far_particles_path: NodePath
@@ -18,6 +19,8 @@ const NEAR_PARTICLE_COUNT := 160
 @export_range(300.0, 1200.0, 10.0) var near_speed_min := 620.0
 @export_range(300.0, 1400.0, 10.0) var near_speed_max := 820.0
 @export_range(0.0, 0.12, 0.005) var haze_max_alpha := 0.045
+@export_range(0.2, 0.8, 0.01) var mist_start_intensity := 0.38
+@export_range(0.0, 0.08, 0.002) var mist_max_alpha := 0.026
 @export_range(-40.0, 0.0, 0.5) var rain_loop_max_volume_db := -8.0
 
 var intensity := 0.0
@@ -29,6 +32,7 @@ var _wind_current := -0.16
 var _wind_target := -0.16
 var _gust_elapsed := 0.0
 var _gust_duration := 4.5
+var _mist_wisps: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -60,6 +64,7 @@ func _ready() -> void:
 		0.11
 	)
 	_setup_audio_loop()
+	_create_mist_wisps()
 	resized.connect(_update_viewport_coverage)
 	_update_viewport_coverage()
 	_choose_next_gust()
@@ -85,6 +90,7 @@ func advance_effects(seconds: float) -> void:
 	var delta := maxf(seconds, 0.0)
 	if delta > 0.0:
 		_advance_wind(delta)
+		_advance_mist(delta)
 	_sync_audio()
 	queue_redraw()
 
@@ -105,6 +111,10 @@ func get_wind_vector() -> Vector2:
 
 func get_audio_volume_db() -> float:
 	return _rain_loop.volume_db if _rain_loop != null else -80.0
+
+
+func get_mist_strength() -> float:
+	return smoothstep(mist_start_intensity, 1.0, intensity)
 
 
 func is_audio_playing() -> bool:
@@ -190,6 +200,30 @@ func _choose_next_gust() -> void:
 	_wind_target = clampf(base_wind_x + _rng.randf_range(-gust_variation, gust_variation), -0.48, -0.02)
 
 
+func _create_mist_wisps() -> void:
+	_mist_wisps.clear()
+	for _index: int in range(MIST_WISP_COUNT):
+		_mist_wisps.append({
+			"x": _rng.randf(),
+			"y": _rng.randf_range(0.48, 1.02),
+			"width": _rng.randf_range(38.0, 92.0),
+			"height": _rng.randf_range(5.0, 12.0),
+			"speed": _rng.randf_range(0.010, 0.024),
+			"alpha": _rng.randf_range(0.58, 1.0),
+			"phase": _rng.randf_range(0.0, TAU),
+		})
+
+
+func _advance_mist(delta: float) -> void:
+	if get_mist_strength() <= 0.001:
+		return
+	for wisp: Dictionary in _mist_wisps:
+		var speed := float(wisp["speed"])
+		var drift := _wind_current * speed * 2.4
+		wisp["x"] = fposmod(float(wisp["x"]) + 0.06 + drift * delta, 1.12) - 0.06
+		wisp["phase"] = fposmod(float(wisp["phase"]) + delta * speed * 2.4, TAU)
+
+
 func _sync_layers() -> void:
 	if _far_particles != null:
 		_far_particles.amount_ratio = pow(intensity, 1.25)
@@ -203,6 +237,27 @@ func _draw() -> void:
 	if intensity <= 0.001:
 		return
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.055, 0.095, 0.12, haze_max_alpha * intensity))
+	_draw_mist()
+
+
+func _draw_mist() -> void:
+	var strength := get_mist_strength()
+	if strength <= 0.001:
+		return
+	var viewport_size := _effect_size()
+	for wisp: Dictionary in _mist_wisps:
+		var phase := float(wisp["phase"])
+		var position := Vector2(
+			float(wisp["x"]) * viewport_size.x,
+			float(wisp["y"]) * viewport_size.y + sin(phase) * 3.0
+		)
+		var width := float(wisp["width"])
+		var height := float(wisp["height"])
+		var alpha := mist_max_alpha * float(wisp["alpha"]) * strength
+		draw_set_transform(position, sin(phase * 0.7) * 0.035, Vector2(width / height, 1.0))
+		draw_circle(Vector2.ZERO, height, Color(0.64, 0.76, 0.79, alpha))
+		draw_circle(Vector2(width * 0.16, -1.0), height * 0.72, Color(0.72, 0.82, 0.84, alpha * 0.55))
+	draw_set_transform(Vector2.ZERO)
 
 
 func _effect_size() -> Vector2:

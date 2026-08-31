@@ -235,6 +235,9 @@ func _run() -> void:
 	if weather.current_rain_level != "中雨" or weather.get_active_rain_particle_count() != 255:
 		_fail("Medium rain density did not initialize")
 		return
+	if rain_visual.get_mist_strength() <= 0.0:
+		_fail("Medium rain did not enable the low ground mist layer")
+		return
 	weather.set_rain_level("小雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var light_rain_count: int = weather.get_active_rain_particle_count()
@@ -252,18 +255,20 @@ func _run() -> void:
 	weather.start_weather_event("下雨", "半天", "小雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var light_impact_rate: float = weather_ground.get_impact_spawn_rate()
-	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or light_impact_rate <= 0.0 or weather_ground.get_ripple_spawn_rate() != 0.0:
-		_fail("Light rain should create splashes without puddles or ripples")
+	var light_water_ripple_rate: float = weather_ground.get_water_ripple_spawn_rate()
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or light_impact_rate <= 0.0 or light_water_ripple_rate <= 0.0 or weather_ground.get_ripple_spawn_rate() != 0.0:
+		_fail("Light rain should create land splashes and water ripples without puddles")
 		return
 	weather.set_rain_level("中雨")
 	weather.advance_visual_seconds(weather.rain_fade_seconds)
 	var medium_impact_rate: float = weather_ground.get_impact_spawn_rate()
-	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or medium_impact_rate <= light_impact_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
-		_fail("Medium rain should strengthen splashes without enabling puddles")
+	var medium_water_ripple_rate: float = weather_ground.get_water_ripple_spawn_rate()
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or medium_impact_rate <= light_impact_rate or medium_water_ripple_rate <= light_water_ripple_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
+		_fail("Medium rain should strengthen land splashes and water ripples without enabling puddles")
 		return
 	weather.set_rain_level("大雨")
 	weather.advance_visual_seconds(weather.puddle_formation_seconds)
-	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
+	if puddle_surface.visible or weather.get_puddle_amount() != 0.0 or weather_ground.get_impact_spawn_rate() <= medium_impact_rate or weather_ground.get_water_ripple_spawn_rate() <= medium_water_ripple_rate or weather_ground.get_ripple_spawn_rate() != 0.0:
 		_fail("Heavy rain should increase splash density without puddles")
 		return
 	weather.set_rain_level("小雨")
@@ -326,17 +331,21 @@ func _run() -> void:
 		_fail("Rainy movement did not keep footstep audio separate from puddle visuals")
 		return
 	var initial_impact_count := 0
-	var puddle_position := Vector2(32.0, 32.0)
-	if not weather_ground.is_feedback_area(puddle_position):
-		_fail("Rain feedback rejected ordinary terrain")
+	var land_position := Vector2(4100.0, 4700.0)
+	var water_position := Vector2(32.0, 32.0)
+	if not weather_ground.is_feedback_area(land_position) or weather_ground.is_water_surface_position(land_position):
+		_fail("Rain feedback could not identify ordinary terrain")
 		return
-	weather_ground.spawn_impact(puddle_position)
+	weather_ground.spawn_impact(land_position)
 	if weather_ground._impacts.size() != initial_impact_count + 1 or not weather_ground._ripples.is_empty():
-		_fail("Rain impact did not create a splash-only response")
+		_fail("Land rain impact did not create a splash-only response")
 		return
-	weather_ground.spawn_impact(wet_step_position)
-	if weather_ground._impacts.size() != initial_impact_count + 2 or not weather_ground._ripples.is_empty():
-		_fail("Disabled puddles still created rain ripples")
+	if not weather_ground.is_water_surface_position(water_position):
+		_fail("Rain feedback could not identify the natural water surface")
+		return
+	weather_ground.spawn_impact(water_position)
+	if weather_ground._impacts.size() != initial_impact_count + 1 or weather_ground._ripples.size() != 1:
+		_fail("Natural water rain impact did not create a ripple-only response")
 		return
 	weather_ground.set_rain_strength(0.0)
 	weather_ground.advance_effects(2.0)
@@ -419,7 +428,7 @@ func _run() -> void:
 	if not wetness_overlay.visible or not weather_ground.raining:
 		_fail("Rain wetness did not reactivate")
 		return
-	weather_ground.spawn_impact(Vector2(32.0, 32.0))
+	weather_ground.spawn_impact(Vector2(4100.0, 4700.0))
 	if weather_ground._impacts.is_empty():
 		_fail("Falling rain did not trigger a ground splash")
 		return

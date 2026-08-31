@@ -232,6 +232,7 @@ scale = Vector2(8, 8)
 z_index = -5
 script = ExtResource("12_weather_ground")
 world_size = Vector2(8192, 8192)
+water_query_path = NodePath("..")
 puddle_mask = ExtResource("22_puddle_mask")
 
 [node name="WaterSurfaceInteractions" type="Node2D" parent="World"]

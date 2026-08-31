@@ -36,6 +36,23 @@ float smooth_noise(vec2 position) {
 }
 
 
+float rain_ring(vec2 world_position, float cell_size, float speed, vec2 offset) {
+	vec2 cell_position = world_position / cell_size + offset;
+	vec2 cell = floor(cell_position);
+	vec2 local = fract(cell_position);
+	float seed = hash21(cell + offset * 17.0);
+	vec2 center = vec2(
+		hash21(cell + vec2(2.7, 8.1)),
+		hash21(cell + vec2(6.3, 1.9))
+	) * 0.68 + 0.16;
+	float age = fract(TIME * speed + seed);
+	float distance_to_center = length((local - center) * vec2(1.0, 1.75));
+	float radius = age * 0.34;
+	float ring = 1.0 - smoothstep(0.018, 0.055, abs(distance_to_center - radius));
+	return ring * smoothstep(0.02, 0.16, age) * pow(1.0 - age, 2.1);
+}
+
+
 void fragment() {
 	float mask = texture(water_mask, UV).r;
 	if (mask < 0.01) {
@@ -67,10 +84,17 @@ void fragment() {
 		+ TIME * 1.05
 		+ current * 3.0
 	), 18.0);
+	float rain_rings = 0.0;
+	if (weather_strength > 0.001) {
+		rain_rings = rain_ring(world_position, 74.0, 0.82, vec2(0.0));
+		rain_rings += rain_ring(world_position, 108.0, 0.57, vec2(3.7, 5.1)) * 0.65;
+		rain_rings *= weather_strength;
+	}
 
 	vec3 color = mix(source, water_tint.rgb, tint_strength);
 	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength);
 	color += vec3(0.62, 0.92, 0.96) * thread * current * highlight_strength * mix(1.0, 0.55, weather_strength);
+	color += vec3(0.68, 0.91, 0.95) * rain_rings * 0.075;
 	color = mix(color, vec3(0.86, 0.98, 1.0), shoreline * foam_motion * shoreline_strength);
 	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), mask);
 }

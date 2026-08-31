@@ -225,6 +225,17 @@ func _run() -> void:
 		return
 
 	scene.enter_underwater()
+	var return_to_land_button := scene.get("return_to_land_button") as Button
+	if return_to_land_button == null or not return_to_land_button.visible:
+		_fail("The temporary underwater return button is missing")
+		return
+	return_to_land_button.pressed.emit()
+	await physics_frame
+	if underwater.visible or player.water_mode or player.get_parent() != scene.get_node("World/DepthSorted"):
+		_fail("The temporary underwater return button did not restore the land map")
+		return
+
+	scene.enter_underwater()
 	player.global_position = Vector2(420.0, underwater.WATER_SURFACE_Y + 120.0)
 	player.set_health(1.0)
 	player.set_oxygen(0.0)

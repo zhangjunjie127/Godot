@@ -88,6 +88,7 @@ var skill_tree
 var dive_status: PanelContainer
 var oxygen_bar: ProgressBar
 var oxygen_label: Label
+var return_to_land_button: Button
 var death_overlay: Control
 var death_message_label: Label
 var _forecast_visible_seconds := 0.0
@@ -575,7 +576,7 @@ func _build_dive_status() -> void:
 	dive_status = PanelContainer.new()
 	dive_status.name = "DiveStatus"
 	dive_status.position = Vector2(252.0, 8.0)
-	dive_status.custom_minimum_size = Vector2(272.0, 46.0)
+	dive_status.custom_minimum_size = Vector2(272.0, 78.0)
 	dive_status.scale = Vector2(0.5, 0.5)
 	dive_status.visible = false
 	dive_status.add_theme_stylebox_override("panel", _style_box(Color(0.04, 0.07, 0.095, 0.95), Color(0.30, 0.72, 0.82), 2))
@@ -601,6 +602,19 @@ func _build_dive_status() -> void:
 	oxygen_bar.add_theme_stylebox_override("background", _style_box(Color(0.03, 0.18, 0.23), Color(0.12, 0.38, 0.44)))
 	oxygen_bar.add_theme_stylebox_override("fill", _style_box(Color(0.24, 0.82, 0.92), Color(0.48, 0.96, 1.0)))
 	content.add_child(oxygen_bar)
+
+	return_to_land_button = Button.new()
+	return_to_land_button.name = "ReturnToLandButton"
+	return_to_land_button.text = "返回陆地"
+	return_to_land_button.custom_minimum_size = Vector2(248.0, 28.0)
+	return_to_land_button.focus_mode = Control.FOCUS_NONE
+	return_to_land_button.add_theme_font_size_override("font_size", 11)
+	return_to_land_button.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0))
+	return_to_land_button.add_theme_stylebox_override("normal", _style_box(Color(0.04, 0.16, 0.21), Color(0.30, 0.72, 0.82)))
+	return_to_land_button.add_theme_stylebox_override("hover", _style_box(Color(0.08, 0.24, 0.30), Color(0.48, 0.90, 1.0)))
+	return_to_land_button.add_theme_stylebox_override("pressed", _style_box(Color(0.03, 0.11, 0.15), Color(0.20, 0.62, 0.74)))
+	return_to_land_button.pressed.connect(exit_underwater)
+	content.add_child(return_to_land_button)
 
 
 func _build_death_overlay() -> void:

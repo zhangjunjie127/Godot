@@ -500,21 +500,58 @@ func _run() -> void:
 	if scene.get_node_or_null("World/DepthSorted/EastGrass") != null:
 		_fail("Interactive vegetation was not removed")
 		return
-	var northeast_palm_count := 0
+	var expected_first_row_assets := PackedStringArray([
+		"res://assets/maps/props/vegetation/palms/palm_tree_001.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_002.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_003.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_004.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_005.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_006.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_007.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_008.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_009.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_010.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_011.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_012.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_013.png",
+		"res://assets/maps/props/vegetation/palms/palm_tree_014.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_001.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_002.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_003.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_004.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_005.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_006.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_007.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_008.png",
+		"res://assets/maps/props/vegetation/tropical_plants/tropical_plant_009.png",
+	])
+	var placed_first_row_assets := {}
+	var northeast_beach := Rect2(5900.0, 1900.0, 1100.0, 1000.0)
 	for child: Node in depth_sorted.get_children():
 		var child_name := child.name.to_lower()
-		if child_name.contains("grass") or child_name.contains("plant") or (child_name.contains("tree") and not child_name.begins_with("northeastpalm")):
+		var is_beach_plant := child_name.begins_with("northeastpalm") or child_name.begins_with("northeastbeachplant")
+		if child_name.contains("grass") or (child_name.contains("plant") and not is_beach_plant) or (child_name.contains("tree") and not is_beach_plant):
 			_fail("A vegetation patch remains in the depth-sorted map")
 			return
+		if is_beach_plant:
+			for visual: Node in child.get_children():
+				if visual is Sprite2D and (visual as Sprite2D).texture != null:
+					placed_first_row_assets[(visual as Sprite2D).texture.resource_path] = true
+			var is_added_asset := child_name.begins_with("northeastbeachplant") or (
+				child_name.begins_with("northeastpalm") and int(child_name.trim_prefix("northeastpalm")) >= 8
+			)
+			if is_added_asset and not northeast_beach.has_point((child as Node2D).position):
+				_fail("A newly placed first-row plant is outside the northeast beach")
+				return
 		if child_name.begins_with("northeastpalm"):
-			northeast_palm_count += 1
 			var blocker := child.get_node_or_null("Blocker") as StaticBody2D
 			if child.get_node_or_null("Sprite2D") == null or blocker == null or blocker.get_child_count() != 1 or not blocker.get_child(0) is CollisionShape2D:
 				_fail("A northeast beach palm is missing its sprite or trunk collision")
 				return
-	if northeast_palm_count != 5:
-		_fail("Northeast beach palms did not load independently from hidden vegetation")
-		return
+	for asset_path: String in expected_first_row_assets:
+		if not placed_first_row_assets.has(asset_path):
+			_fail("A first-row vegetation asset is missing from the beach: " + asset_path)
+			return
 	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
 		_fail("Male player 16-frame eight-direction animation sheet did not load")
 		return

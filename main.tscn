@@ -1,47 +1,81 @@
-[gd_scene load_steps=60 format=3]
+[gd_scene format=3 uid="uid://c7vnyv86ahkxt"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Script" path="res://scripts/world_map.gd" id="2_world"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="3_player"]
-[ext_resource type="Texture2D" path="res://assets/characters/player_male.png" id="4_player_texture"]
-[ext_resource type="Texture2D" path="res://assets/characters/player_male_walk/sheet-transparent.png" id="5_player_walk"]
-[ext_resource type="Script" path="res://scripts/day_night_cycle.gd" id="6_day_night"]
-[ext_resource type="Script" path="res://scripts/wild_boar.gd" id="7_boar_script"]
-[ext_resource type="Texture2D" path="res://assets/monsters/wild_boar_walk/sheet-transparent.png" id="8_boar_walk"]
-[ext_resource type="Script" path="res://scripts/minimap.gd" id="9_minimap"]
-[ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="10_minimap_texture"]
-[ext_resource type="Script" path="res://scripts/weather_system.gd" id="11_weather"]
-[ext_resource type="Script" path="res://scripts/weather_ground_effects.gd" id="12_weather_ground"]
-[ext_resource type="Script" path="res://scripts/rain_screen_effect.gd" id="13_screen_rain"]
-[ext_resource type="Script" path="res://scripts/cloud_layer.gd" id="14_cloud_layer"]
-[ext_resource type="Script" path="res://scripts/night_vision.gd" id="15_night_vision"]
-[ext_resource type="Script" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
+[ext_resource type="Script" uid="uid://cu3n1q5bbsui7" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://d306ujbdxea2a" path="res://scripts/world_map.gd" id="2_world"]
+[ext_resource type="Script" uid="uid://bg2w7nbo5i04n" path="res://scripts/player.gd" id="3_player"]
+[ext_resource type="Texture2D" uid="uid://dhsb3y3nemoar" path="res://assets/characters/player_male.png" id="4_player_texture"]
+[ext_resource type="Texture2D" uid="uid://cyfjq5ittlt5k" path="res://assets/characters/player_male_walk/sheet-transparent.png" id="5_player_walk"]
+[ext_resource type="Script" uid="uid://jyn4dc0ocw83" path="res://scripts/day_night_cycle.gd" id="6_day_night"]
+[ext_resource type="Script" uid="uid://be0mjca4jmxd2" path="res://scripts/wild_boar.gd" id="7_boar_script"]
+[ext_resource type="Texture2D" uid="uid://d22koaqaifpfn" path="res://assets/monsters/wild_boar_walk/sheet-transparent.png" id="8_boar_walk"]
+[ext_resource type="Script" uid="uid://clf8n3pmoioow" path="res://scripts/minimap.gd" id="9_minimap"]
+[ext_resource type="Texture2D" uid="uid://b2bv5618nkyqy" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="10_minimap_texture"]
+[ext_resource type="Script" uid="uid://csl2loqmnu1ju" path="res://scripts/weather_system.gd" id="11_weather"]
+[ext_resource type="Script" uid="uid://dos0lowxl8uxk" path="res://scripts/weather_ground_effects.gd" id="12_weather_ground"]
+[ext_resource type="Script" uid="uid://vac7d5o4bh3" path="res://scripts/rain_screen_effect.gd" id="13_screen_rain"]
+[ext_resource type="Script" uid="uid://dt71pnfavw12" path="res://scripts/cloud_layer.gd" id="14_cloud_layer"]
+[ext_resource type="Script" uid="uid://ci3nl5k40y26s" path="res://scripts/night_vision.gd" id="15_night_vision"]
+[ext_resource type="Script" uid="uid://bl8shwdyothoy" path="res://scripts/snow_world_effect.gd" id="16_snow_world"]
 [ext_resource type="PackedScene" path="res://underwater.tscn" id="17_underwater"]
-[ext_resource type="PackedScene" path="res://land_collision.tscn" id="18_land_collision"]
+[ext_resource type="PackedScene" uid="uid://d08jw460pq4r6" path="res://land_collision.tscn" id="18_land_collision"]
 [ext_resource type="PackedScene" path="res://effects/rain/RainSystem.tscn" id="19_rain_system"]
-[ext_resource type="Shader" path="res://effects/rain/puddle_surface.gdshader" id="20_puddle_shader"]
-[ext_resource type="Shader" path="res://effects/rain/wet_grade.gdshader" id="21_wet_shader"]
-[ext_resource type="Texture2D" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
-[ext_resource type="Texture2D" path="res://assets/weather/rain/ripple_flow_gb.png" id="23_ripple_flow"]
-[ext_resource type="AudioStream" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
-[ext_resource type="AudioStream" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
-[ext_resource type="AudioStream" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
-[ext_resource type="AudioStream" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
-[ext_resource type="Script" path="res://scripts/water_surface_interactions.gd" id="28_water_interactions"]
-[ext_resource type="Shader" path="res://shaders/night_vision.gdshader" id="29_night_shader"]
-[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_002.png" id="30_palm_02"]
-[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_006.png" id="31_palm_06"]
-[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_003.png" id="32_palm_03"]
-[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_007.png" id="33_palm_07"]
-[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_005.png" id="34_palm_05"]
-[ext_resource type="Script" path="res://scripts/art_sprite.gd" id="35_art_sprite"]
+[ext_resource type="Shader" uid="uid://bx1iloyxgkxjk" path="res://effects/rain/puddle_surface.gdshader" id="20_puddle_shader"]
+[ext_resource type="Shader" uid="uid://rhh0pdkwf8js" path="res://effects/rain/wet_grade.gdshader" id="21_wet_shader"]
+[ext_resource type="Texture2D" uid="uid://v7i2wwgtjdwu" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
+[ext_resource type="Texture2D" uid="uid://b2gxx1qwmsa36" path="res://assets/weather/rain/ripple_flow_gb.png" id="23_ripple_flow"]
+[ext_resource type="AudioStream" uid="uid://dukgl78d2asml" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
+[ext_resource type="AudioStream" uid="uid://dgesuic5jyjs1" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
+[ext_resource type="AudioStream" uid="uid://etpqyoskr7se" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
+[ext_resource type="AudioStream" uid="uid://b7yugeuul15ap" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
+[ext_resource type="Script" uid="uid://413t0jqh8yv4" path="res://scripts/water_surface_interactions.gd" id="28_water_interactions"]
+[ext_resource type="Shader" uid="uid://bxvxgsxp7bxxu" path="res://shaders/night_vision.gdshader" id="29_night_shader"]
+[ext_resource type="Texture2D" uid="uid://c863007jx8bvg" path="res://assets/maps/props/vegetation/palms/palm_tree_002.png" id="30_palm_02"]
+[ext_resource type="Texture2D" uid="uid://bf28cb6pk25k3" path="res://assets/maps/props/vegetation/palms/palm_tree_006.png" id="31_palm_06"]
+[ext_resource type="Texture2D" uid="uid://b26i2l625pn3d" path="res://assets/maps/props/vegetation/palms/palm_tree_003.png" id="32_palm_03"]
+[ext_resource type="Texture2D" uid="uid://f4qmelbisly5" path="res://assets/maps/props/vegetation/palms/palm_tree_007.png" id="33_palm_07"]
+[ext_resource type="Texture2D" uid="uid://djdsp064hx7bh" path="res://assets/maps/props/vegetation/palms/palm_tree_005.png" id="34_palm_05"]
+[ext_resource type="Script" uid="uid://dni3qeylbjub1" path="res://scripts/art_sprite.gd" id="35_art_sprite"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_001.png" id="36_palm_01"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_004.png" id="37_palm_04"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_008.png" id="38_palm_08"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_009.png" id="39_palm_09"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_010.png" id="40_palm_10"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_011.png" id="41_palm_11"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_012.png" id="42_palm_12"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_013.png" id="43_palm_13"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_014.png" id="44_palm_14"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_001.png" id="45_tropical_01"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_002.png" id="46_tropical_02"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_003.png" id="47_tropical_03"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_004.png" id="48_tropical_04"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_005.png" id="49_tropical_05"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_006.png" id="50_tropical_06"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_007.png" id="51_tropical_07"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_008.png" id="52_tropical_08"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_009.png" id="53_tropical_09"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
-radius = 9.0
-height = 24.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_boar"]
-radius = 12.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
+shader = ExtResource("20_puddle_shader")
+shader_parameter/puddle_mask = ExtResource("22_puddle_mask")
+shader_parameter/ripple_flow = ExtResource("23_ripple_flow")
+shader_parameter/rain_intensity = 0.0
+shader_parameter/puddle_amount = 0.0
+shader_parameter/small_cutoff = 0.88
+shader_parameter/medium_cutoff = 0.72
+shader_parameter/heavy_cutoff = 0.34
+shader_parameter/mask_softness = 0.055
+shader_parameter/medium_spread_pixels = 3.0
+shader_parameter/heavy_spread_pixels = 4.0
+shader_parameter/edge_feather_pixels = 3.0
+shader_parameter/edge_feather_opacity = 0.42
+shader_parameter/distortion_pixels = 0.82
+shader_parameter/water_opacity = 0.42
+shader_parameter/sky_reflection = 0.16
+shader_parameter/flow_speed = 0.2
+shader_parameter/depth_strength = 0.54
+shader_parameter/water_tint = Color(0.25, 0.47, 0.55, 1)
+shader_parameter/deep_water_tint = Color(0.08, 0.24, 0.31, 1)
+shader_parameter/sky_color = Color(0.62, 0.78, 0.84, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_palm_01"]
 radius = 30.0
@@ -58,9 +92,31 @@ radius = 26.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_palm_05"]
 radius = 30.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_player_portrait"]
-atlas = ExtResource("4_player_texture")
-region = Rect2(0, 0, 64, 72)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
+radius = 9.0
+height = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boar"]
+radius = 12.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_weather_wetness"]
+shader = ExtResource("21_wet_shader")
+shader_parameter/rain_intensity = 0.0
+shader_parameter/max_opacity = 0.28
+shader_parameter/saturation = 0.72
+shader_parameter/rain_tint = Color(0.6, 0.71, 0.76, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_night_vision"]
+shader = ExtResource("29_night_shader")
+shader_parameter/center_uv = Vector2(0.5, 0.5)
+shader_parameter/viewport_size = Vector2(640, 360)
+shader_parameter/night_tint = Vector3(0.07, 0.084, 0.126)
+shader_parameter/radius_px = 41.0
+shader_parameter/softness_px = 30.0
+shader_parameter/outer_alpha = 0.5
+shader_parameter/no_torch_inner_alpha = 0.55
+shader_parameter/torch_inner_alpha = 0.2
+shader_parameter/torch_equipped = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_player_status"]
 bg_color = Color(0.04, 0.052, 0.066, 0.95)
@@ -77,16 +133,20 @@ shadow_color = Color(0, 0, 0, 0.32)
 shadow_size = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portrait"]
-bg_color = Color(0.10, 0.12, 0.14, 1)
+bg_color = Color(0.1, 0.12, 0.14, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.82, 0.64, 0.30, 1)
+border_color = Color(0.82, 0.64, 0.3, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_player_portrait"]
+atlas = ExtResource("4_player_texture")
+region = Rect2(0, 0, 64, 72)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_background"]
 bg_color = Color(0.16, 0.055, 0.05, 0.96)
@@ -136,7 +196,7 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.60, 0.46, 0.24, 0.94)
+border_color = Color(0.6, 0.46, 0.24, 0.94)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -144,17 +204,41 @@ corner_radius_bottom_left = 3
 shadow_color = Color(0, 0, 0, 0.28)
 shadow_size = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_status_tray"]
-bg_color = Color(0.045, 0.056, 0.07, 0.90)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
+bg_color = Color(0.075, 0.09, 0.11, 0.98)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.45, 0.38, 0.25, 0.86)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+border_color = Color(0.48, 0.38, 0.22, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
+bg_color = Color(0.2, 0.17, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.96, 0.76, 0.38, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.13, 0.15, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.84, 0.64, 0.3, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
 bg_color = Color(0.035, 0.044, 0.056, 0.985)
@@ -170,266 +254,506 @@ corner_radius_bottom_left = 4
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_normal"]
-bg_color = Color(0.075, 0.09, 0.11, 0.98)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.48, 0.38, 0.22, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
-bg_color = Color(0.13, 0.15, 0.18, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.84, 0.64, 0.30, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_pressed"]
-bg_color = Color(0.20, 0.17, 0.10, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.96, 0.76, 0.38, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_weather_wetness"]
-shader = ExtResource("21_wet_shader")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
-shader = ExtResource("20_puddle_shader")
-shader_parameter/puddle_mask = ExtResource("22_puddle_mask")
-shader_parameter/ripple_flow = ExtResource("23_ripple_flow")
-shader_parameter/small_cutoff = 0.88
-shader_parameter/medium_cutoff = 0.72
-shader_parameter/heavy_cutoff = 0.34
-shader_parameter/mask_softness = 0.055
-shader_parameter/medium_spread_pixels = 3.0
-shader_parameter/heavy_spread_pixels = 4.0
-shader_parameter/edge_feather_pixels = 3.0
-shader_parameter/edge_feather_opacity = 0.42
-shader_parameter/water_opacity = 0.42
-shader_parameter/sky_reflection = 0.16
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_night_vision"]
-shader = ExtResource("29_night_shader")
-
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=648236474]
 script = ExtResource("1_main")
 
-[node name="World" type="Node2D" parent="."]
+[node name="World" type="Node2D" parent="." unique_id=762993873]
 script = ExtResource("2_world")
 
-[node name="DayNightTint" type="CanvasModulate" parent="World"]
+[node name="DayNightTint" type="CanvasModulate" parent="World" unique_id=674366490]
 
-[node name="Foundation" type="Node2D" parent="World"]
+[node name="Foundation" type="Node2D" parent="World" unique_id=1685367622]
 z_index = -20
 
-[node name="RainPuddleSurface" type="Sprite2D" parent="World"]
+[node name="RainPuddleSurface" type="Sprite2D" parent="World" unique_id=960668132]
 visible = false
 z_index = -7
-material = SubResource("ShaderMaterial_puddle_surface")
 texture_filter = 2
+material = SubResource("ShaderMaterial_puddle_surface")
+scale = Vector2(8, 8)
 texture = ExtResource("22_puddle_mask")
 centered = false
-scale = Vector2(8, 8)
 
-[node name="WeatherGround" type="Node2D" parent="World"]
+[node name="WeatherGround" type="Node2D" parent="World" unique_id=723993664]
 z_index = -5
 script = ExtResource("12_weather_ground")
 world_size = Vector2(8192, 8192)
 water_query_path = NodePath("..")
 puddle_mask = ExtResource("22_puddle_mask")
 
-[node name="WaterSurfaceInteractions" type="Node2D" parent="World"]
+[node name="WaterSurfaceInteractions" type="Node2D" parent="World" unique_id=203849164]
 z_index = -6
 script = ExtResource("28_water_interactions")
 player_path = NodePath("../DepthSorted/Player")
 
-[node name="SnowWorld" type="Node2D" parent="World"]
+[node name="SnowWorld" type="Node2D" parent="World" unique_id=1345849963]
 z_index = 30
 script = ExtResource("16_snow_world")
 world_size = Vector2(8192, 8192)
 
-[node name="Collision" parent="World" instance=ExtResource("18_land_collision")]
+[node name="Collision" parent="World" unique_id=2017534556 instance=ExtResource("18_land_collision")]
+show_collision_debug = false
 
-[node name="DepthSorted" type="Node2D" parent="World"]
+[node name="DepthSorted" type="Node2D" parent="World" unique_id=562262229]
 y_sort_enabled = true
 
-[node name="NortheastPalm01" type="Node2D" parent="World/DepthSorted"]
+[node name="NortheastPalm01" type="Node2D" parent="World/DepthSorted" unique_id=225826446]
 position = Vector2(6270, 1850)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm01"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm01" unique_id=2001613588]
 texture_filter = 1
 position = Vector2(0, -260)
-texture = ExtResource("30_palm_02")
 scale = Vector2(0.3363, 0.3363)
+texture = ExtResource("30_palm_02")
 script = ExtResource("35_art_sprite")
 
-[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm01"]
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm01" unique_id=1117654408]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm01/Blocker"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm01/Blocker" unique_id=887100843]
 position = Vector2(0, -22)
 shape = SubResource("CircleShape2D_palm_01")
 
-[node name="NortheastPalm02" type="Node2D" parent="World/DepthSorted"]
+[node name="NortheastPalm02" type="Node2D" parent="World/DepthSorted" unique_id=1404060353]
 position = Vector2(6555, 1985)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm02"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm02" unique_id=1277734551]
 texture_filter = 1
-position = Vector2(0, -225)
-texture = ExtResource("31_palm_06")
+position = Vector2(-612, -384)
 scale = Vector2(0.375, 0.375)
+texture = ExtResource("31_palm_06")
 flip_h = true
 script = ExtResource("35_art_sprite")
 
-[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm02"]
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm02" unique_id=1730017502]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm02/Blocker"]
-position = Vector2(0, -20)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm02/Blocker" unique_id=1951334505]
+position = Vector2(-689, -215)
 shape = SubResource("CircleShape2D_palm_02")
 
-[node name="NortheastPalm03" type="Node2D" parent="World/DepthSorted"]
-position = Vector2(6240, 2265)
+[node name="NortheastPalm03" type="Node2D" parent="World/DepthSorted" unique_id=1526759136]
+position = Vector2(5741, 1747)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm03"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm03" unique_id=233309620]
 texture_filter = 1
 position = Vector2(0, -240)
-texture = ExtResource("32_palm_03")
 scale = Vector2(0.319, 0.319)
+texture = ExtResource("32_palm_03")
 flip_h = true
 script = ExtResource("35_art_sprite")
 
-[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm03"]
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm03" unique_id=401721669]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm03/Blocker"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm03/Blocker" unique_id=192974934]
 position = Vector2(0, -21)
 shape = SubResource("CircleShape2D_palm_03")
 
-[node name="NortheastPalm04" type="Node2D" parent="World/DepthSorted"]
-position = Vector2(6525, 2385)
+[node name="NortheastPalm04" type="Node2D" parent="World/DepthSorted" unique_id=870697761]
+position = Vector2(4893, 1572)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm04"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm04" unique_id=2137176403]
 texture_filter = 1
 position = Vector2(0, -215)
-texture = ExtResource("33_palm_07")
 scale = Vector2(0.3697, 0.3697)
+texture = ExtResource("33_palm_07")
 script = ExtResource("35_art_sprite")
 
-[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm04"]
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm04" unique_id=843092654]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm04/Blocker"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm04/Blocker" unique_id=1976025486]
 position = Vector2(0, -19)
 shape = SubResource("CircleShape2D_palm_04")
 
-[node name="NortheastPalm05" type="Node2D" parent="World/DepthSorted"]
-position = Vector2(6760, 2570)
+[node name="NortheastPalm05" type="Node2D" parent="World/DepthSorted" unique_id=796782997]
+position = Vector2(5423, 2480)
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm05"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm05" unique_id=1886307025]
 texture_filter = 1
 position = Vector2(0, -255)
-texture = ExtResource("34_palm_05")
 scale = Vector2(0.341, 0.341)
+texture = ExtResource("34_palm_05")
 flip_h = true
 script = ExtResource("35_art_sprite")
 
-[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm05"]
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm05" unique_id=1595082760]
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm05/Blocker"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm05/Blocker" unique_id=710362398]
 position = Vector2(0, -22)
 shape = SubResource("CircleShape2D_palm_05")
 
-[node name="Player" type="CharacterBody2D" parent="World/DepthSorted"]
+[node name="NortheastPalm06" type="Node2D" parent="World/DepthSorted" unique_id=758398728]
+position = Vector2(5741, 1747)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm06" unique_id=12257992]
+texture_filter = 1
+position = Vector2(1515, 1779)
+scale = Vector2(0.319, 0.319)
+texture = ExtResource("32_palm_03")
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Sprite2D2" type="Sprite2D" parent="World/DepthSorted/NortheastPalm06" unique_id=1253304516]
+texture_filter = 1
+position = Vector2(-2638, -666)
+scale = Vector2(0.319, 0.319)
+texture = ExtResource("32_palm_03")
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm06" unique_id=1584905743]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm06/Blocker" unique_id=1346434273]
+position = Vector2(-572, -9)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm07" type="Node2D" parent="World/DepthSorted" unique_id=317048925]
+position = Vector2(5423, 2480)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm07" unique_id=1756699289]
+texture_filter = 1
+position = Vector2(-1533, -766)
+scale = Vector2(0.341, 0.341)
+texture = ExtResource("34_palm_05")
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm07" unique_id=1445675472]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm07/Blocker" unique_id=1160254953]
+position = Vector2(0, -22)
+shape = SubResource("CircleShape2D_palm_05")
+
+[node name="NortheastPalm08" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6100, 2050)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm08"]
+texture_filter = 1
+position = Vector2(0, -258)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("36_palm_01")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm08"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm08/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm09" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6400, 2050)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm09"]
+texture_filter = 1
+position = Vector2(0, -254)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("37_palm_04")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm09"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm09/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm10" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6700, 2050)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm10"]
+texture_filter = 1
+position = Vector2(0, -168)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("38_palm_08")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm10"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm10/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm11" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6000, 2350)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm11"]
+texture_filter = 1
+position = Vector2(0, -149)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("39_palm_09")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm11"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm11/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm12" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6300, 2350)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm12"]
+texture_filter = 1
+position = Vector2(0, -134)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("40_palm_10")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm12"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm12/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm13" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6600, 2350)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm13"]
+texture_filter = 1
+position = Vector2(0, -110)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("41_palm_11")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm13"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm13/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm14" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6860, 2350)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm14"]
+texture_filter = 1
+position = Vector2(0, -103)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("42_palm_12")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm14"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm14/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm15" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6200, 2670)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm15"]
+texture_filter = 1
+position = Vector2(0, -96)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("43_palm_13")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm15"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm15/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastPalm16" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6550, 2700)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm16"]
+texture_filter = 1
+position = Vector2(0, -84)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("44_palm_14")
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/NortheastPalm16"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm16/Blocker"]
+position = Vector2(0, -20)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="NortheastBeachPlant01" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6250, 2150)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant01"]
+texture_filter = 1
+position = Vector2(0, -132)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("45_tropical_01")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant02" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6550, 2180)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant02"]
+texture_filter = 1
+position = Vector2(0, -185)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("46_tropical_02")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant03" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6800, 2180)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant03"]
+texture_filter = 1
+position = Vector2(0, -88)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("47_tropical_03")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant04" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6150, 2470)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant04"]
+texture_filter = 1
+position = Vector2(0, -146)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("48_tropical_04")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant05" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6450, 2480)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant05"]
+texture_filter = 1
+position = Vector2(0, -116)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("49_tropical_05")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant06" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6740, 2520)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant06"]
+texture_filter = 1
+position = Vector2(0, -79)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("50_tropical_06")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant07" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6050, 2780)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant07"]
+texture_filter = 1
+position = Vector2(0, -77)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("51_tropical_07")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant08" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6370, 2810)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant08"]
+texture_filter = 1
+position = Vector2(0, -64)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("52_tropical_08")
+script = ExtResource("35_art_sprite")
+
+[node name="NortheastBeachPlant09" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(6700, 2820)
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastBeachPlant09"]
+texture_filter = 1
+position = Vector2(0, -52)
+scale = Vector2(0.34, 0.34)
+texture = ExtResource("53_tropical_09")
+script = ExtResource("35_art_sprite")
+
+[node name="Player" type="CharacterBody2D" parent="World/DepthSorted" unique_id=2028328843]
 position = Vector2(4100, 4700)
-collision_layer = 1
 collision_mask = 2
 script = ExtResource("3_player")
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player" unique_id=638644177]
 texture_filter = 1
 position = Vector2(0, -160)
+scale = Vector2(2.2, 2.2)
 texture = ExtResource("5_player_walk")
 hframes = 16
 vframes = 8
-scale = Vector2(2.2, 2.2)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/Player"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/Player" unique_id=2009753981]
 position = Vector2(0, -10)
 shape = SubResource("CapsuleShape2D_player")
 
-[node name="Camera2D" type="Camera2D" parent="World/DepthSorted/Player"]
+[node name="Camera2D" type="Camera2D" parent="World/DepthSorted/Player" unique_id=2135634949]
 position = Vector2(0, -44)
 zoom = Vector2(0.273, 0.273)
-position_smoothing_enabled = true
-position_smoothing_speed = 7.0
 limit_left = 0
 limit_top = 0
 limit_right = 8192
 limit_bottom = 8192
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
 
-[node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted"]
+[node name="WildBoar" type="CharacterBody2D" parent="World/DepthSorted" unique_id=1764139304]
 position = Vector2(4680, 4780)
 scale = Vector2(3, 3)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("7_boar_script")
 
-[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/WildBoar"]
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/WildBoar" unique_id=791658145]
 texture_filter = 1
 position = Vector2(0, -13)
+scale = Vector2(0.36, 0.36)
 texture = ExtResource("8_boar_walk")
 hframes = 4
 vframes = 4
-scale = Vector2(0.36, 0.36)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/WildBoar"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/WildBoar" unique_id=1107415228]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_boar")
 
-[node name="ForegroundOcclusion" type="Node2D" parent="World"]
+[node name="ForegroundOcclusion" type="Node2D" parent="World" unique_id=820319467]
 z_index = 20
 
-[node name="GameplayMetadata" type="Node" parent="World"]
+[node name="GameplayMetadata" type="Node" parent="World" unique_id=504066690]
 
-[node name="Clouds" type="Node2D" parent="World"]
+[node name="Clouds" type="Node2D" parent="World" unique_id=850733505]
 z_index = -4
 script = ExtResource("14_cloud_layer")
 weather_path = NodePath("../../Weather/Effect")
 day_night_cycle_path = NodePath("../../DayNightCycle")
 world_size = Vector2(8192, 8192)
 
-[node name="UnderwaterWorld" parent="." instance=ExtResource("17_underwater")]
+[node name="UnderwaterWorld" parent="." unique_id=427606453 instance=ExtResource("17_underwater")]
 
-[node name="Weather" type="CanvasLayer" parent="."]
+[node name="Weather" type="CanvasLayer" parent="." unique_id=2119786415]
 layer = 50
 
-[node name="Wetness" type="ColorRect" parent="Weather"]
+[node name="Wetness" type="ColorRect" parent="Weather" unique_id=1231500916]
 visible = false
 material = SubResource("ShaderMaterial_weather_wetness")
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -437,26 +761,26 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="RainVisuals" parent="Weather" instance=ExtResource("19_rain_system")]
+[node name="RainVisuals" parent="Weather" unique_id=1169597799 instance=ExtResource("19_rain_system")]
 
-[node name="Thunder" type="AudioStreamPlayer" parent="Weather"]
+[node name="Thunder" type="AudioStreamPlayer" parent="Weather" unique_id=1616958275]
 stream = ExtResource("24_thunder")
 volume_db = -18.0
 
-[node name="DayBirds" type="AudioStreamPlayer" parent="Weather"]
+[node name="DayBirds" type="AudioStreamPlayer" parent="Weather" unique_id=2115933422]
 stream = ExtResource("25_day_birds")
 volume_db = -50.0
 
-[node name="DayWind" type="AudioStreamPlayer" parent="Weather"]
+[node name="DayWind" type="AudioStreamPlayer" parent="Weather" unique_id=407859058]
 stream = ExtResource("26_day_wind")
 volume_db = -50.0
 
-[node name="WetFootstep" type="AudioStreamPlayer" parent="Weather"]
+[node name="WetFootstep" type="AudioStreamPlayer" parent="Weather" unique_id=307161526]
 stream = ExtResource("27_wet_footstep")
 volume_db = -12.0
 max_polyphony = 3
 
-[node name="Effect" type="Control" parent="Weather"]
+[node name="Effect" type="Control" parent="Weather" unique_id=1665048295]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -476,13 +800,12 @@ thunder_audio_path = NodePath("../Thunder")
 day_birds_audio_path = NodePath("../DayBirds")
 day_wind_audio_path = NodePath("../DayWind")
 
-[node name="NightVision" type="CanvasLayer" parent="."]
+[node name="NightVision" type="CanvasLayer" parent="." unique_id=1829535483]
 layer = 80
 
-[node name="Mask" type="ColorRect" parent="NightVision"]
+[node name="Mask" type="ColorRect" parent="NightVision" unique_id=75587037]
 visible = false
 material = SubResource("ShaderMaterial_night_vision")
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -493,10 +816,10 @@ script = ExtResource("15_night_vision")
 player_path = NodePath("../../World/DepthSorted/Player")
 environment_path = NodePath("../../World/DayNightTint")
 
-[node name="HUD" type="CanvasLayer" parent="."]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1729101204]
 layer = 100
 
-[node name="PlayerStatus" type="PanelContainer" parent="HUD"]
+[node name="PlayerStatus" type="PanelContainer" parent="HUD" unique_id=1883221501]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 172.0
@@ -505,40 +828,40 @@ scale = Vector2(0.5, 0.5)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_player_status")
 
-[node name="Margin" type="MarginContainer" parent="HUD/PlayerStatus"]
+[node name="Margin" type="MarginContainer" parent="HUD/PlayerStatus" unique_id=157841891]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Content" type="HBoxContainer" parent="HUD/PlayerStatus/Margin"]
+[node name="Content" type="HBoxContainer" parent="HUD/PlayerStatus/Margin" unique_id=233935371]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="PortraitFrame" type="PanelContainer" parent="HUD/PlayerStatus/Margin/Content"]
+[node name="PortraitFrame" type="PanelContainer" parent="HUD/PlayerStatus/Margin/Content" unique_id=1027297382]
 custom_minimum_size = Vector2(42, 42)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_portrait")
 
-[node name="Portrait" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/PortraitFrame"]
-layout_mode = 2
+[node name="Portrait" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/PortraitFrame" unique_id=373980093]
 texture_filter = 1
+layout_mode = 2
 texture = SubResource("AtlasTexture_player_portrait")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Stats" type="VBoxContainer" parent="HUD/PlayerStatus/Margin/Content"]
+[node name="Stats" type="VBoxContainer" parent="HUD/PlayerStatus/Margin/Content" unique_id=1312952836]
 custom_minimum_size = Vector2(106, 77)
 layout_mode = 2
 theme_override_constants/separation = 3
 
-[node name="HealthGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats"]
+[node name="HealthGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats" unique_id=1949171615]
 custom_minimum_size = Vector2(106, 12)
 layout_mode = 2
 
-[node name="HealthBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/HealthGroup"]
+[node name="HealthBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/HealthGroup" unique_id=661081674]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -551,14 +874,13 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
 value = 100.0
 show_percentage = false
 
-[node name="HealthLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/HealthGroup"]
+[node name="HealthLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/HealthGroup" unique_id=1527091652]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.96, 0.9, 1)
 theme_override_colors/font_outline_color = Color(0.1, 0.02, 0.01, 0.9)
 theme_override_constants/outline_size = 2
@@ -567,11 +889,11 @@ text = "生命 100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StaminaGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats"]
+[node name="StaminaGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats" unique_id=1289637244]
 custom_minimum_size = Vector2(106, 12)
 layout_mode = 2
 
-[node name="StaminaBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup"]
+[node name="StaminaBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup" unique_id=1456048378]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -584,14 +906,13 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_stamina_fill")
 value = 100.0
 show_percentage = false
 
-[node name="StaminaLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup"]
+[node name="StaminaLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/StaminaGroup" unique_id=1745964145]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 0.98, 0.86, 1)
 theme_override_colors/font_outline_color = Color(0.08, 0.06, 0.01, 0.9)
 theme_override_constants/outline_size = 2
@@ -600,11 +921,11 @@ text = "体力 100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HungerGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats"]
+[node name="HungerGroup" type="Control" parent="HUD/PlayerStatus/Margin/Content/Stats" unique_id=1600383705]
 custom_minimum_size = Vector2(106, 12)
 layout_mode = 2
 
-[node name="HungerBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/HungerGroup"]
+[node name="HungerBar" type="ProgressBar" parent="HUD/PlayerStatus/Margin/Content/Stats/HungerGroup" unique_id=2096577915]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -617,14 +938,13 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_hunger_fill")
 value = 100.0
 show_percentage = false
 
-[node name="HungerLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/HungerGroup"]
+[node name="HungerLabel" type="Label" parent="HUD/PlayerStatus/Margin/Content/Stats/HungerGroup" unique_id=1345427326]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.96, 1, 0.9, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.08, 0.02, 0.9)
 theme_override_constants/outline_size = 2
@@ -633,27 +953,28 @@ text = "饥饿 100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="IndicatorRow" type="HBoxContainer" parent="HUD/PlayerStatus/Margin/Content/Stats"]
+[node name="IndicatorRow" type="HBoxContainer" parent="HUD/PlayerStatus/Margin/Content/Stats" unique_id=1431037987]
 custom_minimum_size = Vector2(69, 32)
 layout_mode = 2
 theme_override_constants/separation = 5
 alignment = 1
 
-[node name="ConditionIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow"]
+[node name="ConditionIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow" unique_id=554396272]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 0
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VisibilityIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow"]
+[node name="VisibilityIcon" type="TextureRect" parent="HUD/PlayerStatus/Margin/Content/Stats/IndicatorRow" unique_id=1395138836]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 0
 expand_mode = 1
 stretch_mode = 5
 
-[node name="WorldInfo" type="PanelContainer" parent="HUD"]
+[node name="WorldInfo" type="PanelContainer" parent="HUD" unique_id=497143442]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -132.0
@@ -661,35 +982,36 @@ offset_top = 71.0
 offset_right = -8.0
 offset_bottom = 103.0
 grow_horizontal = 0
-pivot_offset = Vector2(124, 0)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(124, 0)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
 
-[node name="Margin" type="MarginContainer" parent="HUD/WorldInfo"]
+[node name="Margin" type="MarginContainer" parent="HUD/WorldInfo" unique_id=1550048436]
 layout_mode = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 5
 
-[node name="Row" type="HBoxContainer" parent="HUD/WorldInfo/Margin"]
+[node name="Row" type="HBoxContainer" parent="HUD/WorldInfo/Margin" unique_id=2121804279]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Details" type="VBoxContainer" parent="HUD/WorldInfo/Margin/Row"]
+[node name="Details" type="VBoxContainer" parent="HUD/WorldInfo/Margin/Row" unique_id=450609075]
 custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
 theme_override_constants/separation = 1
 
-[node name="EraDayLabel" type="Label" parent="HUD/WorldInfo/Margin/Row/Details"]
+[node name="EraDayLabel" type="Label" parent="HUD/WorldInfo/Margin/Row/Details" unique_id=95101418]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.92, 0.84, 1)
 theme_override_font_sizes/font_size = 10
 text = "原始时代 · 第 1 日"
 horizontal_alignment = 1
 
-[node name="PhasePanel" type="PanelContainer" parent="HUD"]
+[node name="PhasePanel" type="PanelContainer" parent="HUD" unique_id=1693342918]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -106.0
@@ -697,26 +1019,27 @@ offset_top = 8.0
 offset_right = -72.0
 offset_bottom = 42.0
 grow_horizontal = 0
-pivot_offset = Vector2(34, 0)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(34, 0)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
 
-[node name="Margin" type="MarginContainer" parent="HUD/PhasePanel"]
+[node name="Margin" type="MarginContainer" parent="HUD/PhasePanel" unique_id=1427131650]
 layout_mode = 2
 theme_override_constants/margin_left = 1
 theme_override_constants/margin_top = 1
 theme_override_constants/margin_right = 1
 theme_override_constants/margin_bottom = 1
 
-[node name="PhaseIcon" type="TextureRect" parent="HUD/PhasePanel/Margin"]
+[node name="PhaseIcon" type="TextureRect" parent="HUD/PhasePanel/Margin" unique_id=293345053]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_filter = 0
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MinimapPanel" type="PanelContainer" parent="HUD"]
+[node name="MinimapPanel" type="PanelContainer" parent="HUD" unique_id=1096962440]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -132.0
@@ -724,28 +1047,28 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = 132.0
 grow_horizontal = 0
-pivot_offset = Vector2(124, 0)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(124, 0)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
 
-[node name="Margin" type="MarginContainer" parent="HUD/MinimapPanel"]
+[node name="Margin" type="MarginContainer" parent="HUD/MinimapPanel" unique_id=140908508]
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Minimap" type="Control" parent="HUD/MinimapPanel/Margin"]
+[node name="Minimap" type="Control" parent="HUD/MinimapPanel/Margin" unique_id=1211698034]
 custom_minimum_size = Vector2(114, 114)
-layout_mode = 2
 clip_contents = true
+layout_mode = 2
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../World/DepthSorted/Player")
 world_size = Vector2(8192, 8192)
 
-[node name="AreaLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
+[node name="AreaLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap" unique_id=1602782868]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -755,14 +1078,13 @@ offset_top = -19.0
 offset_right = 58.0
 offset_bottom = -3.0
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.035, 0.94)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 10
 text = "升天群岛"
 
-[node name="CoordinateLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap"]
+[node name="CoordinateLabel" type="Label" parent="HUD/MinimapPanel/Margin/Minimap" unique_id=1597579191]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -775,7 +1097,6 @@ offset_right = -4.0
 offset_bottom = -3.0
 grow_horizontal = 0
 grow_vertical = 0
-mouse_filter = 2
 theme_override_colors/font_color = Color(0.86, 0.94, 1, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.025, 0.035, 0.94)
 theme_override_constants/outline_size = 3
@@ -783,7 +1104,8 @@ theme_override_font_sizes/font_size = 9
 text = "1024,900"
 horizontal_alignment = 2
 
-[node name="BottomActions" type="HBoxContainer" parent="HUD"]
+[node name="BottomActions" type="HBoxContainer" parent="HUD" unique_id=1668612058]
+anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
@@ -791,33 +1113,33 @@ offset_top = -36.0
 offset_right = 160.0
 offset_bottom = -8.0
 grow_vertical = 0
-pivot_offset = Vector2(0, 28)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(0, 28)
 theme_override_constants/separation = 6
 
-[node name="BackpackButton" type="Button" parent="HUD/BottomActions"]
+[node name="BackpackButton" type="Button" parent="HUD/BottomActions" unique_id=1720823946]
 custom_minimum_size = Vector2(70, 28)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.94, 0.92, 0.84, 1)
 theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "背包  B"
 
-[node name="SkillTreeButton" type="Button" parent="HUD/BottomActions"]
+[node name="SkillTreeButton" type="Button" parent="HUD/BottomActions" unique_id=1452791100]
 custom_minimum_size = Vector2(76, 28)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.94, 0.92, 0.84, 1)
 theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "技能树  K"
 
-[node name="InventoryOverlay" type="Control" parent="HUD"]
+[node name="InventoryOverlay" type="Control" parent="HUD" unique_id=1617786046]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -826,7 +1148,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="HUD/InventoryOverlay"]
+[node name="Dim" type="ColorRect" parent="HUD/InventoryOverlay" unique_id=1414256724]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -835,7 +1157,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.01, 0.015, 0.022, 0.62)
 
-[node name="InventoryPanel" type="PanelContainer" parent="HUD/InventoryOverlay"]
+[node name="InventoryPanel" type="PanelContainer" parent="HUD/InventoryOverlay" unique_id=732762833]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -848,60 +1170,60 @@ offset_right = 170.0
 offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(170, 120)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(170, 120)
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
-[node name="Margin" type="MarginContainer" parent="HUD/InventoryOverlay/InventoryPanel"]
+[node name="Margin" type="MarginContainer" parent="HUD/InventoryOverlay/InventoryPanel" unique_id=759086786]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 10
 
-[node name="Content" type="VBoxContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin"]
+[node name="Content" type="VBoxContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin" unique_id=1179755329]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Header" type="HBoxContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content"]
+[node name="Header" type="HBoxContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content" unique_id=437268099]
 custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
 
-[node name="Title" type="Label" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header"]
+[node name="Title" type="Label" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header" unique_id=87187457]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.82, 0.50, 1)
+theme_override_colors/font_color = Color(0.96, 0.82, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 text = "随身背包"
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header"]
+[node name="Spacer" type="Control" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header" unique_id=197372947]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CloseButton" type="Button" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header"]
+[node name="CloseButton" type="Button" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content/Header" unique_id=993495487]
 custom_minimum_size = Vector2(42, 24)
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 9
 theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "关闭"
 
-[node name="CapacityLabel" type="Label" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content"]
+[node name="CapacityLabel" type="Label" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content" unique_id=1717623734]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.70, 0.72, 0.73, 1)
+theme_override_colors/font_color = Color(0.7, 0.72, 0.73, 1)
 theme_override_font_sizes/font_size = 10
 text = "容量  1 / 20"
 
-[node name="InventoryGrid" type="GridContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content"]
+[node name="InventoryGrid" type="GridContainer" parent="HUD/InventoryOverlay/InventoryPanel/Margin/Content" unique_id=2128665077]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 6
 columns = 5
 
-[node name="SkillOverlay" type="Control" parent="HUD"]
+[node name="SkillOverlay" type="Control" parent="HUD" unique_id=1367316444]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -910,7 +1232,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="HUD/SkillOverlay"]
+[node name="Dim" type="ColorRect" parent="HUD/SkillOverlay" unique_id=377695688]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -919,7 +1241,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.01, 0.015, 0.022, 0.62)
 
-[node name="SkillPanel" type="PanelContainer" parent="HUD/SkillOverlay"]
+[node name="SkillPanel" type="PanelContainer" parent="HUD/SkillOverlay" unique_id=1231864125]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -932,37 +1254,37 @@ offset_right = 410.0
 offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(410, 160)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(410, 160)
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
-[node name="Margin" type="MarginContainer" parent="HUD/SkillOverlay/SkillPanel"]
+[node name="Margin" type="MarginContainer" parent="HUD/SkillOverlay/SkillPanel" unique_id=638668988]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 10
 
-[node name="Content" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin"]
+[node name="Content" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin" unique_id=1758266473]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Header" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
+[node name="Header" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content" unique_id=2019177233]
 custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
 
-[node name="Title" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header"]
+[node name="Title" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header" unique_id=317275193]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.82, 0.50, 1)
+theme_override_colors/font_color = Color(0.96, 0.82, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 text = "时代技能树"
 vertical_alignment = 1
 
-[node name="HeaderSpacer" type="Control" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header"]
+[node name="HeaderSpacer" type="Control" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header" unique_id=1350148730]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SkillPointsLabel" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header"]
+[node name="SkillPointsLabel" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header" unique_id=799625053]
 custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.82, 0.29, 1)
@@ -970,41 +1292,42 @@ theme_override_font_sizes/font_size = 10
 text = "技能点  12"
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header"]
+[node name="CloseButton" type="Button" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/Header" unique_id=2116908009]
 custom_minimum_size = Vector2(42, 24)
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 9
 theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "关闭"
 
-[node name="EraProgressLabel" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
+[node name="EraProgressLabel" type="Label" parent="HUD/SkillOverlay/SkillPanel/Margin/Content" unique_id=1963295949]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.70, 0.72, 0.73, 1)
+theme_override_colors/font_color = Color(0.7, 0.72, 0.73, 1)
 theme_override_font_sizes/font_size = 10
 text = "原始时代 → 青铜时代"
 horizontal_alignment = 1
 
-[node name="TreeRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content"]
+[node name="TreeRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content" unique_id=42470015]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="Branches" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow"]
+[node name="Branches" type="VBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow" unique_id=228373231]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 
-[node name="RitualRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow"]
+[node name="RitualRow" type="HBoxContainer" parent="HUD/SkillOverlay/SkillPanel/Margin/Content/TreeRow" unique_id=1588693988]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 alignment = 1
 
-[node name="ForecastPopup" type="PanelContainer" parent="HUD"]
+[node name="ForecastPopup" type="PanelContainer" parent="HUD" unique_id=438278273]
 visible = false
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -190.0
@@ -1012,27 +1335,29 @@ offset_top = 72.0
 offset_right = 190.0
 offset_bottom = 160.0
 grow_horizontal = 2
-pivot_offset = Vector2(190, 0)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(190, 0)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hud_panel")
 
-[node name="Margin" type="MarginContainer" parent="HUD/ForecastPopup"]
+[node name="Margin" type="MarginContainer" parent="HUD/ForecastPopup" unique_id=2064314125]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 8
 
-[node name="ForecastLabel" type="Label" parent="HUD/ForecastPopup/Margin"]
+[node name="ForecastLabel" type="Label" parent="HUD/ForecastPopup/Margin" unique_id=661340610]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.96, 0.88, 1)
 theme_override_font_sizes/font_size = 12
-text = "天气预报\n未来 1 日  晴朗\n未来 2 日  中雨"
+text = "天气预报
+未来 1 日  晴朗
+未来 2 日  中雨"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WorldMapOverlay" type="Control" parent="HUD"]
+[node name="WorldMapOverlay" type="Control" parent="HUD" unique_id=262751619]
 visible = false
 layout_mode = 3
 anchors_preset = 15
@@ -1041,7 +1366,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="HUD/WorldMapOverlay"]
+[node name="Dim" type="ColorRect" parent="HUD/WorldMapOverlay" unique_id=731025255]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -1050,7 +1375,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.01, 0.015, 0.022, 0.74)
 
-[node name="MapPanel" type="PanelContainer" parent="HUD/WorldMapOverlay"]
+[node name="MapPanel" type="PanelContainer" parent="HUD/WorldMapOverlay" unique_id=108611471]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -1063,67 +1388,67 @@ offset_right = 410.0
 offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(410, 350)
 scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(410, 350)
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
-[node name="Margin" type="MarginContainer" parent="HUD/WorldMapOverlay/MapPanel"]
+[node name="Margin" type="MarginContainer" parent="HUD/WorldMapOverlay/MapPanel" unique_id=1252025064]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 10
 
-[node name="Content" type="VBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin"]
+[node name="Content" type="VBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin" unique_id=1704963067]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Header" type="HBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+[node name="Header" type="HBoxContainer" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content" unique_id=1073341228]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 
-[node name="Title" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+[node name="Title" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header" unique_id=1873348164]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.82, 0.50, 1)
+theme_override_colors/font_color = Color(0.96, 0.82, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 text = "世界地图"
 
-[node name="Spacer" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+[node name="Spacer" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header" unique_id=1155270158]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CloseButton" type="Button" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header"]
+[node name="CloseButton" type="Button" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content/Header" unique_id=1314973853]
 custom_minimum_size = Vector2(42, 24)
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 9
 theme_override_styles/normal = SubResource("StyleBoxFlat_button_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_button_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
 text = "关闭"
 
-[node name="Map" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+[node name="Map" type="Control" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content" unique_id=826380368]
 custom_minimum_size = Vector2(780, 610)
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
-clip_contents = true
 script = ExtResource("9_minimap")
 map_texture = ExtResource("10_minimap_texture")
 player_path = NodePath("../../../../../../World/DepthSorted/Player")
 world_size = Vector2(8192, 8192)
 world_mode = true
 
-[node name="CoordinateLabel" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content"]
+[node name="CoordinateLabel" type="Label" parent="HUD/WorldMapOverlay/MapPanel/Margin/Content" unique_id=159678513]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.70, 0.72, 0.73, 1)
+theme_override_colors/font_color = Color(0.7, 0.72, 0.73, 1)
 theme_override_font_sizes/font_size = 11
 text = "坐标  4100, 4700"
 horizontal_alignment = 1
 
-[node name="ScreenWeather" type="CanvasLayer" parent="."]
+[node name="ScreenWeather" type="CanvasLayer" parent="." unique_id=1167582305]
 layer = 110
 
-[node name="Drops" type="Control" parent="ScreenWeather"]
+[node name="Drops" type="Control" parent="ScreenWeather" unique_id=572987101]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1133,6 +1458,6 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("13_screen_rain")
 
-[node name="DayNightCycle" type="Node" parent="."]
+[node name="DayNightCycle" type="Node" parent="." unique_id=1619789652]
 script = ExtResource("6_day_night")
 environment_path = NodePath("../World/DayNightTint")

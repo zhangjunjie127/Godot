@@ -1,0 +1,1821 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_001.png" id="1_oqumt"]
+[ext_resource type="Script" path="res://scripts/art_sprite.gd" id="2_yskuj"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_010.png" id="3_vmxse"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_002.png" id="4_2w2wc"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_003.png" id="5_ddet7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_011.png" id="6_ta52h"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/vines/vine_001.png" id="7_nvwki"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_004.png" id="8_rxpve"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/vines/vine_002.png" id="9_pnpwq"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_005.png" id="10_uqtmp"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/vines/vine_003.png" id="11_6vrg0"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/vines/vine_004.png" id="12_fvtmu"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/trees/tree_006.png" id="13_2ks52"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_012.png" id="14_h3bub"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_013.png" id="15_5moti"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/deadwood/deadwood_001.png" id="16_sic75"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/deadwood/deadwood_002.png" id="17_ras33"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/deadwood/deadwood_003.png" id="18_gp2f0"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_001.png" id="19_bsrku"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_001.png" id="20_6op2a"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_002.png" id="21_84whe"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_002.png" id="22_nei3o"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_003.png" id="23_3ljae"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_003.png" id="24_t23jm"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_004.png" id="25_6ivm6"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_005.png" id="26_xtp6u"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_006.png" id="27_a6lju"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_004.png" id="28_xd2ut"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_005.png" id="29_wj2n7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_007.png" id="30_jnhr7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_006.png" id="31_yloi1"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_008.png" id="32_apet8"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_007.png" id="33_07nmu"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_008.png" id="34_7nt8h"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_009.png" id="35_cgggc"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_010.png" id="36_jrb65"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_011.png" id="37_88h0a"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_012.png" id="38_4k237"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_009.png" id="39_uvsub"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_013.png" id="40_vrs2f"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_010.png" id="41_ytp5c"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_014.png" id="42_5m4a1"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_015.png" id="43_07pv1"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_011.png" id="44_kx5yh"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_012.png" id="45_l0r5o"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_013.png" id="46_fqjmw"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_014.png" id="47_lljqo"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_015.png" id="48_ee12b"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_016.png" id="49_hoti5"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_017.png" id="50_vdqjd"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_018.png" id="51_sfvco"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_019.png" id="52_jsvy2"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_016.png" id="53_yaw54"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_020.png" id="54_6c7cc"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_021.png" id="55_ckn1n"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_022.png" id="56_7i410"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_017.png" id="57_duh2d"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_023.png" id="58_ctj6e"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_018.png" id="59_3dcue"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_019.png" id="60_qvjet"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_024.png" id="61_xnrs6"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/flowering_plants/flowering_plant_020.png" id="62_fj2pt"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_025.png" id="63_4v7x3"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_026.png" id="64_dl0ka"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_027.png" id="65_xiof4"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/foliage/foliage_028.png" id="66_1kgb2"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_001.png" id="67_0bgs5"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_002.png" id="68_niu2u"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_003.png" id="69_i4q77"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_004.png" id="70_3ic00"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_005.png" id="71_3m81y"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_006.png" id="72_xitht"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_007.png" id="73_fys6d"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_008.png" id="74_qn2lw"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_009.png" id="75_7gu0a"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_010.png" id="76_dcgf4"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_011.png" id="77_mho01"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_012.png" id="78_me16d"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_013.png" id="79_i5l7g"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_014.png" id="80_mco18"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_015.png" id="81_662vg"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_016.png" id="82_ac5mv"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_017.png" id="83_vmfqa"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_018.png" id="84_ksg66"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_019.png" id="85_3dacu"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_020.png" id="86_sm6qa"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_021.png" id="87_5tdcn"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_022.png" id="88_ehpk6"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_023.png" id="89_uxixb"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_024.png" id="90_j2daa"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_025.png" id="91_wa7a2"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_026.png" id="92_ldg6v"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_027.png" id="93_4ylb7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_028.png" id="94_vy0ee"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_029.png" id="95_p5dn7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_030.png" id="96_j1tn5"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_031.png" id="97_ayt7u"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_032.png" id="98_opbks"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_033.png" id="99_owiru"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_034.png" id="100_gcx88"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_035.png" id="101_s8pjf"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_036.png" id="102_o1m6v"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_001.png" id="103_8hxwe"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_037.png" id="104_w5ffi"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_002.png" id="105_88l2d"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_003.png" id="106_i4au5"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_004.png" id="107_jnemy"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_005.png" id="108_lmcfx"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_006.png" id="109_85ayx"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_007.png" id="110_xt6mm"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_008.png" id="111_q3x1s"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_009.png" id="112_s5rir"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_038.png" id="113_lsvk8"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_039.png" id="114_ci66x"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_040.png" id="115_3ei8y"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_041.png" id="116_x45dg"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_010.png" id="117_uq76l"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_042.png" id="118_7kvhb"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_043.png" id="119_c32an"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_011.png" id="120_obedo"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_044.png" id="121_0pxh0"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_012.png" id="122_qe67x"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_045.png" id="123_3g272"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_046.png" id="124_pnh6k"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_013.png" id="125_msg56"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_014.png" id="126_lgu8j"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_047.png" id="127_epbc1"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_048.png" id="128_qjw24"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_049.png" id="129_wri6y"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_015.png" id="130_nrwmr"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_016.png" id="131_2siei"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_017.png" id="132_uumqv"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_018.png" id="133_ojvsc"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_019.png" id="134_hcro3"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_020.png" id="135_hwqc1"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_021.png" id="136_1rl1l"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_022.png" id="137_m2auu"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_023.png" id="138_effmy"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/grasses/grass_clump_050.png" id="139_lib2g"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_024.png" id="140_7lngu"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_025.png" id="141_w22fv"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_026.png" id="142_02jrc"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_027.png" id="143_dlea7"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_028.png" id="144_pqshr"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_029.png" id="145_o8y4l"]
+[ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/groundcover/ground_patch_030.png" id="146_fbeob"]
+
+[node name="CentralVegetation" type="Node2D" unique_id=747158899]
+y_sort_enabled = true
+
+[node name="Tree001" type="Node2D" parent="." unique_id=372684201]
+position = Vector2(-1313.5159, -1225.6467)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree001" unique_id=182511942]
+texture_filter = 1
+position = Vector2(0, -161.79369)
+scale = Vector2(0.23828231, 0.23828231)
+texture = ExtResource("1_oqumt")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="TropicalPlant010" type="Node2D" parent="." unique_id=2061740563]
+position = Vector2(-763.8916, -1235.4445)
+metadata/asset_path = "res://assets/maps/props/vegetation/tropical_plants/tropical_plant_010.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="TropicalPlant010" unique_id=459829180]
+texture_filter = 1
+position = Vector2(0, -103.4536)
+scale = Vector2(0.2330036, 0.2330036)
+texture = ExtResource("3_vmxse")
+script = ExtResource("2_yskuj")
+
+[node name="Tree002" type="Node2D" parent="." unique_id=616099114]
+position = Vector2(-226.20497, -1227.6232)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree002" unique_id=616077233]
+texture_filter = 1
+position = Vector2(0, -172.7568)
+scale = Vector2(0.34311184, 0.34311184)
+texture = ExtResource("4_2w2wc")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Tree003" type="Node2D" parent="." unique_id=408591122]
+position = Vector2(271.96362, -1246.1667)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree003" unique_id=1444994626]
+texture_filter = 1
+position = Vector2(0, -178.05354)
+scale = Vector2(0.32461902, 0.32461902)
+texture = ExtResource("5_ddet7")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="TropicalPlant011" type="Node2D" parent="." unique_id=1154219797]
+position = Vector2(803.3153, -1245.3052)
+metadata/asset_path = "res://assets/maps/props/vegetation/tropical_plants/tropical_plant_011.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="TropicalPlant011" unique_id=1056814483]
+texture_filter = 1
+position = Vector2(0, -88.9795)
+scale = Vector2(0.3295537, 0.3295537)
+texture = ExtResource("6_ta52h")
+script = ExtResource("2_yskuj")
+
+[node name="Vine001" type="Node2D" parent="." unique_id=1324124225]
+position = Vector2(1269.9646, -1250.8505)
+metadata/asset_path = "res://assets/maps/props/vegetation/vines/vine_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Vine001" unique_id=1338127421]
+texture_filter = 1
+position = Vector2(0, -106.4593)
+scale = Vector2(0.19216481, 0.19216481)
+texture = ExtResource("7_nvwki")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Tree004" type="Node2D" parent="." unique_id=228981519]
+position = Vector2(-1320.5288, -833.60736)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree004" unique_id=563262221]
+texture_filter = 1
+position = Vector2(0, -161.6261)
+scale = Vector2(0.32784197, 0.32784197)
+texture = ExtResource("8_rxpve")
+script = ExtResource("2_yskuj")
+
+[node name="Vine002" type="Node2D" parent="." unique_id=742540821]
+position = Vector2(-771.4923, -857.8039)
+metadata/asset_path = "res://assets/maps/props/vegetation/vines/vine_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Vine002" unique_id=312859297]
+texture_filter = 1
+position = Vector2(0, -107.72849)
+scale = Vector2(0.24455957, 0.24455957)
+texture = ExtResource("9_pnpwq")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Tree005" type="Node2D" parent="." unique_id=1233013505]
+position = Vector2(-242.45271, -803.094)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_005.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree005" unique_id=483900427]
+texture_filter = 1
+position = Vector2(0, -136.1646)
+scale = Vector2(0.3308982, 0.3308982)
+texture = ExtResource("10_uqtmp")
+script = ExtResource("2_yskuj")
+
+[node name="Vine003" type="Node2D" parent="." unique_id=447553861]
+position = Vector2(303.23627, -853.70776)
+metadata/asset_path = "res://assets/maps/props/vegetation/vines/vine_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Vine003" unique_id=516370050]
+texture_filter = 1
+position = Vector2(0, -112.74385)
+scale = Vector2(0.26434666, 0.26434666)
+texture = ExtResource("11_6vrg0")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Vine004" type="Node2D" parent="." unique_id=701562048]
+position = Vector2(735.5937, -850.87683)
+metadata/asset_path = "res://assets/maps/props/vegetation/vines/vine_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Vine004" unique_id=488755954]
+texture_filter = 1
+position = Vector2(0, -110.27005)
+scale = Vector2(0.22164834, 0.22164834)
+texture = ExtResource("12_fvtmu")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Tree006" type="Node2D" parent="." unique_id=478296531]
+position = Vector2(1284.8218, -841.7189)
+metadata/asset_path = "res://assets/maps/props/vegetation/trees/tree_006.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Tree006" unique_id=1336004397]
+texture_filter = 1
+position = Vector2(0, -159.80994)
+scale = Vector2(0.35395333, 0.35395333)
+texture = ExtResource("13_2ks52")
+script = ExtResource("2_yskuj")
+
+[node name="TropicalPlant012" type="Node2D" parent="." unique_id=1787501172]
+position = Vector2(-1052.4989, -398.11172)
+metadata/asset_path = "res://assets/maps/props/vegetation/tropical_plants/tropical_plant_012.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="TropicalPlant012" unique_id=677955214]
+texture_filter = 1
+position = Vector2(0, -102.67353)
+scale = Vector2(0.33389765, 0.33389765)
+texture = ExtResource("14_h3bub")
+script = ExtResource("2_yskuj")
+
+[node name="TropicalPlant013" type="Node2D" parent="." unique_id=1601471503]
+position = Vector2(-494.32877, -411.48984)
+metadata/asset_path = "res://assets/maps/props/vegetation/tropical_plants/tropical_plant_013.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="TropicalPlant013" unique_id=674715103]
+texture_filter = 1
+position = Vector2(0, -99.93309)
+scale = Vector2(0.3223648, 0.3223648)
+texture = ExtResource("15_5moti")
+script = ExtResource("2_yskuj")
+
+[node name="Deadwood001" type="Node2D" parent="." unique_id=596495359]
+position = Vector2(-46.498604, -400.13452)
+metadata/asset_path = "res://assets/maps/props/vegetation/deadwood/deadwood_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Deadwood001" unique_id=728194445]
+texture_filter = 1
+position = Vector2(0, -81.70093)
+scale = Vector2(0.25895697, 0.25895697)
+texture = ExtResource("16_sic75")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Deadwood002" type="Node2D" parent="." unique_id=85970707]
+position = Vector2(516.2322, -411.34656)
+metadata/asset_path = "res://assets/maps/props/vegetation/deadwood/deadwood_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Deadwood002" unique_id=1235374231]
+texture_filter = 1
+position = Vector2(0, -80.85674)
+scale = Vector2(0.19745237, 0.19745237)
+texture = ExtResource("17_ras33")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Deadwood003" type="Node2D" parent="." unique_id=610570561]
+position = Vector2(1025.398, -390.37643)
+metadata/asset_path = "res://assets/maps/props/vegetation/deadwood/deadwood_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Deadwood003" unique_id=1537527809]
+texture_filter = 1
+position = Vector2(0, -80.05325)
+scale = Vector2(0.28692922, 0.28692922)
+texture = ExtResource("18_gp2f0")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant001" type="Node2D" parent="." unique_id=1097427494]
+position = Vector2(-1451.4333, 33.73131)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant001" unique_id=1481268813]
+texture_filter = 1
+position = Vector2(0, -52.392036)
+scale = Vector2(0.19512862, 0.19512862)
+texture = ExtResource("19_bsrku")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage001" type="Node2D" parent="." unique_id=1558822753]
+position = Vector2(-1220.2863, 9.597687)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage001" unique_id=934929692]
+texture_filter = 1
+position = Vector2(0, -73.187164)
+scale = Vector2(0.3224104, 0.3224104)
+texture = ExtResource("20_6op2a")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant002" type="Node2D" parent="." unique_id=2113213409]
+position = Vector2(-967.6376, 0.7627716)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant002" unique_id=574707179]
+texture_filter = 1
+position = Vector2(0, -50.92435)
+scale = Vector2(0.16779028, 0.16779028)
+texture = ExtResource("21_84whe")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage002" type="Node2D" parent="." unique_id=693911031]
+position = Vector2(-706.81604, 38.76412)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage002" unique_id=640095890]
+texture_filter = 1
+position = Vector2(0, -66.86826)
+scale = Vector2(0.28214458, 0.28214458)
+texture = ExtResource("22_nei3o")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage003" type="Node2D" parent="." unique_id=671715787]
+position = Vector2(-360.79242, 39.985275)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage003" unique_id=1614740539]
+texture_filter = 1
+position = Vector2(0, -72.92201)
+scale = Vector2(0.29824954, 0.29824954)
+texture = ExtResource("23_3ljae")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant003" type="Node2D" parent="." unique_id=1235278143]
+position = Vector2(-138.81186, -1.0124245)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant003" unique_id=248807312]
+texture_filter = 1
+position = Vector2(0, -51.2793)
+scale = Vector2(0.19241764, 0.19241764)
+texture = ExtResource("24_t23jm")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage004" type="Node2D" parent="." unique_id=1039531425]
+position = Vector2(129.5697, -1.9168568)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage004" unique_id=724428888]
+texture_filter = 1
+position = Vector2(0, -54.034622)
+scale = Vector2(0.33048698, 0.33048698)
+texture = ExtResource("25_6ivm6")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage005" type="Node2D" parent="." unique_id=1126486826]
+position = Vector2(422.8545, 40.45952)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_005.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage005" unique_id=594013315]
+texture_filter = 1
+position = Vector2(0, -72.40513)
+scale = Vector2(0.32688546, 0.32688546)
+texture = ExtResource("26_xtp6u")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage006" type="Node2D" parent="." unique_id=1131489071]
+position = Vector2(658.4935, 11.404108)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_006.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage006" unique_id=1775682020]
+texture_filter = 1
+position = Vector2(0, -61.1288)
+scale = Vector2(0.33222175, 0.33222175)
+texture = ExtResource("27_a6lju")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant004" type="Node2D" parent="." unique_id=38148457]
+position = Vector2(979.4619, 18.998465)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant004" unique_id=1767030543]
+texture_filter = 1
+position = Vector2(0, -49.6781)
+scale = Vector2(0.1519208, 0.1519208)
+texture = ExtResource("28_xd2ut")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant005" type="Node2D" parent="." unique_id=397180044]
+position = Vector2(1194.4729, 43.178562)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_005.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant005" unique_id=136865837]
+texture_filter = 1
+position = Vector2(0, -55.030293)
+scale = Vector2(0.20011017, 0.20011017)
+texture = ExtResource("29_wj2n7")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage007" type="Node2D" parent="." unique_id=802349982]
+position = Vector2(1447.4832, 37.5026)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_007.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage007" unique_id=1024293958]
+texture_filter = 1
+position = Vector2(0, -68.16761)
+scale = Vector2(0.27710408, 0.27710408)
+texture = ExtResource("30_jnhr7")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant006" type="Node2D" parent="." unique_id=1053674102]
+position = Vector2(-1522.6982, 223.68578)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_006.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant006" unique_id=1371989013]
+texture_filter = 1
+position = Vector2(0, -53.243076)
+scale = Vector2(0.2133991, 0.2133991)
+texture = ExtResource("31_yloi1")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage008" type="Node2D" parent="." unique_id=131138984]
+position = Vector2(-1180.9219, 262.00085)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_008.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage008" unique_id=1258310436]
+texture_filter = 1
+position = Vector2(0, -58.612965)
+scale = Vector2(0.34478214, 0.34478214)
+texture = ExtResource("32_apet8")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant007" type="Node2D" parent="." unique_id=843456201]
+position = Vector2(-990.66925, 239.93083)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_007.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant007" unique_id=2018980480]
+texture_filter = 1
+position = Vector2(0, -55.05484)
+scale = Vector2(0.25024927, 0.25024927)
+texture = ExtResource("33_07nmu")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant008" type="Node2D" parent="." unique_id=2094489069]
+position = Vector2(-646.5821, 257.83252)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_008.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant008" unique_id=739686787]
+texture_filter = 1
+position = Vector2(0, -54.926273)
+scale = Vector2(0.20193483, 0.20193483)
+texture = ExtResource("34_7nt8h")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage009" type="Node2D" parent="." unique_id=1256943616]
+position = Vector2(-426.39148, 245.39166)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_009.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage009" unique_id=465677999]
+texture_filter = 1
+position = Vector2(0, -71.742195)
+scale = Vector2(0.29706913, 0.29706913)
+texture = ExtResource("35_cgggc")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage010" type="Node2D" parent="." unique_id=561013310]
+position = Vector2(-175.90477, 227.80737)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_010.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage010" unique_id=1071338152]
+texture_filter = 1
+position = Vector2(0, -70.15966)
+scale = Vector2(0.24318773, 0.24318773)
+texture = ExtResource("36_jrb65")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage011" type="Node2D" parent="." unique_id=402271069]
+position = Vector2(147.824, 244.04613)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_011.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage011" unique_id=1022959781]
+texture_filter = 1
+position = Vector2(0, -48.741558)
+scale = Vector2(0.33731183, 0.33731183)
+texture = ExtResource("37_88h0a")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage012" type="Node2D" parent="." unique_id=1610366157]
+position = Vector2(427.4492, 248.87413)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_012.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage012" unique_id=74336180]
+texture_filter = 1
+position = Vector2(0, -70.246826)
+scale = Vector2(0.33135295, 0.33135295)
+texture = ExtResource("38_4k237")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant009" type="Node2D" parent="." unique_id=735385122]
+position = Vector2(647.0387, 233.0388)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_009.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant009" unique_id=1586081944]
+texture_filter = 1
+position = Vector2(0, -49.518215)
+scale = Vector2(0.24513967, 0.24513967)
+texture = ExtResource("39_uvsub")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage013" type="Node2D" parent="." unique_id=2071925633]
+position = Vector2(984.0077, 269.28018)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_013.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage013" unique_id=1013351435]
+texture_filter = 1
+position = Vector2(0, -75.411964)
+scale = Vector2(0.15112618, 0.15112618)
+texture = ExtResource("40_vrs2f")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant010" type="Node2D" parent="." unique_id=1850236149]
+position = Vector2(1203.2974, 223.36353)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_010.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant010" unique_id=1428040834]
+texture_filter = 1
+position = Vector2(0, -51.013123)
+scale = Vector2(0.21894045, 0.21894045)
+texture = ExtResource("41_ytp5c")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage014" type="Node2D" parent="." unique_id=1425169500]
+position = Vector2(1453.5193, 244.73125)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_014.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage014" unique_id=1069088312]
+texture_filter = 1
+position = Vector2(0, -66.380905)
+scale = Vector2(0.32302144, 0.32302144)
+texture = ExtResource("42_5m4a1")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage015" type="Node2D" parent="." unique_id=931828384]
+position = Vector2(-1523.7292, 492.4734)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_015.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage015" unique_id=789467601]
+texture_filter = 1
+position = Vector2(0, -72.407074)
+scale = Vector2(0.30877218, 0.30877218)
+texture = ExtResource("43_07pv1")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant011" type="Node2D" parent="." unique_id=863890969]
+position = Vector2(-1208.9404, 497.62814)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_011.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant011" unique_id=690853673]
+texture_filter = 1
+position = Vector2(0, -50.91355)
+scale = Vector2(0.29260662, 0.29260662)
+texture = ExtResource("44_kx5yh")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant012" type="Node2D" parent="." unique_id=868356756]
+position = Vector2(-946.4365, 496.88202)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_012.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant012" unique_id=1998066255]
+texture_filter = 1
+position = Vector2(0, -50.87887)
+scale = Vector2(0.23942998, 0.23942998)
+texture = ExtResource("45_l0r5o")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant013" type="Node2D" parent="." unique_id=18464010]
+position = Vector2(-671.8415, 507.54074)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_013.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant013" unique_id=1862125058]
+texture_filter = 1
+position = Vector2(0, -50.542828)
+scale = Vector2(0.27543774, 0.27543774)
+texture = ExtResource("46_fqjmw")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant014" type="Node2D" parent="." unique_id=292190762]
+position = Vector2(-407.84537, 457.78268)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_014.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant014" unique_id=418827608]
+texture_filter = 1
+position = Vector2(0, -53.391823)
+scale = Vector2(0.27171412, 0.27171412)
+texture = ExtResource("47_lljqo")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant015" type="Node2D" parent="." unique_id=2105279150]
+position = Vector2(-181.1123, 497.1459)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_015.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant015" unique_id=2112159349]
+texture_filter = 1
+position = Vector2(0, -53.859344)
+scale = Vector2(0.30005205, 0.30005205)
+texture = ExtResource("48_ee12b")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage016" type="Node2D" parent="." unique_id=1998678840]
+position = Vector2(149.13202, 461.44058)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_016.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage016" unique_id=1051012388]
+texture_filter = 1
+position = Vector2(0, -67.0399)
+scale = Vector2(0.30611828, 0.30611828)
+texture = ExtResource("49_hoti5")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage017" type="Node2D" parent="." unique_id=1623948937]
+position = Vector2(412.21216, 507.45517)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_017.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage017" unique_id=1172105659]
+texture_filter = 1
+position = Vector2(0, -67.71179)
+scale = Vector2(0.26605812, 0.26605812)
+texture = ExtResource("50_vdqjd")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage018" type="Node2D" parent="." unique_id=554127270]
+position = Vector2(713.95935, 462.96164)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_018.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage018" unique_id=90359546]
+texture_filter = 1
+position = Vector2(0, -69.551865)
+scale = Vector2(0.35305518, 0.35305518)
+texture = ExtResource("51_sfvco")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage019" type="Node2D" parent="." unique_id=1216254120]
+position = Vector2(965.9347, 488.315)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_019.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage019" unique_id=485724781]
+texture_filter = 1
+position = Vector2(0, -69.49662)
+scale = Vector2(0.32704294, 0.32704294)
+texture = ExtResource("52_jsvy2")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant016" type="Node2D" parent="." unique_id=1461080189]
+position = Vector2(1167.5903, 506.37717)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_016.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant016" unique_id=1177481336]
+texture_filter = 1
+position = Vector2(0, -51.08411)
+scale = Vector2(0.20808192, 0.20808192)
+texture = ExtResource("53_yaw54")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage020" type="Node2D" parent="." unique_id=1232843091]
+position = Vector2(1475.2529, 491.41974)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_020.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage020" unique_id=1282033031]
+texture_filter = 1
+position = Vector2(0, -65.94864)
+scale = Vector2(0.3240719, 0.3240719)
+texture = ExtResource("54_6c7cc")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage021" type="Node2D" parent="." unique_id=2089630644]
+position = Vector2(-1437.3394, 704.64276)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_021.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage021" unique_id=617082145]
+texture_filter = 1
+position = Vector2(0, -66.661385)
+scale = Vector2(0.34273204, 0.34273204)
+texture = ExtResource("55_ckn1n")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage022" type="Node2D" parent="." unique_id=81849591]
+position = Vector2(-1169.7603, 684.1863)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_022.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage022" unique_id=19545017]
+texture_filter = 1
+position = Vector2(0, -66.85977)
+scale = Vector2(0.35282204, 0.35282204)
+texture = ExtResource("56_7i410")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant017" type="Node2D" parent="." unique_id=486682221]
+position = Vector2(-929.10547, 729.07007)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_017.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant017" unique_id=1958642719]
+texture_filter = 1
+position = Vector2(0, -52.106174)
+scale = Vector2(0.281655, 0.281655)
+texture = ExtResource("57_duh2d")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage023" type="Node2D" parent="." unique_id=289570503]
+position = Vector2(-706.32806, 726.5158)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_023.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage023" unique_id=1112593469]
+texture_filter = 1
+position = Vector2(0, -67.132675)
+scale = Vector2(0.2963915, 0.2963915)
+texture = ExtResource("58_ctj6e")
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant018" type="Node2D" parent="." unique_id=1301793573]
+position = Vector2(-379.664, 701.60156)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_018.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant018" unique_id=366156705]
+texture_filter = 1
+position = Vector2(0, -36.41842)
+scale = Vector2(0.33565363, 0.33565363)
+texture = ExtResource("59_3dcue")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant019" type="Node2D" parent="." unique_id=384129471]
+position = Vector2(-147.75943, 710.37305)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_019.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant019" unique_id=1063014701]
+texture_filter = 1
+position = Vector2(0, -53.424942)
+scale = Vector2(0.31706196, 0.31706196)
+texture = ExtResource("60_qvjet")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage024" type="Node2D" parent="." unique_id=778180437]
+position = Vector2(167.55365, 725.04816)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_024.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage024" unique_id=910204388]
+texture_filter = 1
+position = Vector2(0, -71.836395)
+scale = Vector2(0.26122326, 0.26122326)
+texture = ExtResource("61_xnrs6")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="FloweringPlant020" type="Node2D" parent="." unique_id=2008344242]
+position = Vector2(358.56067, 729.55396)
+metadata/asset_path = "res://assets/maps/props/vegetation/flowering_plants/flowering_plant_020.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="FloweringPlant020" unique_id=431938510]
+texture_filter = 1
+position = Vector2(0, -52.280098)
+scale = Vector2(0.24036828, 0.24036828)
+texture = ExtResource("62_fj2pt")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage025" type="Node2D" parent="." unique_id=2052007730]
+position = Vector2(635.38293, 731.4241)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_025.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage025" unique_id=1378346003]
+texture_filter = 1
+position = Vector2(0, -70.81018)
+scale = Vector2(0.19034995, 0.19034995)
+texture = ExtResource("63_4v7x3")
+script = ExtResource("2_yskuj")
+
+[node name="Foliage026" type="Node2D" parent="." unique_id=330348838]
+position = Vector2(904.0666, 699.9613)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_026.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage026" unique_id=918935523]
+texture_filter = 1
+position = Vector2(0, -66.87126)
+scale = Vector2(0.32699883, 0.32699883)
+texture = ExtResource("64_dl0ka")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage027" type="Node2D" parent="." unique_id=1270641561]
+position = Vector2(1211.6628, 694.2756)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_027.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage027" unique_id=2095596711]
+texture_filter = 1
+position = Vector2(0, -69.66448)
+scale = Vector2(0.35362682, 0.35362682)
+texture = ExtResource("65_xiof4")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="Foliage028" type="Node2D" parent="." unique_id=871826726]
+position = Vector2(1449.0005, 725.6594)
+metadata/asset_path = "res://assets/maps/props/vegetation/foliage/foliage_028.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="Foliage028" unique_id=498004107]
+texture_filter = 1
+position = Vector2(0, -71.45439)
+scale = Vector2(0.31616986, 0.31616986)
+texture = ExtResource("66_1kgb2")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump001" type="Node2D" parent="." unique_id=2050251049]
+position = Vector2(-1506.8682, 944.3913)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump001" unique_id=142176278]
+texture_filter = 1
+position = Vector2(0, -42.766598)
+scale = Vector2(0.24578504, 0.24578504)
+texture = ExtResource("67_0bgs5")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump002" type="Node2D" parent="." unique_id=1055346360]
+position = Vector2(-1360.3192, 932.61926)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump002" unique_id=1868723717]
+texture_filter = 1
+position = Vector2(0, -38.543633)
+scale = Vector2(0.25610387, 0.25610387)
+texture = ExtResource("68_niu2u")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump003" type="Node2D" parent="." unique_id=1466482689]
+position = Vector2(-1165.9076, 918.5592)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump003" unique_id=474785351]
+texture_filter = 1
+position = Vector2(0, -41.435486)
+scale = Vector2(0.17632122, 0.17632122)
+texture = ExtResource("69_i4q77")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump004" type="Node2D" parent="." unique_id=835911520]
+position = Vector2(-920.99506, 904.92896)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump004" unique_id=1003963081]
+texture_filter = 1
+position = Vector2(0, -41.086834)
+scale = Vector2(0.24311735, 0.24311735)
+texture = ExtResource("70_3ic00")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump005" type="Node2D" parent="." unique_id=1559883077]
+position = Vector2(-754.06384, 938.7672)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_005.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump005" unique_id=1009666293]
+texture_filter = 1
+position = Vector2(0, -41.641186)
+scale = Vector2(0.22817089, 0.22817089)
+texture = ExtResource("71_3m81y")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump006" type="Node2D" parent="." unique_id=596374120]
+position = Vector2(-542.45526, 930.2867)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_006.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump006" unique_id=1425950781]
+texture_filter = 1
+position = Vector2(0, -41.702522)
+scale = Vector2(0.22602993, 0.22602993)
+texture = ExtResource("72_xitht")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump007" type="Node2D" parent="." unique_id=861314811]
+position = Vector2(-261.77844, 916.9336)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_007.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump007" unique_id=1712476631]
+texture_filter = 1
+position = Vector2(0, -40.701626)
+scale = Vector2(0.22549377, 0.22549377)
+texture = ExtResource("73_fys6d")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump008" type="Node2D" parent="." unique_id=1338366849]
+position = Vector2(-86.97943, 902.19226)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_008.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump008" unique_id=1926946454]
+texture_filter = 1
+position = Vector2(0, -41.64799)
+scale = Vector2(0.2288351, 0.2288351)
+texture = ExtResource("74_qn2lw")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump009" type="Node2D" parent="." unique_id=565814603]
+position = Vector2(97.17116, 920.86237)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_009.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump009" unique_id=1213491173]
+texture_filter = 1
+position = Vector2(0, -37.904804)
+scale = Vector2(0.33843577, 0.33843577)
+texture = ExtResource("75_7gu0a")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump010" type="Node2D" parent="." unique_id=493216204]
+position = Vector2(317.12134, 924.52954)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_010.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump010" unique_id=1268419033]
+texture_filter = 1
+position = Vector2(0, -38.91136)
+scale = Vector2(0.2149799, 0.2149799)
+texture = ExtResource("76_dcgf4")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump011" type="Node2D" parent="." unique_id=1232039902]
+position = Vector2(511.84088, 934.1349)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_011.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump011" unique_id=1942962143]
+texture_filter = 1
+position = Vector2(0, -38.89286)
+scale = Vector2(0.30624297, 0.30624297)
+texture = ExtResource("77_mho01")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump012" type="Node2D" parent="." unique_id=1377715298]
+position = Vector2(763.60254, 931.46344)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_012.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump012" unique_id=298931633]
+texture_filter = 1
+position = Vector2(0, -45.35491)
+scale = Vector2(0.16705309, 0.16705309)
+texture = ExtResource("78_me16d")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump013" type="Node2D" parent="." unique_id=1352071027]
+position = Vector2(928.80426, 932.98584)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_013.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump013" unique_id=171176789]
+texture_filter = 1
+position = Vector2(0, -38.7771)
+scale = Vector2(0.21970028, 0.21970028)
+texture = ExtResource("79_i5l7g")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump014" type="Node2D" parent="." unique_id=550531049]
+position = Vector2(1144.584, 946.6281)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_014.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump014" unique_id=2063015535]
+texture_filter = 1
+position = Vector2(0, -39.481735)
+scale = Vector2(0.23641758, 0.23641758)
+texture = ExtResource("80_mco18")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump015" type="Node2D" parent="." unique_id=224780994]
+position = Vector2(1342.1345, 902.44385)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_015.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump015" unique_id=1552140058]
+texture_filter = 1
+position = Vector2(0, -42.906425)
+scale = Vector2(0.24037214, 0.24037214)
+texture = ExtResource("81_662vg")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump016" type="Node2D" parent="." unique_id=456276888]
+position = Vector2(1575.0996, 910.5257)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_016.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump016" unique_id=1888216742]
+texture_filter = 1
+position = Vector2(0, -39.52814)
+scale = Vector2(0.28747737, 0.28747737)
+texture = ExtResource("82_ac5mv")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump017" type="Node2D" parent="." unique_id=860544294]
+position = Vector2(-1518.3644, 1053.617)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_017.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump017" unique_id=1612257579]
+texture_filter = 1
+position = Vector2(0, -41.550274)
+scale = Vector2(0.26465142, 0.26465142)
+texture = ExtResource("83_vmfqa")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump018" type="Node2D" parent="." unique_id=666399301]
+position = Vector2(-1357.1327, 1100.9894)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_018.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump018" unique_id=2047787753]
+texture_filter = 1
+position = Vector2(0, -42.340233)
+scale = Vector2(0.31479728, 0.31479728)
+texture = ExtResource("84_ksg66")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump019" type="Node2D" parent="." unique_id=970929769]
+position = Vector2(-1146.637, 1087.9996)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_019.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump019" unique_id=1814825754]
+texture_filter = 1
+position = Vector2(0, -31.692759)
+scale = Vector2(0.32672948, 0.32672948)
+texture = ExtResource("85_3dacu")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump020" type="Node2D" parent="." unique_id=204955154]
+position = Vector2(-883.0036, 1058.9165)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_020.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump020" unique_id=418576120]
+texture_filter = 1
+position = Vector2(0, -39.694283)
+scale = Vector2(0.25202718, 0.25202718)
+texture = ExtResource("86_sm6qa")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump021" type="Node2D" parent="." unique_id=1806877031]
+position = Vector2(-687.37946, 1082.5679)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_021.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump021" unique_id=1180596082]
+texture_filter = 1
+position = Vector2(0, -43.41717)
+scale = Vector2(0.29636297, 0.29636297)
+texture = ExtResource("87_5tdcn")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump022" type="Node2D" parent="." unique_id=671193078]
+position = Vector2(-493.6028, 1051.9769)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_022.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump022" unique_id=131446707]
+texture_filter = 1
+position = Vector2(0, -42.831104)
+scale = Vector2(0.32083222, 0.32083222)
+texture = ExtResource("88_ehpk6")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump023" type="Node2D" parent="." unique_id=381422453]
+position = Vector2(-293.37482, 1050.7906)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_023.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump023" unique_id=1024279530]
+texture_filter = 1
+position = Vector2(0, -42.751236)
+scale = Vector2(0.34200987, 0.34200987)
+texture = ExtResource("89_uxixb")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump024" type="Node2D" parent="." unique_id=1166626274]
+position = Vector2(-69.565575, 1064.9868)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_024.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump024" unique_id=1399158378]
+texture_filter = 1
+position = Vector2(0, -41.58932)
+scale = Vector2(0.28006276, 0.28006276)
+texture = ExtResource("90_j2daa")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump025" type="Node2D" parent="." unique_id=856554825]
+position = Vector2(70.401276, 1055.5256)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_025.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump025" unique_id=1078602986]
+texture_filter = 1
+position = Vector2(0, -36.44321)
+scale = Vector2(0.3196773, 0.3196773)
+texture = ExtResource("91_wa7a2")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump026" type="Node2D" parent="." unique_id=361310243]
+position = Vector2(336.81516, 1054.0461)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_026.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump026" unique_id=1109265172]
+texture_filter = 1
+position = Vector2(0, -39.961067)
+scale = Vector2(0.28141597, 0.28141597)
+texture = ExtResource("92_ldg6v")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump027" type="Node2D" parent="." unique_id=647728726]
+position = Vector2(478.7955, 1053.2191)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_027.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump027" unique_id=457545712]
+texture_filter = 1
+position = Vector2(0, -42.759235)
+scale = Vector2(0.28601494, 0.28601494)
+texture = ExtResource("93_4ylb7")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump028" type="Node2D" parent="." unique_id=1558856916]
+position = Vector2(694.4475, 1061.6411)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_028.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump028" unique_id=1780808758]
+texture_filter = 1
+position = Vector2(0, -38.643433)
+scale = Vector2(0.26559058, 0.26559058)
+texture = ExtResource("94_vy0ee")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump029" type="Node2D" parent="." unique_id=518470213]
+position = Vector2(900.019, 1051.5587)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_029.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump029" unique_id=1429934962]
+texture_filter = 1
+position = Vector2(0, -42.819225)
+scale = Vector2(0.29632682, 0.29632682)
+texture = ExtResource("95_p5dn7")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump030" type="Node2D" parent="." unique_id=1774957648]
+position = Vector2(1087.8601, 1064.8789)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_030.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump030" unique_id=1114030554]
+texture_filter = 1
+position = Vector2(0, -42.59333)
+scale = Vector2(0.265379, 0.265379)
+texture = ExtResource("96_j1tn5")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump031" type="Node2D" parent="." unique_id=1338986025]
+position = Vector2(1317.0046, 1081.5978)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_031.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump031" unique_id=1447707044]
+texture_filter = 1
+position = Vector2(0, -42.02673)
+scale = Vector2(0.27649164, 0.27649164)
+texture = ExtResource("97_ayt7u")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump032" type="Node2D" parent="." unique_id=1744758268]
+position = Vector2(1516.4392, 1049.8345)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_032.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump032" unique_id=676790311]
+texture_filter = 1
+position = Vector2(0, -41.79142)
+scale = Vector2(0.32024077, 0.32024077)
+texture = ExtResource("98_opbks")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump033" type="Node2D" parent="." unique_id=696621144]
+position = Vector2(-1575.5701, 1219.3425)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_033.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump033" unique_id=316497953]
+texture_filter = 1
+position = Vector2(0, -35.11049)
+scale = Vector2(0.35286924, 0.35286924)
+texture = ExtResource("99_owiru")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump034" type="Node2D" parent="." unique_id=1814214473]
+position = Vector2(-1330.5219, 1219.1855)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_034.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump034" unique_id=966757839]
+texture_filter = 1
+position = Vector2(0, -39.515484)
+scale = Vector2(0.31996343, 0.31996343)
+texture = ExtResource("100_gcx88")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump035" type="Node2D" parent="." unique_id=285164672]
+position = Vector2(-1084.0743, 1226.4601)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_035.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump035" unique_id=210925797]
+texture_filter = 1
+position = Vector2(0, -41.826496)
+scale = Vector2(0.3041927, 0.3041927)
+texture = ExtResource("101_s8pjf")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump036" type="Node2D" parent="." unique_id=530953742]
+position = Vector2(-933.7815, 1195.2698)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_036.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump036" unique_id=450700285]
+texture_filter = 1
+position = Vector2(0, -35.630657)
+scale = Vector2(0.34260246, 0.34260246)
+texture = ExtResource("102_o1m6v")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch001" type="Node2D" parent="." unique_id=61308811]
+position = Vector2(-684.5523, 1196.8711)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_001.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch001" unique_id=1004858638]
+texture_filter = 1
+position = Vector2(0, -38.72644)
+scale = Vector2(0.29117626, 0.29117626)
+texture = ExtResource("103_8hxwe")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump037" type="Node2D" parent="." unique_id=1432358455]
+position = Vector2(-516.9997, 1225.333)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_037.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump037" unique_id=1381166667]
+texture_filter = 1
+position = Vector2(0, -40.5203)
+scale = Vector2(0.281391, 0.281391)
+texture = ExtResource("104_w5ffi")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch002" type="Node2D" parent="." unique_id=355516624]
+position = Vector2(-264.4734, 1226.629)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_002.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch002" unique_id=1525042577]
+texture_filter = 1
+position = Vector2(0, -39.2761)
+scale = Vector2(0.24095766, 0.24095766)
+texture = ExtResource("105_88l2d")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch003" type="Node2D" parent="." unique_id=1090876711]
+position = Vector2(-112.14269, 1232.5415)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_003.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch003" unique_id=521017522]
+texture_filter = 1
+position = Vector2(0, -40.817993)
+scale = Vector2(0.26334187, 0.26334187)
+texture = ExtResource("106_i4au5")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch004" type="Node2D" parent="." unique_id=523913189]
+position = Vector2(92.66025, 1232.1437)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_004.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch004" unique_id=342280315]
+texture_filter = 1
+position = Vector2(0, -43.446655)
+scale = Vector2(0.29860243, 0.29860243)
+texture = ExtResource("107_jnemy")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch005" type="Node2D" parent="." unique_id=310037944]
+position = Vector2(318.36224, 1226.6737)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_005.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch005" unique_id=1071850005]
+texture_filter = 1
+position = Vector2(0, -43.008263)
+scale = Vector2(0.29660872, 0.29660872)
+texture = ExtResource("108_lmcfx")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch006" type="Node2D" parent="." unique_id=346009118]
+position = Vector2(506.18906, 1240.45)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_006.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch006" unique_id=1577518426]
+texture_filter = 1
+position = Vector2(0, -43.099865)
+scale = Vector2(0.21822716, 0.21822716)
+texture = ExtResource("109_85ayx")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch007" type="Node2D" parent="." unique_id=116835602]
+position = Vector2(760.08563, 1203.7336)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_007.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch007" unique_id=616005310]
+texture_filter = 1
+position = Vector2(0, -52.927345)
+scale = Vector2(0.16386175, 0.16386175)
+texture = ExtResource("110_xt6mm")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch008" type="Node2D" parent="." unique_id=525556483]
+position = Vector2(877.7856, 1202.406)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_008.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch008" unique_id=1433135789]
+texture_filter = 1
+position = Vector2(0, -43.45447)
+scale = Vector2(0.22810745, 0.22810745)
+texture = ExtResource("111_q3x1s")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch009" type="Node2D" parent="." unique_id=2050242939]
+position = Vector2(1151.4698, 1199.6044)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_009.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch009" unique_id=2046450189]
+texture_filter = 1
+position = Vector2(0, -41.017998)
+scale = Vector2(0.24488355, 0.24488355)
+texture = ExtResource("112_s5rir")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump038" type="Node2D" parent="." unique_id=1455769647]
+position = Vector2(1351.8743, 1195.3806)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_038.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump038" unique_id=432296010]
+texture_filter = 1
+position = Vector2(0, -39.01618)
+scale = Vector2(0.24461553, 0.24461553)
+texture = ExtResource("113_lsvk8")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump039" type="Node2D" parent="." unique_id=1480240154]
+position = Vector2(1578.5936, 1200.8009)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_039.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump039" unique_id=527102928]
+texture_filter = 1
+position = Vector2(0, -42.027718)
+scale = Vector2(0.28590283, 0.28590283)
+texture = ExtResource("114_ci66x")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump040" type="Node2D" parent="." unique_id=1916640712]
+position = Vector2(-1544.6016, 1344.8583)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_040.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump040" unique_id=192148646]
+texture_filter = 1
+position = Vector2(0, -40.426052)
+scale = Vector2(0.27976507, 0.27976507)
+texture = ExtResource("115_3ei8y")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump041" type="Node2D" parent="." unique_id=651922301]
+position = Vector2(-1324.8342, 1363.9343)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_041.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump041" unique_id=1416723060]
+texture_filter = 1
+position = Vector2(0, -41.262108)
+scale = Vector2(0.291605, 0.291605)
+texture = ExtResource("116_x45dg")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch010" type="Node2D" parent="." unique_id=1689699470]
+position = Vector2(-1146.3821, 1362.965)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_010.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch010" unique_id=737126047]
+texture_filter = 1
+position = Vector2(0, -42.07786)
+scale = Vector2(0.24606937, 0.24606937)
+texture = ExtResource("117_uq76l")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump042" type="Node2D" parent="." unique_id=2023574711]
+position = Vector2(-875.7391, 1351.1848)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_042.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump042" unique_id=2138270198]
+texture_filter = 1
+position = Vector2(0, -40.94853)
+scale = Vector2(0.27208325, 0.27208325)
+texture = ExtResource("118_7kvhb")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump043" type="Node2D" parent="." unique_id=1533465163]
+position = Vector2(-762.10736, 1355.7023)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_043.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump043" unique_id=22743110]
+texture_filter = 1
+position = Vector2(0, -43.447678)
+scale = Vector2(0.29657117, 0.29657117)
+texture = ExtResource("119_c32an")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch011" type="Node2D" parent="." unique_id=1733285785]
+position = Vector2(-478.75015, 1351.5627)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_011.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch011" unique_id=596696324]
+texture_filter = 1
+position = Vector2(0, -51.728508)
+scale = Vector2(0.16421749, 0.16421749)
+texture = ExtResource("120_obedo")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump044" type="Node2D" parent="." unique_id=263365157]
+position = Vector2(-346.9906, 1382.4133)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_044.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump044" unique_id=1117944750]
+texture_filter = 1
+position = Vector2(0, -41.43407)
+scale = Vector2(0.2534194, 0.2534194)
+texture = ExtResource("121_0pxh0")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch012" type="Node2D" parent="." unique_id=2019178178]
+position = Vector2(-113.13053, 1387.5381)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_012.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch012" unique_id=1295104185]
+texture_filter = 1
+position = Vector2(0, -43.45547)
+scale = Vector2(0.27856073, 0.27856073)
+texture = ExtResource("122_qe67x")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump045" type="Node2D" parent="." unique_id=500664927]
+position = Vector2(93.108185, 1354.6923)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_045.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump045" unique_id=548860245]
+texture_filter = 1
+position = Vector2(0, -39.4358)
+scale = Vector2(0.2757748, 0.2757748)
+texture = ExtResource("123_3g272")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump046" type="Node2D" parent="." unique_id=1469198734]
+position = Vector2(315.13507, 1350.6765)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_046.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump046" unique_id=1504583496]
+texture_filter = 1
+position = Vector2(0, -43.299698)
+scale = Vector2(0.28486645, 0.28486645)
+texture = ExtResource("124_pnh6k")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch013" type="Node2D" parent="." unique_id=1998102305]
+position = Vector2(546.65656, 1373.2987)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_013.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch013" unique_id=2035246120]
+texture_filter = 1
+position = Vector2(0, -41.438168)
+scale = Vector2(0.23021203, 0.23021203)
+texture = ExtResource("125_msg56")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch014" type="Node2D" parent="." unique_id=619966756]
+position = Vector2(670.1213, 1366.8639)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_014.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch014" unique_id=1196747328]
+texture_filter = 1
+position = Vector2(0, -42.119858)
+scale = Vector2(0.1645307, 0.1645307)
+texture = ExtResource("126_lgu8j")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump047" type="Node2D" parent="." unique_id=520467507]
+position = Vector2(965.20856, 1340.8667)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_047.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump047" unique_id=335604236]
+texture_filter = 1
+position = Vector2(0, -39.164627)
+scale = Vector2(0.27580723, 0.27580723)
+texture = ExtResource("127_epbc1")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump048" type="Node2D" parent="." unique_id=1075861111]
+position = Vector2(1082.2101, 1372.8575)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_048.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump048" unique_id=139876524]
+texture_filter = 1
+position = Vector2(0, -42.81025)
+scale = Vector2(0.30688348, 0.30688348)
+texture = ExtResource("128_qjw24")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump049" type="Node2D" parent="." unique_id=1475143762]
+position = Vector2(1358.6635, 1392.6686)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_049.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump049" unique_id=1297271667]
+texture_filter = 1
+position = Vector2(0, -40.754803)
+scale = Vector2(0.2629342, 0.2629342)
+texture = ExtResource("129_wri6y")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch015" type="Node2D" parent="." unique_id=124584010]
+position = Vector2(1564.7361, 1384.2777)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_015.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch015" unique_id=803707294]
+texture_filter = 1
+position = Vector2(0, -42.509804)
+scale = Vector2(0.31488743, 0.31488743)
+texture = ExtResource("130_nrwmr")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch016" type="Node2D" parent="." unique_id=957731535]
+position = Vector2(-1545.4807, 1533.5269)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_016.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch016" unique_id=1313759773]
+texture_filter = 1
+position = Vector2(0, -43.093216)
+scale = Vector2(0.1861478, 0.1861478)
+texture = ExtResource("131_2siei")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch017" type="Node2D" parent="." unique_id=116102320]
+position = Vector2(-1296.9146, 1485.1556)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_017.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch017" unique_id=1722071819]
+texture_filter = 1
+position = Vector2(0, -42.250053)
+scale = Vector2(0.3366538, 0.3366538)
+texture = ExtResource("132_uumqv")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch018" type="Node2D" parent="." unique_id=355640829]
+position = Vector2(-1094.8828, 1499.8456)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_018.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch018" unique_id=1309298002]
+texture_filter = 1
+position = Vector2(0, -40.336777)
+scale = Vector2(0.17652857, 0.17652857)
+texture = ExtResource("133_ojvsc")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch019" type="Node2D" parent="." unique_id=529251921]
+position = Vector2(-948.4253, 1532.0778)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_019.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch019" unique_id=1338161204]
+texture_filter = 1
+position = Vector2(0, -38.562454)
+scale = Vector2(0.2588084, 0.2588084)
+texture = ExtResource("134_hcro3")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch020" type="Node2D" parent="." unique_id=24602844]
+position = Vector2(-693.9411, 1534.0459)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_020.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch020" unique_id=861093139]
+texture_filter = 1
+position = Vector2(0, -42.200424)
+scale = Vector2(0.21476042, 0.21476042)
+texture = ExtResource("135_hwqc1")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch021" type="Node2D" parent="." unique_id=938044643]
+position = Vector2(-480.8524, 1495.5884)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_021.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch021" unique_id=682623974]
+texture_filter = 1
+position = Vector2(0, -40.18097)
+scale = Vector2(0.30325258, 0.30325258)
+texture = ExtResource("136_1rl1l")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch022" type="Node2D" parent="." unique_id=1022789648]
+position = Vector2(-293.16302, 1521.3873)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_022.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch022" unique_id=1155803183]
+texture_filter = 1
+position = Vector2(0, -33.990597)
+scale = Vector2(0.33161557, 0.33161557)
+texture = ExtResource("137_m2auu")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch023" type="Node2D" parent="." unique_id=1017766248]
+position = Vector2(-98.416306, 1493.8976)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_023.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch023" unique_id=2043051302]
+texture_filter = 1
+position = Vector2(0, -39.855392)
+scale = Vector2(0.15753119, 0.15753119)
+texture = ExtResource("138_effmy")
+script = ExtResource("2_yskuj")
+
+[node name="GrassClump050" type="Node2D" parent="." unique_id=1558487611]
+position = Vector2(73.09364, 1503.5729)
+metadata/asset_path = "res://assets/maps/props/vegetation/grasses/grass_clump_050.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GrassClump050" unique_id=1296326224]
+texture_filter = 1
+position = Vector2(0, -38.797405)
+scale = Vector2(0.20636918, 0.20636918)
+texture = ExtResource("139_lib2g")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch024" type="Node2D" parent="." unique_id=1273903703]
+position = Vector2(353.1637, 1496.553)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_024.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch024" unique_id=1705652611]
+texture_filter = 1
+position = Vector2(0, -43.332386)
+scale = Vector2(0.28229567, 0.28229567)
+texture = ExtResource("140_7lngu")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch025" type="Node2D" parent="." unique_id=2100390762]
+position = Vector2(502.07843, 1517.5361)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_025.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch025" unique_id=632102542]
+texture_filter = 1
+position = Vector2(0, -39.72864)
+scale = Vector2(0.2270208, 0.2270208)
+texture = ExtResource("141_w22fv")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch026" type="Node2D" parent="." unique_id=222318196]
+position = Vector2(722.7005, 1525.8956)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_026.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch026" unique_id=2080659175]
+texture_filter = 1
+position = Vector2(0, -40.366463)
+scale = Vector2(0.31171015, 0.31171015)
+texture = ExtResource("142_02jrc")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch027" type="Node2D" parent="." unique_id=528741603]
+position = Vector2(923.75415, 1519.9769)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_027.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch027" unique_id=1807773462]
+texture_filter = 1
+position = Vector2(0, -42.82034)
+scale = Vector2(0.35983476, 0.35983476)
+texture = ExtResource("143_dlea7")
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch028" type="Node2D" parent="." unique_id=51221851]
+position = Vector2(1094.9574, 1486.3315)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_028.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch028" unique_id=1585053607]
+texture_filter = 1
+position = Vector2(0, -39.43563)
+scale = Vector2(0.27291092, 0.27291092)
+texture = ExtResource("144_pqshr")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch029" type="Node2D" parent="." unique_id=1887810839]
+position = Vector2(1306.9884, 1535.1482)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_029.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch029" unique_id=1821428078]
+texture_filter = 1
+position = Vector2(0, -42.394943)
+scale = Vector2(0.34467435, 0.34467435)
+texture = ExtResource("145_o8y4l")
+flip_h = true
+script = ExtResource("2_yskuj")
+
+[node name="GroundPatch030" type="Node2D" parent="." unique_id=1035187363]
+position = Vector2(1545.8495, 1497.8505)
+metadata/asset_path = "res://assets/maps/props/vegetation/groundcover/ground_patch_030.png"
+
+[node name="Sprite2D" type="Sprite2D" parent="GroundPatch030" unique_id=875719806]
+texture_filter = 1
+position = Vector2(0, -38.809464)
+scale = Vector2(0.344973, 0.344973)
+texture = ExtResource("146_fbeob")
+script = ExtResource("2_yskuj")

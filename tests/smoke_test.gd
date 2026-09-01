@@ -552,6 +552,39 @@ func _run() -> void:
 		if not placed_first_row_assets.has(asset_path):
 			_fail("A first-row vegetation asset is missing from the beach: " + asset_path)
 			return
+	var central_vegetation := scene.get_node_or_null("World/DepthSorted/CentralVegetation") as Node2D
+	if central_vegetation == null or central_vegetation.position != Vector2(4096.0, 3950.0) or not central_vegetation.y_sort_enabled:
+		_fail("Central vegetation scene is missing, misplaced or not depth sorted")
+		return
+	var expected_central_paths := {}
+	var vegetation_manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/maps/props/vegetation/_source/split_manifest.json"))
+	if typeof(vegetation_manifest) != TYPE_DICTIONARY:
+		_fail("Vegetation split manifest could not be read")
+		return
+	for entry: Dictionary in vegetation_manifest["assets"]:
+		var category := String(entry["category"])
+		var asset_id := String(entry["id"])
+		var is_first_row_tropical := category == "tropical_plants" and int(asset_id.get_slice("_", 2)) <= 9
+		if category != "rocks" and category != "palms" and not is_first_row_tropical:
+			expected_central_paths["res://assets/maps/props/vegetation/" + String(entry["path"])] = true
+	var placed_central_paths := {}
+	var central_bounds := Rect2(-1750.0, -1400.0, 3500.0, 3100.0)
+	for holder: Node in central_vegetation.get_children():
+		var sprite := holder.get_node_or_null("Sprite2D") as Sprite2D
+		if not holder is Node2D or sprite == null or sprite.texture == null:
+			_fail("A central vegetation asset is not independently editable")
+			return
+		if not central_bounds.has_point((holder as Node2D).position):
+			_fail("A central vegetation asset was placed outside the map-center cluster")
+			return
+		placed_central_paths[sprite.texture.resource_path] = true
+	if expected_central_paths.size() != 145 or placed_central_paths.size() != 145:
+		_fail("Central vegetation count is incorrect: expected=%d placed=%d" % [expected_central_paths.size(), placed_central_paths.size()])
+		return
+	for asset_path: String in expected_central_paths:
+		if not placed_central_paths.has(asset_path):
+			_fail("A non-beach vegetation asset is missing from the map center: " + asset_path)
+			return
 	if player_sprite.hframes != 16 or player_sprite.vframes != 8:
 		_fail("Male player 16-frame eight-direction animation sheet did not load")
 		return

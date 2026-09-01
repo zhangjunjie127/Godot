@@ -53,6 +53,7 @@
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_007.png" id="51_tropical_07"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_008.png" id="52_tropical_08"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_009.png" id="53_tropical_09"]
+[ext_resource type="PackedScene" path="res://central_vegetation.tscn" id="54_central_vegetation"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
 shader = ExtResource("20_puddle_shader")
@@ -296,6 +297,9 @@ show_collision_debug = false
 
 [node name="DepthSorted" type="Node2D" parent="World" unique_id=562262229]
 y_sort_enabled = true
+
+[node name="CentralVegetation" parent="World/DepthSorted" instance=ExtResource("54_central_vegetation")]
+position = Vector2(4096, 3950)
 
 [node name="NortheastPalm01" type="Node2D" parent="World/DepthSorted" unique_id=225826446]
 position = Vector2(6270, 1850)
@@ -1461,3 +1465,5 @@ script = ExtResource("13_screen_rain")
 [node name="DayNightCycle" type="Node" parent="." unique_id=1619789652]
 script = ExtResource("6_day_night")
 environment_path = NodePath("../World/DayNightTint")
+
+[editable path="World/DepthSorted/CentralVegetation"]

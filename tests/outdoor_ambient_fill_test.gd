@@ -28,11 +28,19 @@ func _run() -> void:
 	if fill.get_current_strength() < 0.095:
 		_fail("Clear daytime ambient fill did not activate")
 		return
+	var clear_saturation := float(fill.material.get_shader_parameter("saturation"))
+	var clear_exposure := float(fill.material.get_shader_parameter("exposure"))
+	if clear_saturation >= 1.0 or clear_exposure >= 0.0:
+		_fail("Clear daytime color grade did not restrain saturation and highlights")
+		return
 
 	day_night.set_weather_cloudiness(1.0)
 	await process_frame
 	if fill.get_current_strength() <= fill.daytime_strength:
 		_fail("Overcast ambient fill did not increase diffuse shadow light")
+		return
+	if float(fill.material.get_shader_parameter("saturation")) >= clear_saturation or float(fill.material.get_shader_parameter("exposure")) >= clear_exposure:
+		_fail("Overcast profile did not cool and flatten the outdoor grade")
 		return
 
 	day_night.set_game_time(1, 21.0)

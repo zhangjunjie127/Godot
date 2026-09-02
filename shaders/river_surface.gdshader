@@ -10,10 +10,12 @@ uniform float distortion_pixels : hint_range(0.0, 10.0, 0.1) = 5.5;
 uniform float tint_strength : hint_range(0.0, 0.4, 0.01) = 0.14;
 uniform float shallow_strength : hint_range(0.0, 0.4, 0.01) = 0.22;
 uniform float highlight_strength : hint_range(0.0, 0.12, 0.001) = 0.045;
+uniform float reflection_strength : hint_range(0.0, 0.2, 0.005) = 0.07;
 uniform float shoreline_strength : hint_range(0.0, 0.4, 0.01) = 0.18;
 uniform float weather_strength : hint_range(0.0, 1.0, 0.01) = 0.0;
 uniform vec4 water_tint : source_color = vec4(0.02, 0.34, 0.52, 1.0);
 uniform vec4 shallow_tint : source_color = vec4(0.08, 0.68, 0.74, 1.0);
+uniform vec4 reflection_tint : source_color = vec4(0.66, 0.84, 0.90, 1.0);
 
 
 float hash21(vec2 value) {
@@ -95,6 +97,17 @@ void fragment() {
 		+ TIME * 0.62
 		+ current * 4.0
 	), 8.0);
+	float reflection_wave = 0.58 * (0.5 + 0.5 * sin(
+		dot(world_position, vec2(0.010, -0.007))
+		+ TIME * 0.24
+		+ current * 1.8
+	));
+	reflection_wave += 0.42 * (0.5 + 0.5 * sin(
+		dot(world_position, vec2(-0.006, 0.012))
+		- TIME * 0.17
+		+ current * 1.2
+	));
+	float broad_reflection = smoothstep(0.48, 0.86, reflection_wave);
 	float rain_rings = 0.0;
 	if (weather_strength > 0.001) {
 		rain_rings = rain_ring(world_position, 74.0, 0.82, vec2(0.0));
@@ -104,6 +117,8 @@ void fragment() {
 
 	vec3 color = mix(source, water_tint.rgb, tint_strength);
 	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength);
+	float reflection_amount = broad_reflection * mix(0.35, 1.0, depth) * reflection_strength * mix(1.0, 0.72, weather_strength);
+	color = mix(color, reflection_tint.rgb, reflection_amount);
 	float visible_highlight = caustic_web * 0.82 + surface_glint * shallow_water * 0.34;
 	color += vec3(0.62, 0.92, 0.96) * visible_highlight * highlight_strength * mix(1.0, 0.55, weather_strength);
 	color += vec3(0.68, 0.91, 0.95) * rain_rings * 0.075;

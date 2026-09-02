@@ -31,11 +31,15 @@ func _run() -> void:
 	var clear_saturation := float(fill.material.get_shader_parameter("saturation"))
 	var clear_exposure := float(fill.material.get_shader_parameter("exposure"))
 	var clear_fog := float(fill.material.get_shader_parameter("fog_strength"))
+	var clear_glow := float(fill.material.get_shader_parameter("glow_strength"))
 	if clear_saturation >= 1.0 or clear_exposure >= 0.0:
 		_fail("Clear daytime color grade did not restrain saturation and highlights")
 		return
 	if clear_fog <= 0.0 or clear_fog >= 0.03:
 		_fail("Clear daytime haze is not subtle")
+		return
+	if clear_glow <= 0.0 or clear_glow >= 0.03:
+		_fail("Clear daytime glow is not restrained")
 		return
 
 	day_night.set_weather_cloudiness(1.0)
@@ -48,6 +52,9 @@ func _run() -> void:
 		return
 	if float(fill.material.get_shader_parameter("fog_strength")) <= clear_fog:
 		_fail("Overcast profile did not increase atmospheric haze")
+		return
+	if float(fill.material.get_shader_parameter("glow_strength")) >= clear_glow:
+		_fail("Overcast profile did not restrain highlight glow")
 		return
 
 	day_night.set_game_time(1, 21.0)

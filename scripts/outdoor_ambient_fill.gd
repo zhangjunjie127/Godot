@@ -56,12 +56,24 @@ extends ColorRect
 @export_range(0.0, 1.0, 0.01) var fog_depth_start := 0.12
 @export_range(0.0, 1.0, 0.01) var fog_depth_end := 0.92
 
+@export_group("Smooth Glow")
+@export_range(0.0, 0.2, 0.005) var clear_glow_strength := 0.012
+@export_range(0.0, 0.2, 0.005) var overcast_glow_strength := 0.006
+@export_range(0.0, 0.2, 0.005) var dusk_glow_strength := 0.018
+@export_range(0.0, 0.2, 0.005) var night_glow_strength := 0.045
+@export var clear_glow_tint := Color(1.0, 0.98, 0.92, 1.0)
+@export var dusk_glow_tint := Color(1.0, 0.78, 0.48, 1.0)
+@export var night_glow_tint := Color(1.0, 0.68, 0.34, 1.0)
+@export_range(0.5, 1.0, 0.01) var glow_threshold := 0.90
+@export_range(0.5, 6.0, 0.25) var glow_radius_pixels := 2.0
+
 @onready var day_night_cycle: Node = get_node_or_null(day_night_cycle_path)
 @onready var world: CanvasItem = get_node_or_null(world_path) as CanvasItem
 
 var current_strength := 0.0
 var current_grade := Vector3(0.0, 1.0, 1.0)
 var current_fog_strength := 0.0
+var current_glow_strength := 0.0
 
 
 func _ready() -> void:
@@ -93,6 +105,8 @@ func _sync_fill() -> void:
 	var weather_blend := cloudiness * daylight
 	current_fog_strength = lerpf(_time_fog_strength(hour), overcast_fog_strength, weather_blend)
 	var fog_color := _time_fog_color(hour).lerp(overcast_fog_color, weather_blend)
+	current_glow_strength = lerpf(_time_glow_strength(hour), overcast_glow_strength, weather_blend)
+	var glow_tint := _time_glow_tint(hour).lerp(clear_glow_tint, weather_blend)
 	current_grade = current_grade.lerp(
 		Vector3(overcast_exposure, overcast_contrast, overcast_saturation),
 		weather_blend
@@ -112,6 +126,10 @@ func _sync_fill() -> void:
 	material.set_shader_parameter("fog_strength", current_fog_strength)
 	material.set_shader_parameter("fog_depth_start", minf(fog_depth_start, fog_depth_end))
 	material.set_shader_parameter("fog_depth_end", maxf(fog_depth_start, fog_depth_end))
+	material.set_shader_parameter("glow_tint", Vector3(glow_tint.r, glow_tint.g, glow_tint.b))
+	material.set_shader_parameter("glow_strength", current_glow_strength)
+	material.set_shader_parameter("glow_threshold", glow_threshold)
+	material.set_shader_parameter("glow_radius_pixels", glow_radius_pixels)
 
 
 func _daylight_amount(hour: float) -> float:
@@ -173,3 +191,27 @@ func _time_fog_color(hour: float) -> Color:
 	if hour < dusk_start_hour + 1.0:
 		return clear_fog_color.lerp(dusk_fog_color, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
 	return dusk_fog_color.lerp(night_fog_color, smoothstep(dusk_start_hour + 1.0, night_hour, hour))
+
+
+func _time_glow_strength(hour: float) -> float:
+	if hour < dawn_start_hour or hour >= night_hour:
+		return night_glow_strength
+	if hour < daylight_hour:
+		return lerpf(night_glow_strength, clear_glow_strength, smoothstep(dawn_start_hour, daylight_hour, hour))
+	if hour < dusk_start_hour - 1.0:
+		return clear_glow_strength
+	if hour < dusk_start_hour + 1.0:
+		return lerpf(clear_glow_strength, dusk_glow_strength, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
+	return lerpf(dusk_glow_strength, night_glow_strength, smoothstep(dusk_start_hour + 1.0, night_hour, hour))
+
+
+func _time_glow_tint(hour: float) -> Color:
+	if hour < dawn_start_hour or hour >= night_hour:
+		return night_glow_tint
+	if hour < daylight_hour:
+		return night_glow_tint.lerp(clear_glow_tint, smoothstep(dawn_start_hour, daylight_hour, hour))
+	if hour < dusk_start_hour - 1.0:
+		return clear_glow_tint
+	if hour < dusk_start_hour + 1.0:
+		return clear_glow_tint.lerp(dusk_glow_tint, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
+	return dusk_glow_tint.lerp(night_glow_tint, smoothstep(dusk_start_hour + 1.0, night_hour, hour))

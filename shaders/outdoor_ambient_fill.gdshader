@@ -16,6 +16,17 @@ uniform vec3 fog_color = vec3(0.72, 0.80, 0.76);
 uniform float fog_strength : hint_range(0.0, 0.2, 0.005) = 0.02;
 uniform float fog_depth_start : hint_range(0.0, 1.0, 0.01) = 0.12;
 uniform float fog_depth_end : hint_range(0.0, 1.0, 0.01) = 0.92;
+uniform vec3 glow_tint = vec3(1.0, 0.96, 0.88);
+uniform float glow_strength : hint_range(0.0, 0.2, 0.005) = 0.015;
+uniform float glow_threshold : hint_range(0.5, 1.0, 0.01) = 0.90;
+uniform float glow_radius_pixels : hint_range(0.5, 6.0, 0.25) = 2.0;
+
+
+vec3 bright_sample(vec2 uv) {
+	vec3 sample_color = texture(screen_texture, uv).rgb;
+	float brightness = max(sample_color.r, max(sample_color.g, sample_color.b));
+	return sample_color * smoothstep(glow_threshold, 1.0, brightness);
+}
 
 void fragment() {
 	vec4 scene = texture(screen_texture, SCREEN_UV);
@@ -38,5 +49,12 @@ void fragment() {
 	float fog_luminance_guard = mix(1.0, 0.72, luminance);
 	float fog_amount = fog_strength * fog_depth * fog_luminance_guard;
 	vec3 atmospheric = mix(lifted, fog_color, fog_amount);
-	COLOR = vec4(clamp(atmospheric, vec3(0.0), vec3(1.0)), scene.a);
+	vec2 glow_offset = vec2(glow_radius_pixels) / vec2(textureSize(screen_texture, 0));
+	vec3 bloom = bright_sample(SCREEN_UV + vec2(glow_offset.x, 0.0));
+	bloom += bright_sample(SCREEN_UV - vec2(glow_offset.x, 0.0));
+	bloom += bright_sample(SCREEN_UV + vec2(0.0, glow_offset.y));
+	bloom += bright_sample(SCREEN_UV - vec2(0.0, glow_offset.y));
+	bloom *= 0.25;
+	vec3 glowing = atmospheric + bloom * glow_tint * glow_strength;
+	COLOR = vec4(clamp(glowing, vec3(0.0), vec3(1.0)), scene.a);
 }

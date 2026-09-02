@@ -59,8 +59,15 @@ const RESOURCE_ICON_CELLS := {
 @export var underwater_minimap_texture: Texture2D = UNDERWATER_MINIMAP_TEXTURE
 
 @export_group("Outdoor Sun / 户外太阳")
-@export_range(-180.0, 180.0, 1.0) var vegetation_shadow_direction_degrees := 135.0
-@export_range(0.0, 160.0, 1.0) var vegetation_shadow_distance := 4.0
+@export_range(-180.0, 180.0, 1.0) var vegetation_shadow_direction_degrees := 140.0
+@export_range(0.0, 160.0, 1.0) var vegetation_shadow_distance := 0.0
+@export var vegetation_shadow_local_offset := Vector2(4.0, 4.0)
+@export var vegetation_shadow_scale := Vector2(-0.9, 0.8)
+@export_range(0.0, 1.0, 0.01) var vegetation_shadow_strength := 1.0
+@export var vegetation_contact_shadow_enabled := false
+@export_range(0.01, 0.25, 0.005) var vegetation_contact_shadow_width_ratio := 0.07
+@export var vegetation_contact_shadow_scale := Vector2(1.0, 0.30)
+@export_range(0.0, 1.0, 0.01) var vegetation_contact_shadow_strength := 1.0
 
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var land_world: Node2D = $World
@@ -170,6 +177,13 @@ func _ready() -> void:
 
 func _apply_vegetation_shadow_direction() -> void:
 	for vegetation: Node in get_tree().get_nodes_in_group("ground_shadow_vegetation"):
+		vegetation.set("ground_shadow_local_offset", vegetation_shadow_local_offset)
+		vegetation.set("ground_shadow_scale", vegetation_shadow_scale)
+		vegetation.set("ground_shadow_strength", vegetation_shadow_strength)
+		vegetation.set("ground_contact_shadow_enabled", vegetation_contact_shadow_enabled)
+		vegetation.set("ground_contact_shadow_width_ratio", vegetation_contact_shadow_width_ratio)
+		vegetation.set("ground_contact_shadow_scale", vegetation_contact_shadow_scale)
+		vegetation.set("ground_contact_shadow_strength", vegetation_contact_shadow_strength)
 		vegetation.set_ground_shadow_direction(vegetation_shadow_direction_degrees, vegetation_shadow_distance)
 
 

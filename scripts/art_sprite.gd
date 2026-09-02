@@ -24,16 +24,16 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 
 @export_group("Ground Shadow / 地面投影")
 @export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var ground_shadow_mode := SHADOW_MODE_AUTO
-@export_range(-180.0, 180.0, 1.0) var ground_shadow_direction_degrees := 135.0
-@export_range(0.0, 160.0, 1.0) var ground_shadow_distance := 4.0
-@export var ground_shadow_local_offset := Vector2.ZERO
-@export var ground_shadow_scale := Vector2(0.52, 0.22)
-@export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 0.92
+@export_range(-180.0, 180.0, 1.0) var ground_shadow_direction_degrees := 140.0
+@export_range(0.0, 160.0, 1.0) var ground_shadow_distance := 0.0
+@export var ground_shadow_local_offset := Vector2(4.0, 4.0)
+@export var ground_shadow_scale := Vector2(-0.9, 0.8)
+@export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 1.0
 @export_subgroup("Root Contact / 根部接触")
-@export var ground_contact_shadow_enabled := true
+@export var ground_contact_shadow_enabled := false
 @export_range(0.01, 0.25, 0.005) var ground_contact_shadow_width_ratio := 0.07
 @export var ground_contact_shadow_scale := Vector2(1.0, 0.30)
-@export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 0.82
+@export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0
 
 static var _shared_wind_material: ShaderMaterial
 

@@ -2,6 +2,7 @@
 extends Sprite2D
 
 const GROUND_SHADOW_MATERIAL := preload("res://art/ground_shadow_material.tres")
+const GROUND_SHADOW_SCRIPT := preload("res://scripts/ground_shadow.gd")
 const VEGETATION_WIND_SHADER := preload("res://shaders/vegetation_wind.gdshader")
 const SHADOW_MODE_AUTO := 0
 const SHADOW_MODE_ENABLED := 1
@@ -28,6 +29,11 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export var ground_shadow_local_offset := Vector2.ZERO
 @export var ground_shadow_scale := Vector2(0.52, 0.22)
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 0.92
+@export_subgroup("Root Contact / 根部接触")
+@export var ground_contact_shadow_enabled := true
+@export_range(0.01, 0.25, 0.005) var ground_contact_shadow_width_ratio := 0.07
+@export var ground_contact_shadow_scale := Vector2(1.0, 0.30)
+@export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 0.82
 
 static var _shared_wind_material: ShaderMaterial
 
@@ -41,6 +47,7 @@ var _wind_strength_override := -1.0
 var _base_material: Material
 var _weather: Node
 var _ground_shadow: Sprite2D
+var _ground_contact_shadow: Node2D
 var _shadow_signature := ""
 var _source_texture_path := ""
 
@@ -188,6 +195,8 @@ func _sync_ground_shadow() -> void:
 	if not enabled or texture == null:
 		if _ground_shadow != null:
 			_ground_shadow.visible = false
+		if _ground_contact_shadow != null:
+			_ground_contact_shadow.visible = false
 		return
 	if _ground_shadow == null:
 		_ground_shadow = Sprite2D.new()
@@ -222,6 +231,26 @@ func _sync_ground_shadow() -> void:
 	_ground_shadow.position = Vector2.ZERO
 	var projected_anchor := _ground_shadow.transform * ground_anchor
 	_ground_shadow.position = ground_anchor + cast_offset - projected_anchor
+	_sync_ground_contact_shadow(ground_anchor)
+
+
+func _sync_ground_contact_shadow(ground_anchor: Vector2) -> void:
+	if not ground_contact_shadow_enabled:
+		if _ground_contact_shadow != null:
+			_ground_contact_shadow.visible = false
+		return
+	if _ground_contact_shadow == null:
+		_ground_contact_shadow = GROUND_SHADOW_SCRIPT.new()
+		_ground_contact_shadow.name = "GroundContactShadow"
+		add_child(_ground_contact_shadow)
+	var contact_radius := maxf(_frame_size().x * ground_contact_shadow_width_ratio, 1.0)
+	_ground_contact_shadow.configure(
+		ground_anchor + ground_shadow_local_offset,
+		contact_radius,
+		ground_contact_shadow_scale,
+		ground_contact_shadow_strength,
+		true
+	)
 
 
 func _ground_shadow_is_enabled() -> bool:
@@ -276,6 +305,10 @@ func _ground_shadow_signature() -> String:
 		ground_shadow_local_offset,
 		ground_shadow_scale,
 		ground_shadow_strength,
+		ground_contact_shadow_enabled,
+		ground_contact_shadow_width_ratio,
+		ground_contact_shadow_scale,
+		ground_contact_shadow_strength,
 		hframes,
 		vframes,
 		frame,

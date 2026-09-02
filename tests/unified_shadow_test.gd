@@ -28,6 +28,19 @@ func _run() -> void:
 	if not prop_shadow.visible or prop_shadow.material != player_shadow.material:
 		_fail("Tall vegetation does not share the canonical ground-shadow material")
 		return
+	if not tall_prop.has_node("GroundContactShadow"):
+		_fail("Tall vegetation shadow is visually detached because it has no root contact shadow")
+		return
+	var contact_shadow := tall_prop.get_node("GroundContactShadow") as Node2D
+	if not contact_shadow.visible or contact_shadow.material != player_shadow.material:
+		_fail("Tall vegetation root contact shadow is not visible or does not share the canonical material")
+		return
+	var contact_center: Vector2 = contact_shadow.get("center")
+	var contact_center_in_parent: Vector2 = tall_prop.transform * contact_center
+	var expected_root: Vector2 = tall_prop.get_trunk_anchor_position() + tall_prop.transform.basis_xform(tall_prop.ground_shadow_local_offset)
+	if contact_center_in_parent.distance_to(expected_root) > 0.1:
+		_fail("Tall vegetation root contact shadow is not attached to the configured trunk anchor")
+		return
 	var cast_direction: Vector2 = tall_prop.get_ground_shadow_cast_direction()
 	if cast_direction.x >= -0.6 or cast_direction.y <= 0.6:
 		_fail("Top-right sunlight did not cast vegetation shadows toward the bottom-left")

@@ -478,14 +478,28 @@ func _run() -> void:
 	if cloud_layer.get_active_cloud_count() != 4 or not cloud_layer.is_shadow_only():
 		_fail("Clear weather did not show randomized ground shadows")
 		return
+	var shared_cloud_shadow_material: Material = null
 	for cloud: Dictionary in cloud_layer.clouds:
 		if not cloud_layer.BLOCK_CLOUD_CELLS.has(int(cloud["cell"])):
 			_fail("Thin cloud frames were not removed")
 			return
 		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.self_modulate.r > 0.2 or shadow.self_modulate.a > 0.30:
-			_fail("Visible white clouds remained instead of ground shadows")
+		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/ordered_shadow.gdshader":
+			_fail("Cloud shadow is missing the ordered screen-space material")
 			return
+		if shared_cloud_shadow_material == null:
+			shared_cloud_shadow_material = shadow.material
+		elif shadow.material != shared_cloud_shadow_material:
+			_fail("Cloud shadows are not composed through one shared mask")
+			return
+	var ordered_material := shared_cloud_shadow_material as ShaderMaterial
+	var shadow_multiplier: Vector3 = ordered_material.get_shader_parameter("shadow_multiplier")
+	if cloud_layer.get_shadow_coverage() <= 0.0 or is_equal_approx(shadow_multiplier.x, shadow_multiplier.y):
+		_fail("Cloud shadows are missing daylight coverage or colored tint")
+		return
+	if "BAYER_4X4" not in ordered_material.shader.code or "SCREEN_UV" not in ordered_material.shader.code:
+		_fail("Cloud shadows are not using stable screen-space ordered dithering")
+		return
 	cloud_layer.set_weather("下雨")
 	if cloud_layer.get_active_cloud_count() != 0:
 		_fail("Cloud layer remained active outside clear weather")

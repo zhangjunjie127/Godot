@@ -1,6 +1,7 @@
 extends Node2D
 
 const CLOUD_TEXTURE := preload("res://assets/weather/clouds/sheet-transparent.png")
+const ORDERED_SHADOW_SHADER := preload("res://shaders/ordered_shadow.gdshader")
 const CELL_SIZE := 192
 const CLEAR_CLOUD_COUNT := 4
 const OVERCAST_CLOUD_COUNT := 8
@@ -8,6 +9,13 @@ const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
 @export_group("Art / Cloud Shadow Sheet")
 @export var cloud_texture: Texture2D = CLOUD_TEXTURE
+@export var cloud_shadow_shader: Shader = ORDERED_SHADOW_SHADER
+
+@export_group("Shadow Composition")
+@export_range(0.0, 1.0, 0.01) var clear_shadow_coverage := 0.32
+@export_range(0.0, 1.0, 0.01) var overcast_shadow_coverage := 0.44
+@export var clear_shadow_multiplier := Color(0.68, 0.78, 0.72, 1.0)
+@export var overcast_shadow_multiplier := Color(0.76, 0.80, 0.82, 1.0)
 
 @export_group("Cloud Motion")
 @export var weather_path: NodePath
@@ -18,6 +26,7 @@ const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 var current_weather := "下雨"
 var clouds: Array[Dictionary] = []
 var _rng := RandomNumberGenerator.new()
+var _shadow_material: ShaderMaterial
 
 @onready var day_night_cycle = get_node_or_null(day_night_cycle_path)
 
@@ -28,6 +37,8 @@ func _ready() -> void:
 	if weather != null:
 		weather.weather_changed.connect(set_weather)
 		current_weather = weather.current_weather
+	if day_night_cycle != null:
+		day_night_cycle.time_changed.connect(_on_time_changed)
 	_populate_clouds()
 	set_weather(current_weather)
 
@@ -40,12 +51,12 @@ func set_weather(value: String) -> void:
 	current_weather = value
 	visible = current_weather in ["晴朗", "阴天"]
 	var active_count := OVERCAST_CLOUD_COUNT if current_weather == "阴天" else CLEAR_CLOUD_COUNT
-	var shadow_color := Color(0.04, 0.06, 0.08, 0.24) if current_weather == "阴天" else Color(0.08, 0.10, 0.11, 0.13)
 	for index: int in range(clouds.size()):
 		var sprite := clouds[index]["sprite"] as Sprite2D
 		sprite.visible = index < active_count
-		sprite.self_modulate = shadow_color
+		sprite.self_modulate = Color.WHITE
 		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (3.4 if current_weather == "阴天" else 2.5)
+	_sync_shadow_material()
 
 
 func advance_clouds(seconds: float) -> void:
@@ -89,10 +100,16 @@ func is_shadow_only() -> bool:
 	return true
 
 
+func get_shadow_coverage() -> float:
+	return float(_shadow_material.get_shader_parameter("shadow_coverage")) if _shadow_material != null else 0.0
+
+
 func _populate_clouds() -> void:
 	for child: Node in get_children():
 		child.queue_free()
 	clouds.clear()
+	_shadow_material = ShaderMaterial.new()
+	_shadow_material.shader = ArtAssets.shader(cloud_shadow_shader.resource_path, cloud_shadow_shader)
 	for index: int in range(OVERCAST_CLOUD_COUNT):
 		var cell := _random_cloud_cell()
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
@@ -103,8 +120,9 @@ func _populate_clouds() -> void:
 		sprite.vframes = 3
 		sprite.frame = cell
 		sprite.scale = Vector2.ONE * cloud_scale
-		sprite.self_modulate = Color(0.08, 0.10, 0.11, 0.13)
+		sprite.self_modulate = Color.WHITE
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sprite.material = _shadow_material
 		sprite.position = Vector2(
 			world_size.x * (float(index) + 0.35) / float(OVERCAST_CLOUD_COUNT),
 			_rng.randf_range(180.0, world_size.y * 0.72)
@@ -120,6 +138,35 @@ func _populate_clouds() -> void:
 			"scale": cloud_scale,
 			"cell": cell,
 		})
+	_sync_shadow_material()
+
+
+func _on_time_changed(_day: int, _hour: int, _minute: int, _phase: String) -> void:
+	_sync_shadow_material()
+
+
+func _sync_shadow_material() -> void:
+	if _shadow_material == null:
+		return
+	var overcast := current_weather == "阴天"
+	var coverage := overcast_shadow_coverage if overcast else clear_shadow_coverage
+	var multiplier := overcast_shadow_multiplier if overcast else clear_shadow_multiplier
+	coverage *= _sunlight_amount()
+	_shadow_material.set_shader_parameter("shadow_coverage", coverage)
+	_shadow_material.set_shader_parameter("shadow_multiplier", Vector3(multiplier.r, multiplier.g, multiplier.b))
+
+
+func _sunlight_amount() -> float:
+	if day_night_cycle == null:
+		return 1.0
+	var hour := float(day_night_cycle.current_hour)
+	if hour < 5.0 or hour >= 21.0:
+		return 0.0
+	if hour < 6.0:
+		return smoothstep(5.0, 6.0, hour)
+	if hour < 18.0:
+		return 1.0
+	return 1.0 - smoothstep(18.0, 21.0, hour)
 
 
 func _random_cloud_cell() -> int:

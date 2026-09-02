@@ -36,6 +36,14 @@ func _run() -> void:
 		_fail("Cloud shadows are not world-space Node2D scenery")
 		return
 	clouds.set_weather("晴朗")
+	if clouds.get_shadow_coverage() > 0.001:
+		_fail("Cloud shadows remained visible without sunlight")
+		return
+	day_night.set_game_time(1, 10.0)
+	await process_frame
+	if clouds.get_shadow_coverage() < clouds.clear_shadow_coverage - 0.001:
+		_fail("Daylight did not restore ordered cloud shadows")
+		return
 	var cloud_before: Vector2 = clouds.get_cloud_world_position(0)
 	player.global_position += Vector2(260.0, 120.0)
 	if not clouds.is_processing():
@@ -53,11 +61,17 @@ func _run() -> void:
 		_fail("Cloud-shadow movement did not match its independent speed")
 		return
 	var cloud_speeds: Array[float] = []
+	var shared_shadow_material: Material = null
 	for cloud: Dictionary in clouds.clouds:
 		cloud_speeds.append(float(cloud["speed"]))
 		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.self_modulate.r > 0.2 or shadow.self_modulate.a > 0.30:
-			_fail("A visible white cloud remained instead of a ground shadow")
+		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/ordered_shadow.gdshader":
+			_fail("Cloud shadow is missing the ordered screen-space material")
+			return
+		if shared_shadow_material == null:
+			shared_shadow_material = shadow.material
+		elif shadow.material != shared_shadow_material:
+			_fail("Cloud shadows do not share one non-accumulating composition material")
 			return
 	if cloud_speeds.min() < 26.0 or cloud_speeds.max() > 34.0 or cloud_speeds.max() - cloud_speeds.min() < 1.0:
 		_fail("Clouds do not have close but visibly independent speeds")

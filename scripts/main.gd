@@ -58,6 +58,10 @@ const RESOURCE_ICON_CELLS := {
 @export var land_minimap_texture: Texture2D = LAND_MINIMAP_TEXTURE
 @export var underwater_minimap_texture: Texture2D = UNDERWATER_MINIMAP_TEXTURE
 
+@export_group("Outdoor Sun / 户外太阳")
+@export_range(-180.0, 180.0, 1.0) var vegetation_shadow_direction_degrees := 135.0
+@export_range(0.0, 160.0, 1.0) var vegetation_shadow_distance := 4.0
+
 @onready var player: CharacterBody2D = $World/DepthSorted/Player
 @onready var land_world: Node2D = $World
 @onready var underwater_world: Node2D = $UnderwaterWorld
@@ -117,6 +121,7 @@ var _rain_step_play_count := 0
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
+	_apply_vegetation_shadow_direction()
 	minimap.map_texture = _art(land_minimap_texture)
 	minimap.world_size = player.world_size
 	world_map.map_texture = _art(land_minimap_texture)
@@ -161,6 +166,11 @@ func _ready() -> void:
 	_refresh_inventory()
 	_refresh_skill_tree()
 	_last_puddle_step_position = player.global_position
+
+
+func _apply_vegetation_shadow_direction() -> void:
+	for vegetation: Node in get_tree().get_nodes_in_group("ground_shadow_vegetation"):
+		vegetation.set_ground_shadow_direction(vegetation_shadow_direction_degrees, vegetation_shadow_distance)
 
 
 func _process(delta: float) -> void:

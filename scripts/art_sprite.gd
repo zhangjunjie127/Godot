@@ -23,9 +23,10 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 
 @export_group("Ground Shadow / 地面投影")
 @export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var ground_shadow_mode := SHADOW_MODE_AUTO
-@export var ground_shadow_offset := Vector2(34.0, -8.0)
+@export_range(-180.0, 180.0, 1.0) var ground_shadow_direction_degrees := 135.0
+@export_range(0.0, 160.0, 1.0) var ground_shadow_distance := 4.0
+@export var ground_shadow_local_offset := Vector2.ZERO
 @export var ground_shadow_scale := Vector2(0.52, 0.22)
-@export_range(-60.0, 60.0, 1.0) var ground_shadow_skew_degrees := -28.0
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 0.92
 
 static var _shared_wind_material: ShaderMaterial
@@ -106,6 +107,16 @@ func get_current_wind_strength() -> float:
 	return _current_wind_strength
 
 
+func set_ground_shadow_direction(direction_degrees: float, distance: float) -> void:
+	ground_shadow_direction_degrees = wrapf(direction_degrees, -180.0, 180.0)
+	ground_shadow_distance = maxf(distance, 0.0)
+	_sync_ground_shadow()
+
+
+func get_ground_shadow_cast_direction() -> Vector2:
+	return Vector2.RIGHT.rotated(deg_to_rad(ground_shadow_direction_degrees))
+
+
 func _wind_is_enabled() -> bool:
 	if wind_mode == SHADOW_MODE_ENABLED:
 		return true
@@ -184,6 +195,8 @@ func _sync_ground_shadow() -> void:
 		_ground_shadow.z_index = -1
 		_ground_shadow.show_behind_parent = true
 		add_child(_ground_shadow)
+	if not is_in_group("ground_shadow_vegetation"):
+		add_to_group("ground_shadow_vegetation")
 
 	_ground_shadow.visible = true
 	_ground_shadow.material = GROUND_SHADOW_MATERIAL
@@ -198,16 +211,17 @@ func _sync_ground_shadow() -> void:
 	_ground_shadow.frame = frame
 	_ground_shadow.flip_h = flip_h
 	_ground_shadow.flip_v = flip_v
-	_ground_shadow.rotation = 0.0
-	_ground_shadow.skew = deg_to_rad(ground_shadow_skew_degrees)
+	_ground_shadow.rotation = deg_to_rad(ground_shadow_direction_degrees + 90.0)
+	_ground_shadow.skew = 0.0
 	_ground_shadow.scale = ground_shadow_scale
 	_ground_shadow.self_modulate = Color(1.0, 1.0, 1.0, ground_shadow_strength)
 
 	var frame_size := _frame_size()
 	var ground_anchor := offset + (Vector2(0.0, frame_size.y * 0.5) if centered else Vector2(frame_size.x * 0.5, frame_size.y))
+	var cast_offset := get_ground_shadow_cast_direction() * ground_shadow_distance + ground_shadow_local_offset
 	_ground_shadow.position = Vector2.ZERO
 	var projected_anchor := _ground_shadow.transform * ground_anchor
-	_ground_shadow.position = ground_anchor + ground_shadow_offset - projected_anchor
+	_ground_shadow.position = ground_anchor + cast_offset - projected_anchor
 
 
 func _ground_shadow_is_enabled() -> bool:
@@ -257,9 +271,10 @@ func _ground_shadow_signature() -> String:
 		custom_root_lock_height,
 		custom_canopy_start_height,
 		ground_shadow_mode,
-		ground_shadow_offset,
+		ground_shadow_direction_degrees,
+		ground_shadow_distance,
+		ground_shadow_local_offset,
 		ground_shadow_scale,
-		ground_shadow_skew_degrees,
 		ground_shadow_strength,
 		hframes,
 		vframes,

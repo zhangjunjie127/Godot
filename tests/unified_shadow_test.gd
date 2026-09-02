@@ -28,6 +28,13 @@ func _run() -> void:
 	if not prop_shadow.visible or prop_shadow.material != player_shadow.material:
 		_fail("Tall vegetation does not share the canonical ground-shadow material")
 		return
+	var cast_direction: Vector2 = tall_prop.get_ground_shadow_cast_direction()
+	if cast_direction.x >= -0.6 or cast_direction.y <= 0.6:
+		_fail("Top-right sunlight did not cast vegetation shadows toward the bottom-left")
+		return
+	if not is_equal_approx(tall_prop.ground_shadow_direction_degrees, scene.vegetation_shadow_direction_degrees):
+		_fail("Vegetation shadow direction is not synchronized with the global sun direction")
+		return
 	if low_prop == null or low_prop.has_node("GroundShadow"):
 		_fail("Low groundcover received an unnecessary directional shadow")
 		return

@@ -91,7 +91,13 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var oxygen_recovery_per_second := 24.0
 @export var attack_duration := 0.48
 
+@export_group("Ground Shadow / 地面阴影")
+@export var ground_shadow_center := SHADOW_CENTER
+@export_range(1.0, 256.0, 1.0) var ground_shadow_radius := SHADOW_RADIUS
+@export_range(0.1, 2.0, 0.01) var ground_shadow_vertical_scale := SHADOW_VERTICAL_SCALE
+
 @onready var sprite: Sprite2D = $Sprite2D
+@onready var ground_shadow = $GroundShadow
 
 var _cover_sources: Dictionary = {}
 var _is_concealed := false
@@ -138,6 +144,7 @@ func _ready() -> void:
 	_ensure_action("player_crawl", KEY_Z)
 	_ensure_action("player_pickup", KEY_F)
 	_ensure_mouse_action("player_attack", MOUSE_BUTTON_LEFT)
+	_sync_ground_shadow()
 	queue_redraw()
 
 
@@ -195,6 +202,7 @@ func _physics_process(delta: float) -> void:
 	var state := _resolve_movement_state(direction, running, crouching, crawling)
 	_set_movement_state(state)
 	_update_sprite(direction, delta)
+	_sync_ground_shadow()
 	queue_redraw()
 
 
@@ -248,6 +256,7 @@ func set_water_mode(value: bool, surface_y: float = 0.0) -> void:
 	if not water_mode and not is_dead:
 		set_oxygen(max_oxygen)
 		_set_movement_state(STATE_IDLE)
+	_sync_ground_shadow()
 	queue_redraw()
 
 
@@ -268,6 +277,7 @@ func set_surface_swimming(value: bool) -> void:
 	velocity = Vector2.ZERO
 	set_oxygen(max_oxygen)
 	_set_movement_state(STATE_SWIM if surface_swimming else STATE_IDLE)
+	_sync_ground_shadow()
 	queue_redraw()
 
 
@@ -397,15 +407,19 @@ func _draw() -> void:
 	if water_mode:
 		draw_circle(Vector2(65.0, -150.0), 11.0, Color(0.72, 0.96, 1.0, 0.72))
 		draw_circle(Vector2(90.0, -195.0), 6.5, Color(0.72, 0.96, 1.0, 0.58))
-		return
-	if surface_swimming:
-		return
+
+
+func _sync_ground_shadow() -> void:
 	var jump_ratio := _jump_offset / jump_height if jump_height > 0.0 else 0.0
 	var shadow_width := 1.35 if _movement_state == STATE_PRONE or _movement_state == STATE_CRAWL else 1.1 if _movement_state == STATE_CROUCH else 1.0
 	var jump_scale := 1.0 - jump_ratio * 0.45
-	draw_set_transform(SHADOW_CENTER, 0.0, Vector2(shadow_width * jump_scale, SHADOW_VERTICAL_SCALE * jump_scale))
-	draw_circle(Vector2.ZERO, SHADOW_RADIUS, Color(0.08, 0.16, 0.10, 0.28 - jump_ratio * 0.12))
-	draw_set_transform(Vector2.ZERO)
+	ground_shadow.configure(
+		ground_shadow_center,
+		ground_shadow_radius,
+		Vector2(shadow_width * jump_scale, ground_shadow_vertical_scale * jump_scale),
+		1.0 - jump_ratio * 0.43,
+		not water_mode and not surface_swimming
+	)
 
 
 func _start_jump() -> void:
@@ -517,6 +531,7 @@ func _physics_process_water(delta: float) -> void:
 	var state := STATE_PICKUP if _is_picking_up else STATE_DIVE if submerged else STATE_SWIM
 	_set_movement_state(state)
 	_update_sprite(direction, delta)
+	_sync_ground_shadow()
 	queue_redraw()
 
 
@@ -529,6 +544,7 @@ func _physics_process_surface_swim(delta: float) -> void:
 	_update_stamina(delta, false)
 	_set_movement_state(STATE_SWIM)
 	_update_sprite(direction, delta)
+	_sync_ground_shadow()
 	queue_redraw()
 
 

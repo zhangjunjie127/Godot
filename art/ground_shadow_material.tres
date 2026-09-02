@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://shaders/ordered_shadow.gdshader" id="1_shadow"]
+
+[resource]
+shader = ExtResource("1_shadow")
+shader_parameter/shadow_multiplier = Vector3(0.68, 0.78, 0.72)
+shader_parameter/shadow_coverage = 0.34

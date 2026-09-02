@@ -21,7 +21,7 @@ float bayer_threshold(vec2 pixel) {
 
 
 void fragment() {
-	float shape = texture(TEXTURE, UV).a;
+	float shape = texture(TEXTURE, UV).a * COLOR.a;
 	vec2 screen_pixel = floor(SCREEN_UV * vec2(textureSize(screen_texture, 0)));
 	if (shape * shadow_coverage <= bayer_threshold(screen_pixel)) {
 		discard;

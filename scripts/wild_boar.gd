@@ -6,6 +6,7 @@ extends CharacterBody2D
 @export var hits_required := 3
 
 @onready var sprite: Sprite2D = $Sprite2D
+@onready var ground_shadow = $GroundShadow
 
 var _rng := RandomNumberGenerator.new()
 var _home_position := Vector2.ZERO
@@ -24,7 +25,7 @@ func _ready() -> void:
 	_rng.seed = roam_seed
 	hits_remaining = hits_required
 	add_to_group("interactable")
-	queue_redraw()
+	ground_shadow.configure(Vector2(2.0, -1.0), 13.0, Vector2(1.15, 0.38), 0.9, true)
 
 
 func _physics_process(delta: float) -> void:
@@ -45,7 +46,6 @@ func _physics_process(delta: float) -> void:
 			_start_pause()
 
 	_update_animation(delta)
-	queue_redraw()
 
 
 func interact(inventory) -> bool:
@@ -68,12 +68,6 @@ func interact(inventory) -> bool:
 	set_physics_process(false)
 	$CollisionShape2D.set_deferred("disabled", true)
 	return true
-
-
-func _draw() -> void:
-	draw_set_transform(Vector2(2.0, -1.0), 0.0, Vector2(1.15, 0.38))
-	draw_circle(Vector2.ZERO, 13.0, Color(0.08, 0.12, 0.07, 0.26))
-	draw_set_transform(Vector2.ZERO)
 
 
 func _start_roaming() -> void:

@@ -56,6 +56,7 @@
 [ext_resource type="PackedScene" path="res://central_vegetation.tscn" id="54_central_vegetation"]
 [ext_resource type="Shader" path="res://shaders/outdoor_ambient_fill.gdshader" id="55_ambient_fill_shader"]
 [ext_resource type="Script" path="res://scripts/outdoor_ambient_fill.gd" id="56_ambient_fill_script"]
+[ext_resource type="Script" path="res://scripts/ground_shadow.gd" id="57_ground_shadow"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
 shader = ExtResource("20_puddle_shader")
@@ -707,6 +708,13 @@ position = Vector2(4100, 4700)
 collision_mask = 2
 script = ExtResource("3_player")
 
+[node name="GroundShadow" type="Node2D" parent="World/DepthSorted/Player"]
+z_index = -1
+script = ExtResource("57_ground_shadow")
+center = Vector2(0, -5)
+radius = 75.0
+ellipse_scale = Vector2(1, 0.34)
+
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/Player" unique_id=638644177]
 texture_filter = 1
 position = Vector2(0, -160)
@@ -735,6 +743,14 @@ scale = Vector2(3, 3)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("7_boar_script")
+
+[node name="GroundShadow" type="Node2D" parent="World/DepthSorted/WildBoar"]
+z_index = -1
+script = ExtResource("57_ground_shadow")
+center = Vector2(2, -1)
+radius = 13.0
+ellipse_scale = Vector2(1.15, 0.38)
+strength = 0.9
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/WildBoar" unique_id=791658145]
 texture_filter = 1

@@ -12,6 +12,10 @@ uniform float contrast : hint_range(0.5, 1.5, 0.01) = 1.0;
 uniform float saturation : hint_range(0.0, 1.5, 0.01) = 1.0;
 uniform vec3 grade_tint = vec3(1.0);
 uniform float highlight_protection : hint_range(0.0, 1.0, 0.01) = 0.65;
+uniform vec3 fog_color = vec3(0.72, 0.80, 0.76);
+uniform float fog_strength : hint_range(0.0, 0.2, 0.005) = 0.02;
+uniform float fog_depth_start : hint_range(0.0, 1.0, 0.01) = 0.12;
+uniform float fog_depth_end : hint_range(0.0, 1.0, 0.01) = 0.92;
 
 void fragment() {
 	vec4 scene = texture(screen_texture, SCREEN_UV);
@@ -29,5 +33,10 @@ void fragment() {
 	float outline_weight = smoothstep(0.015, outline_guard, luminance);
 	float weight = shadow_weight * outline_weight;
 	vec3 lifted = graded + fill_color * fill_strength * weight * (vec3(1.0) - graded);
-	COLOR = vec4(clamp(lifted, vec3(0.0), vec3(1.0)), scene.a);
+	float depth = 1.0 - SCREEN_UV.y;
+	float fog_depth = smoothstep(fog_depth_start, fog_depth_end, depth);
+	float fog_luminance_guard = mix(1.0, 0.72, luminance);
+	float fog_amount = fog_strength * fog_depth * fog_luminance_guard;
+	vec3 atmospheric = mix(lifted, fog_color, fog_amount);
+	COLOR = vec4(clamp(atmospheric, vec3(0.0), vec3(1.0)), scene.a);
 }

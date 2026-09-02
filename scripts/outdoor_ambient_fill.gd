@@ -44,11 +44,24 @@ extends ColorRect
 @export var night_grade_tint := Color(0.97, 1.0, 1.03, 1.0)
 @export_range(0.0, 1.0, 0.01) var highlight_protection := 0.65
 
+@export_group("Atmospheric Haze")
+@export_range(0.0, 0.2, 0.005) var clear_fog_strength := 0.018
+@export_range(0.0, 0.2, 0.005) var overcast_fog_strength := 0.042
+@export_range(0.0, 0.2, 0.005) var dusk_fog_strength := 0.025
+@export_range(0.0, 0.2, 0.005) var night_fog_strength := 0.006
+@export var clear_fog_color := Color(0.72, 0.80, 0.76, 1.0)
+@export var overcast_fog_color := Color(0.65, 0.71, 0.74, 1.0)
+@export var dusk_fog_color := Color(0.80, 0.70, 0.58, 1.0)
+@export var night_fog_color := Color(0.20, 0.25, 0.32, 1.0)
+@export_range(0.0, 1.0, 0.01) var fog_depth_start := 0.12
+@export_range(0.0, 1.0, 0.01) var fog_depth_end := 0.92
+
 @onready var day_night_cycle: Node = get_node_or_null(day_night_cycle_path)
 @onready var world: CanvasItem = get_node_or_null(world_path) as CanvasItem
 
 var current_strength := 0.0
 var current_grade := Vector3(0.0, 1.0, 1.0)
+var current_fog_strength := 0.0
 
 
 func _ready() -> void:
@@ -78,6 +91,8 @@ func _sync_fill() -> void:
 	current_grade = _time_grade(hour)
 	var grade_tint := _time_grade_tint(hour)
 	var weather_blend := cloudiness * daylight
+	current_fog_strength = lerpf(_time_fog_strength(hour), overcast_fog_strength, weather_blend)
+	var fog_color := _time_fog_color(hour).lerp(overcast_fog_color, weather_blend)
 	current_grade = current_grade.lerp(
 		Vector3(overcast_exposure, overcast_contrast, overcast_saturation),
 		weather_blend
@@ -93,6 +108,10 @@ func _sync_fill() -> void:
 	material.set_shader_parameter("saturation", current_grade.z)
 	material.set_shader_parameter("grade_tint", Vector3(grade_tint.r, grade_tint.g, grade_tint.b))
 	material.set_shader_parameter("highlight_protection", highlight_protection)
+	material.set_shader_parameter("fog_color", Vector3(fog_color.r, fog_color.g, fog_color.b))
+	material.set_shader_parameter("fog_strength", current_fog_strength)
+	material.set_shader_parameter("fog_depth_start", minf(fog_depth_start, fog_depth_end))
+	material.set_shader_parameter("fog_depth_end", maxf(fog_depth_start, fog_depth_end))
 
 
 func _daylight_amount(hour: float) -> float:
@@ -130,3 +149,27 @@ func _time_grade_tint(hour: float) -> Color:
 	if hour < dusk_start_hour + 1.0:
 		return clear_grade_tint.lerp(dusk_grade_tint, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
 	return dusk_grade_tint.lerp(night_grade_tint, smoothstep(dusk_start_hour + 1.0, night_hour, hour))
+
+
+func _time_fog_strength(hour: float) -> float:
+	if hour < dawn_start_hour or hour >= night_hour:
+		return night_fog_strength
+	if hour < daylight_hour:
+		return lerpf(night_fog_strength, clear_fog_strength, smoothstep(dawn_start_hour, daylight_hour, hour))
+	if hour < dusk_start_hour - 1.0:
+		return clear_fog_strength
+	if hour < dusk_start_hour + 1.0:
+		return lerpf(clear_fog_strength, dusk_fog_strength, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
+	return lerpf(dusk_fog_strength, night_fog_strength, smoothstep(dusk_start_hour + 1.0, night_hour, hour))
+
+
+func _time_fog_color(hour: float) -> Color:
+	if hour < dawn_start_hour or hour >= night_hour:
+		return night_fog_color
+	if hour < daylight_hour:
+		return night_fog_color.lerp(clear_fog_color, smoothstep(dawn_start_hour, daylight_hour, hour))
+	if hour < dusk_start_hour - 1.0:
+		return clear_fog_color
+	if hour < dusk_start_hour + 1.0:
+		return clear_fog_color.lerp(dusk_fog_color, smoothstep(dusk_start_hour - 1.0, dusk_start_hour + 1.0, hour))
+	return dusk_fog_color.lerp(night_fog_color, smoothstep(dusk_start_hour + 1.0, night_hour, hour))

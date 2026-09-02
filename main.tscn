@@ -54,6 +54,8 @@
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_008.png" id="52_tropical_08"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_009.png" id="53_tropical_09"]
 [ext_resource type="PackedScene" path="res://central_vegetation.tscn" id="54_central_vegetation"]
+[ext_resource type="Shader" path="res://shaders/outdoor_ambient_fill.gdshader" id="55_ambient_fill_shader"]
+[ext_resource type="Script" path="res://scripts/outdoor_ambient_fill.gd" id="56_ambient_fill_script"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_puddle_surface"]
 shader = ExtResource("20_puddle_shader")
@@ -106,6 +108,14 @@ shader_parameter/rain_intensity = 0.0
 shader_parameter/max_opacity = 0.28
 shader_parameter/saturation = 0.72
 shader_parameter/rain_tint = Color(0.6, 0.71, 0.76, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outdoor_ambient_fill"]
+shader = ExtResource("55_ambient_fill_shader")
+shader_parameter/fill_color = Vector3(0.52, 0.66, 0.6)
+shader_parameter/fill_strength = 0.1
+shader_parameter/shadow_start = 0.04
+shader_parameter/shadow_end = 0.58
+shader_parameter/outline_guard = 0.075
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night_vision"]
 shader = ExtResource("29_night_shader")
@@ -751,6 +761,21 @@ day_night_cycle_path = NodePath("../../DayNightCycle")
 world_size = Vector2(8192, 8192)
 
 [node name="UnderwaterWorld" parent="." unique_id=427606453 instance=ExtResource("17_underwater")]
+
+[node name="OutdoorAtmosphere" type="CanvasLayer" parent="."]
+layer = 40
+
+[node name="Fill" type="ColorRect" parent="OutdoorAtmosphere"]
+material = SubResource("ShaderMaterial_outdoor_ambient_fill")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("56_ambient_fill_script")
+day_night_cycle_path = NodePath("../../DayNightCycle")
+world_path = NodePath("../../World")
 
 [node name="Weather" type="CanvasLayer" parent="." unique_id=2119786415]
 layer = 50

@@ -274,5 +274,6 @@ shaders = Dictionary[String, Shader]({
 "res://shaders/outdoor_ambient_fill.gdshader": null,
 "res://shaders/ordered_shadow.gdshader": null,
 "res://shaders/river_surface.gdshader": null,
+"res://shaders/vegetation_wind.gdshader": null,
 "res://shaders/water_comparison.gdshader": null
 })

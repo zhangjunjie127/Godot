@@ -566,29 +566,56 @@ func _run() -> void:
 		if not placed_first_row_assets.has(asset_path):
 			_fail("A first-row vegetation asset is missing from the beach: " + asset_path)
 			return
-	var wind_palms := get_nodes_in_group("wind_vegetation")
-	if wind_palms.size() != 17:
-		_fail("Not every coconut palm received an independent wind animation: %d" % wind_palms.size())
+	var wind_vegetation := get_nodes_in_group("wind_vegetation")
+	if wind_vegetation.size() < 17:
+		_fail("Vegetation wind did not include every coconut palm: %d" % wind_vegetation.size())
 		return
-	for wind_palm: Node in wind_palms:
-		if not wind_palm is Sprite2D or (wind_palm as Sprite2D).texture == null or "/vegetation/palms/" not in (wind_palm as Sprite2D).texture.resource_path:
-			_fail("A non-palm sprite entered the palm wind animation group")
+	var wind_categories := {"palms": false, "trees": false, "tropical_plants": false, "foliage": false}
+	var palm_phases: Array[float] = []
+	for wind_sprite: Node in wind_vegetation:
+		if not wind_sprite is Sprite2D or (wind_sprite as Sprite2D).texture == null:
+			_fail("A non-sprite entered the vegetation wind group")
 			return
+		var wind_path := (wind_sprite as Sprite2D).texture.resource_path
+		var matched_category := false
+		for category: String in wind_categories:
+			if "/vegetation/%s/" % category in wind_path:
+				wind_categories[category] = true
+				matched_category = true
+				if category == "palms":
+					palm_phases.append(float((wind_sprite as Sprite2D).get_instance_shader_parameter("wind_phase")))
+				break
+		if not matched_category:
+			_fail("An unsupported asset entered the vegetation wind group: " + wind_path)
+			return
+	for category: String in wind_categories:
+		if not bool(wind_categories[category]):
+			_fail("Vegetation wind is missing category: " + category)
+			return
+	if palm_phases.size() < 2 or is_equal_approx(palm_phases[0], palm_phases[1]):
+		_fail("Coconut palms do not have independent wind phases")
+		return
 	var wind_sample = scene.get_node("World/DepthSorted/NortheastPalm01/Sprite2D")
 	wind_sample.process_mode = Node.PROCESS_MODE_DISABLED
 	wind_sample.set_wind_strength(1.0)
 	var trunk_anchor_before: Vector2 = wind_sample.get_trunk_anchor_position()
-	var minimum_rotation := INF
-	var maximum_rotation := -INF
+	var transform_before: Transform2D = wind_sample.transform
+	var wind_time_before := float(wind_sample.get_instance_shader_parameter("wind_time"))
 	for _wind_step: int in range(8):
 		wind_sample.advance_wind(0.35)
-		minimum_rotation = minf(minimum_rotation, wind_sample.rotation)
-		maximum_rotation = maxf(maximum_rotation, wind_sample.rotation)
 		if wind_sample.get_trunk_anchor_position().distance_to(trunk_anchor_before) > 0.01:
 			_fail("Palm wind animation moved the trunk base away from its collision anchor")
 			return
-	if maximum_rotation - minimum_rotation < deg_to_rad(0.5):
-		_fail("Palm wind animation did not produce visible independent sway")
+		if wind_sample.transform != transform_before:
+			_fail("Vegetation wind changed the sprite transform instead of deforming internal pixels")
+			return
+	if float(wind_sample.get_instance_shader_parameter("wind_time")) <= wind_time_before:
+		_fail("Vegetation wind shader time did not advance")
+		return
+	var trunk_amplitude := float(wind_sample.get_instance_shader_parameter("trunk_amplitude_pixels"))
+	var leaf_amplitude := float(wind_sample.get_instance_shader_parameter("leaf_amplitude_pixels"))
+	if leaf_amplitude <= trunk_amplitude or float(wind_sample.get_instance_shader_parameter("root_lock_height")) <= 0.0:
+		_fail("Palm leaves and trunk are not using separate sway ranges with a fixed root")
 		return
 	wind_sample.clear_wind_strength_override()
 	var central_vegetation := scene.get_node_or_null("World/DepthSorted/CentralVegetation") as Node2D

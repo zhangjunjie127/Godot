@@ -2,17 +2,24 @@
 extends Sprite2D
 
 const GROUND_SHADOW_MATERIAL := preload("res://art/ground_shadow_material.tres")
+const VEGETATION_WIND_SHADER := preload("res://shaders/vegetation_wind.gdshader")
 const SHADOW_MODE_AUTO := 0
 const SHADOW_MODE_ENABLED := 1
 const SHADOW_MODE_DISABLED := 2
 const TALL_PROP_DIRECTORIES := ["/palms/", "/trees/", "/deadwood/", "/tropical_plants/"]
+const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/"]
 
-@export_group("Palm Wind / 椰树风动")
-@export var palm_wind_enabled := true
-@export_range(0.0, 6.0, 0.1) var palm_sway_degrees := 2.2
-@export_range(0.1, 3.0, 0.05) var palm_sway_speed := 0.65
-@export_range(0.0, 3.0, 0.05) var palm_gust_degrees := 0.9
-@export_range(0.1, 8.0, 0.1) var palm_wind_response := 1.4
+@export_group("Vegetation Wind / 植被风动")
+@export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var wind_mode := SHADOW_MODE_AUTO
+@export_range(0.0, 2.5, 0.05) var wind_strength_multiplier := 1.0
+@export_range(0.1, 8.0, 0.1) var wind_response := 1.4
+@export var use_custom_wind_profile := false
+@export_range(0.0, 20.0, 0.1) var custom_trunk_sway_pixels := 4.0
+@export_range(0.0, 40.0, 0.1) var custom_leaf_sway_pixels := 16.0
+@export_range(0.1, 3.0, 0.05) var custom_trunk_speed := 0.6
+@export_range(0.1, 4.0, 0.05) var custom_leaf_speed := 1.4
+@export_range(0.0, 0.35, 0.01) var custom_root_lock_height := 0.1
+@export_range(0.0, 0.85, 0.01) var custom_canopy_start_height := 0.4
 
 @export_group("Ground Shadow / 地面投影")
 @export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var ground_shadow_mode := SHADOW_MODE_AUTO
@@ -21,17 +28,16 @@ const TALL_PROP_DIRECTORIES := ["/palms/", "/trees/", "/deadwood/", "/tropical_p
 @export_range(-60.0, 60.0, 1.0) var ground_shadow_skew_degrees := -28.0
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 0.92
 
-var _palm_wind_active := false
+static var _shared_wind_material: ShaderMaterial
+
+var _wind_active := false
 var _wind_elapsed := 0.0
 var _wind_phase := 0.0
 var _speed_variation := 1.0
 var _target_wind_strength := 0.4
 var _current_wind_strength := 0.4
 var _wind_strength_override := -1.0
-var _base_position := Vector2.ZERO
-var _base_rotation := 0.0
-var _trunk_offset := Vector2.ZERO
-var _trunk_anchor := Vector2.ZERO
+var _base_material: Material
 var _weather: Node
 var _ground_shadow: Sprite2D
 var _shadow_signature := ""
@@ -39,54 +45,47 @@ var _source_texture_path := ""
 
 
 func _ready() -> void:
+	_base_material = material
 	if texture != null:
 		_source_texture_path = texture.resource_path
 		texture = ArtAssets.texture(texture.resource_path, texture)
-	_palm_wind_active = not Engine.is_editor_hint() and palm_wind_enabled and _is_palm_texture()
-	_sync_ground_shadow()
-	_shadow_signature = _ground_shadow_signature()
-	set_process(Engine.is_editor_hint() or _palm_wind_active)
-	if not _palm_wind_active:
-		return
-	add_to_group("wind_vegetation")
-	_base_position = position
-	_base_rotation = rotation
-	_trunk_offset = Vector2(0.0, float(texture.get_height()) * absf(scale.y) * 0.5)
-	_trunk_anchor = _base_position + _trunk_offset.rotated(_base_rotation)
 	var phase_seed := float(absi(String(get_path()).hash()) % 10000) / 10000.0
 	_wind_phase = phase_seed * TAU
 	_speed_variation = 0.9 + fposmod(phase_seed * 7.13, 1.0) * 0.2
+	_wind_active = _wind_is_enabled()
+	_sync_wind_material()
+	_sync_ground_shadow()
+	_shadow_signature = _ground_shadow_signature()
+	set_process(Engine.is_editor_hint() or _wind_active)
+	if not _wind_active:
+		return
+	add_to_group("wind_vegetation")
 	_weather = _find_weather()
+	advance_wind(0.0)
 
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		var signature := _ground_shadow_signature()
 		if signature != _shadow_signature:
+			_wind_active = _wind_is_enabled()
+			_sync_wind_material()
 			_sync_ground_shadow()
 			_shadow_signature = signature
-		return
 	advance_wind(delta)
 
 
 func advance_wind(seconds: float) -> void:
-	if not _palm_wind_active:
+	if not _wind_active:
 		return
 	if _weather == null:
 		_weather = _find_weather()
-	_target_wind_strength = _wind_strength_override if _wind_strength_override >= 0.0 else _weather_wind_strength()
+	_target_wind_strength = (_wind_strength_override if _wind_strength_override >= 0.0 else _weather_wind_strength()) * wind_strength_multiplier
 	var delta := maxf(seconds, 0.0)
-	_current_wind_strength = move_toward(_current_wind_strength, _target_wind_strength, delta * palm_wind_response)
+	_current_wind_strength = move_toward(_current_wind_strength, _target_wind_strength, delta * wind_response)
 	_wind_elapsed += delta
-	var wind_time := _wind_elapsed * palm_sway_speed * _speed_variation
-	var primary := sin(wind_time + _wind_phase)
-	var secondary := sin(wind_time * 0.47 + _wind_phase * 1.7) * 0.26
-	var gust_envelope := pow(maxf(sin(wind_time * 0.23 + _wind_phase * 1.3), 0.0), 4.0)
-	var gust := sin(wind_time * 2.4 + _wind_phase * 0.4) * gust_envelope
-	var flutter := sin(wind_time * 3.7 + _wind_phase * 2.1) * 0.08
-	var sway_degrees := (palm_sway_degrees * (primary * 0.74 + secondary + flutter) + palm_gust_degrees * gust) * _current_wind_strength
-	rotation = _base_rotation + deg_to_rad(sway_degrees)
-	position = _trunk_anchor - _trunk_offset.rotated(rotation)
+	set_instance_shader_parameter("wind_time", _wind_elapsed)
+	set_instance_shader_parameter("wind_strength", _current_wind_strength)
 
 
 func set_wind_strength(strength: float) -> void:
@@ -98,15 +97,79 @@ func clear_wind_strength_override() -> void:
 
 
 func get_trunk_anchor_position() -> Vector2:
-	return position + _trunk_offset.rotated(rotation)
+	var frame_size := _frame_size()
+	var local_anchor := offset + (Vector2(0.0, frame_size.y * 0.5) if centered else Vector2(frame_size.x * 0.5, frame_size.y))
+	return transform * local_anchor
 
 
 func get_current_wind_strength() -> float:
 	return _current_wind_strength
 
 
-func _is_palm_texture() -> bool:
-	return "/vegetation/palms/" in _art_path()
+func _wind_is_enabled() -> bool:
+	if wind_mode == SHADOW_MODE_ENABLED:
+		return true
+	if wind_mode == SHADOW_MODE_DISABLED:
+		return false
+	var path := _art_path()
+	for directory: String in WIND_DIRECTORIES:
+		if directory in path:
+			return true
+	return false
+
+
+func _sync_wind_material() -> void:
+	if not _wind_active or texture == null:
+		if material == _shared_wind_material:
+			material = _base_material
+		return
+	material = _wind_material()
+	var profile := _wind_profile()
+	set_instance_shader_parameter("wind_phase", _wind_phase)
+	set_instance_shader_parameter("trunk_amplitude_pixels", float(profile["trunk_amplitude"]))
+	set_instance_shader_parameter("leaf_amplitude_pixels", float(profile["leaf_amplitude"]))
+	set_instance_shader_parameter("trunk_speed", float(profile["trunk_speed"]) * _speed_variation)
+	set_instance_shader_parameter("leaf_speed", float(profile["leaf_speed"]) * _speed_variation)
+	set_instance_shader_parameter("root_lock_height", float(profile["root_lock_height"]))
+	set_instance_shader_parameter("canopy_start_height", float(profile["canopy_start_height"]))
+
+
+func _wind_profile() -> Dictionary:
+	if use_custom_wind_profile:
+		return {
+			"trunk_amplitude": custom_trunk_sway_pixels,
+			"leaf_amplitude": custom_leaf_sway_pixels,
+			"trunk_speed": custom_trunk_speed,
+			"leaf_speed": custom_leaf_speed,
+			"root_lock_height": custom_root_lock_height,
+			"canopy_start_height": custom_canopy_start_height,
+		}
+	var path := _art_path()
+	if "/palms/" in path:
+		return _profile(5.0, 22.0, 0.62, 1.55, 0.12, 0.46)
+	if "/trees/" in path:
+		return _profile(4.0, 18.0, 0.50, 1.30, 0.10, 0.42)
+	if "/tropical_plants/" in path:
+		return _profile(1.8, 15.0, 0.72, 1.72, 0.10, 0.18)
+	return _profile(1.0, 10.0, 0.88, 1.90, 0.10, 0.14)
+
+
+func _profile(trunk_amplitude: float, leaf_amplitude: float, trunk_speed: float, leaf_speed: float, root_lock_height: float, canopy_start_height: float) -> Dictionary:
+	return {
+		"trunk_amplitude": trunk_amplitude,
+		"leaf_amplitude": leaf_amplitude,
+		"trunk_speed": trunk_speed,
+		"leaf_speed": leaf_speed,
+		"root_lock_height": root_lock_height,
+		"canopy_start_height": canopy_start_height,
+	}
+
+
+func _wind_material() -> ShaderMaterial:
+	if _shared_wind_material == null:
+		_shared_wind_material = ShaderMaterial.new()
+		_shared_wind_material.shader = ArtAssets.shader(VEGETATION_WIND_SHADER.resource_path, VEGETATION_WIND_SHADER)
+	return _shared_wind_material
 
 
 func _sync_ground_shadow() -> void:
@@ -183,6 +246,16 @@ func _ground_shadow_signature() -> String:
 		offset,
 		region_enabled,
 		region_rect,
+		wind_mode,
+		wind_strength_multiplier,
+		wind_response,
+		use_custom_wind_profile,
+		custom_trunk_sway_pixels,
+		custom_leaf_sway_pixels,
+		custom_trunk_speed,
+		custom_leaf_speed,
+		custom_root_lock_height,
+		custom_canopy_start_height,
 		ground_shadow_mode,
 		ground_shadow_offset,
 		ground_shadow_scale,

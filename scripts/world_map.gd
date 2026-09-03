@@ -26,6 +26,7 @@ const STREAM_MARGIN := 64.0
 
 var _content_scale := 1.0
 var _water_polygons: Array[PackedVector2Array] = []
+var _water_query_chunks: Dictionary = {}
 var _chunk_size := DEFAULT_CHUNK_SIZE
 var _chunk_definitions: Array[Dictionary] = []
 var _loaded_chunks: Dictionary = {}
@@ -44,6 +45,7 @@ func _ready() -> void:
 	_chunk_size = float(manifest.get("chunkSize", DEFAULT_CHUNK_SIZE)) * _content_scale
 	_chunk_definitions.assign(manifest.get("chunks", []))
 	_water_surface = manifest.get("waterSurface", {})
+	_cache_water_query_chunks()
 	_cache_water_polygons()
 	if Engine.is_editor_hint():
 		_add_all_chunks()
@@ -315,10 +317,39 @@ func _resource_path(path: String) -> String:
 
 
 func is_water_position(world_position: Vector2) -> bool:
+	var coordinates := Vector2i(floori(world_position.x / _chunk_size), floori(world_position.y / _chunk_size))
+	var query_data: Dictionary = _water_query_chunks.get(coordinates, {})
+	if not query_data.is_empty():
+		var image: Image = query_data["image"]
+		var origin: Vector2 = query_data["origin"]
+		var local_position := (world_position - origin) / _chunk_size
+		var pixel := Vector2i(
+			clampi(floori(local_position.x * image.get_width()), 0, image.get_width() - 1),
+			clampi(floori(local_position.y * image.get_height()), 0, image.get_height() - 1)
+		)
+		return image.get_pixelv(pixel).r > 0.001
 	for polygon: PackedVector2Array in _water_polygons:
 		if Geometry2D.is_point_in_polygon(world_position, polygon):
 			return true
 	return false
+
+
+func _cache_water_query_chunks() -> void:
+	_water_query_chunks.clear()
+	for data: Dictionary in _chunk_definitions:
+		var water_data: Dictionary = data.get("water", {})
+		var depth_resource := String(water_data.get("depth", ""))
+		if depth_resource.is_empty():
+			continue
+		var texture := ArtAssets.texture(_resource_path(depth_resource))
+		if texture == null:
+			continue
+		var image := texture.get_image()
+		if image == null or image.is_empty():
+			continue
+		var origin := _scaled_point(data.get("position", [0, 0]))
+		var coordinates := Vector2i(roundi(origin.x / _chunk_size), roundi(origin.y / _chunk_size))
+		_water_query_chunks[coordinates] = {"origin": origin, "image": image}
 
 
 func _cache_water_polygons() -> void:

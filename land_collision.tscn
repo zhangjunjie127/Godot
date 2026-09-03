@@ -1,105 +1,291 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d08jw460pq4r6"]
 
-[ext_resource type="Script" path="res://scripts/land_collision_editor.gd" id="1_qmgix"]
-[ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="2_w0f15"]
+[ext_resource type="Script" path="res://scripts/land_collision_editor.gd" id="1_collision_editor"]
+[ext_resource type="Texture2D" path="res://assets/maps/spawn/spawn_reference_foundation_2048.png" id="2_map_preview"]
 
 [node name="Collision" type="Node2D"]
-script = ExtResource("1_qmgix")
+script = ExtResource("1_collision_editor")
 
 [node name="MapPreview" type="Sprite2D" parent="."]
 z_index = -100
 texture_filter = 2
-texture = ExtResource("2_w0f15")
-centered = false
 scale = Vector2(4, 4)
+texture = ExtResource("2_map_preview")
+centered = false
 
-[node name="OceanNorth" type="StaticBody2D" parent="." groups=["water_collision"]]
+[node name="TerrainBlockers" type="StaticBody2D" parent="."]
 collision_layer = 2
 collision_mask = 0
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanNorth"]
-polygon = PackedVector2Array(0, 0, 8192, 0, 8192, 2260, 7220, 2240, 6740, 2080, 6320, 1860, 5880, 1590, 5480, 1510, 5070, 1360, 4680, 1110, 4290, 760, 3860, 650, 3480, 720, 3150, 950, 2840, 1280, 2480, 1540, 2120, 1840, 1800, 2180, 1320, 2360, 0, 2440)
+[node name="Terrain001" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(872, 4436, 1092, 4572, 1160, 4452, 1820, 4680, 1832, 4876, 1708, 4964, 1820, 4968, 1820, 5196, 1664, 5192, 1532, 5100, 1180, 5216, 1124, 5092, 1304, 5136, 1548, 4996, 1332, 4960, 1368, 4856, 1148, 4896, 1164, 4688, 944, 4772, 868, 4672, 888, 4552, 764, 4624, 756, 4484)
 
-[node name="OceanWest" type="StaticBody2D" parent="." groups=["water_collision"]]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain002" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4432, 1744, 4568, 1876, 4596, 2344, 4660, 2296, 4660, 2356, 4568, 2424, 4560, 2488, 4644, 2456, 4636, 2576, 4500, 2536, 4500, 2664, 4320, 2636, 4288, 2552, 4180, 2500, 4228, 2328, 4136, 2308, 4124, 2248, 4192, 2068, 4256, 2048, 4156, 1984, 4152, 1924, 4060, 1908, 4160, 1632)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanWest"]
-polygon = PackedVector2Array(0, 2180, 1460, 2180, 1760, 2460, 1900, 2860, 1790, 3290, 1530, 3660, 1310, 4100, 1420, 4540, 1720, 4870, 1690, 5310, 1420, 5650, 1080, 6040, 860, 6520, 620, 7040, 0, 7220)
+[node name="Terrain003" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5252, 4228, 5536, 4364, 5568, 4496, 5700, 4440, 5988, 4600, 6008, 4716, 6364, 4832, 6428, 5048, 6656, 5088, 6616, 5268, 6716, 5244, 6692, 5016, 6816, 5008, 6832, 5168, 6928, 5116, 6928, 5172, 6672, 5340, 6444, 5292, 6432, 5400, 6348, 5404, 6280, 4908, 5916, 4684, 5500, 4576, 5480, 4500, 4984, 4400, 4984, 4308)
 
-[node name="OceanEast" type="StaticBody2D" parent="." groups=["water_collision"]]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain004" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2152, 3660, 2160, 3716, 2064, 3768, 2152, 3832, 2148, 3904, 2280, 3820, 2460, 4040, 2544, 4024, 2692, 4156, 2696, 4244, 2560, 4268, 2504, 4164, 2352, 4108, 2344, 4048, 2068, 4004, 2108, 4184, 2228, 4176, 2268, 4280, 2064, 4232, 2052, 4388, 1872, 4348, 1932, 4088, 2048, 4004, 2036, 3924, 1928, 3860, 1956, 3628)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanEast"]
-polygon = PackedVector2Array(8192, 2060, 7080, 2070, 6720, 2310, 6500, 2700, 6590, 3120, 6800, 3510, 6700, 3930, 6520, 4300, 6690, 4690, 6920, 5100, 6780, 5540, 6480, 5990, 6500, 6460, 6890, 6870, 7360, 7120, 8192, 7240)
+[node name="Terrain005" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2876, 1316, 3048, 1384, 3264, 1368, 3268, 1452, 3388, 1460, 3512, 1572, 3572, 1552, 3532, 1484, 3628, 1476, 3764, 1552, 3768, 1632, 3720, 1664, 3824, 1684, 3824, 1732, 3716, 1816, 3648, 1816, 3560, 1732, 3400, 1740, 3372, 1668, 3200, 1640, 3192, 1568, 3060, 1604, 3048, 1528, 3032, 1564, 2968, 1564, 2936, 1496, 2820, 1484, 2832, 1380)
 
-[node name="OceanSouth" type="StaticBody2D" parent="." groups=["water_collision"]]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain006" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4676, 5672, 4944, 5704, 4976, 5796, 5072, 5864, 5076, 5980, 5180, 6036, 5324, 6036, 5336, 6144, 5280, 6148, 5280, 6224, 5204, 6228, 5016, 6124, 5020, 6048, 4888, 5980, 4900, 5832, 4760, 5868, 4472, 5760, 4472, 5696, 4364, 5644, 4384, 5532)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="OceanSouth"]
-polygon = PackedVector2Array(0, 6860, 740, 6700, 1180, 6380, 1640, 6070, 2080, 6110, 2440, 6470, 2820, 6510, 3220, 6290, 3610, 6540, 4000, 6730, 4450, 6660, 4820, 6420, 5220, 6250, 5650, 6390, 6120, 6620, 6650, 6790, 7080, 7040, 7640, 7170, 8192, 7140, 8192, 8192, 0, 8192)
+[node name="Terrain007" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2036, 2868, 2100, 2896, 2100, 2984, 2136, 2988, 2220, 2860, 2488, 2944, 2484, 2848, 2568, 2856, 2552, 2944, 2732, 2948, 2864, 3080, 2988, 3096, 2992, 3212, 2792, 3176, 2580, 3072, 2324, 3088, 2240, 3020, 2120, 3068, 1956, 3068, 1944, 2896)
 
-[node name="NorthSummit" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain008" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2164, 1916, 2280, 1988, 2328, 1960, 2480, 1976, 2516, 2036, 2492, 2136, 2312, 2168, 2304, 2192, 2340, 2240, 2496, 2280, 2492, 2476, 2228, 2388, 2212, 2280, 2140, 2288, 2044, 2248, 2032, 2168, 2060, 2068, 2112, 2004, 2116, 1916)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="NorthSummit"]
-polygon = PackedVector2Array(3100, 1190, 3220, 760, 3430, 650, 3610, 790, 3720, 1190, 3560, 1480, 3300, 1450)
+[node name="Terrain009" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6864, 3896, 7036, 3916, 7044, 3952, 7188, 4036, 7192, 4096, 7212, 4032, 7332, 4000, 7412, 4056, 7412, 4192, 7504, 4176, 7504, 4232, 7360, 4268, 7344, 4240, 7244, 4212, 7204, 4232, 7204, 4260, 7156, 4260, 6984, 4188, 6964, 4116, 6808, 4068, 6808, 4020)
 
-[node name="NorthwestPlateau" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain010" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(976, 3572, 1024, 3572, 1064, 3620, 1140, 3624, 1212, 3684, 1224, 3660, 1376, 3676, 1412, 3812, 1460, 3808, 1456, 3716, 1552, 3732, 1552, 3832, 1464, 3832, 1460, 3884, 1428, 3904, 1292, 3904, 1272, 3864, 1272, 3952, 1176, 3952, 1152, 3896, 1092, 3880, 1084, 3852, 964, 3840, 960, 3740, 932, 3736, 948, 3616)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="NorthwestPlateau"]
-polygon = PackedVector2Array(1890, 1920, 2180, 1660, 2520, 1660, 2780, 1900, 2860, 2290, 2690, 2560, 2300, 2640, 1990, 2420)
+[node name="Terrain011" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3472, 2884, 3520, 2920, 3512, 3040, 3428, 3036, 3448, 3088, 3436, 3344, 3292, 3344, 3288, 3256, 3332, 3152, 3276, 3128, 3228, 3200, 3172, 3204, 3144, 3180, 3144, 3092, 3172, 3088, 3280, 2864, 3312, 2856, 3400, 2716, 3448, 2716)
 
-[node name="CentralNeedles" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain012" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1416, 2748, 1464, 2776, 1544, 2776, 1536, 2840, 1568, 2884, 1680, 2888, 1700, 2928, 1772, 2932, 1792, 2984, 1824, 2948, 1884, 2948, 1892, 3088, 1972, 3076, 1964, 3172, 1880, 3168, 1868, 3120, 1720, 3120, 1648, 3100, 1632, 3072, 1516, 3064, 1312, 2884, 1312, 2832, 1344, 2824, 1336, 2760)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="CentralNeedles"]
-polygon = PackedVector2Array(4030, 1770, 4370, 1420, 4720, 1530, 4930, 1920, 5100, 2410, 4930, 2860, 4580, 3040, 4230, 2810, 3970, 2350)
+[node name="Terrain013" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2656, 3316, 2656, 3356, 2700, 3360, 2720, 3416, 2776, 3416, 2780, 3480, 2668, 3476, 2668, 3532, 2732, 3528, 2732, 3596, 2648, 3588, 2660, 3680, 2676, 3644, 2736, 3644, 2736, 3776, 2656, 3752, 2636, 3780, 2492, 3772, 2392, 3704, 2404, 3592, 2516, 3608, 2536, 3576, 2516, 3508, 2548, 3504, 2544, 3476, 2416, 3488, 2472, 3292)
 
-[node name="WestFallsRidge" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain014" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2620, 4312, 2648, 4372, 2756, 4396, 2768, 4492, 2876, 4540, 2888, 4576, 3088, 4608, 3096, 4692, 3228, 4808, 3256, 4872, 3312, 4872, 3312, 4920, 3240, 4920, 3236, 4888, 3056, 4820, 3028, 4744, 2916, 4760, 2900, 4708, 2732, 4652, 2732, 4572, 2604, 4540, 2556, 4496, 2572, 4312)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="WestFallsRidge"]
-polygon = PackedVector2Array(1390, 2750, 1700, 2410, 2100, 2390, 2360, 2710, 2260, 3100, 1910, 3330, 1540, 3220)
+[node name="Terrain015" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4032, 4996, 4036, 5020, 4112, 5012, 4172, 5064, 4288, 5088, 4296, 5124, 4368, 5128, 4444, 5264, 4608, 5336, 4608, 5396, 4364, 5368, 4324, 5272, 4224, 5232, 4088, 5224, 4028, 5152, 3916, 5148, 3868, 5036, 3868, 4968)
 
-[node name="CentralRockSpine" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain016" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2232, 5708, 2232, 5804, 2340, 5848, 2392, 5928, 2480, 5976, 2480, 6024, 2404, 6092, 2480, 6132, 2496, 6172, 2532, 6176, 2528, 6228, 2384, 6268, 2356, 6224, 2364, 6124, 2328, 6044, 2200, 6016, 2152, 5976, 2168, 5888, 2084, 5864, 2068, 5836, 2108, 5688)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="CentralRockSpine"]
-polygon = PackedVector2Array(3220, 3000, 3500, 2700, 3800, 2770, 4010, 3150, 3900, 3500, 3570, 3700, 3280, 3490)
+[node name="Terrain017" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2020, 6272, 1900, 6304, 1892, 6352, 1856, 6380, 1716, 6396, 1696, 6368, 1600, 6372, 1544, 6304, 1492, 6280, 1492, 6180, 1516, 6176, 1532, 6124, 1616, 6124, 1644, 6160, 1744, 6196, 1764, 6252, 1832, 6236, 1856, 6112, 2000, 6096)
 
-[node name="RibCage" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain018" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2244, 5000, 2280, 5068, 2364, 5096, 2420, 5180, 2468, 5196, 2472, 5376, 2520, 5388, 2492, 5480, 2400, 5492, 2400, 5436, 2360, 5432, 2388, 5328, 2372, 5292, 2288, 5292, 2320, 5376, 2272, 5380, 2256, 5448, 2208, 5448, 2140, 5392, 2168, 5220, 2280, 5212, 2188, 5164, 2192, 5000)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="RibCage"]
-polygon = PackedVector2Array(3780, 3570, 4200, 3370, 4640, 3490, 4830, 3810, 4680, 4110, 4270, 4220, 3900, 4050)
+[node name="Terrain019" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3468, 5908, 3544, 5972, 3544, 6020, 3400, 6052, 3392, 6144, 3308, 6212, 3076, 6252, 3040, 6036, 3252, 6024, 3264, 6100, 3284, 6104, 3284, 6008, 3344, 6008, 3348, 6040, 3376, 6036, 3368, 5808, 3460, 5808)
 
-[node name="SouthwestBoulders" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain020" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2824, 6488, 2596, 6536, 2596, 6624, 2496, 6624, 2488, 6560, 2468, 6604, 2420, 6604, 2336, 6544, 2336, 6456, 2372, 6452, 2368, 6424, 2336, 6424, 2340, 6332, 2388, 6332, 2408, 6376, 2580, 6436, 2604, 6476, 2612, 6400, 2644, 6396, 2656, 6336, 2700, 6300, 2780, 6304)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="SouthwestBoulders"]
-polygon = PackedVector2Array(2050, 5220, 2460, 4930, 2890, 5030, 3090, 5400, 2930, 5790, 2520, 5930, 2160, 5660)
+[node name="Terrain021" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5408, 5960, 5528, 5968, 5520, 5848, 5636, 5856, 5724, 5896, 5748, 5980, 5760, 5908, 5824, 5904, 5812, 5968, 5924, 6000, 5988, 6084, 6064, 6100, 6056, 6176, 5936, 6160, 5856, 6048, 5632, 5984, 5512, 6020, 5564, 6040, 5560, 6108, 5364, 6136, 5352, 5988)
 
-[node name="SpiralRuins" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain022" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5716, 3364, 5760, 3364, 5804, 3300, 5852, 3300, 5932, 3368, 5968, 3376, 5996, 3460, 5996, 3516, 5968, 3528, 6040, 3600, 6040, 3696, 5912, 3700, 5852, 3636, 5840, 3572, 5716, 3508, 5716, 3460, 5688, 3440, 5688, 3384)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="SpiralRuins"]
-polygon = PackedVector2Array(4550, 4830, 4910, 4680, 5290, 4820, 5450, 5150, 5330, 5480, 4950, 5610, 4620, 5400)
+[node name="Terrain023" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5896, 5076, 5908, 5120, 5984, 5132, 6012, 5248, 6024, 5224, 6076, 5224, 6088, 5324, 6032, 5340, 6112, 5352, 6156, 5464, 6216, 5472, 6240, 5416, 6288, 5416, 6292, 5496, 6144, 5536, 6132, 5628, 6060, 5628, 6040, 5528, 6088, 5484, 6060, 5420, 5992, 5392, 5976, 5332, 5864, 5316, 5852, 5244, 5804, 5244, 5836, 5080)
 
-[node name="SoutheastCliffs" type="StaticBody2D" parent="."]
-collision_layer = 2
-collision_mask = 0
+[node name="Terrain024" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6484, 3696, 6436, 3708, 6420, 3776, 6464, 3780, 6488, 3736, 6536, 3736, 6536, 3812, 6452, 3852, 6328, 3832, 6248, 3852, 6208, 3916, 6256, 3928, 6240, 4024, 6148, 3996, 6004, 4008, 6012, 3920, 6116, 3944, 6148, 3812, 6244, 3828, 6228, 3716, 6268, 3712, 6288, 3672, 6484, 3644)
 
-[node name="Polygon" type="CollisionPolygon2D" parent="SoutheastCliffs"]
-polygon = PackedVector2Array(5550, 4320, 5990, 4200, 6350, 4440, 6480, 4870, 6290, 5220, 5900, 5310, 5580, 5050)
+[node name="Terrain025" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3372, 2116, 3472, 2180, 3472, 2220, 3520, 2260, 3580, 2272, 3588, 2348, 3720, 2420, 3716, 2528, 3644, 2540, 3520, 2476, 3524, 2396, 3444, 2376, 3440, 2324, 3316, 2288, 3320, 2116)
+
+[node name="Terrain026" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6792, 5720, 6804, 5664, 6836, 5660, 6860, 5572, 6916, 5572, 6940, 5592, 6944, 5712, 6904, 5716, 6916, 5808, 7052, 5852, 7064, 5808, 7112, 5808, 7124, 5884, 7048, 5928, 6968, 5928, 6924, 5904, 6828, 5916, 6712, 5820, 6712, 5760)
+
+[node name="Terrain027" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3404, 824, 3416, 860, 3444, 880, 3444, 928, 3408, 936, 3400, 952, 3420, 972, 3468, 972, 3480, 1000, 3496, 1000, 3516, 1136, 3476, 1136, 3452, 1160, 3304, 1168, 3300, 1148, 3228, 1124, 3228, 1076, 3268, 1008, 3280, 936, 3296, 932, 3348, 820)
+
+[node name="Terrain028" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1052, 5156, 1064, 5364, 1044, 5428, 1080, 5456, 1184, 5464, 1184, 5536, 1160, 5548, 1052, 5548, 996, 5472, 904, 5484, 844, 5408, 856, 5340, 928, 5348, 924, 5244, 956, 5232, 1000, 5156)
+
+[node name="Terrain029" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5384, 1400, 5412, 1664, 5468, 1668, 5472, 1640, 5520, 1640, 5520, 1692, 5484, 1692, 5468, 1740, 5364, 1756, 5268, 1712, 5148, 1692, 5148, 1644, 5212, 1616, 5224, 1572, 5256, 1564, 5336, 1400)
+
+[node name="Terrain030" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5272, 2608, 5284, 2624, 5380, 2636, 5412, 2696, 5412, 2784, 5436, 2788, 5424, 2872, 5360, 2876, 5260, 2832, 5212, 2828, 5208, 2776, 5168, 2748, 5136, 2748, 5120, 2608)
+
+[node name="Terrain031" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6176, 6572, 6160, 6532, 6128, 6532, 6124, 6556, 6168, 6584, 6168, 6632, 6032, 6648, 5872, 6556, 5864, 6488, 5880, 6468, 5968, 6464, 5976, 6544, 6008, 6548, 6028, 6504, 6120, 6504, 6132, 6472, 6172, 6464, 6176, 6436, 6280, 6420, 6300, 6516, 6328, 6520, 6328, 6568)
+
+[node name="Terrain032" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6048, 2584, 6064, 2628, 6100, 2628, 6100, 2672, 6148, 2692, 6164, 2780, 6196, 2788, 6192, 2864, 6076, 2848, 5976, 2852, 5972, 2812, 5916, 2808, 5916, 2672, 5988, 2648, 5980, 2632, 5960, 2632, 5960, 2580)
+
+[node name="Terrain033" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3436, 5004, 3488, 5120, 3552, 5160, 3628, 5176, 3640, 5264, 3668, 5304, 3744, 5292, 3736, 5360, 3688, 5360, 3664, 5340, 3516, 5336, 3472, 5300, 3472, 5248, 3456, 5244, 3452, 5212, 3388, 5188, 3372, 5004)
+
+[node name="Terrain034" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2632, 1592, 2612, 1680, 2652, 1812, 2680, 1816, 2672, 1904, 2688, 1980, 2652, 1984, 2640, 2032, 2532, 2016, 2508, 1888, 2564, 1892, 2576, 1952, 2596, 1952, 2568, 1820, 2472, 1768, 2472, 1720, 2504, 1716, 2552, 1608, 2580, 1592)
+
+[node name="Terrain035" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1484, 2420, 1564, 2444, 1584, 2604, 1640, 2608, 1640, 2692, 1616, 2704, 1552, 2704, 1544, 2688, 1496, 2684, 1392, 2696, 1392, 2640, 1436, 2420)
+
+[node name="Terrain036" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5260, 5320, 5324, 5320, 5396, 5384, 5444, 5384, 5484, 5432, 5544, 5464, 5544, 5524, 5576, 5544, 5576, 5620, 5512, 5628, 5476, 5608, 5476, 5528, 5488, 5516, 5476, 5504, 5420, 5504, 5412, 5488, 5328, 5484, 5272, 5456, 5220, 5456, 5220, 5396, 5240, 5336)
+
+[node name="Terrain037" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6632, 6328, 6548, 6340, 6536, 6380, 6668, 6364, 6684, 6468, 6636, 6468, 6612, 6444, 6564, 6464, 6328, 6456, 6324, 6348, 6448, 6372, 6452, 6312, 6520, 6308, 6588, 6236, 6636, 6236)
+
+[node name="Terrain038" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7212, 3424, 7216, 3576, 7252, 3584, 7252, 3640, 7212, 3644, 7204, 3700, 7184, 3712, 7176, 3748, 7128, 3748, 7108, 3660, 7096, 3680, 7020, 3680, 7020, 3632, 7044, 3628, 7140, 3412)
+
+[node name="Terrain039" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5656, 6960, 5648, 7132, 5676, 7136, 5684, 7156, 5704, 7156, 5692, 7256, 5608, 7256, 5592, 7240, 5560, 7236, 5484, 7168, 5484, 7116, 5516, 7080, 5520, 7048, 5552, 7044, 5604, 6960)
+
+[node name="Terrain040" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(904, 1988, 948, 2020, 976, 2020, 996, 2036, 1000, 2060, 1100, 2104, 1104, 2176, 1168, 2176, 1164, 2236, 1148, 2248, 1096, 2248, 1076, 2212, 964, 2204, 964, 2124, 920, 2120, 916, 2080, 836, 2072, 836, 2024, 856, 1988)
+
+[node name="Terrain041" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1016, 4160, 1024, 4268, 1084, 4272, 1112, 4312, 1108, 4368, 1044, 4364, 1012, 4376, 1012, 4428, 904, 4428, 904, 4376, 928, 4376, 936, 4360, 892, 4352, 892, 4284, 908, 4276, 956, 4160)
+
+[node name="Terrain042" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7132, 4744, 7148, 4696, 7188, 4684, 7200, 4644, 7252, 4644, 7272, 4664, 7296, 4796, 7308, 4808, 7344, 4808, 7344, 4868, 7304, 4868, 7300, 4884, 7192, 4884, 7188, 4840, 7164, 4840, 7140, 4816, 7100, 4804, 7100, 4748)
+
+[node name="Terrain043" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4648, 1408, 4688, 1416, 4688, 1484, 4636, 1488, 4640, 1552, 4600, 1560, 4580, 1580, 4484, 1572, 4488, 1496, 4556, 1348, 4648, 1352)
+
+[node name="Terrain044" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2984, 6172, 2996, 6184, 3004, 6252, 3020, 6256, 3020, 6296, 3052, 6304, 3052, 6368, 2872, 6380, 2860, 6308, 2860, 6208, 2888, 6204, 2892, 6172)
+
+[node name="Terrain045" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1756, 5832, 1760, 5856, 1756, 6100, 1740, 6104, 1740, 6140, 1684, 6136, 1684, 6080, 1696, 6080, 1700, 6068, 1672, 6056, 1664, 6040, 1608, 6032, 1608, 5948, 1664, 5912, 1708, 5832)
+
+[node name="Terrain046" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2068, 2332, 2136, 2332, 2152, 2356, 2212, 2376, 2212, 2400, 2244, 2420, 2244, 2440, 2260, 2456, 2352, 2476, 2352, 2524, 2232, 2520, 2172, 2496, 2164, 2476, 2076, 2460, 2060, 2440, 2060, 2340)
+
+[node name="Terrain047" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4272, 6064, 4284, 6076, 4304, 6232, 4320, 6252, 4360, 6252, 4360, 6300, 4332, 6300, 4312, 6312, 4224, 6308, 4220, 6280, 4168, 6256, 4160, 6192, 4176, 6176, 4180, 6140, 4204, 6112, 4224, 6064)
+
+[node name="Terrain048" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3004, 5464, 3016, 5472, 3016, 5524, 3044, 5620, 3064, 5624, 3060, 5680, 2988, 5684, 2984, 5668, 2916, 5664, 2896, 5640, 2896, 5592, 2952, 5464)
+
+[node name="Terrain049" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3604, 6292, 3620, 6328, 3620, 6504, 3504, 6496, 3504, 6472, 3456, 6436, 3456, 6388, 3464, 6380, 3544, 6356, 3552, 6292)
+
+[node name="Terrain050" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3336, 5120, 3276, 5148, 3240, 5152, 3236, 5164, 3192, 5164, 3188, 5176, 3140, 5188, 3088, 5188, 3088, 5140, 3120, 5128, 3120, 5092, 3144, 5072, 3184, 5064, 3188, 5048, 3312, 5048, 3316, 5064, 3336, 5064)
+
+[node name="Terrain051" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5560, 2620, 5568, 2632, 5612, 2636, 5624, 2644, 5624, 2720, 5636, 2728, 5636, 2804, 5564, 2804, 5556, 2788, 5504, 2784, 5488, 2620)
+
+[node name="Terrain052" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5744, 2532, 5748, 2520, 5876, 2528, 5876, 2584, 5848, 2588, 5852, 2604, 5864, 2604, 5864, 2652, 5804, 2652, 5796, 2628, 5776, 2628, 5768, 2636, 5768, 2668, 5756, 2676, 5708, 2676, 5696, 2620, 5696, 2532)
+
+[node name="Terrain053" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6024, 5728, 6036, 5732, 6036, 5780, 6000, 5796, 5940, 5796, 5924, 5776, 5916, 5712, 5908, 5708, 5908, 5620, 6032, 5612)
+
+[node name="Terrain054" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1148, 2024, 1228, 2024, 1236, 2048, 1248, 2052, 1248, 2088, 1256, 2104, 1276, 2100, 1276, 2072, 1324, 2072, 1324, 2124, 1288, 2124, 1284, 2152, 1156, 2152, 1148, 2120, 1132, 2112, 1132, 2032)
+
+[node name="Terrain055" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6576, 3504, 6600, 3516, 6608, 3544, 6608, 3620, 6632, 3624, 6632, 3672, 6516, 3680, 6516, 3640, 6508, 3636, 6508, 3504)
+
+[node name="Terrain056" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7516, 3944, 7516, 3964, 7532, 3968, 7536, 4016, 7604, 4016, 7604, 4064, 7588, 4096, 7552, 4124, 7532, 4132, 7480, 4132, 7468, 4028, 7468, 3944)
+
+[node name="Terrain057" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2688, 2140, 2696, 2148, 2728, 2148, 2728, 2196, 2720, 2204, 2724, 2304, 2684, 2304, 2680, 2316, 2628, 2316, 2628, 2264, 2608, 2224, 2608, 2168, 2632, 2144)
+
+[node name="Terrain058" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5592, 712, 5608, 724, 5604, 800, 5612, 824, 5612, 888, 5532, 888, 5528, 876, 5488, 860, 5488, 788, 5500, 788, 5504, 776, 5520, 772, 5520, 752, 5544, 712)
+
+[node name="Terrain059" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7460, 2716, 7468, 2800, 7500, 2804, 7508, 2812, 7512, 2892, 7408, 2888, 7388, 2876, 7384, 2856, 7376, 2856, 7372, 2800, 7392, 2796, 7392, 2748, 7412, 2716)
+
+[node name="Terrain060" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3820, 5152, 3820, 5188, 3860, 5196, 3872, 5228, 3928, 5228, 3928, 5288, 3912, 5308, 3860, 5308, 3856, 5280, 3752, 5280, 3752, 5228, 3764, 5224, 3764, 5200, 3772, 5196, 3772, 5152)
+
+[node name="Terrain061" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2004, 4560, 2072, 4560, 2072, 4580, 2084, 4608, 2140, 4608, 2140, 4656, 2124, 4656, 2116, 4672, 1984, 4672, 1972, 4644, 1952, 4640, 1952, 4588)
+
+[node name="Terrain062" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7196, 1532, 7200, 1508, 7244, 1452, 7292, 1452, 7292, 1464, 7308, 1480, 7308, 1532, 7296, 1536, 7296, 1552, 7316, 1556, 7316, 1596, 7192, 1596, 7188, 1588, 7164, 1588, 7164, 1540)
+
+[node name="Terrain063" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2880, 3556, 2880, 3608, 2864, 3612, 2864, 3640, 2880, 3644, 2880, 3700, 2868, 3704, 2868, 3712, 2764, 3712, 2764, 3660, 2776, 3652, 2772, 3580, 2816, 3580, 2820, 3544, 2872, 3544)
+
+[node name="Terrain064" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1056, 1776, 1072, 1784, 1064, 1968, 1056, 1984, 1008, 1984, 996, 1928, 988, 1924, 988, 1904, 976, 1900, 976, 1848, 1008, 1776)
+
+[node name="Terrain065" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2964, 2528, 2964, 2540, 2976, 2552, 2996, 2552, 3024, 2576, 3032, 2676, 2912, 2676, 2908, 2528)
+
+[node name="Terrain066" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6156, 980, 6168, 996, 6180, 996, 6188, 1012, 6188, 1036, 6204, 1048, 6204, 1096, 6184, 1100, 6184, 1120, 6120, 1120, 6112, 1108, 6084, 1104, 6064, 1084, 6064, 1036, 6084, 1020, 6084, 1008, 6104, 988, 6104, 980)
+
+[node name="Terrain067" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2776, 2024, 2804, 2000, 2816, 2000, 2820, 1988, 2868, 1988, 2868, 2044, 2856, 2048, 2856, 2060, 2888, 2064, 2892, 2072, 2888, 2132, 2776, 2136, 2760, 2088, 2760, 2028)
+
+[node name="Terrain068" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5144, 5416, 5148, 5456, 5208, 5456, 5208, 5548, 5088, 5556, 5092, 5496, 5076, 5464, 5076, 5416)
+
+[node name="Terrain069" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4092, 1076, 4100, 1220, 4036, 1220, 4020, 1208, 3988, 1208, 3984, 1188, 3976, 1184, 3976, 1136, 3996, 1116, 4024, 1116, 4044, 1076)
+
+[node name="Terrain070" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2304, 4408, 2320, 4440, 2320, 4504, 2304, 4504, 2292, 4516, 2288, 4572, 2224, 4572, 2220, 4428, 2228, 4412)
+
+[node name="Terrain071" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5048, 2628, 5040, 2632, 5032, 2680, 5032, 2748, 5020, 2764, 4956, 2768, 4956, 2712, 4996, 2576, 5044, 2576)
+
+[node name="Terrain072" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1296, 7112, 1260, 7116, 1260, 7128, 1248, 7132, 1248, 7172, 1192, 7168, 1192, 7108, 1204, 7096, 1204, 7072, 1216, 7064, 1216, 7044, 1228, 7032, 1236, 7000, 1292, 7000)
+
+[node name="Terrain073" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1876, 6836, 1884, 6900, 1892, 6908, 1924, 6912, 1924, 6964, 1896, 6964, 1892, 6972, 1824, 6972, 1824, 6944, 1792, 6928, 1792, 6880, 1804, 6880, 1812, 6872, 1828, 6836)
+
+[node name="Terrain074" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3652, 3260, 3604, 3260, 3600, 3280, 3580, 3292, 3576, 3304, 3488, 3304, 3488, 3256, 3504, 3248, 3504, 3228, 3512, 3220, 3588, 3220, 3592, 3196, 3656, 3196)
+
+[node name="Terrain075" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5268, 4764, 5288, 4728, 5376, 4732, 5388, 4752, 5388, 4824, 5248, 4820, 5244, 4816, 5244, 4768)
+
+[node name="Terrain076" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(7600, 6204, 7612, 6192, 7612, 6184, 7624, 6180, 7624, 6172, 7676, 6172, 7680, 6292, 7600, 6288, 7596, 6276, 7556, 6252, 7556, 6204)
+
+[node name="Terrain077" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1360, 5484, 1296, 5484, 1288, 5500, 1216, 5504, 1216, 5432, 1228, 5432, 1236, 5424, 1264, 5424, 1280, 5412, 1356, 5412, 1360, 5416)
+
+[node name="Terrain078" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3644, 2680, 3692, 2684, 3692, 2732, 3644, 2732, 3644, 2704, 3616, 2700, 3612, 2760, 3604, 2772, 3556, 2772, 3556, 2704, 3564, 2692, 3588, 2688, 3588, 2640, 3596, 2628, 3644, 2628)
+
+[node name="Terrain079" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(492, 4896, 500, 4916, 512, 4916, 516, 4928, 524, 4928, 524, 4940, 532, 4952, 532, 5000, 524, 5008, 444, 5004, 416, 4992, 416, 4944, 424, 4932, 436, 4928, 436, 4908, 444, 4896)
+
+[node name="Terrain080" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4108, 5604, 4116, 5632, 4124, 5640, 4124, 5664, 4140, 5668, 4140, 5720, 4040, 5720, 4036, 5716, 4036, 5636, 4056, 5604)
+
+[node name="Terrain081" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1840, 3380, 1840, 3416, 1852, 3420, 1856, 3428, 1872, 3428, 1872, 3476, 1868, 3480, 1760, 3476, 1760, 3420, 1788, 3380)
+
+[node name="Terrain082" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(2832, 2672, 2832, 2696, 2848, 2700, 2848, 2720, 2860, 2728, 2860, 2776, 2768, 2776, 2764, 2684, 2776, 2672)
+
+[node name="Terrain083" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(4780, 2316, 4784, 2352, 4788, 2356, 4804, 2356, 4804, 2404, 4800, 2412, 4716, 2412, 4712, 2368, 4700, 2364, 4700, 2316)
+
+[node name="Terrain084" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3648, 4992, 3632, 4992, 3628, 4996, 3628, 5016, 3572, 5016, 3572, 4960, 3580, 4948, 3584, 4924, 3592, 4920, 3592, 4904, 3600, 4896, 3600, 4888, 3648, 4888)
+
+[node name="Terrain085" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1712, 1440, 1712, 1456, 1716, 1460, 1740, 1460, 1748, 1468, 1748, 1536, 1700, 1536, 1696, 1520, 1676, 1520, 1672, 1512, 1652, 1512, 1652, 1464, 1664, 1448, 1664, 1440)
+
+[node name="Terrain086" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1664, 2416, 1668, 2508, 1620, 2508, 1616, 2496, 1600, 2492, 1600, 2480, 1592, 2464, 1592, 2416)
+
+[node name="Terrain087" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(6740, 3476, 6740, 3556, 6732, 3560, 6728, 3568, 6676, 3568, 6680, 3476)
+
+[node name="WestUpperFalls" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1770, 2220, 2130, 2220, 2130, 2600, 1770, 2600)
+
+[node name="WestLowerFalls" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(1710, 4750, 2140, 4750, 2140, 5310, 1710, 5310)
+
+[node name="CentralFalls" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(3140, 4930, 3640, 4930, 3640, 5430, 3140, 5430)
+
+[node name="EastFalls" type="CollisionPolygon2D" parent="TerrainBlockers"]
+polygon = PackedVector2Array(5700, 4900, 6220, 4900, 6220, 5490, 5700, 5490)

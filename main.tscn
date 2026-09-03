@@ -704,7 +704,7 @@ texture = ExtResource("53_tropical_09")
 script = ExtResource("35_art_sprite")
 
 [node name="Player" type="CharacterBody2D" parent="World/DepthSorted" unique_id=2028328843]
-position = Vector2(4100, 4700)
+position = Vector2(6500, 2500)
 collision_mask = 2
 script = ExtResource("3_player")
 

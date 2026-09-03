@@ -92,6 +92,14 @@ func _run() -> void:
 	if player.world_size != Vector2(8192.0, 8192.0):
 		_fail("Replacement map did not load its 8192 world size")
 		return
+	if not player.global_position.is_equal_approx(Vector2(6500.0, 2500.0)):
+		_fail("Player did not spawn on the upper-right beach")
+		return
+	var map_manifest: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/maps/spawn/spawn_map.json"))
+	var map_chunks: Array = map_manifest.get("chunks", [])
+	if map_chunks.size() != 16:
+		_fail("Replacement map manifest did not keep the 4x4 chunk layout")
+		return
 	if player.move_speed != 170.0 or player.run_speed != 280.0 or player.crouch_speed != 82.0 or player.crawl_speed != 46.0:
 		_fail("Normal player movement speeds were not restored")
 		return
@@ -103,6 +111,9 @@ func _run() -> void:
 		_fail("Spawn foundation did not stream the camera-visible chunk range: nodes=%d loaded=%d" % [foundation.get_child_count(), initial_chunk_count])
 		return
 	for chunk: Sprite2D in foundation.get_children():
+		if chunk.texture == null or chunk.texture.get_size() != Vector2(2048.0, 2048.0):
+			_fail("A replacement map chunk is not 2048x2048: " + chunk.name)
+			return
 		var water_surface := chunk.get_node_or_null("WaterSurface") as Sprite2D
 		if water_surface == null or water_surface.texture != chunk.texture or not water_surface.material is ShaderMaterial:
 			_fail("A streamed map chunk is missing its editable water surface overlay: " + chunk.name)
@@ -332,8 +343,8 @@ func _run() -> void:
 		_fail("Rainy movement did not keep footstep audio separate from puddle visuals")
 		return
 	var initial_impact_count := 0
-	var land_position := Vector2(4100.0, 4700.0)
-	var water_position := Vector2(32.0, 32.0)
+	var land_position := Vector2(6500.0, 2500.0)
+	var water_position := Vector2(7300.0, 2500.0)
 	if not weather_ground.is_feedback_area(land_position) or weather_ground.is_water_surface_position(land_position):
 		_fail("Rain feedback could not identify ordinary terrain")
 		return
@@ -429,7 +440,7 @@ func _run() -> void:
 	if not wetness_overlay.visible or not weather_ground.raining:
 		_fail("Rain wetness did not reactivate")
 		return
-	weather_ground.spawn_impact(Vector2(4100.0, 4700.0))
+	weather_ground.spawn_impact(Vector2(6500.0, 2500.0))
 	if weather_ground._impacts.is_empty():
 		_fail("Falling rain did not trigger a ground splash")
 		return
@@ -737,14 +748,17 @@ func _run() -> void:
 	await process_frame
 
 	var ocean_query := PhysicsPointQueryParameters2D.new()
-	ocean_query.position = Vector2(8050.0, 3900.0)
+	ocean_query.position = Vector2(7300.0, 2500.0)
 	ocean_query.collision_mask = 2
-	if scene.get_world_2d().direct_space_state.intersect_point(ocean_query).is_empty():
-		_fail("Ocean collision did not cover a deep-water point")
+	if not scene.get_node("World").is_water_position(ocean_query.position):
+		_fail("Beach ocean was not detected by the replacement water mask")
+		return
+	if not scene.get_world_2d().direct_space_state.intersect_point(ocean_query).is_empty():
+		_fail("Beach ocean was incorrectly blocked by terrain collision")
 		return
 
 	var walkable_query := PhysicsPointQueryParameters2D.new()
-	walkable_query.position = Vector2(4100.0, 4700.0)
+	walkable_query.position = Vector2(6500.0, 2500.0)
 	walkable_query.collision_mask = 2
 	if not scene.get_world_2d().direct_space_state.intersect_point(walkable_query).is_empty():
 		_fail("Replacement map spawn point was blocked")

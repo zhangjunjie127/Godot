@@ -116,12 +116,12 @@ func _run() -> void:
 		_fail("Underwater map scene is missing")
 		return
 	var land_collision := scene.get_node_or_null("World/Collision")
-	var ocean_polygon := scene.get_node_or_null("World/Collision/OceanEast/Polygon") as CollisionPolygon2D
-	if land_collision == null or land_collision.get_child_count() < 10 or ocean_polygon == null:
+	var terrain_blockers := scene.get_node_or_null("World/Collision/TerrainBlockers") as StaticBody2D
+	if land_collision == null or terrain_blockers == null or terrain_blockers.get_child_count() < 20:
 		_fail("Editable land collision scene was not loaded")
 		return
-	if not scene.get_node("World").is_water_position(Vector2(8050.0, 3900.0)):
-		_fail("Surface swimming no longer follows the editable water collision polygon")
+	if not scene.get_node("World").is_water_position(Vector2(7300.0, 2500.0)):
+		_fail("Surface swimming no longer follows the replacement water mask")
 		return
 	if scene.get_node_or_null("WaterTransition") != null:
 		_fail("The obsolete automatic water-entry transition still exists")
@@ -135,7 +135,7 @@ func _run() -> void:
 		return
 	for _frame: int in range(50):
 		await physics_frame
-	player.global_position = Vector2(4100.0, 4700.0)
+	player.global_position = Vector2(6500.0, 2500.0)
 	Input.action_press("player_jump")
 	for _frame: int in range(10):
 		await physics_frame
@@ -145,7 +145,7 @@ func _run() -> void:
 		return
 	for _frame: int in range(40):
 		await physics_frame
-	player.global_position = Vector2(6200.0, 3000.0)
+	player.global_position = Vector2(6900.0, 2500.0)
 	Input.action_press("ui_right")
 	for _frame: int in range(420):
 		await physics_frame

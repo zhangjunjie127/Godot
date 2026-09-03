@@ -1,6 +1,6 @@
 {
-  "version": 8,
-  "source": "user-supplied-tropical-island-20260829",
+  "version": 9,
+  "source": "user-supplied-island-20260903",
   "vegetationSeed": 20260829,
   "showVegetation": false,
   "showProps": false,
@@ -11,8 +11,8 @@
   },
   "chunkSize": 2048,
   "spawn": {
-	"x": 4100,
-	"y": 4700
+	"x": 6500,
+	"y": 2500
   },
   "chunks": [
 	{
@@ -408,8 +408,8 @@
 	{
 	  "id": "spawn_zone",
 	  "type": "spawn",
-	  "x": 4100,
-	  "y": 4700,
+	  "x": 6500,
+	  "y": 2500,
 	  "radius": 120
 	},
 	{
@@ -462,7 +462,7 @@
 	"reflectionTint": [
 	  0.66,
 	  0.84,
-	  0.90,
+	  0.9,
 	  1.0
 	]
   }

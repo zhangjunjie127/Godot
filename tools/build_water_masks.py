@@ -30,12 +30,12 @@ def water_mask(image: Image.Image) -> Image.Image:
     hue /= 6.0
 
     blue_water = (
-        (hue >= 0.45)
+        (hue >= 0.47)
         & (hue <= 0.68)
-        & (saturation >= 0.24)
-        & (blue >= 0.28)
-        & (blue >= red * 1.10)
-        & (green >= red * 0.82)
+        & (saturation >= 0.42)
+        & (blue >= 0.35)
+        & ((blue - red) >= 0.12)
+        & (green >= red * 1.02)
     )
     mask = Image.fromarray((blue_water * 255).astype(np.uint8), mode="L")
     return mask.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(1.15))
@@ -73,18 +73,25 @@ def main() -> None:
             (padding, padding, padding + images[tuple(chunk["position"])].shape[1], padding + images[tuple(chunk["position"])].shape[0])
         )
         mask.save(mask_path, optimize=True)
-        chunk["water"] = {"image": mask_path.relative_to(PROJECT_ROOT).as_posix()}
+        depth_path = mask_path.with_name(mask_path.name.replace("_mask.png", "_depth.png"))
+        chunk["water"] = {
+            "image": mask_path.relative_to(PROJECT_ROOT).as_posix(),
+            "depth": depth_path.relative_to(PROJECT_ROOT).as_posix(),
+        }
         generated += 1
 
-    manifest["waterSurface"] = {
-        "enabled": True,
-        "flowDirection": [0.94, 0.34],
-        "flowSpeed": 22.0,
-        "flowStrength": 0.075,
-        "causticsScale": 0.018,
-        "causticsStrength": 0.12,
-        "tint": [0.06, 0.50, 0.66, 1.0],
-    }
+    manifest.setdefault(
+        "waterSurface",
+        {
+            "enabled": True,
+            "flowDirection": [0.94, 0.34],
+            "flowSpeed": 22.0,
+            "flowStrength": 0.075,
+            "causticsScale": 0.018,
+            "causticsStrength": 0.12,
+            "tint": [0.06, 0.50, 0.66, 1.0],
+        },
+    )
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Generated {generated} water masks")
 

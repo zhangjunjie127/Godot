@@ -45,9 +45,13 @@ const OPENING_CLEAR_DAYS := 4
 @export_range(0.4, 6.0, 0.1) var thunder_delay_max := 2.4
 @export_range(-30.0, 0.0, 0.5) var thunder_max_volume_db := -7.0
 @export_range(1.0, 10.0, 0.1) var day_ambience_fade_seconds := 4.0
-@export_range(-40.0, 0.0, 0.5) var birds_max_volume_db := -14.0
-@export_range(-40.0, 0.0, 0.5) var wind_max_volume_db := -23.0
+@export_range(-40.0, 0.0, 0.5) var forest_max_volume_db := -12.0
+@export_range(-40.0, 0.0, 0.5) var shore_max_volume_db := -9.0
+@export_range(-40.0, 0.0, 0.5) var underwater_max_volume_db := -8.0
+@export_range(200.0, 1800.0, 25.0) var shore_hearing_distance := 900.0
 @export var day_night_cycle_path: NodePath
+@export var player_path: NodePath
+@export var land_world_path: NodePath
 @export var ground_effects_path: NodePath
 @export var wetness_overlay_path: NodePath
 @export var puddle_surface_path: NodePath
@@ -55,8 +59,9 @@ const OPENING_CLEAR_DAYS := 4
 @export var screen_rain_effect_path: NodePath
 @export var snow_world_effect_path: NodePath
 @export var thunder_audio_path: NodePath
-@export var day_birds_audio_path: NodePath
-@export var day_wind_audio_path: NodePath
+@export var day_forest_audio_path: NodePath
+@export var shore_audio_path: NodePath
+@export var underwater_audio_path: NodePath
 @export var random_seed := 0
 
 var current_weather := WEATHER_RAIN
@@ -81,8 +86,13 @@ var _screen_rain_effect: Node
 var _snow_world_effect: Node
 var _day_night_cycle: Node
 var _thunder_audio: AudioStreamPlayer
-var _day_birds_audio: AudioStreamPlayer
-var _day_wind_audio: AudioStreamPlayer
+var _player: Node2D
+var _land_world: Node
+var _day_forest_audio: AudioStreamPlayer
+var _shore_audio: AudioStreamPlayer
+var _underwater_audio: AudioStreamPlayer
+var _shore_proximity := 0.0
+var _shore_probe_elapsed := 0.0
 var _target_rain_density := 0.0
 var _target_snow_density := 0.0
 var _target_cloudiness := 0.0
@@ -113,17 +123,22 @@ func _ready() -> void:
 	_snow_world_effect = get_node_or_null(snow_world_effect_path)
 	_day_night_cycle = get_node_or_null(day_night_cycle_path)
 	_thunder_audio = get_node_or_null(thunder_audio_path) as AudioStreamPlayer
-	_day_birds_audio = get_node_or_null(day_birds_audio_path) as AudioStreamPlayer
-	_day_wind_audio = get_node_or_null(day_wind_audio_path) as AudioStreamPlayer
+	_player = get_node_or_null(player_path) as Node2D
+	_land_world = get_node_or_null(land_world_path)
+	_day_forest_audio = get_node_or_null(day_forest_audio_path) as AudioStreamPlayer
+	_shore_audio = get_node_or_null(shore_audio_path) as AudioStreamPlayer
+	_underwater_audio = get_node_or_null(underwater_audio_path) as AudioStreamPlayer
 	_apply_art_audio(_thunder_audio)
-	_apply_art_audio(_day_birds_audio)
-	_apply_art_audio(_day_wind_audio)
+	_apply_art_audio(_day_forest_audio)
+	_apply_art_audio(_shore_audio)
+	_apply_art_audio(_underwater_audio)
 	_apply_art_shader(_wetness_overlay)
 	_apply_art_shader(_puddle_surface)
 	if _day_night_cycle != null:
 		_current_phase = String(_day_night_cycle.current_phase)
-	_setup_audio_loop(_day_birds_audio)
-	_setup_audio_loop(_day_wind_audio)
+	_setup_audio_loop(_day_forest_audio)
+	_setup_audio_loop(_shore_audio)
+	_setup_audio_loop(_underwater_audio)
 	if _puddle_surface is Sprite2D:
 		var puddle_sprite := _puddle_surface as Sprite2D
 		puddle_sprite.texture = ArtAssets.texture(puddle_sprite.texture.resource_path, puddle_sprite.texture)
@@ -247,7 +262,7 @@ func advance_visual_seconds(seconds: float) -> void:
 	)
 	_advance_storm(delta)
 	_sync_atmosphere()
-	_sync_day_ambience()
+	_sync_environment_ambience(delta)
 	_update_puddle_accumulation(delta)
 	_sync_rain_visual_layers()
 	_sync_snow_visual_layer(delta)
@@ -531,12 +546,15 @@ func _update_day_ambience_target() -> void:
 
 
 func _setup_audio_loop(player: AudioStreamPlayer) -> void:
-	if player == null or not (player.stream is AudioStreamWAV):
+	if player == null:
 		return
-	var stream := player.stream as AudioStreamWAV
-	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	stream.loop_begin = 0
-	stream.loop_end = roundi(stream.get_length() * float(stream.mix_rate))
+	if player.stream is AudioStreamWAV:
+		var wav := player.stream as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		wav.loop_begin = 0
+		wav.loop_end = roundi(wav.get_length() * float(wav.mix_rate))
+	elif player.stream is AudioStreamMP3:
+		(player.stream as AudioStreamMP3).loop = true
 
 
 func _apply_art_audio(player: AudioStreamPlayer) -> void:
@@ -552,16 +570,28 @@ func _apply_art_shader(item: CanvasItem) -> void:
 		shader_material.shader = ArtAssets.shader(shader_material.shader.resource_path, shader_material.shader)
 
 
-func _sync_day_ambience() -> void:
-	_sync_ambience_player(_day_birds_audio, birds_max_volume_db)
-	_sync_ambience_player(_day_wind_audio, wind_max_volume_db)
+func _sync_environment_ambience(delta: float) -> void:
+	var underwater := _player != null and bool(_player.get("water_mode"))
+	_shore_probe_elapsed += delta
+	if _shore_probe_elapsed >= 0.2 and not underwater:
+		_shore_probe_elapsed = 0.0
+		var target := 0.0
+		if _player != null and _land_world != null and _land_world.has_method("get_water_proximity"):
+			target = float(_land_world.call("get_water_proximity", _player.global_position, shore_hearing_distance))
+		_shore_proximity = move_toward(_shore_proximity, target, 0.18)
+	elif underwater:
+		_shore_proximity = 1.0
+	var surface_amount := day_ambience_amount if not underwater else 0.0
+	_sync_ambience_player(_day_forest_audio, forest_max_volume_db, surface_amount * lerpf(1.0, 0.32, _shore_proximity))
+	_sync_ambience_player(_shore_audio, shore_max_volume_db, surface_amount * _shore_proximity)
+	_sync_ambience_player(_underwater_audio, underwater_max_volume_db, 1.0 if underwater else 0.0, false)
 
 
-func _sync_ambience_player(player: AudioStreamPlayer, maximum_volume_db: float) -> void:
+func _sync_ambience_player(player: AudioStreamPlayer, maximum_volume_db: float, amount: float, require_visibility: bool = true) -> void:
 	if player == null:
 		return
-	var audible := day_ambience_amount > 0.001 and is_visible_in_tree()
-	player.volume_db = lerpf(-50.0, maximum_volume_db, sqrt(day_ambience_amount)) if audible else -50.0
+	var audible := amount > 0.001 and (is_visible_in_tree() or not require_visibility)
+	player.volume_db = lerpf(-50.0, maximum_volume_db, sqrt(amount)) if audible else -50.0
 	if audible and DisplayServer.get_name() != "headless":
 		if not player.playing:
 			player.play()
@@ -573,12 +603,20 @@ func get_day_ambience_amount() -> float:
 	return day_ambience_amount
 
 
-func get_day_birds_volume_db() -> float:
-	return _day_birds_audio.volume_db if _day_birds_audio != null else -80.0
+func get_day_forest_volume_db() -> float:
+	return _day_forest_audio.volume_db if _day_forest_audio != null else -80.0
 
 
-func get_day_wind_volume_db() -> float:
-	return _day_wind_audio.volume_db if _day_wind_audio != null else -80.0
+func get_shore_volume_db() -> float:
+	return _shore_audio.volume_db if _shore_audio != null else -80.0
+
+
+func get_underwater_volume_db() -> float:
+	return _underwater_audio.volume_db if _underwater_audio != null else -80.0
+
+
+func get_shore_proximity() -> float:
+	return _shore_proximity
 
 
 func _play_thunder() -> void:

@@ -256,12 +256,11 @@ ui = Dictionary[String, Texture2D]({
 "res://assets/ui/title/cover-background.png": null
 })
 weather = Dictionary[String, Texture2D]({
-"res://assets/weather/clouds/sheet-transparent.png": null,
 "res://assets/weather/rain/ripple_flow_gb.png": null
 })
 audio = Dictionary[String, AudioStream]({
-"res://assets/weather/day/birds_ambience.wav": null,
-"res://assets/weather/day/gentle_wind.wav": null,
+"res://assets/weather/day/calm_beach_waves.mp3": null,
+"res://assets/weather/day/forest_day_ambience.mp3": null,
 "res://assets/weather/rain/rain_wash.wav": null,
 "res://assets/weather/rain/wet_footstep.wav": null,
 "res://assets/weather/storm/thunder_rumble.wav": null
@@ -273,8 +272,8 @@ shaders = Dictionary[String, Shader]({
 "res://shaders/night_vision.gdshader": null,
 "res://shaders/cloud_shadow.gdshader": null,
 "res://shaders/outdoor_ambient_fill.gdshader": null,
-"res://shaders/ordered_shadow.gdshader": null,
 "res://shaders/river_surface.gdshader": null,
+"res://shaders/underwater_current.gdshader": null,
 "res://shaders/vegetation_wind.gdshader": null,
 "res://shaders/water_comparison.gdshader": null
 })

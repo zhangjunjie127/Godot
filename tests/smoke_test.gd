@@ -262,9 +262,10 @@ func _run() -> void:
 		return
 	var audio_players := scene.find_children("*", "AudioStreamPlayer", true, false)
 	var thunder_audio := scene.get_node("Weather/Thunder") as AudioStreamPlayer
-	var day_birds_audio := scene.get_node("Weather/DayBirds") as AudioStreamPlayer
-	var day_wind_audio := scene.get_node("Weather/DayWind") as AudioStreamPlayer
-	if audio_players.size() != 5 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players or day_birds_audio not in audio_players or day_wind_audio not in audio_players or wet_footstep_audio not in audio_players:
+	var day_forest_audio := scene.get_node("Weather/DayForest") as AudioStreamPlayer
+	var shore_audio := scene.get_node("Weather/ShoreWaves") as AudioStreamPlayer
+	var underwater_audio := scene.get_node("UnderwaterAmbience") as AudioStreamPlayer
+	if audio_players.size() != 6 or rain_visual._rain_loop not in audio_players or thunder_audio not in audio_players or day_forest_audio not in audio_players or shore_audio not in audio_players or underwater_audio not in audio_players or wet_footstep_audio not in audio_players:
 		_fail("Rainy footstep audio was not retained with the weather audio")
 		return
 	if wetness_overlay.material.get_shader_parameter("rain_intensity") <= 0.0 or float(puddle_surface.material.get_shader_parameter("puddle_amount")) != 0.0:

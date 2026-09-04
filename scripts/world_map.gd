@@ -345,6 +345,19 @@ func is_water_position(world_position: Vector2) -> bool:
 	return false
 
 
+func get_water_proximity(world_position: Vector2, maximum_distance: float = 900.0) -> float:
+	if is_water_position(world_position):
+		return 1.0
+	var distance_limit := maxf(maximum_distance, 1.0)
+	for step_index in range(1, 7):
+		var distance := distance_limit * float(step_index) / 6.0
+		for direction_index in range(16):
+			var angle := TAU * float(direction_index) / 16.0
+			if is_water_position(world_position + Vector2.from_angle(angle) * distance):
+				return 1.0 - distance / distance_limit
+	return 0.0
+
+
 func _cache_water_query_chunks() -> void:
 	_water_query_chunks.clear()
 	for data: Dictionary in _chunk_definitions:

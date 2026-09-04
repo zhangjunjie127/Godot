@@ -24,8 +24,8 @@
 [ext_resource type="Texture2D" uid="uid://v7i2wwgtjdwu" path="res://assets/weather/rain/puddle_mask.png" id="22_puddle_mask"]
 [ext_resource type="Texture2D" uid="uid://b2gxx1qwmsa36" path="res://assets/weather/rain/ripple_flow_gb.png" id="23_ripple_flow"]
 [ext_resource type="AudioStream" uid="uid://dukgl78d2asml" path="res://assets/weather/storm/thunder_rumble.wav" id="24_thunder"]
-[ext_resource type="AudioStream" uid="uid://dgesuic5jyjs1" path="res://assets/weather/day/birds_ambience.wav" id="25_day_birds"]
-[ext_resource type="AudioStream" uid="uid://etpqyoskr7se" path="res://assets/weather/day/gentle_wind.wav" id="26_day_wind"]
+[ext_resource type="AudioStream" path="res://assets/weather/day/forest_day_ambience.mp3" id="25_day_forest"]
+[ext_resource type="AudioStream" path="res://assets/weather/day/calm_beach_waves.mp3" id="26_shore"]
 [ext_resource type="AudioStream" uid="uid://b7yugeuul15ap" path="res://assets/weather/rain/wet_footstep.wav" id="27_wet_footstep"]
 [ext_resource type="Script" uid="uid://413t0jqh8yv4" path="res://scripts/water_surface_interactions.gd" id="28_water_interactions"]
 [ext_resource type="Shader" uid="uid://bxvxgsxp7bxxu" path="res://shaders/night_vision.gdshader" id="29_night_shader"]
@@ -812,13 +812,18 @@ mouse_filter = 2
 stream = ExtResource("24_thunder")
 volume_db = -18.0
 
-[node name="DayBirds" type="AudioStreamPlayer" parent="Weather" unique_id=2115933422]
-stream = ExtResource("25_day_birds")
+[node name="DayForest" type="AudioStreamPlayer" parent="Weather" unique_id=2115933422]
+stream = ExtResource("25_day_forest")
 volume_db = -50.0
 
-[node name="DayWind" type="AudioStreamPlayer" parent="Weather" unique_id=407859058]
-stream = ExtResource("26_day_wind")
+[node name="ShoreWaves" type="AudioStreamPlayer" parent="Weather" unique_id=407859058]
+stream = ExtResource("26_shore")
 volume_db = -50.0
+
+[node name="UnderwaterAmbience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("26_shore")
+volume_db = -50.0
+bus = &"Underwater"
 
 [node name="WetFootstep" type="AudioStreamPlayer" parent="Weather" unique_id=307161526]
 stream = ExtResource("27_wet_footstep")
@@ -835,6 +840,8 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("11_weather")
 day_night_cycle_path = NodePath("../../DayNightCycle")
+player_path = NodePath("../../World/DepthSorted/Player")
+land_world_path = NodePath("../../World")
 ground_effects_path = NodePath("../../World/WeatherGround")
 wetness_overlay_path = NodePath("../Wetness")
 puddle_surface_path = NodePath("../../World/RainPuddleSurface")
@@ -842,8 +849,9 @@ rain_visual_effect_path = NodePath("../RainVisuals")
 screen_rain_effect_path = NodePath("../../ScreenWeather/Drops")
 snow_world_effect_path = NodePath("../../World/SnowWorld")
 thunder_audio_path = NodePath("../Thunder")
-day_birds_audio_path = NodePath("../DayBirds")
-day_wind_audio_path = NodePath("../DayWind")
+day_forest_audio_path = NodePath("../DayForest")
+shore_audio_path = NodePath("../ShoreWaves")
+underwater_audio_path = NodePath("../../UnderwaterAmbience")
 
 [node name="NightVision" type="CanvasLayer" parent="." unique_id=1829535483]
 layer = 80

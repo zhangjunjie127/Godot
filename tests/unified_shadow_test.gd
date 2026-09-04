@@ -46,8 +46,41 @@ func _run() -> void:
 	if not is_equal_approx(tall_prop.ground_shadow_direction_degrees, scene.vegetation_shadow_direction_degrees):
 		_fail("Vegetation shadow direction is not synchronized with the global sun direction")
 		return
-	if low_prop == null or low_prop.has_node("GroundShadow"):
-		_fail("Low groundcover received an unnecessary directional shadow")
+	if low_prop == null or not low_prop.has_node("GroundShadow"):
+		_fail("Low vegetation did not receive the unified directional shadow")
+		return
+
+	var vegetation_sprites: Array[Sprite2D] = []
+	_collect_art_sprites(scene, vegetation_sprites)
+	if vegetation_sprites.size() < 170:
+		_fail("Not all vegetation assets were discovered: %d" % vegetation_sprites.size())
+		return
+	var sampled_collision: CollisionShape2D
+	for sprite: Sprite2D in vegetation_sprites:
+		if not sprite.has_node("GroundShadow"):
+			_fail("Vegetation is missing its unified shadow: " + sprite.texture.resource_path)
+			return
+		var manual_blocker := sprite.get_parent().get_node_or_null("Blocker") as StaticBody2D
+		var generated_blocker := sprite.get_node_or_null("VegetationBlocker") as StaticBody2D
+		var blocker := manual_blocker if manual_blocker != null else generated_blocker
+		if blocker == null or blocker.collision_layer != 2:
+			_fail("Vegetation is missing its root blocker: " + sprite.texture.resource_path)
+			return
+		var collision := blocker.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if collision == null or collision.disabled or not collision.shape is CircleShape2D:
+			_fail("Vegetation root blocker is not an active circle: " + sprite.texture.resource_path)
+			return
+		if generated_blocker != null and sampled_collision == null:
+			sampled_collision = collision
+	if sampled_collision == null:
+		_fail("No generated vegetation blocker was available for physics validation")
+		return
+	await physics_frame
+	var root_query := PhysicsPointQueryParameters2D.new()
+	root_query.position = sampled_collision.global_position
+	root_query.collision_mask = 2
+	if scene.get_world_2d().direct_space_state.intersect_point(root_query).is_empty():
+		_fail("Generated vegetation root blocker is not registered in physics")
 		return
 
 	var player = scene.get_node("World/DepthSorted/Player")
@@ -76,6 +109,15 @@ func _find_art_sprite(node: Node, path_fragment: String) -> Sprite2D:
 		if found != null:
 			return found
 	return null
+
+
+func _collect_art_sprites(node: Node, result: Array[Sprite2D]) -> void:
+	if node is Sprite2D:
+		var sprite := node as Sprite2D
+		if sprite.texture != null and "/vegetation/" in sprite.texture.resource_path and sprite.get_script() != null:
+			result.append(sprite)
+	for child: Node in node.get_children():
+		_collect_art_sprites(child, result)
 
 
 func _fail(message: String) -> void:

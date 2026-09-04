@@ -7,7 +7,11 @@ const VEGETATION_WIND_SHADER := preload("res://shaders/vegetation_wind.gdshader"
 const SHADOW_MODE_AUTO := 0
 const SHADOW_MODE_ENABLED := 1
 const SHADOW_MODE_DISABLED := 2
-const TALL_PROP_DIRECTORIES := ["/palms/", "/trees/", "/deadwood/", "/tropical_plants/"]
+const BLOCKER_LAYER := 2
+const VEGETATION_DIRECTORIES := [
+	"/palms/", "/trees/", "/deadwood/", "/tropical_plants/", "/vines/",
+	"/flowering_plants/", "/foliage/", "/grasses/", "/groundcover/",
+]
 const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/"]
 
 @export_group("Vegetation Wind / 植被风动")
@@ -35,6 +39,11 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export var ground_contact_shadow_scale := Vector2(1.0, 0.30)
 @export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0
 
+@export_group("Root Collision / 根部阻挡")
+@export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var root_collision_mode := SHADOW_MODE_AUTO
+@export_range(0.25, 2.0, 0.05) var root_collision_radius_multiplier := 1.0
+@export var root_collision_local_offset := Vector2.ZERO
+
 static var _shared_wind_material: ShaderMaterial
 
 var _wind_active := false
@@ -48,6 +57,8 @@ var _base_material: Material
 var _weather: Node
 var _ground_shadow: Sprite2D
 var _ground_contact_shadow: Node2D
+var _vegetation_blocker: StaticBody2D
+var _vegetation_collision: CollisionShape2D
 var _shadow_signature := ""
 var _source_texture_path := ""
 
@@ -63,6 +74,7 @@ func _ready() -> void:
 	_wind_active = _wind_is_enabled()
 	_sync_wind_material()
 	_sync_ground_shadow()
+	_sync_vegetation_collision()
 	_shadow_signature = _ground_shadow_signature()
 	set_process(Engine.is_editor_hint() or _wind_active)
 	if not _wind_active:
@@ -79,6 +91,7 @@ func _process(delta: float) -> void:
 			_wind_active = _wind_is_enabled()
 			_sync_wind_material()
 			_sync_ground_shadow()
+			_sync_vegetation_collision()
 			_shadow_signature = signature
 	advance_wind(delta)
 
@@ -259,10 +272,65 @@ func _ground_shadow_is_enabled() -> bool:
 	if ground_shadow_mode == SHADOW_MODE_DISABLED:
 		return false
 	var path := _art_path()
-	for directory: String in TALL_PROP_DIRECTORIES:
+	for directory: String in VEGETATION_DIRECTORIES:
 		if directory in path:
 			return true
 	return false
+
+
+func _sync_vegetation_collision() -> void:
+	var enabled := _root_collision_is_enabled() and not _parent_has_manual_blocker()
+	if not enabled or texture == null:
+		if _vegetation_collision != null:
+			_vegetation_collision.disabled = true
+		return
+	if _vegetation_blocker == null:
+		_vegetation_blocker = StaticBody2D.new()
+		_vegetation_blocker.name = "VegetationBlocker"
+		_vegetation_blocker.collision_layer = BLOCKER_LAYER
+		_vegetation_blocker.collision_mask = 0
+		add_child(_vegetation_blocker)
+		_vegetation_collision = CollisionShape2D.new()
+		_vegetation_collision.name = "CollisionShape2D"
+		_vegetation_blocker.add_child(_vegetation_collision)
+	_vegetation_collision.disabled = false
+	var frame_size := _frame_size()
+	var ground_anchor := offset + (Vector2(0.0, frame_size.y * 0.5) if centered else Vector2(frame_size.x * 0.5, frame_size.y))
+	var profile := _root_collision_profile()
+	var sprite_scale := maxf(absf(scale.x), 0.001)
+	var world_radius := clampf(frame_size.x * sprite_scale * profile.x * root_collision_radius_multiplier, 4.0, 30.0)
+	var circle := CircleShape2D.new()
+	circle.radius = world_radius / sprite_scale
+	_vegetation_collision.shape = circle
+	_vegetation_collision.position = ground_anchor - Vector2(0.0, frame_size.y * profile.y) + root_collision_local_offset
+
+
+func _root_collision_is_enabled() -> bool:
+	if root_collision_mode == SHADOW_MODE_ENABLED:
+		return true
+	if root_collision_mode == SHADOW_MODE_DISABLED:
+		return false
+	var path := _art_path()
+	for directory: String in VEGETATION_DIRECTORIES:
+		if directory in path:
+			return true
+	return false
+
+
+func _parent_has_manual_blocker() -> bool:
+	var holder := get_parent()
+	return holder != null and holder.get_node_or_null("Blocker") is StaticBody2D
+
+
+func _root_collision_profile() -> Vector2:
+	var path := _art_path()
+	if "/palms/" in path or "/trees/" in path:
+		return Vector2(0.10, 0.04)
+	if "/deadwood/" in path:
+		return Vector2(0.18, 0.06)
+	if "/tropical_plants/" in path or "/foliage/" in path:
+		return Vector2(0.13, 0.06)
+	return Vector2(0.10, 0.08)
 
 
 func _frame_size() -> Vector2:
@@ -309,6 +377,9 @@ func _ground_shadow_signature() -> String:
 		ground_contact_shadow_width_ratio,
 		ground_contact_shadow_scale,
 		ground_contact_shadow_strength,
+		root_collision_mode,
+		root_collision_radius_multiplier,
+		root_collision_local_offset,
 		hframes,
 		vframes,
 		frame,

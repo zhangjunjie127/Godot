@@ -27,6 +27,7 @@ const DURATION_HALF_DAY := "半天"
 const DURATION_FULL_DAY := "一天"
 const DURATION_SPECIAL := "特殊事件"
 const GAME_MINUTES_PER_DAY := 1440
+const OPENING_CLEAR_DAYS := 4
 
 @export_enum("晴朗", "阴天", "下雨", "下雪") var start_weather := WEATHER_RAIN
 @export_enum("半天", "一天") var start_duration_mode := DURATION_HALF_DAY
@@ -135,9 +136,18 @@ func _ready() -> void:
 			_ground_effects.set_puddle_mask(puddle_sprite.texture)
 	current_rain_level = start_rain_level if start_rain_level in RAIN_LEVELS else RAIN_MEDIUM
 	current_snow_level = start_snow_level if start_snow_level in SNOW_LEVELS else SNOW_MEDIUM
-	start_weather_event(_normalize_weather(start_weather), start_duration_mode)
 	if _day_night_cycle != null:
+		_last_calendar_minute = _calendar_minute(
+			int(_day_night_cycle.current_day),
+			floori(float(_day_night_cycle.current_hour)),
+			floori(fposmod(float(_day_night_cycle.current_hour), 1.0) * 60.0)
+		)
 		_day_night_cycle.time_changed.connect(_on_time_changed)
+	var opening_clear_minutes := _opening_clear_minutes_remaining()
+	if opening_clear_minutes > 0:
+		start_weather_event(WEATHER_CLEAR, DURATION_FULL_DAY, "", false, opening_clear_minutes)
+	else:
+		start_weather_event(_normalize_weather(start_weather), start_duration_mode)
 	queue_redraw()
 
 
@@ -145,7 +155,7 @@ func _process(delta: float) -> void:
 	advance_visual_seconds(delta)
 
 
-func start_weather_event(weather: String, duration_mode: String, precipitation_level: String = "", preserve_forecast: bool = false) -> bool:
+func start_weather_event(weather: String, duration_mode: String, precipitation_level: String = "", preserve_forecast: bool = false, duration_minutes_override: int = -1) -> bool:
 	weather = _normalize_weather(weather)
 	if weather not in WEATHER_TYPES:
 		return false
@@ -162,13 +172,18 @@ func start_weather_event(weather: String, duration_mode: String, precipitation_l
 		_forecast_queue.clear()
 	current_weather = weather
 	current_duration_mode = duration_mode
-	if duration_mode == DURATION_SPECIAL:
+	if duration_minutes_override > 0:
+		remaining_game_minutes = duration_minutes_override
+		event_duration_days = float(remaining_game_minutes) / float(GAME_MINUTES_PER_DAY)
+	elif duration_mode == DURATION_SPECIAL:
 		event_duration_days = float(_rng.randi_range(3, 10))
+		remaining_game_minutes = roundi(event_duration_days * GAME_MINUTES_PER_DAY)
 	elif duration_mode == DURATION_FULL_DAY:
 		event_duration_days = 1.0
+		remaining_game_minutes = GAME_MINUTES_PER_DAY
 	else:
 		event_duration_days = 0.5
-	remaining_game_minutes = roundi(event_duration_days * GAME_MINUTES_PER_DAY)
+		remaining_game_minutes = GAME_MINUTES_PER_DAY / 2
 	_apply_weather_visuals()
 	_ensure_forecast_horizon()
 	weather_changed.emit(current_weather)
@@ -179,6 +194,8 @@ func start_weather_event(weather: String, duration_mode: String, precipitation_l
 
 
 func trigger_special_weather(weather: String) -> bool:
+	if _opening_clear_minutes_remaining() > 0:
+		return false
 	weather = _normalize_weather(weather)
 	var level := RAIN_HEAVY if weather == WEATHER_RAIN else SNOW_HEAVY if weather == WEATHER_SNOW else ""
 	return start_weather_event(weather, DURATION_SPECIAL, level)
@@ -264,12 +281,28 @@ func _finish_current_event() -> void:
 
 
 func _on_time_changed(day: int, hour: int, minute: int, phase: String) -> void:
-	var calendar_minute := (day - 1) * GAME_MINUTES_PER_DAY + hour * 60 + minute
+	var calendar_minute := _calendar_minute(day, hour, minute)
 	if _last_calendar_minute >= 0 and calendar_minute > _last_calendar_minute:
 		advance_game_minutes(calendar_minute - _last_calendar_minute)
 	_last_calendar_minute = calendar_minute
 	_current_phase = phase
 	_update_day_ambience_target()
+
+
+func _opening_clear_minutes_remaining() -> int:
+	var opening_end := OPENING_CLEAR_DAYS * GAME_MINUTES_PER_DAY
+	var current_minute := _last_calendar_minute
+	if current_minute < 0 and _day_night_cycle != null:
+		current_minute = _calendar_minute(
+			int(_day_night_cycle.current_day),
+			floori(float(_day_night_cycle.current_hour)),
+			floori(fposmod(float(_day_night_cycle.current_hour), 1.0) * 60.0)
+		)
+	return maxi(opening_end - maxi(current_minute, 0), 0)
+
+
+func _calendar_minute(day: int, hour: int, minute: int) -> int:
+	return (maxi(day, 1) - 1) * GAME_MINUTES_PER_DAY + hour * 60 + minute
 
 
 func _apply_weather_visuals() -> void:

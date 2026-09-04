@@ -235,8 +235,16 @@ func _run() -> void:
 	if (phase_icon.texture as AtlasTexture).region.size != Vector2(40.0, 40.0):
 		_fail("Transparent icon padding was not cropped for readability")
 		return
+	if weather.current_weather != "晴朗" or weather.remaining_game_minutes != 5340:
+		_fail("Opening weather was not locked clear through day four")
+		return
+	for opening_forecast: Dictionary in weather.get_forecast(2):
+		if String(opening_forecast["weather"]) != "晴朗":
+			_fail("Opening forecast contains non-clear weather")
+			return
+	weather.start_weather_event("下雨", "半天", "中雨")
 	if weather.current_weather != "下雨":
-		_fail("Rain weather did not initialize")
+		_fail("Manual rain weather did not initialize")
 		return
 	weather.advance_visual_seconds(1.0)
 	if weather.visual_rain_density <= 0.0 or weather.visual_rain_density >= 0.60:
@@ -444,6 +452,7 @@ func _run() -> void:
 	if weather.visual_snow_density != 0.0 or weather.get_active_snow_particle_count() != 0:
 		_fail("Snow fade-out did not finish cleanly")
 		return
+	day_night_cycle.set_game_time(5, 7.0)
 	for _sample: int in range(40):
 		weather.trigger_special_weather("下雨")
 		if weather.event_duration_days < 3 or weather.event_duration_days > 10:

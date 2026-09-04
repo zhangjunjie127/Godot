@@ -66,19 +66,20 @@ void fragment() {
 	vec2 world_position = chunk_world_origin + UV * chunk_world_size;
 	vec2 direction = normalize(flow_direction);
 	vec2 flow_offset = direction * TIME * flow_speed;
+	float depth = texture(water_depth, UV).r;
+	float motion_depth = smoothstep(0.08, 0.68, depth);
 	float broad_noise = smooth_noise((world_position + flow_offset * 0.35) * 0.0065);
-	float detail_noise = smooth_noise((world_position + flow_offset + vec2(137.0, -83.0)) * 0.018);
-	float cross_noise = smooth_noise((world_position * vec2(0.82, 1.18) - flow_offset * 0.62 + vec2(-211.0, 149.0)) * 0.029);
+	float detail_noise = smooth_noise((world_position + flow_offset * 1.12 + vec2(137.0, -83.0)) * 0.018);
+	float cross_noise = smooth_noise((world_position * vec2(0.82, 1.18) - flow_offset * 0.72 + vec2(-211.0, 149.0)) * 0.029);
 
 	float edge_distance = min(min(UV.x, 1.0 - UV.x), min(UV.y, 1.0 - UV.y));
 	float chunk_edge_fade = smoothstep(0.0, 0.006, edge_distance);
-	float active_distortion = distortion_pixels * mix(1.0, 1.65, weather_strength);
+	float active_distortion = distortion_pixels * mix(0.16, 1.0, motion_depth) * mix(1.0, 1.42, weather_strength);
 	vec2 distortion_field = vec2(detail_noise - 0.5, cross_noise - 0.5);
 	distortion_field += direction * (broad_noise - 0.5) * 0.45;
 	vec2 distortion = distortion_field * texel * active_distortion * chunk_edge_fade;
 	vec3 source = texture(TEXTURE, clamp(UV + distortion, vec2(0.0), vec2(1.0))).rgb;
 
-	float depth = texture(water_depth, UV).r;
 	float shoreline = mask * (1.0 - smoothstep(0.015, 0.18, depth));
 	float shallow_water = mask * (1.0 - smoothstep(0.04, 0.56, depth));
 	float deep_water = smoothstep(0.24, 0.82, depth);

@@ -440,8 +440,8 @@
 	  0.94,
 	  0.34
 	],
-	"flowSpeed": 22.0,
-	"distortionPixels": 3.2,
+	"flowSpeed": 27.0,
+	"distortionPixels": 5.8,
 	"tintStrength": 0.09,
 	"shallowStrength": 0.14,
 	"highlightStrength": 0.055,

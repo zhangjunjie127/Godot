@@ -130,7 +130,7 @@ func _run() -> void:
 		if water_material.get_shader_parameter("chunk_world_origin") != chunk.position:
 			_fail("Water motion is not aligned to map world coordinates: " + chunk.name)
 			return
-		if not is_equal_approx(float(water_material.get_shader_parameter("distortion_pixels")), 3.2):
+		if not is_equal_approx(float(water_material.get_shader_parameter("distortion_pixels")), 5.8):
 			_fail("The enhanced natural-refraction water preset was not applied: " + chunk.name)
 			return
 		if not is_equal_approx(float(water_material.get_shader_parameter("shallow_opacity")), 0.44) or not is_equal_approx(float(water_material.get_shader_parameter("deep_opacity")), 0.84):

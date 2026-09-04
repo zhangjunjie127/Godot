@@ -23,6 +23,9 @@ signal felled(item_id: String, display_name: String, amount: int, world_position
 @export_range(1.0, 12.0, 0.5) var max_tilt_degrees := 5.0
 @export_range(0.0, 0.15, 0.005) var max_depth_deformation := 0.055
 
+@export_group("Respawn / 刷新")
+@export_range(1, 100, 1) var respawn_days := 10
+
 var hits_required := 1
 var hits_remaining := 1
 var last_drop_amount := 0
@@ -34,6 +37,8 @@ var _visual_rest_transform := Transform2D.IDENTITY
 var _visual_anchor := Vector2.ZERO
 var _reaction := Vector2.ZERO
 var _reaction_velocity := Vector2.ZERO
+var _current_game_hours := 0.0
+var _felled_at_game_hours := -1.0
 
 
 func _ready() -> void:
@@ -72,11 +77,43 @@ func chop(inventory, skill_tree, hit_direction: Vector2 = Vector2.RIGHT) -> bool
 		return true
 	last_drop_amount = _rng.randi_range(mini(min_drop, max_drop), maxi(min_drop, max_drop))
 	is_felled = true
+	_felled_at_game_hours = _current_game_hours
 	for collision: Node in find_children("*", "CollisionShape2D", true, false):
 		collision.set_deferred("disabled", true)
 	visible = false
-	felled.emit(resource_id, display_name, last_drop_amount, global_position)
+	felled.emit(resource_id, display_name, last_drop_amount, get_interaction_position())
 	return true
+
+
+func update_game_time(day: int, hour: int, minute: int) -> void:
+	_current_game_hours = float(maxi(day - 1, 0) * 24 + hour) + float(minute) / 60.0
+	if is_felled and _felled_at_game_hours >= 0.0 and _current_game_hours - _felled_at_game_hours >= float(respawn_days * 24):
+		_respawn()
+
+
+func get_interaction_position() -> Vector2:
+	var blocker := get_node_or_null("Blocker") as StaticBody2D
+	if blocker != null:
+		var collision := blocker.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if collision != null:
+			return collision.global_position
+	return global_position
+
+
+func _respawn() -> void:
+	is_felled = false
+	_felled_at_game_hours = -1.0
+	hits_required = _rng.randi_range(mini(min_hits, max_hits), maxi(min_hits, max_hits))
+	hits_remaining = hits_required
+	last_drop_amount = 0
+	_reaction = Vector2.ZERO
+	_reaction_velocity = Vector2.ZERO
+	self_modulate = Color.WHITE
+	if _visual != null:
+		_visual.transform = _visual_rest_transform
+	visible = true
+	for collision: Node in find_children("*", "CollisionShape2D", true, false):
+		collision.set_deferred("disabled", false)
 
 
 func _play_hit_feedback(hit_direction: Vector2) -> void:

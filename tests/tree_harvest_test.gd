@@ -12,6 +12,18 @@ func _run() -> void:
 
 	var player = scene.get_node("World/DepthSorted/Player")
 	var tree = scene.get_node("World/DepthSorted/NortheastPalm01")
+	var beach_palms: Array[Node] = []
+	for candidate: Node in get_nodes_in_group("choppable_tree"):
+		if String(candidate.name).begins_with("NortheastPalm"):
+			beach_palms.append(candidate)
+	if beach_palms.size() != 16:
+		_fail("Not every northeast beach palm is connected to the chopping system: %d" % beach_palms.size())
+		return
+	for palm: Node in beach_palms:
+		var trunk_collision := palm.get_node("Blocker/CollisionShape2D") as CollisionShape2D
+		if palm.respawn_days != 10 or palm.get_interaction_position().distance_to(trunk_collision.global_position) > 0.01:
+			_fail("A beach palm is missing its ten-day respawn or trunk interaction position: " + palm.name)
+			return
 	if scene.inventory.get_item_count("stone_axe") != 1 or not scene.skill_tree.is_unlocked("stone_axe_gathering"):
 		_fail("Demo does not start with the stone axe and gathering skill")
 		return
@@ -49,6 +61,16 @@ func _run() -> void:
 		player.start_attack()
 	if not tree.is_felled or tree.visible or tree.last_drop_amount < tree.min_drop or tree.last_drop_amount > tree.max_drop:
 		_fail("Coconut palm did not fall with a random valid wood yield")
+		return
+	tree.update_game_time(11, 6, 59)
+	if not tree.is_felled:
+		_fail("Coconut palm respawned before ten complete game days")
+		return
+	tree.update_game_time(11, 7, 0)
+	await physics_frame
+	var tree_collision := tree.get_node("Blocker/CollisionShape2D") as CollisionShape2D
+	if tree.is_felled or not tree.visible or tree.position != tree_position_before or tree_collision.disabled or tree.hits_remaining < tree.min_hits or tree.hits_remaining > tree.max_hits:
+		_fail("Coconut palm did not respawn at its original position after ten game days")
 		return
 
 	var drops := get_nodes_in_group("dropped_item")

@@ -341,6 +341,7 @@ shape = SubResource("CircleShape2D_palm_01")
 
 [node name="NortheastPalm02" type="Node2D" parent="World/DepthSorted" unique_id=1404060353]
 position = Vector2(6555, 1985)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm02" unique_id=1277734551]
 texture_filter = 1
@@ -360,6 +361,7 @@ shape = SubResource("CircleShape2D_palm_02")
 
 [node name="NortheastPalm03" type="Node2D" parent="World/DepthSorted" unique_id=1526759136]
 position = Vector2(5741, 1747)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm03" unique_id=233309620]
 texture_filter = 1
@@ -379,6 +381,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm04" type="Node2D" parent="World/DepthSorted" unique_id=870697761]
 position = Vector2(4893, 1572)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm04" unique_id=2137176403]
 texture_filter = 1
@@ -397,6 +400,7 @@ shape = SubResource("CircleShape2D_palm_04")
 
 [node name="NortheastPalm05" type="Node2D" parent="World/DepthSorted" unique_id=796782997]
 position = Vector2(5423, 2480)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm05" unique_id=1886307025]
 texture_filter = 1
@@ -416,6 +420,7 @@ shape = SubResource("CircleShape2D_palm_05")
 
 [node name="NortheastPalm06" type="Node2D" parent="World/DepthSorted" unique_id=758398728]
 position = Vector2(5741, 1747)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm06" unique_id=12257992]
 texture_filter = 1
@@ -443,6 +448,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm07" type="Node2D" parent="World/DepthSorted" unique_id=317048925]
 position = Vector2(5423, 2480)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm07" unique_id=1756699289]
 texture_filter = 1
@@ -462,6 +468,7 @@ shape = SubResource("CircleShape2D_palm_05")
 
 [node name="NortheastPalm08" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6100, 2050)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm08"]
 texture_filter = 1
@@ -480,6 +487,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm09" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6400, 2050)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm09"]
 texture_filter = 1
@@ -498,6 +506,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm10" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6700, 2050)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm10"]
 texture_filter = 1
@@ -516,6 +525,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm11" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6000, 2350)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm11"]
 texture_filter = 1
@@ -534,6 +544,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm12" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6300, 2350)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm12"]
 texture_filter = 1
@@ -552,6 +563,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm13" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6600, 2350)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm13"]
 texture_filter = 1
@@ -570,6 +582,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm14" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6860, 2350)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm14"]
 texture_filter = 1
@@ -588,6 +601,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm15" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6200, 2670)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm15"]
 texture_filter = 1
@@ -606,6 +620,7 @@ shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm16" type="Node2D" parent="World/DepthSorted"]
 position = Vector2(6550, 2700)
+script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm16"]
 texture_filter = 1

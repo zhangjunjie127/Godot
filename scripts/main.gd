@@ -191,7 +191,8 @@ func _on_player_attack_started() -> void:
 	for candidate: Node in get_tree().get_nodes_in_group("choppable_tree"):
 		if not candidate is Node2D or not candidate.visible or not land_world.is_ancestor_of(candidate):
 			continue
-		var offset := (candidate as Node2D).global_position - player.global_position
+		var target_position: Vector2 = candidate.get_interaction_position() if candidate.has_method("get_interaction_position") else (candidate as Node2D).global_position
+		var offset := target_position - player.global_position
 		var distance := offset.length()
 		if distance > nearest_distance or (distance > 1.0 and facing.dot(offset / distance) < -0.05):
 			continue
@@ -367,6 +368,8 @@ func _on_oxygen_changed(current: float, maximum: float) -> void:
 
 
 func _on_time_changed(day: int, _hour: int, _minute: int, phase: String) -> void:
+	for tree: Node in get_tree().get_nodes_in_group("choppable_tree"):
+		tree.update_game_time(day, _hour, _minute)
 	era_day_label.text = "%s · 第 %d 日" % [skill_tree.current_era, day]
 	_set_atlas_icon(phase_icon, PHASE_ICON_CELLS.get(phase, Vector2i(1, 3)), 40)
 	phase_icon.tooltip_text = phase

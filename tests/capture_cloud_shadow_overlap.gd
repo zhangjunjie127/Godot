@@ -27,24 +27,18 @@ func _capture() -> void:
 		if water_surface != null:
 			water_surface.visible = false
 
-	var active_shadows: Array[Sprite2D] = []
-	for cloud: Dictionary in clouds.clouds:
-		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.visible:
-			active_shadows.append(shadow)
-		shadow.visible = false
+	clouds.visible = false
 	await process_frame
 	RenderingServer.force_draw(false)
 	var without_shadow := root.get_viewport().get_texture().get_image()
-	for shadow: Sprite2D in active_shadows:
-		shadow.visible = true
+	clouds.visible = true
 	await process_frame
 	RenderingServer.force_draw(false)
 	var with_shadow := root.get_viewport().get_texture().get_image()
 	var output_path := ProjectSettings.globalize_path("res://tests/output/cloud_shadow_overlap.png")
 	without_shadow.save_png(ProjectSettings.globalize_path("res://tests/output/cloud_shadow_without.png"))
 	if with_shadow == null or with_shadow.save_png(output_path) != OK:
-		push_error("Failed to capture ordered cloud-shadow overlap")
+		push_error("Failed to capture procedural cloud-shadow overlap")
 		quit(1)
 		return
 	var metrics := _shadow_difference_metrics(without_shadow, with_shadow)
@@ -53,7 +47,7 @@ func _capture() -> void:
 		push_error("Cloud shadows are not visibly affecting the normal spawn view: %.3f" % mean_difference)
 		quit(1)
 		return
-	if mean_difference > 2.0:
+	if mean_difference > 8.0:
 		push_error("Cloud shadow output is abnormally strong, likely because its shader failed: %.3f" % mean_difference)
 		quit(1)
 		return

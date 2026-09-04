@@ -505,30 +505,19 @@ func _run() -> void:
 		_fail("Ascension ritual was not placed after all five branches")
 		return
 	cloud_layer.set_weather("晴朗")
-	if cloud_layer.get_active_cloud_count() != cloud_layer.CLEAR_CLOUD_COUNT or not cloud_layer.is_shadow_only():
-		_fail("Clear weather did not show randomized ground shadows")
+	if cloud_layer.get_active_cloud_count() != 1 or not cloud_layer.is_shadow_only():
+		_fail("Clear weather did not show the procedural ground-shadow layer")
 		return
-	var shared_cloud_shadow_material: Material = null
-	for cloud: Dictionary in cloud_layer.clouds:
-		if not cloud_layer.BLOCK_CLOUD_CELLS.has(int(cloud["cell"])):
-			_fail("Thin cloud frames were not removed")
-			return
-		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/cloud_shadow.gdshader":
-			_fail("Cloud shadow is missing its independent soft material")
-			return
-		if shared_cloud_shadow_material == null:
-			shared_cloud_shadow_material = shadow.material
-		elif shadow.material != shared_cloud_shadow_material:
-			_fail("Cloud shadows are not composed through one shared mask")
-			return
-	var cloud_shadow_material := shared_cloud_shadow_material as ShaderMaterial
+	var cloud_shadow_material := cloud_layer.get_shadow_material() as ShaderMaterial
+	if cloud_shadow_material == null or cloud_shadow_material.shader.resource_path != "res://shaders/cloud_shadow.gdshader":
+		_fail("Cloud shadow is missing its independent procedural material")
+		return
 	var shadow_multiplier: Vector3 = cloud_shadow_material.get_shader_parameter("shadow_multiplier")
 	if cloud_layer.get_shadow_coverage() <= 0.0 or is_equal_approx(shadow_multiplier.x, shadow_multiplier.y):
 		_fail("Cloud shadows are missing daylight coverage or colored tint")
 		return
-	if "blend_mul" not in cloud_shadow_material.shader.code or "soft_cloud_alpha" not in cloud_shadow_material.shader.code or "BAYER_4X4" in cloud_shadow_material.shader.code:
-		_fail("Cloud shadows are not using smooth multiplicative feathering")
+	if "fbm" not in cloud_shadow_material.shader.code or "value_noise" not in cloud_shadow_material.shader.code or "texture(" in cloud_shadow_material.shader.code:
+		_fail("Cloud shadows are not generated entirely from procedural noise")
 		return
 	cloud_layer.set_weather("下雨")
 	if cloud_layer.get_active_cloud_count() != 0:

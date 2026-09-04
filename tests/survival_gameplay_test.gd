@@ -44,37 +44,25 @@ func _run() -> void:
 	if clouds.get_shadow_coverage() < clouds.clear_shadow_coverage - 0.001:
 		_fail("Daylight did not restore ordered cloud shadows")
 		return
-	var cloud_before: Vector2 = clouds.get_cloud_world_position(0)
+	var cloud_before: Vector2 = clouds.get_cloud_offset()
+	var shape_before: Vector2 = clouds.get_shape_offset()
 	player.global_position += Vector2(260.0, 120.0)
 	if not clouds.is_processing():
 		_fail("Cloud shadows are not processing independently")
 		return
 	clouds.process_mode = Node.PROCESS_MODE_DISABLED
 	clouds.advance_clouds(1.0)
-	var cloud_after: Vector2 = clouds.get_cloud_world_position(0)
-	if absf(cloud_after.y - cloud_before.y) > 8.0:
-		_fail("Cloud shadows followed the player or camera")
+	var cloud_after: Vector2 = clouds.get_cloud_offset()
+	var shape_after: Vector2 = clouds.get_shape_offset()
+	if cloud_after != cloud_before + clouds.wind_velocity:
+		_fail("Procedural cloud shadows did not move independently from the player or camera")
 		return
-	var cloud_distance := cloud_before.x - cloud_after.x
-	var expected_cloud_distance := float(clouds.clouds[0]["speed"])
-	if not is_equal_approx(cloud_distance, expected_cloud_distance):
-		_fail("Cloud-shadow movement did not match its independent speed")
+	if shape_after != shape_before + clouds.shape_velocity or clouds.wind_velocity.is_equal_approx(clouds.shape_velocity):
+		_fail("Procedural cloud shape evolution did not use its independent motion")
 		return
-	var cloud_speeds: Array[float] = []
-	var shared_shadow_material: Material = null
-	for cloud: Dictionary in clouds.clouds:
-		cloud_speeds.append(float(cloud["speed"]))
-		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/cloud_shadow.gdshader":
-			_fail("Cloud shadow is missing its independent soft material")
-			return
-		if shared_shadow_material == null:
-			shared_shadow_material = shadow.material
-		elif shadow.material != shared_shadow_material:
-			_fail("Cloud shadows do not share one non-accumulating composition material")
-			return
-	if cloud_speeds.min() < 26.0 or cloud_speeds.max() > 34.0 or cloud_speeds.max() - cloud_speeds.min() < 1.0:
-		_fail("Clouds do not have close but visibly independent speeds")
+	var cloud_material := clouds.get_shadow_material() as ShaderMaterial
+	if cloud_material == null or cloud_material.shader.resource_path != "res://shaders/cloud_shadow.gdshader":
+		_fail("Cloud shadow is missing its procedural material")
 		return
 
 	var expected_items := [

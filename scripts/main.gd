@@ -187,6 +187,7 @@ func _on_player_attack_started() -> void:
 	var nearest: Node2D
 	var nearest_distance := CHOP_RANGE
 	var facing: Vector2 = player.get_facing_direction()
+	var hit_direction := facing
 	for candidate: Node in get_tree().get_nodes_in_group("choppable_tree"):
 		if not candidate is Node2D or not candidate.visible or not land_world.is_ancestor_of(candidate):
 			continue
@@ -196,8 +197,9 @@ func _on_player_attack_started() -> void:
 			continue
 		nearest = candidate as Node2D
 		nearest_distance = distance
+		hit_direction = offset / distance if distance > 1.0 else facing
 	if nearest != null:
-		nearest.chop(inventory, skill_tree)
+		nearest.chop(inventory, skill_tree, hit_direction)
 
 
 func _on_tree_felled(item_id: String, display_name: String, amount: int, world_position: Vector2) -> void:

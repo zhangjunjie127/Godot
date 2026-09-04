@@ -27,8 +27,24 @@ func _run() -> void:
 		_fail("Tree could be chopped without a stone axe")
 		return
 	scene.inventory.add_item("stone_axe", "石斧", 1, 1)
+	var tree_position_before: Vector2 = tree.position
+	var tree_sprite = tree.get_node("Sprite2D")
+	var tree_anchor_before: Vector2 = tree_sprite.get_trunk_anchor_position()
+	tree.chop(scene.inventory, scene.skill_tree, Vector2.RIGHT)
+	tree._process(0.04)
+	if tree_sprite.rotation <= 0.0 or tree.position != tree_position_before:
+		_fail("Tree did not bend away from the incoming hit while keeping its root fixed")
+		return
+	if tree_sprite.get_trunk_anchor_position().distance_to(tree_anchor_before) > 0.05:
+		_fail("Tree hit reaction detached the trunk base from its ground anchor")
+		return
+	for _reaction_step: int in range(180):
+		tree._process(1.0 / 60.0)
+	if absf(tree_sprite.rotation) > 0.001:
+		_fail("Tree hit reaction did not settle back to its resting pose")
+		return
 
-	for _hit: int in range(tree.hits_required):
+	for _hit: int in range(tree.hits_remaining):
 		player._cancel_attack()
 		player.start_attack()
 	if not tree.is_felled or tree.visible or tree.last_drop_amount < tree.min_drop or tree.last_drop_amount > tree.max_drop:

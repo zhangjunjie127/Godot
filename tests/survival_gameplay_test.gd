@@ -130,6 +130,9 @@ func _run() -> void:
 	if background == null or background.texture == null or background.texture.get_width() < 1200 or background.texture.get_height() < 700:
 		_fail("Underwater map background is missing or too small")
 		return
+	if not background.material is ShaderMaterial or (background.material as ShaderMaterial).shader.resource_path != "res://shaders/underwater_current.gdshader":
+		_fail("Underwater background is missing current distortion and caustic lighting")
+		return
 	if underwater.get_node_or_null("Collision/LeftWall") != null or underwater.get_node_or_null("Collision/RightWall") != null or underwater.get_node_or_null("Collision/Seabed") != null:
 		_fail("Underwater map still has wall or seabed collisions")
 		return

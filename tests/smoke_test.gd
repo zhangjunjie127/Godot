@@ -136,6 +136,9 @@ func _run() -> void:
 		if not is_equal_approx(float(water_material.get_shader_parameter("shallow_opacity")), 0.44) or not is_equal_approx(float(water_material.get_shader_parameter("deep_opacity")), 0.84):
 			_fail("Water depth did not control shallow transparency and deep reflection: " + chunk.name)
 			return
+		if not is_equal_approx(float(water_material.get_shader_parameter("wave_strength")), 0.065):
+			_fail("Traveling surface waves were not applied: " + chunk.name)
+			return
 	var water_interactions := scene.get_node_or_null("World/WaterSurfaceInteractions")
 	if water_interactions == null:
 		_fail("Surface-swimming ripple feedback is missing")

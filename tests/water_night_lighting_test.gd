@@ -18,6 +18,13 @@ func _initialize() -> void:
 	if "organic_caustics" not in shader.code or "shallow_opacity" not in shader.code or "deep_opacity" not in shader.code:
 		_fail("River surface is missing depth-aware transparent water")
 		return
+	if "traveling_wave" not in shader.code or "wave_strength" not in shader.code:
+		_fail("River surface is missing traveling wave bands")
+		return
+	var underwater_shader := load("res://shaders/underwater_current.gdshader") as Shader
+	if underwater_shader == null or "underwater_flow" not in underwater_shader.code or "caustic_line" not in underwater_shader.code:
+		_fail("Underwater current distortion is missing")
+		return
 	var atmosphere := load("res://shaders/outdoor_ambient_fill.gdshader") as Shader
 	if atmosphere == null or "filter_nearest" in atmosphere.code:
 		_fail("Outdoor reflection and glow are not using continuous sampling")

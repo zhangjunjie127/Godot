@@ -447,6 +447,7 @@
 	"highlightStrength": 0.055,
 	"reflectionStrength": 0.12,
 	"shorelineStrength": 0.22,
+	"waveStrength": 0.065,
 	"shallowOpacity": 0.44,
 	"deepOpacity": 0.84,
 	"tint": [

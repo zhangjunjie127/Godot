@@ -1,7 +1,15 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/underwater_world.gd" id="1_underwater"]
 [ext_resource type="Texture2D" path="res://assets/maps/underwater/underwater_foundation.png" id="2_background"]
+[ext_resource type="Shader" path="res://shaders/underwater_current.gdshader" id="3_underwater_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_underwater_current"]
+shader = ExtResource("3_underwater_shader")
+shader_parameter/distortion_pixels = 3.2
+shader_parameter/current_speed = 0.42
+shader_parameter/caustic_strength = 0.028
+shader_parameter/depth_tint = Color(0.02, 0.28, 0.42, 1)
 
 [node name="UnderwaterWorld" type="Node2D"]
 visible = false
@@ -10,6 +18,7 @@ script = ExtResource("1_underwater")
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -20
 texture_filter = 1
+material = SubResource("ShaderMaterial_underwater_current")
 texture = ExtResource("2_background")
 centered = false
 

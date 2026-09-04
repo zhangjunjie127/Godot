@@ -9,6 +9,9 @@ from PIL import Image, ImageFilter
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = PROJECT_ROOT / "assets/maps/spawn/spawn_map.json"
+SHORELINE_OUTPUT_SIZE = 512
+SHORELINE_PADDING = 64
+SHORELINE_SCALE = 4
 
 
 def water_mask(image: Image.Image) -> Image.Image:
@@ -41,6 +44,44 @@ def water_mask(image: Image.Image) -> Image.Image:
     return mask.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(1.15))
 
 
+def shoreline_mask(image: Image.Image, mask: Image.Image) -> Image.Image:
+    size = (image.width // SHORELINE_SCALE, image.height // SHORELINE_SCALE)
+    reduced_image = image.resize(size, Image.Resampling.LANCZOS)
+    reduced_mask = mask.resize(size, Image.Resampling.BILINEAR)
+    rgb = np.asarray(reduced_image.convert("RGB"), dtype=np.float32) / 255.0
+    red, green, blue = np.moveaxis(rgb, -1, 0)
+    maximum = rgb.max(axis=2)
+    minimum = rgb.min(axis=2)
+    chroma = maximum - minimum
+    luminance = red * 0.2126 + green * 0.7152 + blue * 0.0722
+
+    water_image = Image.fromarray((np.asarray(reduced_mask, dtype=np.uint8) >= 80).astype(np.uint8) * 255, mode="L")
+    near_water = np.asarray(water_image.filter(ImageFilter.MaxFilter(17)), dtype=np.uint8) > 0
+    deep_water = np.asarray(water_image.filter(ImageFilter.MinFilter(5)), dtype=np.uint8) > 0
+    boundary = near_water & ~deep_water
+
+    bright_foam = (
+        (luminance >= 0.72)
+        & (minimum >= 0.60)
+        & (chroma <= 0.24)
+        & (green >= red * 0.94)
+        & (blue >= red * 0.90)
+    )
+    baked_edge = bright_foam & boundary
+    baked_edge_image = Image.fromarray(baked_edge.astype(np.uint8) * 255, mode="L")
+    baked_edge_image = baked_edge_image.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
+    edge_alpha = np.asarray(baked_edge_image.filter(ImageFilter.GaussianBlur(0.7)), dtype=np.float32) / 255.0
+    broad_edge = np.asarray(baked_edge_image.filter(ImageFilter.GaussianBlur(5.2)), dtype=np.float32) / 255.0
+    influence = np.maximum(edge_alpha, np.clip(broad_edge * 3.2, 0.0, 1.0))
+    influence = np.asarray(
+        Image.fromarray((influence * 255).astype(np.uint8), mode="L").filter(ImageFilter.GaussianBlur(0.6)),
+        dtype=np.float32,
+    ) / 255.0
+    water_side = influence * (np.asarray(reduced_mask, dtype=np.float32) / 255.0)
+    packed = np.stack((edge_alpha, influence, water_side), axis=2)
+    return Image.fromarray((np.clip(packed, 0.0, 1.0) * 255).astype(np.uint8), mode="RGB")
+
+
 def padded_chunk(images: dict[tuple[int, int], np.ndarray], position: tuple[int, int], padding: int = 4) -> Image.Image:
     source = images[position]
     height, width = source.shape[:2]
@@ -68,15 +109,24 @@ def main() -> None:
     for chunk in manifest["chunks"]:
         source_path = PROJECT_ROOT / chunk["image"]
         mask_path = source_path.with_name(source_path.stem + "_water_mask.png")
-        padding = 4
-        mask = water_mask(padded_chunk(images, tuple(chunk["position"]), padding)).crop(
-            (padding, padding, padding + images[tuple(chunk["position"])].shape[1], padding + images[tuple(chunk["position"])].shape[0])
+        padded = padded_chunk(images, tuple(chunk["position"]), SHORELINE_PADDING)
+        padded_mask = water_mask(padded)
+        output_padding = SHORELINE_PADDING // SHORELINE_SCALE
+        shoreline = shoreline_mask(padded, padded_mask).crop(
+            (
+                output_padding,
+                output_padding,
+                output_padding + SHORELINE_OUTPUT_SIZE,
+                output_padding + SHORELINE_OUTPUT_SIZE,
+            )
         )
-        mask.save(mask_path, optimize=True)
+        shoreline_path = source_path.with_name(source_path.stem + "_shoreline_mask.png")
+        shoreline.save(shoreline_path, optimize=True)
         depth_path = mask_path.with_name(mask_path.name.replace("_mask.png", "_depth.png"))
         chunk["water"] = {
             "image": mask_path.relative_to(PROJECT_ROOT).as_posix(),
             "depth": depth_path.relative_to(PROJECT_ROOT).as_posix(),
+            "shoreline": shoreline_path.relative_to(PROJECT_ROOT).as_posix(),
         }
         generated += 1
 
@@ -93,7 +143,7 @@ def main() -> None:
         },
     )
     MANIFEST_PATH.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Generated {generated} water masks")
+    print(f"Generated {generated} shoreline masks at {SHORELINE_OUTPUT_SIZE}x{SHORELINE_OUTPUT_SIZE}")
 
 
 if __name__ == "__main__":

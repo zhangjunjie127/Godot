@@ -24,7 +24,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_0_0_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_0_0_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_0_0_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_0_0_shoreline_mask.png"
 	  }
 	},
 	{
@@ -36,7 +37,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_1_0_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_1_0_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_1_0_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_1_0_shoreline_mask.png"
 	  }
 	},
 	{
@@ -48,7 +50,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_2_0_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_2_0_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_2_0_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_2_0_shoreline_mask.png"
 	  }
 	},
 	{
@@ -60,7 +63,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_3_0_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_3_0_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_3_0_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_3_0_shoreline_mask.png"
 	  }
 	},
 	{
@@ -72,7 +76,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_0_1_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_0_1_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_0_1_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_0_1_shoreline_mask.png"
 	  }
 	},
 	{
@@ -84,7 +89,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_1_1_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_1_1_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_1_1_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_1_1_shoreline_mask.png"
 	  }
 	},
 	{
@@ -96,7 +102,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_2_1_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_2_1_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_2_1_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_2_1_shoreline_mask.png"
 	  }
 	},
 	{
@@ -108,7 +115,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_3_1_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_3_1_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_3_1_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_3_1_shoreline_mask.png"
 	  }
 	},
 	{
@@ -120,7 +128,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_0_2_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_0_2_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_0_2_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_0_2_shoreline_mask.png"
 	  }
 	},
 	{
@@ -132,7 +141,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_1_2_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_1_2_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_1_2_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_1_2_shoreline_mask.png"
 	  }
 	},
 	{
@@ -144,7 +154,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_2_2_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_2_2_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_2_2_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_2_2_shoreline_mask.png"
 	  }
 	},
 	{
@@ -156,7 +167,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_3_2_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_3_2_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_3_2_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_3_2_shoreline_mask.png"
 	  }
 	},
 	{
@@ -168,7 +180,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_0_3_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_0_3_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_0_3_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_0_3_shoreline_mask.png"
 	  }
 	},
 	{
@@ -180,7 +193,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_1_3_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_1_3_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_1_3_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_1_3_shoreline_mask.png"
 	  }
 	},
 	{
@@ -192,7 +206,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_2_3_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_2_3_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_2_3_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_2_3_shoreline_mask.png"
 	  }
 	},
 	{
@@ -204,7 +219,8 @@
 	  ],
 	  "water": {
 		"image": "assets/maps/spawn/spawn_reference_chunk_3_3_water_mask.png",
-		"depth": "assets/maps/spawn/spawn_reference_chunk_3_3_water_depth.png"
+		"depth": "assets/maps/spawn/spawn_reference_chunk_3_3_water_depth.png",
+		"shoreline": "assets/maps/spawn/spawn_reference_chunk_3_3_shoreline_mask.png"
 	  }
 	}
   ],
@@ -447,6 +463,8 @@
 	"highlightStrength": 0.055,
 	"reflectionStrength": 0.12,
 	"shorelineStrength": 0.22,
+	"bakedEdgeCover": 0.75,
+	"shoreFoamStrength": 0.72,
 	"waveStrength": 0.065,
 	"shallowOpacity": 0.44,
 	"deepOpacity": 0.84,

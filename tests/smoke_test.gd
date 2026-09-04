@@ -100,6 +100,12 @@ func _run() -> void:
 	if map_chunks.size() != 16:
 		_fail("Replacement map manifest did not keep the 4x4 chunk layout")
 		return
+	for map_chunk: Dictionary in map_chunks:
+		var shoreline_path := "res://" + String(map_chunk.get("water", {}).get("shoreline", ""))
+		var shoreline_texture := load(shoreline_path) as Texture2D
+		if shoreline_texture == null or shoreline_texture.get_size() != Vector2(512.0, 512.0):
+			_fail("A generated shoreline mask is missing or incorrectly sized: " + shoreline_path)
+			return
 	if player.move_speed != 170.0 or player.run_speed != 280.0 or player.crouch_speed != 82.0 or player.crawl_speed != 46.0:
 		_fail("Normal player movement speeds were not restored")
 		return
@@ -127,6 +133,10 @@ func _run() -> void:
 		if water_depth == null or water_depth.get_size() != Vector2(512.0, 512.0):
 			_fail("The optimized shoreline depth mask is missing: " + chunk.name)
 			return
+		var shoreline_mask := water_material.get_shader_parameter("shoreline_mask") as Texture2D
+		if shoreline_mask == null or shoreline_mask.get_size() != Vector2(512.0, 512.0):
+			_fail("The optimized animated shoreline mask is missing: " + chunk.name)
+			return
 		if water_material.get_shader_parameter("chunk_world_origin") != chunk.position:
 			_fail("Water motion is not aligned to map world coordinates: " + chunk.name)
 			return
@@ -138,6 +148,9 @@ func _run() -> void:
 			return
 		if not is_equal_approx(float(water_material.get_shader_parameter("wave_strength")), 0.065):
 			_fail("Traveling surface waves were not applied: " + chunk.name)
+			return
+		if not is_equal_approx(float(water_material.get_shader_parameter("baked_edge_cover")), 0.75) or not is_equal_approx(float(water_material.get_shader_parameter("shore_foam_strength")), 0.72):
+			_fail("Animated shoreline cover preset was not applied: " + chunk.name)
 			return
 	var water_interactions := scene.get_node_or_null("World/WaterSurfaceInteractions")
 	if water_interactions == null:

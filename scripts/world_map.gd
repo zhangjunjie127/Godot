@@ -172,11 +172,17 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 	if depth_texture == null:
 		push_error("Missing water depth mask for map chunk: " + String(data.get("id", "")))
 		return
+	var shoreline_resource := String(water_data.get("shoreline", ""))
+	var shoreline_texture := ArtAssets.texture(_resource_path(shoreline_resource))
+	if shoreline_texture == null:
+		push_error("Missing shoreline mask for map chunk: " + String(data.get("id", "")))
+		return
 
 	var material := ShaderMaterial.new()
 	material.shader = ArtAssets.shader(water_surface_shader.resource_path, water_surface_shader)
 	material.set_shader_parameter("water_mask", mask_texture)
 	material.set_shader_parameter("water_depth", depth_texture)
+	material.set_shader_parameter("shoreline_mask", shoreline_texture)
 	material.set_shader_parameter("chunk_world_origin", chunk.position)
 	material.set_shader_parameter("chunk_world_size", source_texture.get_size() * _content_scale)
 	material.set_shader_parameter("flow_direction", _point(_water_surface.get("flowDirection", [0.94, 0.34])))
@@ -187,6 +193,8 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 	material.set_shader_parameter("highlight_strength", float(_water_surface.get("highlightStrength", 0.018)))
 	material.set_shader_parameter("reflection_strength", float(_water_surface.get("reflectionStrength", 0.06)))
 	material.set_shader_parameter("shoreline_strength", float(_water_surface.get("shorelineStrength", 0.10)))
+	material.set_shader_parameter("baked_edge_cover", float(_water_surface.get("bakedEdgeCover", 0.75)))
+	material.set_shader_parameter("shore_foam_strength", float(_water_surface.get("shoreFoamStrength", 0.72)))
 	material.set_shader_parameter("wave_strength", float(_water_surface.get("waveStrength", 0.10)))
 	material.set_shader_parameter("shallow_opacity", float(_water_surface.get("shallowOpacity", 0.44)))
 	material.set_shader_parameter("deep_opacity", float(_water_surface.get("deepOpacity", 0.84)))

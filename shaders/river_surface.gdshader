@@ -2,6 +2,7 @@ shader_type canvas_item;
 
 uniform sampler2D water_mask : repeat_disable, filter_linear;
 uniform sampler2D water_depth : repeat_disable, filter_linear;
+uniform sampler2D shoreline_mask : repeat_disable, filter_linear;
 uniform vec2 chunk_world_origin = vec2(0.0);
 uniform vec2 chunk_world_size = vec2(2048.0);
 uniform vec2 flow_direction = vec2(0.94, 0.34);
@@ -12,6 +13,8 @@ uniform float shallow_strength : hint_range(0.0, 0.4, 0.01) = 0.22;
 uniform float highlight_strength : hint_range(0.0, 0.12, 0.001) = 0.045;
 uniform float reflection_strength : hint_range(0.0, 0.2, 0.005) = 0.07;
 uniform float shoreline_strength : hint_range(0.0, 0.4, 0.01) = 0.18;
+uniform float baked_edge_cover : hint_range(0.0, 1.0, 0.01) = 0.75;
+uniform float shore_foam_strength : hint_range(0.0, 1.0, 0.01) = 0.72;
 uniform float wave_strength : hint_range(0.0, 0.25, 0.005) = 0.10;
 uniform float shallow_opacity : hint_range(0.0, 1.0, 0.01) = 0.44;
 uniform float deep_opacity : hint_range(0.0, 1.0, 0.01) = 0.84;
@@ -59,7 +62,11 @@ float rain_ring(vec2 world_position, float cell_size, float speed, vec2 offset) 
 
 void fragment() {
 	float mask = texture(water_mask, UV).r;
-	if (mask < 0.01) {
+	vec3 shoreline_data = texture(shoreline_mask, UV).rgb;
+	float baked_edge = shoreline_data.r;
+	float shore_field = shoreline_data.g;
+	float outer_shore_field = shoreline_data.b;
+	if (max(mask, shore_field) < 0.01) {
 		discard;
 	}
 
@@ -89,7 +96,7 @@ void fragment() {
 	distortion_field += direction * (broad_noise - 0.5) * 0.45;
 	float wave_displacement = sin(wave_phase_a) * 0.64 + sin(wave_phase_b) * 0.36;
 	distortion_field += perpendicular * wave_displacement * motion_depth * 0.30;
-	vec2 distortion = distortion_field * texel * active_distortion * chunk_edge_fade;
+	vec2 distortion = distortion_field * texel * active_distortion * chunk_edge_fade * smoothstep(0.02, 0.24, mask);
 	vec3 source = texture(TEXTURE, clamp(UV + distortion, vec2(0.0), vec2(1.0))).rgb;
 
 	float shoreline = mask * (1.0 - smoothstep(0.015, 0.18, depth));
@@ -97,10 +104,18 @@ void fragment() {
 	float deep_water = smoothstep(0.24, 0.82, depth);
 	float foam_noise = smooth_noise((world_position + flow_offset * 0.28 + vec2(31.0, -17.0)) * 0.024);
 	float foam_breakup = smoothstep(0.36, 0.72, foam_noise + detail_noise * 0.24);
-	float foam_pulse = 0.58 + 0.42 * sin(TIME * 1.1 + broad_noise * 5.8 + depth * 28.0);
-	float shoreline_foam = shoreline * mix(0.28, 1.0, foam_breakup) * foam_pulse;
-	float inner_foam_band = smoothstep(0.055, 0.11, depth) * (1.0 - smoothstep(0.11, 0.25, depth));
-	inner_foam_band *= smoothstep(0.54, 0.78, foam_noise) * (0.56 + 0.44 * sin(TIME * 0.82 + cross_noise * 6.2));
+	float swash_phase = 0.5 + 0.5 * sin(TIME * 0.72 + broad_noise * 2.8);
+	float swash_front = mix(0.24, 0.78, swash_phase);
+	float inner_shore_foam = 1.0 - smoothstep(0.055, 0.15, abs(shore_field - swash_front));
+	inner_shore_foam *= smoothstep(0.34, 0.70, foam_noise + detail_noise * 0.22);
+	inner_shore_foam *= smoothstep(0.04, 0.24, shore_field);
+	float outer_foam_pulse = 0.5 + 0.5 * sin(TIME * 0.64 - depth * 23.0 + broad_noise * 4.2);
+	float outer_foam_front = mix(0.18, 0.56, outer_foam_pulse);
+	float outer_shore_foam = 1.0 - smoothstep(0.045, 0.12, abs(outer_shore_field - outer_foam_front));
+	outer_shore_foam *= smoothstep(0.52, 0.78, foam_noise + cross_noise * 0.18);
+	outer_shore_foam *= smoothstep(0.03, 0.20, outer_shore_field);
+	outer_shore_foam *= smoothstep(0.24, 0.72, outer_foam_pulse);
+	float edge_wash = baked_edge * smoothstep(0.58, 0.80, foam_noise + swash_phase * 0.16) * 0.36;
 
 	float caustic_field = detail_noise * 0.62 + cross_noise * 0.38;
 	float organic_caustics = smoothstep(0.93, 0.985, 1.0 - abs(caustic_field * 2.0 - 1.0));
@@ -115,7 +130,10 @@ void fragment() {
 		rain_rings *= weather_strength;
 	}
 
-	vec3 color = mix(source, water_tint.rgb, tint_strength * mix(0.35, 1.0, deep_water));
+	vec3 water_color = mix(source, water_tint.rgb, tint_strength * mix(0.35, 1.0, deep_water));
+	vec3 edge_cover_color = mix(water_tint.rgb, shallow_tint.rgb, 0.48);
+	vec3 edge_color = edge_cover_color;
+	vec3 color = mix(edge_color, water_color, mask);
 	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength * 0.72);
 	float reflection_amount = broad_reflection * mix(0.18, 1.0, deep_water) * reflection_strength * mix(1.0, 0.72, weather_strength);
 	color = mix(color, reflection_tint.rgb, reflection_amount);
@@ -124,8 +142,10 @@ void fragment() {
 	color += vec3(0.68, 0.91, 0.95) * rain_rings * 0.075;
 	float wave_crest = traveling_wave * mix(0.22, 1.0, deep_water);
 	color += reflection_tint.rgb * wave_crest * wave_strength * mix(1.0, 0.68, weather_strength);
-	float foam = clamp(shoreline_foam + inner_foam_band * 0.55 + traveling_wave * shoreline * foam_breakup * 0.62, 0.0, 1.0);
-	color = mix(color, vec3(0.86, 0.98, 1.0), foam * shoreline_strength);
+	float foam = clamp(max(max(inner_shore_foam, outer_shore_foam), edge_wash) + traveling_wave * shoreline * foam_breakup * shoreline_strength * 1.55, 0.0, 1.0);
+	color = mix(color, vec3(0.86, 0.98, 1.0), foam * shore_foam_strength);
 	float surface_opacity = mix(shallow_opacity, deep_opacity, smoothstep(0.10, 0.72, depth));
-	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), mask * surface_opacity);
+	float edge_opacity = baked_edge * baked_edge_cover;
+	float foam_opacity = foam * shore_foam_strength * 0.86;
+	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), max(mask * surface_opacity, max(edge_opacity, foam_opacity)));
 }

@@ -21,6 +21,12 @@ func _initialize() -> void:
 	if "traveling_wave" not in shader.code or "wave_strength" not in shader.code:
 		_fail("River surface is missing traveling wave bands")
 		return
+	if "shoreline_mask" not in shader.code or "inner_shore_foam" not in shader.code or "outer_shore_foam" not in shader.code:
+		_fail("River surface is missing the animated two-layer shoreline replacement")
+		return
+	if "baked_edge_cover" not in shader.code or "shore_foam_strength" not in shader.code:
+		_fail("River surface is missing shoreline cover controls")
+		return
 	var underwater_shader := load("res://shaders/underwater_current.gdshader") as Shader
 	if underwater_shader == null or "underwater_flow" not in underwater_shader.code or "caustic_line" not in underwater_shader.code:
 		_fail("Underwater current distortion is missing")

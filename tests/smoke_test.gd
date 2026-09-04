@@ -505,7 +505,7 @@ func _run() -> void:
 		_fail("Ascension ritual was not placed after all five branches")
 		return
 	cloud_layer.set_weather("晴朗")
-	if cloud_layer.get_active_cloud_count() != 4 or not cloud_layer.is_shadow_only():
+	if cloud_layer.get_active_cloud_count() != cloud_layer.CLEAR_CLOUD_COUNT or not cloud_layer.is_shadow_only():
 		_fail("Clear weather did not show randomized ground shadows")
 		return
 	var shared_cloud_shadow_material: Material = null

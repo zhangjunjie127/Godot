@@ -3,8 +3,8 @@ extends Node2D
 const CLOUD_TEXTURE := preload("res://assets/weather/clouds/sheet-transparent.png")
 const ORDERED_SHADOW_SHADER := preload("res://shaders/ordered_shadow.gdshader")
 const CELL_SIZE := 192
-const CLEAR_CLOUD_COUNT := 4
-const OVERCAST_CLOUD_COUNT := 8
+const CLEAR_CLOUD_COUNT := 8
+const OVERCAST_CLOUD_COUNT := 14
 const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
 @export_group("Art / Cloud Shadow Sheet")
@@ -12,10 +12,10 @@ const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 @export var cloud_shadow_shader: Shader = ORDERED_SHADOW_SHADER
 
 @export_group("Shadow Composition")
-@export_range(0.0, 1.0, 0.01) var clear_shadow_coverage := 0.32
-@export_range(0.0, 1.0, 0.01) var overcast_shadow_coverage := 0.44
-@export var clear_shadow_multiplier := Color(0.68, 0.78, 0.72, 1.0)
-@export var overcast_shadow_multiplier := Color(0.76, 0.80, 0.82, 1.0)
+@export_range(0.0, 1.0, 0.01) var clear_shadow_coverage := 0.40
+@export_range(0.0, 1.0, 0.01) var overcast_shadow_coverage := 0.54
+@export var clear_shadow_multiplier := Color(0.60, 0.70, 0.64, 1.0)
+@export var overcast_shadow_multiplier := Color(0.66, 0.72, 0.74, 1.0)
 
 @export_group("Cloud Motion")
 @export var weather_path: NodePath
@@ -55,7 +55,7 @@ func set_weather(value: String) -> void:
 		var sprite := clouds[index]["sprite"] as Sprite2D
 		sprite.visible = index < active_count
 		sprite.self_modulate = Color.WHITE
-		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (3.4 if current_weather == "阴天" else 2.5)
+		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (10.0 if current_weather == "阴天" else 7.5)
 	_sync_shadow_material()
 
 
@@ -123,10 +123,7 @@ func _populate_clouds() -> void:
 		sprite.self_modulate = Color.WHITE
 		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		sprite.material = _shadow_material
-		sprite.position = Vector2(
-			world_size.x * (float(index) + 0.35) / float(OVERCAST_CLOUD_COUNT),
-			_rng.randf_range(180.0, world_size.y * 0.72)
-		)
+		sprite.position = _initial_cloud_position(index)
 		add_child(sprite)
 		clouds.append({
 			"sprite": sprite,
@@ -139,6 +136,24 @@ func _populate_clouds() -> void:
 			"cell": cell,
 		})
 	_sync_shadow_material()
+
+
+func _initial_cloud_position(index: int) -> Vector2:
+	if index < CLEAR_CLOUD_COUNT:
+		var columns := 4
+		var rows := ceili(float(CLEAR_CLOUD_COUNT) / float(columns))
+		return Vector2(
+			world_size.x * (float(index % columns) + 0.5) / float(columns),
+			world_size.y * (float(floori(float(index) / float(columns))) + 0.5) / float(rows)
+		)
+	var extra_index := index - CLEAR_CLOUD_COUNT
+	var extra_count := OVERCAST_CLOUD_COUNT - CLEAR_CLOUD_COUNT
+	var extra_columns := 3
+	var extra_rows := ceili(float(extra_count) / float(extra_columns))
+	return Vector2(
+		world_size.x * (float(extra_index % extra_columns) + 0.5) / float(extra_columns),
+		fposmod(world_size.y * (float(floori(float(extra_index) / float(extra_columns))) + 0.75) / float(extra_rows), world_size.y)
+	)
 
 
 func _on_time_changed(_day: int, _hour: int, _minute: int, _phase: String) -> void:

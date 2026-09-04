@@ -8,6 +8,7 @@ signal hunger_changed(current: float, maximum: float)
 signal oxygen_changed(current: float, maximum: float)
 signal health_condition_changed(condition: String)
 signal torch_equipped_changed(is_equipped: bool)
+signal attack_started
 signal died
 
 const STATE_IDLE := "站立"
@@ -325,6 +326,20 @@ func _begin_attack() -> void:
 	_attack_start_frame = _next_attack_start_frame
 	_next_attack_start_frame = ATTACK_FRAMES_PER_PUNCH if _attack_start_frame == 0 else 0
 	_set_movement_state(STATE_ATTACK)
+	attack_started.emit()
+
+
+func get_facing_direction() -> Vector2:
+	return [
+		Vector2.DOWN,
+		Vector2(1.0, 1.0).normalized(),
+		Vector2.RIGHT,
+		Vector2(1.0, -1.0).normalized(),
+		Vector2.UP,
+		Vector2(-1.0, -1.0).normalized(),
+		Vector2.LEFT,
+		Vector2(-1.0, 1.0).normalized(),
+	][_facing_row]
 
 
 func _cancel_attack() -> void:

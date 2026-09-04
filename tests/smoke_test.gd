@@ -508,7 +508,7 @@ func _run() -> void:
 	if stone_axe_button.icon == null or torch_button.icon == null or stone_axe_button.tooltip_text.find("石斧") < 0 or torch_button.tooltip_text.find("火把") < 0:
 		_fail("Stone axe or torch inventory icon did not render")
 		return
-	if skill_branches.get_child_count() != 5 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 12:
+	if skill_branches.get_child_count() != 5 or ritual_row.get_child_count() != 1 or scene.skill_tree.skill_points != 11 or not scene.skill_tree.is_unlocked("stone_axe_gathering"):
 		_fail("Primitive Era five-branch skill tree did not initialize")
 		return
 	if ritual_row.get_parent() != skill_branches.get_parent() or ritual_row.get_index() <= skill_branches.get_index():
@@ -1016,6 +1016,8 @@ func _run() -> void:
 	for branch: Dictionary in scene.skill_tree.BRANCHES:
 		for skill: Dictionary in branch["skills"]:
 			var skill_id := String(skill["id"])
+			if scene.skill_tree.is_unlocked(skill_id):
+				continue
 			if not scene.skill_tree.unlock_skill(skill_id):
 				_fail("Skill branch could not unlock: " + skill_id)
 				return

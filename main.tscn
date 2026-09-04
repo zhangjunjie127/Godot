@@ -44,6 +44,7 @@
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_012.png" id="42_palm_12"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_013.png" id="43_palm_13"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/palms/palm_tree_014.png" id="44_palm_14"]
+[ext_resource type="Script" path="res://scripts/choppable_tree.gd" id="58_choppable_tree"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_001.png" id="45_tropical_01"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_002.png" id="46_tropical_02"]
 [ext_resource type="Texture2D" path="res://assets/maps/props/vegetation/tropical_plants/tropical_plant_003.png" id="47_tropical_03"]
@@ -314,6 +315,14 @@ position = Vector2(4096, 3950)
 
 [node name="NortheastPalm01" type="Node2D" parent="World/DepthSorted" unique_id=225826446]
 position = Vector2(6270, 1850)
+script = ExtResource("58_choppable_tree")
+tree_species = "coconut_palm"
+resource_id = "wood_palm"
+display_name = "椰木"
+min_hits = 4
+max_hits = 7
+min_drop = 8
+max_drop = 15
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm01" unique_id=2001613588]
 texture_filter = 1

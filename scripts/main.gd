@@ -2,6 +2,7 @@ extends Node2D
 
 const InventoryDataScript = preload("res://scripts/inventory.gd")
 const EraSkillTreeScript = preload("res://scripts/skill_tree.gd")
+const DroppedItemScript = preload("res://scripts/dropped_item.gd")
 const STATUS_ICON_ATLAS := preload("res://assets/ui/status_icons/sheet-transparent.png")
 const MALE_PORTRAIT := preload("res://assets/characters/player_male.png")
 const TORCH_ICON_ATLAS := preload("res://assets/items/torch/sheet-transparent.png")
@@ -18,6 +19,7 @@ const RUN_STEP_DISTANCE := 88.0
 const CROUCH_STEP_DISTANCE := 82.0
 const CRAWL_STEP_DISTANCE := 54.0
 const PUDDLE_TELEPORT_DISTANCE := 180.0
+const CHOP_RANGE := 190.0
 
 const CONDITION_ICON_CELLS := {
 	"开心": Vector2i(3, 1),
@@ -128,6 +130,7 @@ var _rain_step_play_count := 0
 func _ready() -> void:
 	inventory = InventoryDataScript.new()
 	skill_tree = EraSkillTreeScript.new()
+	skill_tree.unlock_skill("stone_axe_gathering")
 	_apply_vegetation_shadow_direction()
 	minimap.map_texture = _art(land_minimap_texture)
 	minimap.world_size = player.world_size
@@ -142,6 +145,7 @@ func _ready() -> void:
 	player.hunger_changed.connect(_on_hunger_changed)
 	player.oxygen_changed.connect(_on_oxygen_changed)
 	player.died.connect(_on_player_died)
+	player.attack_started.connect(_on_player_attack_started)
 	day_night_cycle.time_changed.connect(_on_time_changed)
 	inventory.inventory_changed.connect(_on_inventory_changed)
 	skill_tree.tree_changed.connect(_refresh_skill_tree)
@@ -173,6 +177,34 @@ func _ready() -> void:
 	_refresh_inventory()
 	_refresh_skill_tree()
 	_last_puddle_step_position = player.global_position
+	for tree: Node in get_tree().get_nodes_in_group("choppable_tree"):
+		tree.connect("felled", _on_tree_felled)
+
+
+func _on_player_attack_started() -> void:
+	if player.water_mode or player.surface_swimming:
+		return
+	var nearest: Node2D
+	var nearest_distance := CHOP_RANGE
+	var facing: Vector2 = player.get_facing_direction()
+	for candidate: Node in get_tree().get_nodes_in_group("choppable_tree"):
+		if not candidate is Node2D or not candidate.visible or not land_world.is_ancestor_of(candidate):
+			continue
+		var offset := (candidate as Node2D).global_position - player.global_position
+		var distance := offset.length()
+		if distance > nearest_distance or (distance > 1.0 and facing.dot(offset / distance) < -0.05):
+			continue
+		nearest = candidate as Node2D
+		nearest_distance = distance
+	if nearest != null:
+		nearest.chop(inventory, skill_tree)
+
+
+func _on_tree_felled(item_id: String, display_name: String, amount: int, world_position: Vector2) -> void:
+	var drop := DroppedItemScript.new()
+	drop.configure(item_id, display_name, amount, _item_icon(item_id))
+	land_world.get_node("DepthSorted").add_child(drop)
+	drop.global_position = world_position + Vector2(32.0, 8.0)
 
 
 func _apply_vegetation_shadow_direction() -> void:

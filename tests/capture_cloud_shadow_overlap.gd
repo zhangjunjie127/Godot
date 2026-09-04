@@ -47,21 +47,51 @@ func _capture() -> void:
 		push_error("Failed to capture ordered cloud-shadow overlap")
 		quit(1)
 		return
-	var mean_difference := _mean_rgb_difference(without_shadow, with_shadow)
+	var metrics := _shadow_difference_metrics(without_shadow, with_shadow)
+	var mean_difference := float(metrics["mean"])
 	if mean_difference < 0.35:
 		push_error("Cloud shadows are not visibly affecting the normal spawn view: %.3f" % mean_difference)
 		quit(1)
 		return
-	print("CLOUD_SHADOW_CAPTURE_OK: %s mean_difference=%.3f" % [output_path, mean_difference])
+	if mean_difference > 2.0:
+		push_error("Cloud shadow output is abnormally strong, likely because its shader failed: %.3f" % mean_difference)
+		quit(1)
+		return
+	var roughness := float(metrics["roughness"])
+	if roughness > 0.30:
+		push_error("Cloud shadow edges contain visible high-frequency patterning: %.3f" % roughness)
+		quit(1)
+		return
+	print("CLOUD_SHADOW_CAPTURE_OK: %s mean_difference=%.3f roughness=%.3f" % [output_path, mean_difference, roughness])
 	quit()
 
 
-func _mean_rgb_difference(before: Image, after: Image) -> float:
+func _shadow_difference_metrics(before: Image, after: Image) -> Dictionary:
 	var before_bytes := before.get_data()
 	var after_bytes := after.get_data()
+	var width := before.get_width()
+	var height := before.get_height()
+	var differences := PackedFloat32Array()
+	differences.resize(width * height)
 	var total := 0.0
-	for index: int in range(0, mini(before_bytes.size(), after_bytes.size()), 4):
-		total += absf(float(before_bytes[index]) - float(after_bytes[index]))
-		total += absf(float(before_bytes[index + 1]) - float(after_bytes[index + 1]))
-		total += absf(float(before_bytes[index + 2]) - float(after_bytes[index + 2]))
-	return total / maxf(float(before.get_width() * before.get_height() * 3), 1.0)
+	for pixel: int in range(width * height):
+		var index := pixel * 4
+		var difference := (
+			absf(float(before_bytes[index]) - float(after_bytes[index]))
+			+ absf(float(before_bytes[index + 1]) - float(after_bytes[index + 1]))
+			+ absf(float(before_bytes[index + 2]) - float(after_bytes[index + 2]))
+		) / 3.0
+		differences[pixel] = difference
+		total += difference
+	var neighbor_delta := 0.0
+	for y: int in range(height):
+		for x: int in range(width):
+			var pixel := y * width + x
+			if x + 1 < width:
+				neighbor_delta += absf(differences[pixel] - differences[pixel + 1])
+			if y + 1 < height:
+				neighbor_delta += absf(differences[pixel] - differences[pixel + width])
+	return {
+		"mean": total / maxf(float(width * height), 1.0),
+		"roughness": neighbor_delta / maxf(total, 1.0),
+	}

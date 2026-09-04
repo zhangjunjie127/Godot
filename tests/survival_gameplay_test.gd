@@ -65,8 +65,8 @@ func _run() -> void:
 	for cloud: Dictionary in clouds.clouds:
 		cloud_speeds.append(float(cloud["speed"]))
 		var shadow := cloud["sprite"] as Sprite2D
-		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/ordered_shadow.gdshader":
-			_fail("Cloud shadow is missing the ordered screen-space material")
+		if shadow.material == null or shadow.material.shader.resource_path != "res://shaders/cloud_shadow.gdshader":
+			_fail("Cloud shadow is missing its independent soft material")
 			return
 		if shared_shadow_material == null:
 			shared_shadow_material = shadow.material

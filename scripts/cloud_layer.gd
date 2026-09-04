@@ -1,7 +1,7 @@
 extends Node2D
 
 const CLOUD_TEXTURE := preload("res://assets/weather/clouds/sheet-transparent.png")
-const ORDERED_SHADOW_SHADER := preload("res://shaders/ordered_shadow.gdshader")
+const CLOUD_SHADOW_SHADER := preload("res://shaders/cloud_shadow.gdshader")
 const CELL_SIZE := 192
 const CLEAR_CLOUD_COUNT := 8
 const OVERCAST_CLOUD_COUNT := 14
@@ -9,13 +9,16 @@ const BLOCK_CLOUD_CELLS := [1, 3, 4, 5, 8]
 
 @export_group("Art / Cloud Shadow Sheet")
 @export var cloud_texture: Texture2D = CLOUD_TEXTURE
-@export var cloud_shadow_shader: Shader = ORDERED_SHADOW_SHADER
+@export var cloud_shadow_shader: Shader = CLOUD_SHADOW_SHADER
 
 @export_group("Shadow Composition")
 @export_range(0.0, 1.0, 0.01) var clear_shadow_coverage := 0.40
 @export_range(0.0, 1.0, 0.01) var overcast_shadow_coverage := 0.54
 @export var clear_shadow_multiplier := Color(0.60, 0.70, 0.64, 1.0)
 @export var overcast_shadow_multiplier := Color(0.66, 0.72, 0.74, 1.0)
+@export_range(1.0, 32.0, 0.5) var edge_softness_px := 12.0
+@export_range(0.0, 8.0, 0.1) var distortion_px := 2.0
+@export_range(0.0, 1.0, 0.01) var distortion_speed := 0.10
 
 @export_group("Cloud Motion")
 @export var weather_path: NodePath
@@ -55,7 +58,7 @@ func set_weather(value: String) -> void:
 		var sprite := clouds[index]["sprite"] as Sprite2D
 		sprite.visible = index < active_count
 		sprite.self_modulate = Color.WHITE
-		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (10.0 if current_weather == "阴天" else 7.5)
+		sprite.scale = Vector2.ONE * float(clouds[index]["scale"]) * (12.0 if current_weather == "阴天" else 9.5)
 	_sync_shadow_material()
 
 
@@ -110,12 +113,14 @@ func _populate_clouds() -> void:
 	clouds.clear()
 	_shadow_material = ShaderMaterial.new()
 	_shadow_material.shader = ArtAssets.shader(cloud_shadow_shader.resource_path, cloud_shadow_shader)
+	var resolved_cloud_texture := ArtAssets.texture(cloud_texture.resource_path, cloud_texture)
+	_shadow_material.set_shader_parameter("cloud_texture", resolved_cloud_texture)
 	for index: int in range(OVERCAST_CLOUD_COUNT):
 		var cell := _random_cloud_cell()
 		var cloud_scale := _rng.randf_range(0.42, 0.62)
 		var sprite := Sprite2D.new()
 		sprite.name = "CloudShadow%d" % (index + 1)
-		sprite.texture = ArtAssets.texture(cloud_texture.resource_path, cloud_texture)
+		sprite.texture = resolved_cloud_texture
 		sprite.hframes = 3
 		sprite.vframes = 3
 		sprite.frame = cell
@@ -169,6 +174,9 @@ func _sync_shadow_material() -> void:
 	coverage *= _sunlight_amount()
 	_shadow_material.set_shader_parameter("shadow_coverage", coverage)
 	_shadow_material.set_shader_parameter("shadow_multiplier", Vector3(multiplier.r, multiplier.g, multiplier.b))
+	_shadow_material.set_shader_parameter("edge_softness_px", edge_softness_px)
+	_shadow_material.set_shader_parameter("distortion_px", distortion_px)
+	_shadow_material.set_shader_parameter("distortion_speed", distortion_speed)
 
 
 func _sunlight_amount() -> float:

@@ -23,7 +23,7 @@ func _run() -> void:
 	if weather.visual_cloudiness < 0.75 or weather.visual_rain_density != 0.0 or weather.visual_snow_density != 0.0:
 		_fail("Overcast weather did not fade in independently from precipitation")
 		return
-	if clouds.get_active_cloud_count() != 8 or wetness.visible or environment.color.r >= 0.9:
+	if clouds.get_active_cloud_count() != clouds.OVERCAST_CLOUD_COUNT or wetness.visible or environment.color.r >= 0.9:
 		_fail("Overcast cloud cover or environment grading did not initialize")
 		return
 
@@ -44,7 +44,7 @@ func _run() -> void:
 
 	weather.start_weather_event("晴朗", "半天")
 	weather.advance_visual_seconds(weather.atmosphere_fade_seconds)
-	if weather.get_lightning_strength() != 0.0 or weather.trigger_lightning(1.0, 0.0) or clouds.get_active_cloud_count() != 4:
+	if weather.get_lightning_strength() != 0.0 or weather.trigger_lightning(1.0, 0.0) or clouds.get_active_cloud_count() != clouds.CLEAR_CLOUD_COUNT:
 		_fail("Clear weather retained storm effects")
 		return
 	weather.advance_visual_seconds(weather.day_ambience_fade_seconds)

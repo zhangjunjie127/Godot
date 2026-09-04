@@ -271,6 +271,7 @@ shaders = Dictionary[String, Shader]({
 "res://effects/rain/rain_streak.gdshader": null,
 "res://effects/rain/wet_grade.gdshader": null,
 "res://shaders/night_vision.gdshader": null,
+"res://shaders/cloud_shadow.gdshader": null,
 "res://shaders/outdoor_ambient_fill.gdshader": null,
 "res://shaders/ordered_shadow.gdshader": null,
 "res://shaders/river_surface.gdshader": null,

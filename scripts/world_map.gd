@@ -187,6 +187,8 @@ func _add_water_surface(chunk: Sprite2D, data: Dictionary, source_texture: Textu
 	material.set_shader_parameter("highlight_strength", float(_water_surface.get("highlightStrength", 0.018)))
 	material.set_shader_parameter("reflection_strength", float(_water_surface.get("reflectionStrength", 0.06)))
 	material.set_shader_parameter("shoreline_strength", float(_water_surface.get("shorelineStrength", 0.10)))
+	material.set_shader_parameter("shallow_opacity", float(_water_surface.get("shallowOpacity", 0.44)))
+	material.set_shader_parameter("deep_opacity", float(_water_surface.get("deepOpacity", 0.84)))
 	material.set_shader_parameter("weather_strength", _water_weather_strength)
 	material.set_shader_parameter("water_tint", _color(_water_surface.get("tint", [0.02, 0.34, 0.52, 1.0])))
 	material.set_shader_parameter("shallow_tint", _color(_water_surface.get("shallowTint", [0.08, 0.68, 0.74, 1.0])))

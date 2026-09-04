@@ -12,6 +12,8 @@ uniform float shallow_strength : hint_range(0.0, 0.4, 0.01) = 0.22;
 uniform float highlight_strength : hint_range(0.0, 0.12, 0.001) = 0.045;
 uniform float reflection_strength : hint_range(0.0, 0.2, 0.005) = 0.07;
 uniform float shoreline_strength : hint_range(0.0, 0.4, 0.01) = 0.18;
+uniform float shallow_opacity : hint_range(0.0, 1.0, 0.01) = 0.44;
+uniform float deep_opacity : hint_range(0.0, 1.0, 0.01) = 0.84;
 uniform float weather_strength : hint_range(0.0, 1.0, 0.01) = 0.0;
 uniform vec4 water_tint : source_color = vec4(0.02, 0.34, 0.52, 1.0);
 uniform vec4 shallow_tint : source_color = vec4(0.08, 0.68, 0.74, 1.0);
@@ -63,51 +65,36 @@ void fragment() {
 	vec2 texel = 1.0 / vec2(textureSize(water_mask, 0));
 	vec2 world_position = chunk_world_origin + UV * chunk_world_size;
 	vec2 direction = normalize(flow_direction);
-	vec2 perpendicular = vec2(-direction.y, direction.x);
-	vec2 moving_position = world_position + direction * TIME * flow_speed;
-	float current = smooth_noise(moving_position * 0.015);
-	float wave_a = sin(dot(moving_position, direction) * 0.060 + dot(world_position, perpendicular) * 0.028);
-	float wave_b = sin(dot(moving_position, perpendicular) * 0.072 - dot(world_position, direction) * 0.021);
+	vec2 flow_offset = direction * TIME * flow_speed;
+	float broad_noise = smooth_noise((world_position + flow_offset * 0.35) * 0.0065);
+	float detail_noise = smooth_noise((world_position + flow_offset + vec2(137.0, -83.0)) * 0.018);
+	float cross_noise = smooth_noise((world_position * vec2(0.82, 1.18) - flow_offset * 0.62 + vec2(-211.0, 149.0)) * 0.029);
 
 	float edge_distance = min(min(UV.x, 1.0 - UV.x), min(UV.y, 1.0 - UV.y));
 	float chunk_edge_fade = smoothstep(0.0, 0.006, edge_distance);
 	float active_distortion = distortion_pixels * mix(1.0, 1.65, weather_strength);
-	vec2 distortion = vec2(wave_a + current - 0.5, wave_b - current + 0.5) * texel * active_distortion * chunk_edge_fade;
+	vec2 distortion_field = vec2(detail_noise - 0.5, cross_noise - 0.5);
+	distortion_field += direction * (broad_noise - 0.5) * 0.45;
+	vec2 distortion = distortion_field * texel * active_distortion * chunk_edge_fade;
 	vec3 source = texture(TEXTURE, clamp(UV + distortion, vec2(0.0), vec2(1.0))).rgb;
 
 	float depth = texture(water_depth, UV).r;
-	float shoreline = mask * (1.0 - smoothstep(0.01, 0.14, depth));
+	float shoreline = mask * (1.0 - smoothstep(0.015, 0.18, depth));
 	float shallow_water = mask * (1.0 - smoothstep(0.04, 0.56, depth));
-	float foam_motion = 0.55 + 0.45 * sin(dot(world_position, vec2(0.055, -0.048)) + TIME * 1.7 + current * 4.0);
-	float thread_a = abs(sin(
-		dot(world_position, direction) * 0.125
-		+ dot(world_position, perpendicular) * 0.035
-		+ TIME * 1.05
-		+ current * 3.0
-	));
-	float thread_b = abs(sin(
-		dot(world_position, perpendicular) * 0.082
-		- dot(world_position, direction) * 0.047
-		- TIME * 0.78
-		+ current * 2.4
-	));
-	float caustic_web = pow(1.0 - min(thread_a, thread_b), 11.0);
-	float surface_glint = pow(0.5 + 0.5 * sin(
-		dot(world_position, vec2(0.026, 0.014))
-		+ TIME * 0.62
-		+ current * 4.0
-	), 8.0);
-	float reflection_wave = 0.58 * (0.5 + 0.5 * sin(
-		dot(world_position, vec2(0.010, -0.007))
-		+ TIME * 0.24
-		+ current * 1.8
-	));
-	reflection_wave += 0.42 * (0.5 + 0.5 * sin(
-		dot(world_position, vec2(-0.006, 0.012))
-		- TIME * 0.17
-		+ current * 1.2
-	));
-	float broad_reflection = smoothstep(0.48, 0.86, reflection_wave);
+	float deep_water = smoothstep(0.24, 0.82, depth);
+	float foam_noise = smooth_noise((world_position + flow_offset * 0.28 + vec2(31.0, -17.0)) * 0.024);
+	float foam_breakup = smoothstep(0.36, 0.72, foam_noise + detail_noise * 0.24);
+	float foam_pulse = 0.58 + 0.42 * sin(TIME * 1.1 + broad_noise * 5.8 + depth * 28.0);
+	float shoreline_foam = shoreline * mix(0.28, 1.0, foam_breakup) * foam_pulse;
+	float inner_foam_band = smoothstep(0.055, 0.11, depth) * (1.0 - smoothstep(0.11, 0.25, depth));
+	inner_foam_band *= smoothstep(0.54, 0.78, foam_noise) * (0.56 + 0.44 * sin(TIME * 0.82 + cross_noise * 6.2));
+
+	float caustic_field = detail_noise * 0.62 + cross_noise * 0.38;
+	float organic_caustics = smoothstep(0.93, 0.985, 1.0 - abs(caustic_field * 2.0 - 1.0));
+	organic_caustics *= shallow_water;
+	float reflection_field = broad_noise * 0.64 + smooth_noise((world_position - flow_offset * 0.18 + vec2(83.0, 219.0)) * 0.0042) * 0.36;
+	float broad_reflection = smoothstep(0.49, 0.77, reflection_field);
+	float surface_glint = smoothstep(0.70, 0.88, detail_noise * 0.42 + broad_noise * 0.58) * deep_water;
 	float rain_rings = 0.0;
 	if (weather_strength > 0.001) {
 		rain_rings = rain_ring(world_position, 74.0, 0.82, vec2(0.0));
@@ -115,13 +102,15 @@ void fragment() {
 		rain_rings *= weather_strength;
 	}
 
-	vec3 color = mix(source, water_tint.rgb, tint_strength);
-	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength);
-	float reflection_amount = broad_reflection * mix(0.35, 1.0, depth) * reflection_strength * mix(1.0, 0.72, weather_strength);
+	vec3 color = mix(source, water_tint.rgb, tint_strength * mix(0.35, 1.0, deep_water));
+	color = mix(color, shallow_tint.rgb, shallow_water * shallow_strength * 0.72);
+	float reflection_amount = broad_reflection * mix(0.18, 1.0, deep_water) * reflection_strength * mix(1.0, 0.72, weather_strength);
 	color = mix(color, reflection_tint.rgb, reflection_amount);
-	float visible_highlight = caustic_web * 0.82 + surface_glint * shallow_water * 0.34;
+	float visible_highlight = organic_caustics * 0.72 + surface_glint * 0.26;
 	color += vec3(0.62, 0.92, 0.96) * visible_highlight * highlight_strength * mix(1.0, 0.55, weather_strength);
 	color += vec3(0.68, 0.91, 0.95) * rain_rings * 0.075;
-	color = mix(color, vec3(0.86, 0.98, 1.0), shoreline * foam_motion * shoreline_strength);
-	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), mask);
+	float foam = clamp(shoreline_foam + inner_foam_band * 0.55, 0.0, 1.0);
+	color = mix(color, vec3(0.86, 0.98, 1.0), foam * shoreline_strength);
+	float surface_opacity = mix(shallow_opacity, deep_opacity, smoothstep(0.10, 0.72, depth));
+	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), mask * surface_opacity);
 }

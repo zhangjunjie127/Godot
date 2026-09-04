@@ -1,7 +1,7 @@
 extends SceneTree
 
 
-func _initialize() -> void:
+func _init() -> void:
 	_run.call_deferred()
 
 
@@ -14,16 +14,39 @@ func _run() -> void:
 	var tree = scene.get_node("World/DepthSorted/NortheastPalm01")
 	var beach_palms: Array[Node] = []
 	for candidate: Node in get_nodes_in_group("choppable_tree"):
-		if String(candidate.name).begins_with("NortheastPalm"):
+		if String(candidate.tree_species) == "coconut_palm":
 			beach_palms.append(candidate)
-	if beach_palms.size() != 16:
+	if beach_palms.size() != 17:
 		_fail("Not every northeast beach palm is connected to the chopping system: %d" % beach_palms.size())
 		return
 	for palm: Node in beach_palms:
 		var trunk_collision := palm.get_node("Blocker/CollisionShape2D") as CollisionShape2D
+		var visuals: Array[Node] = palm.get_children().filter(func(child: Node) -> bool: return child is Sprite2D and (child as Sprite2D).texture != null)
+		if visuals.size() != 1:
+			_fail("A choppable palm must contain exactly one independently interactive visual: " + palm.name)
+			return
+		var visual_anchor: Vector2 = (palm as Node2D).to_global(visuals[0].get_trunk_anchor_position())
 		if palm.respawn_days != 10 or palm.get_interaction_position().distance_to(trunk_collision.global_position) > 0.01:
 			_fail("A beach palm is missing its ten-day respawn or trunk interaction position: " + palm.name)
 			return
+		if visual_anchor.distance_to(palm.get_interaction_position()) > scene.CHOP_RANGE:
+			_fail("A visible palm trunk is outside its attack interaction range: " + palm.name)
+			return
+	for target: Node in beach_palms:
+		for palm: Node in beach_palms:
+			palm.visible = palm == target
+		var target_visual := target.get_node("Sprite2D") as Sprite2D
+		var transform_before := target_visual.transform
+		var hits_before: int = target.hits_remaining
+		player.global_position = target.get_interaction_position() + Vector2(0.0, -120.0)
+		player._facing_row = 0
+		scene._on_player_attack_started()
+		target._process(0.04)
+		if target.hits_remaining != hits_before - 1 or target_visual.transform == transform_before:
+			_fail("A visible coconut palm did not react to the real attack selection path: " + target.name)
+			return
+	for palm: Node in beach_palms:
+		palm.visible = true
 	if scene.inventory.get_item_count("stone_axe") != 1 or not scene.skill_tree.is_unlocked("stone_axe_gathering"):
 		_fail("Demo does not start with the stone axe and gathering skill")
 		return

@@ -419,20 +419,12 @@ position = Vector2(0, -22)
 shape = SubResource("CircleShape2D_palm_05")
 
 [node name="NortheastPalm06" type="Node2D" parent="World/DepthSorted" unique_id=758398728]
-position = Vector2(5741, 1747)
+position = Vector2(7256, 3766)
 script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm06" unique_id=12257992]
 texture_filter = 1
-position = Vector2(1515, 1779)
-scale = Vector2(0.319, 0.319)
-texture = ExtResource("32_palm_03")
-flip_h = true
-script = ExtResource("35_art_sprite")
-
-[node name="Sprite2D2" type="Sprite2D" parent="World/DepthSorted/NortheastPalm06" unique_id=1253304516]
-texture_filter = 1
-position = Vector2(-2638, -666)
+position = Vector2(0, -240)
 scale = Vector2(0.319, 0.319)
 texture = ExtResource("32_palm_03")
 flip_h = true
@@ -443,16 +435,36 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/NortheastPalm06/Blocker" unique_id=1346434273]
-position = Vector2(-572, -9)
+position = Vector2(0, -21)
+shape = SubResource("CircleShape2D_palm_03")
+
+[node name="CoconutPalm17" type="Node2D" parent="World/DepthSorted"]
+position = Vector2(3103, 1321)
+script = ExtResource("58_choppable_tree")
+
+[node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/CoconutPalm17" unique_id=1253304516]
+texture_filter = 1
+position = Vector2(0, -240)
+scale = Vector2(0.319, 0.319)
+texture = ExtResource("32_palm_03")
+flip_h = true
+script = ExtResource("35_art_sprite")
+
+[node name="Blocker" type="StaticBody2D" parent="World/DepthSorted/CoconutPalm17"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/DepthSorted/CoconutPalm17/Blocker"]
+position = Vector2(0, -21)
 shape = SubResource("CircleShape2D_palm_03")
 
 [node name="NortheastPalm07" type="Node2D" parent="World/DepthSorted" unique_id=317048925]
-position = Vector2(5423, 2480)
+position = Vector2(3890, 1969)
 script = ExtResource("58_choppable_tree")
 
 [node name="Sprite2D" type="Sprite2D" parent="World/DepthSorted/NortheastPalm07" unique_id=1756699289]
 texture_filter = 1
-position = Vector2(-1533, -766)
+position = Vector2(0, -255)
 scale = Vector2(0.341, 0.341)
 texture = ExtResource("34_palm_05")
 flip_h = true

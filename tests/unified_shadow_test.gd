@@ -38,32 +38,25 @@ func _run() -> void:
 	if local_anchor.distance_to(expected_local_anchor) > 0.1:
 		_fail("Vegetation shadows are not anchored to the visible trunk base")
 		return
-	if prop_shadow.to_global(local_anchor).distance_to(tall_prop.to_global(local_anchor)) > 0.1:
-		_fail("Vegetation shadow is separated from the trunk base")
+	var expected_default_offset := Vector2(50.0, -120.0)
+	if (prop_shadow.transform * local_anchor).distance_to(local_anchor + expected_default_offset) > 0.1:
+		_fail("Vegetation shadow does not use the copied start offset")
 		return
 	if tall_prop.ground_shadow_local_offset != scene.vegetation_shadow_local_offset \
 		or tall_prop.ground_shadow_scale != scene.vegetation_shadow_scale \
 		or not is_equal_approx(tall_prop.ground_shadow_strength, scene.vegetation_shadow_strength):
 		_fail("Vegetation did not receive the global shadow shape profile")
 		return
-	if not scene.vegetation_contact_shadow_enabled or not tall_prop.ground_contact_shadow_enabled:
-		_fail("Vegetation root-contact shadows are not enabled globally")
+	if scene.vegetation_contact_shadow_enabled or tall_prop.ground_contact_shadow_enabled:
+		_fail("Vegetation root-contact shadows were not disabled by the copied profile")
 		return
-	if not tall_prop.has_node("GroundContactShadow") or not tall_prop.get_node("GroundContactShadow").visible:
-		_fail("Vegetation root contact shadow is not bridging the projected shadow")
+	if tall_prop.has_node("GroundContactShadow") and tall_prop.get_node("GroundContactShadow").visible:
+		_fail("Disabled vegetation root-contact shadow remains visible")
 		return
 	var cast_direction: Vector2 = tall_prop.get_ground_shadow_cast_direction()
-	var contact_shadow = tall_prop.get_node("GroundContactShadow")
-	var contact_radius: float = maxf(tall_prop._frame_size().x * tall_prop.ground_contact_shadow_width_ratio, 1.0)
-	var bridge_half_length: float = contact_radius * tall_prop.ground_contact_shadow_scale.x
-	var expected_bridge_center: Vector2 = local_anchor + cast_direction * bridge_half_length
-	if contact_shadow.center != Vector2.ZERO \
-		or contact_shadow.position.distance_to(expected_bridge_center) > 0.1 \
-		or absf(angle_difference(contact_shadow.rotation, cast_direction.angle())) > 0.001:
-		_fail("Vegetation contact shadow does not fully bridge from the root toward the projection")
-		return
-	if cast_direction.x >= -0.6 or cast_direction.y <= 0.6:
-		_fail("Top-right sunlight did not cast vegetation shadows toward the bottom-left")
+	var expected_default_direction := Vector2.RIGHT.rotated(deg_to_rad(165.0))
+	if cast_direction.distance_to(expected_default_direction) > 0.001:
+		_fail("Vegetation did not receive the copied 165-degree shadow direction")
 		return
 	if not is_equal_approx(tall_prop.ground_shadow_direction_degrees, scene.vegetation_shadow_direction_degrees):
 		_fail("Vegetation shadow direction is not synchronized with the global sun direction")
@@ -81,6 +74,13 @@ func _run() -> void:
 		if not property_names.has(property_name):
 			_fail("Vegetation is missing editable per-tree shadow property: " + property_name)
 			return
+	if not tall_prop.use_individual_ground_shadow \
+		or tall_prop.individual_shadow_start_offset != expected_default_offset \
+		or not is_equal_approx(tall_prop.individual_shadow_direction_degrees, 165.0) \
+		or not is_equal_approx(tall_prop.individual_shadow_length_scale, 0.8) \
+		or not is_equal_approx(tall_prop.individual_shadow_width_scale, 0.9):
+		_fail("Vegetation did not receive the copied per-tree shadow profile")
+		return
 	tall_prop.use_individual_ground_shadow = true
 	tall_prop.individual_shadow_start_offset = Vector2(18.0, -11.0)
 	tall_prop.individual_shadow_direction_degrees = 125.0
@@ -98,6 +98,11 @@ func _run() -> void:
 		or projected_anchor.distance_to(local_anchor + Vector2(18.0, -11.0)) > 0.1:
 		_fail("Per-tree shadow settings were overwritten by the global profile")
 		return
+	tall_prop.individual_shadow_start_offset = expected_default_offset
+	tall_prop.individual_shadow_direction_degrees = 165.0
+	tall_prop.individual_shadow_length_scale = 0.8
+	tall_prop.individual_shadow_width_scale = 0.9
+	tall_prop._sync_ground_shadow()
 	if low_prop == null or not low_prop.has_node("GroundShadow"):
 		_fail("Low vegetation did not receive the unified directional shadow")
 		return
@@ -109,6 +114,14 @@ func _run() -> void:
 		return
 	var sampled_collision: CollisionShape2D
 	for sprite: Sprite2D in vegetation_sprites:
+		if not sprite.use_individual_ground_shadow \
+			or sprite.individual_shadow_start_offset != expected_default_offset \
+			or not is_equal_approx(sprite.individual_shadow_direction_degrees, 165.0) \
+			or not is_equal_approx(sprite.individual_shadow_length_scale, 0.8) \
+			or not is_equal_approx(sprite.individual_shadow_width_scale, 0.9) \
+			or sprite.ground_contact_shadow_enabled:
+			_fail("Vegetation is missing the copied shadow profile: " + sprite.texture.resource_path)
+			return
 		if not sprite.has_node("GroundShadow"):
 			_fail("Vegetation is missing its unified shadow: " + sprite.texture.resource_path)
 			return

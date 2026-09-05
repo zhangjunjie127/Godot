@@ -34,15 +34,15 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export var ground_shadow_scale := Vector2(-0.9, 0.8)
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 1.0
 @export_subgroup("Root Contact / 根部接触")
-@export var ground_contact_shadow_enabled := true
+@export var ground_contact_shadow_enabled := false
 @export_range(0.01, 0.25, 0.005) var ground_contact_shadow_width_ratio := 0.07
 @export var ground_contact_shadow_scale := Vector2(2.5, 0.22)
 @export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0
 
 @export_group("Per-Tree Shadow / 单棵树阴影")
-@export var use_individual_ground_shadow := false
-@export var individual_shadow_start_offset := Vector2.ZERO
-@export_range(-180.0, 180.0, 1.0) var individual_shadow_direction_degrees := 140.0
+@export var use_individual_ground_shadow := true
+@export var individual_shadow_start_offset := Vector2(50.0, -120.0)
+@export_range(-180.0, 180.0, 1.0) var individual_shadow_direction_degrees := 165.0
 @export_range(0.1, 3.0, 0.05) var individual_shadow_length_scale := 0.8
 @export_range(0.1, 3.0, 0.05) var individual_shadow_width_scale := 0.9
 

@@ -7,11 +7,8 @@ const CLOUD_SHADOW_SHADER := preload("res://shaders/cloud_shadow.gdshader")
 
 @export_group("Shadow Composition")
 @export_range(0.0, 1.0, 0.01) var clear_shadow_coverage := 0.44
-@export_range(0.0, 1.0, 0.01) var overcast_shadow_coverage := 0.52
 @export var clear_shadow_multiplier := Color(0.60, 0.70, 0.64, 1.0)
-@export var overcast_shadow_multiplier := Color(0.66, 0.72, 0.74, 1.0)
 @export_range(0.0, 1.0, 0.01) var clear_cloud_density := 0.46
-@export_range(0.0, 1.0, 0.01) var overcast_cloud_density := 0.72
 @export_range(400.0, 3200.0, 50.0) var cloud_scale := 1450.0
 @export_range(0.01, 0.25, 0.01) var edge_softness := 0.08
 
@@ -48,7 +45,6 @@ func _process(delta: float) -> void:
 
 func set_weather(value: String) -> void:
 	current_weather = value
-	visible = current_weather in ["晴朗", "阴天"]
 	_sync_shadow_material()
 
 
@@ -119,14 +115,11 @@ func _on_time_changed(_day: int, _hour: int, _minute: int, _phase: String) -> vo
 func _sync_shadow_material() -> void:
 	if _shadow_material == null:
 		return
-	var overcast := current_weather == "阴天"
-	var coverage := overcast_shadow_coverage if overcast else clear_shadow_coverage
-	var multiplier := overcast_shadow_multiplier if overcast else clear_shadow_multiplier
-	var density := overcast_cloud_density if overcast else clear_cloud_density
-	coverage *= _sunlight_amount()
+	visible = current_weather == "晴朗" and (day_night_cycle == null or day_night_cycle.current_phase == "白天")
+	var coverage := clear_shadow_coverage * _sunlight_amount() if visible else 0.0
 	_shadow_material.set_shader_parameter("shadow_coverage", coverage)
-	_shadow_material.set_shader_parameter("shadow_multiplier", Vector3(multiplier.r, multiplier.g, multiplier.b))
-	_shadow_material.set_shader_parameter("cloud_density", density)
+	_shadow_material.set_shader_parameter("shadow_multiplier", Vector3(clear_shadow_multiplier.r, clear_shadow_multiplier.g, clear_shadow_multiplier.b))
+	_shadow_material.set_shader_parameter("cloud_density", clear_cloud_density)
 	_shadow_material.set_shader_parameter("cloud_scale", cloud_scale)
 	_shadow_material.set_shader_parameter("edge_softness", edge_softness)
 	_sync_shadow_offsets()

@@ -967,7 +967,7 @@ func _run() -> void:
 		_fail("Jump animation did not advance")
 		return
 	Input.action_release("player_jump")
-	for _frame: int in range(40):
+	for _frame: int in range(ceili(player.jump_duration * Engine.physics_ticks_per_second) + 2):
 		await physics_frame
 	player._active_animation = ""
 	await physics_frame

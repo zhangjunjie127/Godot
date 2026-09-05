@@ -39,8 +39,10 @@ const SHADOW_VERTICAL_SCALE := 0.34
 const LEGACY_FRAME_COLUMNS := 12
 const NEW_ACTION_FRAME_COLUMNS := 16
 const MALE_DIRECTION_ROWS := 8
-const MOVEMENT_LOOP_START_FRAME := 2
 const ATTACK_FRAMES_PER_PUNCH := 8
+const ACTION_ANIMATION_DURATION := 2.0
+const ACTION_FRAME_DURATION := ACTION_ANIMATION_DURATION / NEW_ACTION_FRAME_COLUMNS
+const MOVEMENT_LOOP_START_FRAME := 0
 const JUMP_TAKEOFF_PROGRESS := 6.0 / 16.0
 const JUMP_LANDING_PROGRESS := 13.0 / 16.0
 
@@ -75,7 +77,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var crouch_speed := 82.0
 @export var crawl_speed := 46.0
 @export var jump_height := 30.0
-@export var jump_duration := 0.80
+@export var jump_duration := ACTION_ANIMATION_DURATION
 @export var world_size := Vector2(2048.0, 2048.0)
 @export var is_local_player := true
 @export var max_health := 100.0
@@ -90,7 +92,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var max_oxygen := 100.0
 @export var oxygen_drain_per_second := 7.0
 @export var oxygen_recovery_per_second := 24.0
-@export var attack_duration := 0.48
+@export var attack_duration := ACTION_FRAME_DURATION * ATTACK_FRAMES_PER_PUNCH
 
 @export_group("Ground Shadow / 地面阴影")
 @export var ground_shadow_center := SHADOW_CENTER
@@ -685,12 +687,12 @@ func _animation_frame(animation: String, moving: bool) -> int:
 	if animation == "prone_idle":
 		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":
-		return floori(_animation_elapsed / 0.125) % frame_count
+		return floori(_animation_elapsed / ACTION_FRAME_DURATION) % frame_count
 	if animation == "swim":
 		return floori(_animation_elapsed / 0.10) % frame_count
 	if not moving:
 		return 0
-	var frame_duration := 0.09 if animation == "run" else 0.11 if animation == "walk" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
+	var frame_duration := ACTION_FRAME_DURATION if animation == "run" or animation == "walk" else 0.15 if animation == "crawl_move" else 0.18 if animation == "crouch_move" else 0.14
 	var start_frame := get_movement_loop_start_frame(animation)
 	return start_frame + floori(_animation_elapsed / frame_duration) % (frame_count - start_frame)
 

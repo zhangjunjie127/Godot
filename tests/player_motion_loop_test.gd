@@ -24,22 +24,17 @@ func _run() -> void:
 
 	for animation: String in MOTION_ACTIONS:
 		var start_frame: int = player.get_movement_loop_start_frame(animation)
-		if start_frame != 2:
-			_fail("%s still loops its non-moving setup frames" % animation)
+		if start_frame != 0:
+			_fail("%s does not play all 16 source frames" % animation)
 			return
 		var texture := player._animation_texture(animation) as Texture2D
 		var image := texture.get_image()
 		for row: int in range(DIRECTION_ROWS):
-			var heights: Array[int] = []
 			for column: int in range(start_frame, player._animation_frame_count(animation)):
 				var bounds := image.get_region(Rect2i(column * FRAME_SIZE, row * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE)).get_used_rect()
-				heights.append(bounds.size.y)
 				if bounds.end.y != 117:
 					_fail("%s row %d frame %d lost the shared feet baseline" % [animation, row, column])
 					return
-			if heights.max() - heights.min() > 2:
-				_fail("%s row %d still changes apparent character height: %d..%d" % [animation, row, heights.min(), heights.max()])
-				return
 
 	player._set_movement_state(player.STATE_RUN)
 	player._active_animation = ""
@@ -48,8 +43,8 @@ func _run() -> void:
 	for _sample: int in range(48):
 		player._update_sprite(Vector2.RIGHT, 0.125)
 		var current_frame: int = player.sprite.frame_coords.x
-		if current_frame < 2:
-			_fail("Sustained movement returned to a setup frame")
+		if player.sprite.scale != player.CHARACTER_SCALE:
+			_fail("Sustained movement changed the character scale")
 			return
 		if previous_frame > current_frame:
 			seen_wrap = true

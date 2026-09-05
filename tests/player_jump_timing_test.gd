@@ -1,7 +1,7 @@
 extends SceneTree
 
-const TAKEOFF_PROGRESS := 6.0 / 16.0
-const LANDING_PROGRESS := 13.0 / 16.0
+const TAKEOFF_PROGRESS := 4.0 / 14.0
+const LANDING_PROGRESS := 11.0 / 14.0
 
 
 func _initialize() -> void:

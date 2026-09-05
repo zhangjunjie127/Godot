@@ -24,8 +24,8 @@ func _run() -> void:
 
 	for animation: String in MOTION_ACTIONS:
 		var start_frame: int = player.get_movement_loop_start_frame(animation)
-		if start_frame != 0:
-			_fail("%s does not play all 16 source frames" % animation)
+		if start_frame != 2:
+			_fail("%s does not skip its standing setup frames" % animation)
 			return
 		var texture := player._animation_texture(animation) as Texture2D
 		var image := texture.get_image()
@@ -43,6 +43,9 @@ func _run() -> void:
 	for _sample: int in range(48):
 		player._update_sprite(Vector2.RIGHT, 0.125)
 		var current_frame: int = player.sprite.frame_coords.x
+		if current_frame < 2 or player._active_animation != "run":
+			_fail("Sustained movement returned to a standing or idle frame")
+			return
 		if player.sprite.scale != player.CHARACTER_SCALE:
 			_fail("Sustained movement changed the character scale")
 			return

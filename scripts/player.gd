@@ -42,9 +42,12 @@ const MALE_DIRECTION_ROWS := 8
 const ATTACK_FRAMES_PER_PUNCH := 8
 const ACTION_ANIMATION_DURATION := 2.0
 const ACTION_FRAME_DURATION := ACTION_ANIMATION_DURATION / NEW_ACTION_FRAME_COLUMNS
-const MOVEMENT_LOOP_START_FRAME := 0
-const JUMP_TAKEOFF_PROGRESS := 6.0 / 16.0
-const JUMP_LANDING_PROGRESS := 13.0 / 16.0
+const MOTION_START_FRAME := 2
+const MOTION_FRAME_COUNT := NEW_ACTION_FRAME_COLUMNS - MOTION_START_FRAME
+const MOTION_ANIMATION_DURATION := MOTION_FRAME_COUNT * ACTION_FRAME_DURATION
+const MOVEMENT_LOOP_START_FRAME := MOTION_START_FRAME
+const JUMP_TAKEOFF_PROGRESS := 4.0 / 14.0
+const JUMP_LANDING_PROGRESS := 11.0 / 14.0
 
 const MALE_WALK_TEXTURE := preload("res://assets/characters/player_male_walk/sheet-transparent.png")
 const MALE_RUN_TEXTURE := preload("res://assets/characters/player_male_run/sheet-transparent.png")
@@ -77,7 +80,7 @@ const MALE_SWIM_TEXTURE := preload("res://assets/characters/player_male_swim/she
 @export var crouch_speed := 82.0
 @export var crawl_speed := 46.0
 @export var jump_height := 30.0
-@export var jump_duration := ACTION_ANIMATION_DURATION
+@export var jump_duration := MOTION_ANIMATION_DURATION
 @export var world_size := Vector2(2048.0, 2048.0)
 @export var is_local_player := true
 @export var max_health := 100.0
@@ -683,7 +686,7 @@ func _animation_frame(animation: String, moving: bool) -> int:
 		return floori(_animation_elapsed / 0.10) % frame_count
 	if animation == "jump":
 		var progress := clampf(_jump_elapsed / maxf(jump_duration, 0.01), 0.0, 0.999)
-		return mini(floori(progress * float(frame_count)), frame_count - 1)
+		return MOTION_START_FRAME + mini(floori(progress * float(MOTION_FRAME_COUNT)), MOTION_FRAME_COUNT - 1)
 	if animation == "prone_idle":
 		return floori(_animation_elapsed / 0.24) % frame_count
 	if animation == "idle_relaxed":

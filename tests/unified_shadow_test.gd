@@ -46,11 +46,11 @@ func _run() -> void:
 		or not is_equal_approx(tall_prop.ground_shadow_strength, scene.vegetation_shadow_strength):
 		_fail("Vegetation did not receive the global shadow shape profile")
 		return
-	if tall_prop.ground_contact_shadow_enabled != scene.vegetation_contact_shadow_enabled:
-		_fail("Vegetation did not receive the global root-contact setting")
+	if not scene.vegetation_contact_shadow_enabled or not tall_prop.ground_contact_shadow_enabled:
+		_fail("Vegetation root-contact shadows are not enabled globally")
 		return
-	if tall_prop.has_node("GroundContactShadow") and tall_prop.get_node("GroundContactShadow").visible:
-		_fail("Vegetation root contact shadow remained visible after the global setting disabled it")
+	if not tall_prop.has_node("GroundContactShadow") or not tall_prop.get_node("GroundContactShadow").visible:
+		_fail("Vegetation root contact shadow is not bridging the projected shadow")
 		return
 	var cast_direction: Vector2 = tall_prop.get_ground_shadow_cast_direction()
 	if cast_direction.x >= -0.6 or cast_direction.y <= 0.6:

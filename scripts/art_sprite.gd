@@ -34,7 +34,7 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export var ground_shadow_scale := Vector2(-0.9, 0.8)
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 1.0
 @export_subgroup("Root Contact / 根部接触")
-@export var ground_contact_shadow_enabled := false
+@export var ground_contact_shadow_enabled := true
 @export_range(0.01, 0.25, 0.005) var ground_contact_shadow_width_ratio := 0.07
 @export var ground_contact_shadow_scale := Vector2(1.0, 0.30)
 @export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0

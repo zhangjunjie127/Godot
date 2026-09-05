@@ -39,6 +39,13 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export var ground_contact_shadow_scale := Vector2(2.5, 0.22)
 @export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0
 
+@export_group("Per-Tree Shadow / 单棵树阴影")
+@export var use_individual_ground_shadow := false
+@export var individual_shadow_start_offset := Vector2.ZERO
+@export_range(-180.0, 180.0, 1.0) var individual_shadow_direction_degrees := 140.0
+@export_range(0.1, 3.0, 0.05) var individual_shadow_length_scale := 0.8
+@export_range(0.1, 3.0, 0.05) var individual_shadow_width_scale := 0.9
+
 @export_group("Root Collision / 根部阻挡")
 @export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var root_collision_mode := SHADOW_MODE_AUTO
 @export_range(0.25, 2.0, 0.05) var root_collision_radius_multiplier := 1.0
@@ -132,7 +139,7 @@ func set_ground_shadow_direction(direction_degrees: float, distance: float) -> v
 
 
 func get_ground_shadow_cast_direction() -> Vector2:
-	return Vector2.RIGHT.rotated(deg_to_rad(ground_shadow_direction_degrees))
+	return Vector2.RIGHT.rotated(deg_to_rad(_shadow_direction_degrees()))
 
 
 func _wind_is_enabled() -> bool:
@@ -231,13 +238,13 @@ func _sync_ground_shadow() -> void:
 	_ground_shadow.frame = frame
 	_ground_shadow.flip_h = flip_h
 	_ground_shadow.flip_v = flip_v
-	_ground_shadow.rotation = deg_to_rad(ground_shadow_direction_degrees + 90.0)
+	_ground_shadow.rotation = deg_to_rad(_shadow_direction_degrees() + 90.0)
 	_ground_shadow.skew = 0.0
-	_ground_shadow.scale = ground_shadow_scale
+	_ground_shadow.scale = _shadow_scale()
 	_ground_shadow.self_modulate = Color(1.0, 1.0, 1.0, ground_shadow_strength)
 
 	var ground_anchor := _local_ground_anchor()
-	var cast_offset := get_ground_shadow_cast_direction() * ground_shadow_distance + ground_shadow_local_offset
+	var cast_offset := get_ground_shadow_cast_direction() * _shadow_distance() + _shadow_start_offset()
 	_ground_shadow.position = Vector2.ZERO
 	var projected_anchor := _ground_shadow.transform * ground_anchor
 	_ground_shadow.position = ground_anchor + cast_offset - projected_anchor
@@ -256,7 +263,7 @@ func _sync_ground_contact_shadow(ground_anchor: Vector2) -> void:
 	var contact_radius := maxf(_frame_size().x * ground_contact_shadow_width_ratio, 1.0)
 	var cast_direction := get_ground_shadow_cast_direction()
 	var bridge_half_length := contact_radius * ground_contact_shadow_scale.x
-	_ground_contact_shadow.position = ground_anchor + ground_shadow_local_offset + cast_direction * bridge_half_length
+	_ground_contact_shadow.position = ground_anchor + _shadow_start_offset() + cast_direction * bridge_half_length
 	_ground_contact_shadow.rotation = cast_direction.angle()
 	_ground_contact_shadow.configure(
 		Vector2.ZERO,
@@ -362,6 +369,22 @@ func _local_ground_anchor() -> Vector2:
 	return offset + (texture_anchor - frame_size * 0.5 if centered else texture_anchor)
 
 
+func _shadow_direction_degrees() -> float:
+	return individual_shadow_direction_degrees if use_individual_ground_shadow else ground_shadow_direction_degrees
+
+
+func _shadow_start_offset() -> Vector2:
+	return individual_shadow_start_offset if use_individual_ground_shadow else ground_shadow_local_offset
+
+
+func _shadow_scale() -> Vector2:
+	return Vector2(-individual_shadow_width_scale, individual_shadow_length_scale) if use_individual_ground_shadow else ground_shadow_scale
+
+
+func _shadow_distance() -> float:
+	return 0.0 if use_individual_ground_shadow else ground_shadow_distance
+
+
 func _art_path() -> String:
 	if not _source_texture_path.is_empty():
 		return _source_texture_path
@@ -397,6 +420,11 @@ func _ground_shadow_signature() -> String:
 		ground_contact_shadow_width_ratio,
 		ground_contact_shadow_scale,
 		ground_contact_shadow_strength,
+		use_individual_ground_shadow,
+		individual_shadow_start_offset,
+		individual_shadow_direction_degrees,
+		individual_shadow_length_scale,
+		individual_shadow_width_scale,
 		root_collision_mode,
 		root_collision_radius_multiplier,
 		root_collision_local_offset,

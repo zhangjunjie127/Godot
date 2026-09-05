@@ -68,6 +68,36 @@ func _run() -> void:
 	if not is_equal_approx(tall_prop.ground_shadow_direction_degrees, scene.vegetation_shadow_direction_degrees):
 		_fail("Vegetation shadow direction is not synchronized with the global sun direction")
 		return
+	var property_names := {}
+	for property: Dictionary in tall_prop.get_property_list():
+		property_names[String(property["name"])] = true
+	for property_name: String in [
+		"use_individual_ground_shadow",
+		"individual_shadow_start_offset",
+		"individual_shadow_direction_degrees",
+		"individual_shadow_length_scale",
+		"individual_shadow_width_scale",
+	]:
+		if not property_names.has(property_name):
+			_fail("Vegetation is missing editable per-tree shadow property: " + property_name)
+			return
+	tall_prop.use_individual_ground_shadow = true
+	tall_prop.individual_shadow_start_offset = Vector2(18.0, -11.0)
+	tall_prop.individual_shadow_direction_degrees = 125.0
+	tall_prop.individual_shadow_length_scale = 1.15
+	tall_prop.individual_shadow_width_scale = 0.72
+	tall_prop._sync_ground_shadow()
+	scene.vegetation_shadow_direction_degrees = -20.0
+	scene.vegetation_shadow_local_offset = Vector2(80.0, 80.0)
+	scene.vegetation_shadow_scale = Vector2(-0.2, 0.2)
+	scene._apply_vegetation_shadow_direction()
+	var individual_direction := Vector2.RIGHT.rotated(deg_to_rad(125.0))
+	var projected_anchor: Vector2 = prop_shadow.transform * local_anchor
+	if tall_prop.get_ground_shadow_cast_direction().distance_to(individual_direction) > 0.001 \
+		or prop_shadow.scale != Vector2(-0.72, 1.15) \
+		or projected_anchor.distance_to(local_anchor + Vector2(18.0, -11.0)) > 0.1:
+		_fail("Per-tree shadow settings were overwritten by the global profile")
+		return
 	if low_prop == null or not low_prop.has_node("GroundShadow"):
 		_fail("Low vegetation did not receive the unified directional shadow")
 		return

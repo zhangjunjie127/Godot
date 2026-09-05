@@ -68,7 +68,7 @@ const RESOURCE_ICON_CELLS := {
 @export_range(0.0, 1.0, 0.01) var vegetation_shadow_strength := 1.0
 @export var vegetation_contact_shadow_enabled := true
 @export_range(0.01, 0.25, 0.005) var vegetation_contact_shadow_width_ratio := 0.07
-@export var vegetation_contact_shadow_scale := Vector2(1.0, 0.30)
+@export var vegetation_contact_shadow_scale := Vector2(2.5, 0.22)
 @export_range(0.0, 1.0, 0.01) var vegetation_contact_shadow_strength := 1.0
 
 @onready var player: CharacterBody2D = $World/DepthSorted/Player

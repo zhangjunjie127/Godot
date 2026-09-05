@@ -53,6 +53,15 @@ func _run() -> void:
 		_fail("Vegetation root contact shadow is not bridging the projected shadow")
 		return
 	var cast_direction: Vector2 = tall_prop.get_ground_shadow_cast_direction()
+	var contact_shadow = tall_prop.get_node("GroundContactShadow")
+	var contact_radius: float = maxf(tall_prop._frame_size().x * tall_prop.ground_contact_shadow_width_ratio, 1.0)
+	var bridge_half_length: float = contact_radius * tall_prop.ground_contact_shadow_scale.x
+	var expected_bridge_center: Vector2 = local_anchor + cast_direction * bridge_half_length
+	if contact_shadow.center != Vector2.ZERO \
+		or contact_shadow.position.distance_to(expected_bridge_center) > 0.1 \
+		or absf(angle_difference(contact_shadow.rotation, cast_direction.angle())) > 0.001:
+		_fail("Vegetation contact shadow does not fully bridge from the root toward the projection")
+		return
 	if cast_direction.x >= -0.6 or cast_direction.y <= 0.6:
 		_fail("Top-right sunlight did not cast vegetation shadows toward the bottom-left")
 		return

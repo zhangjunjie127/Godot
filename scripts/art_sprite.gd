@@ -36,7 +36,7 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export_subgroup("Root Contact / 根部接触")
 @export var ground_contact_shadow_enabled := true
 @export_range(0.01, 0.25, 0.005) var ground_contact_shadow_width_ratio := 0.07
-@export var ground_contact_shadow_scale := Vector2(1.0, 0.30)
+@export var ground_contact_shadow_scale := Vector2(2.5, 0.22)
 @export_range(0.0, 1.0, 0.01) var ground_contact_shadow_strength := 1.0
 
 @export_group("Root Collision / 根部阻挡")
@@ -254,8 +254,12 @@ func _sync_ground_contact_shadow(ground_anchor: Vector2) -> void:
 		_ground_contact_shadow.name = "GroundContactShadow"
 		add_child(_ground_contact_shadow)
 	var contact_radius := maxf(_frame_size().x * ground_contact_shadow_width_ratio, 1.0)
+	var cast_direction := get_ground_shadow_cast_direction()
+	var bridge_half_length := contact_radius * ground_contact_shadow_scale.x
+	_ground_contact_shadow.position = ground_anchor + ground_shadow_local_offset + cast_direction * bridge_half_length
+	_ground_contact_shadow.rotation = cast_direction.angle()
 	_ground_contact_shadow.configure(
-		ground_anchor + ground_shadow_local_offset,
+		Vector2.ZERO,
 		contact_radius,
 		ground_contact_shadow_scale,
 		ground_contact_shadow_strength,

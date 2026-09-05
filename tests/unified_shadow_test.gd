@@ -28,6 +28,19 @@ func _run() -> void:
 	if not prop_shadow.visible or prop_shadow.material != player_shadow.material:
 		_fail("Tall vegetation does not share the canonical ground-shadow material")
 		return
+	var frame_size := tall_prop.texture.get_size()
+	var opaque_bounds := tall_prop.texture.get_image().get_used_rect()
+	var expected_local_anchor := tall_prop.offset + Vector2(
+		opaque_bounds.position.x + opaque_bounds.size.x * 0.5,
+		opaque_bounds.end.y
+	) - frame_size * 0.5
+	var local_anchor: Vector2 = tall_prop.transform.affine_inverse() * tall_prop.get_trunk_anchor_position()
+	if local_anchor.distance_to(expected_local_anchor) > 0.1:
+		_fail("Vegetation shadows are not anchored to the visible trunk base")
+		return
+	if prop_shadow.to_global(local_anchor).distance_to(tall_prop.to_global(local_anchor)) > 0.1:
+		_fail("Vegetation shadow is separated from the trunk base")
+		return
 	if tall_prop.ground_shadow_local_offset != scene.vegetation_shadow_local_offset \
 		or tall_prop.ground_shadow_scale != scene.vegetation_shadow_scale \
 		or not is_equal_approx(tall_prop.ground_shadow_strength, scene.vegetation_shadow_strength):

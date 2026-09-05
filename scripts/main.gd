@@ -63,7 +63,7 @@ const RESOURCE_ICON_CELLS := {
 @export_group("Outdoor Sun / 户外太阳")
 @export_range(-180.0, 180.0, 1.0) var vegetation_shadow_direction_degrees := 140.0
 @export_range(0.0, 160.0, 1.0) var vegetation_shadow_distance := 0.0
-@export var vegetation_shadow_local_offset := Vector2(4.0, 4.0)
+@export var vegetation_shadow_local_offset := Vector2.ZERO
 @export var vegetation_shadow_scale := Vector2(-0.9, 0.8)
 @export_range(0.0, 1.0, 0.01) var vegetation_shadow_strength := 1.0
 @export var vegetation_contact_shadow_enabled := false

@@ -30,7 +30,7 @@ const WIND_DIRECTORIES := ["/palms/", "/trees/", "/tropical_plants/", "/foliage/
 @export_enum("Auto / 自动", "Enabled / 启用", "Disabled / 禁用") var ground_shadow_mode := SHADOW_MODE_AUTO
 @export_range(-180.0, 180.0, 1.0) var ground_shadow_direction_degrees := 140.0
 @export_range(0.0, 160.0, 1.0) var ground_shadow_distance := 0.0
-@export var ground_shadow_local_offset := Vector2(4.0, 4.0)
+@export var ground_shadow_local_offset := Vector2.ZERO
 @export var ground_shadow_scale := Vector2(-0.9, 0.8)
 @export_range(0.0, 1.0, 0.01) var ground_shadow_strength := 1.0
 @export_subgroup("Root Contact / 根部接触")
@@ -118,9 +118,7 @@ func clear_wind_strength_override() -> void:
 
 
 func get_trunk_anchor_position() -> Vector2:
-	var frame_size := _frame_size()
-	var local_anchor := offset + (Vector2(0.0, frame_size.y * 0.5) if centered else Vector2(frame_size.x * 0.5, frame_size.y))
-	return transform * local_anchor
+	return transform * _local_ground_anchor()
 
 
 func get_current_wind_strength() -> float:
@@ -238,8 +236,7 @@ func _sync_ground_shadow() -> void:
 	_ground_shadow.scale = ground_shadow_scale
 	_ground_shadow.self_modulate = Color(1.0, 1.0, 1.0, ground_shadow_strength)
 
-	var frame_size := _frame_size()
-	var ground_anchor := offset + (Vector2(0.0, frame_size.y * 0.5) if centered else Vector2(frame_size.x * 0.5, frame_size.y))
+	var ground_anchor := _local_ground_anchor()
 	var cast_offset := get_ground_shadow_cast_direction() * ground_shadow_distance + ground_shadow_local_offset
 	_ground_shadow.position = Vector2.ZERO
 	var projected_anchor := _ground_shadow.transform * ground_anchor
@@ -340,6 +337,25 @@ func _frame_size() -> Vector2:
 		float(texture.get_width()) / float(maxi(hframes, 1)),
 		float(texture.get_height()) / float(maxi(vframes, 1))
 	)
+
+
+func _local_ground_anchor() -> Vector2:
+	var frame_size := _frame_size()
+	var texture_anchor := Vector2(frame_size.x * 0.5, frame_size.y)
+	if texture != null and not region_enabled and hframes == 1 and vframes == 1:
+		var image := texture.get_image()
+		if image != null and not image.is_empty():
+			var opaque_bounds := image.get_used_rect()
+			if opaque_bounds.has_area():
+				texture_anchor = Vector2(
+					opaque_bounds.position.x + opaque_bounds.size.x * 0.5,
+					opaque_bounds.end.y
+				)
+	if flip_h:
+		texture_anchor.x = frame_size.x - texture_anchor.x
+	if flip_v:
+		texture_anchor.y = frame_size.y - texture_anchor.y
+	return offset + (texture_anchor - frame_size * 0.5 if centered else texture_anchor)
 
 
 func _art_path() -> String:
